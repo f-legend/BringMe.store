@@ -337,53 +337,61 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--cream);c
             </div>
 
             <div class="form-group">
-              <label class="form-label">📱 Phone Number</label>
-              <div style="position:relative">
-                <span class="input-prefix" style="top:50%;transform:translateY(-50%)">+63</span>
-                <input class="form-input" id="phone-input" type="tel" placeholder="9171234567" style="padding-left:44px" oninput="validatePhone(this)">
-              </div>
-              <div class="form-error" id="phone-error">Please enter a valid PH number</div>
-            </div>
-
-            <div class="divider" style="margin:16px 0">
-              <div class="div-line"></div>
-              <span class="div-txt">or use email</span>
-              <div class="div-line"></div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">✉️ Email Address</label>
+              <label class="form-label">✉️ Email Address *</label>
               <input class="form-input" id="email-input" type="email" placeholder="you@email.com" oninput="validateEmail(this)">
-              <div class="form-error" id="email-error">Please enter a valid email</div>
+              <div class="form-error" id="email-error">Please enter a valid email address</div>
             </div>
+
+            <div style="background:var(--cream2);border-radius:11px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+              <span style="font-size:18px">📱</span>
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--navy)">Phone number verification</div>
+                <div style="font-size:12px;color:var(--muted);margin-top:2px">SMS OTP is coming soon! For now, sign up with email or Google/Facebook above.</div>
+              </div>
+              <span style="background:var(--orange-bg);color:var(--orange);font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap;margin-left:auto">Coming Soon</span>
+            </div>
+
+            <!-- Hidden phone input kept for future use -->
+            <input type="hidden" id="phone-input" value="">
+            <div class="form-error" id="phone-error" style="display:none">Please enter a valid PH number</div>
 
             <button class="btn-submit" onclick="goStep(2)">Continue →</button>
             <div class="terms-txt">By joining, you agree to our <a href="privacy.html#terms">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</div>
           </div>
 
-          <!-- Step 2: OTP Verification -->
+          <!-- Step 2: Email Verification -->
           <div id="step-2" style="display:none">
-            <div class="auth-title">Verify your number</div>
-            <div class="auth-sub" id="otp-sub">We sent a 6-digit code to <strong id="otp-dest"></strong></div>
+            <div class="auth-title">Check your email</div>
+            <div class="auth-sub">We sent a verification link to <strong id="otp-dest" style="color:var(--gold)"></strong></div>
 
-            <div class="otp-row">
-              <input class="otp-input" maxlength="1" type="tel" id="otp0" oninput="otpInput(0)" onkeydown="otpKey(0,event)">
-              <input class="otp-input" maxlength="1" type="tel" id="otp1" oninput="otpInput(1)" onkeydown="otpKey(1,event)">
-              <input class="otp-input" maxlength="1" type="tel" id="otp2" oninput="otpInput(2)" onkeydown="otpKey(2,event)">
-              <input class="otp-input" maxlength="1" type="tel" id="otp3" oninput="otpInput(3)" onkeydown="otpKey(3,event)">
-              <input class="otp-input" maxlength="1" type="tel" id="otp4" oninput="otpInput(4)" onkeydown="otpKey(4,event)">
-              <input class="otp-input" maxlength="1" type="tel" id="otp5" oninput="otpInput(5)" onkeydown="otpKey(5,event)">
+            <div style="text-align:center;padding:32px 20px">
+              <div style="font-size:64px;margin-bottom:16px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)">📧</div>
+              <div style="font-weight:700;font-size:16px;color:var(--navy);margin-bottom:8px">Verification email sent!</div>
+              <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px">
+                Click the link in your email to verify your address.<br>
+                Check your <strong>Spam/Junk folder</strong> if you don't see it.
+              </div>
+              <div style="background:var(--cream2);border-radius:12px;padding:14px;font-size:12px;color:#555;line-height:1.7;margin-bottom:20px">
+                💡 <strong>For now during beta:</strong> Just click "Continue" below to proceed.<br>
+                Email verification will be enforced once connected to Supabase.
+              </div>
             </div>
 
-            <div style="text-align:center;margin-bottom:20px">
+            <div style="text-align:center;margin-bottom:16px">
               <span style="font-size:12px;color:var(--muted)">Didn't get it? </span>
-              <button onclick="resendOTP()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer" id="resend-btn">Resend code</button>
+              <button onclick="resendOTP()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer" id="resend-btn">Resend email</button>
               <span id="resend-timer" style="font-size:12px;color:var(--muted);display:none"> in <span id="timer-val">60</span>s</span>
             </div>
 
-            <button class="btn-submit" id="otp-verify-btn" onclick="verifyOTP()" disabled>
-              <span>Verify Code</span>
-            </button>
+            <!-- Hidden OTP inputs to keep JS working -->
+            <div style="display:none">
+              <input id="otp0" value="1"><input id="otp1" value="2">
+              <input id="otp2" value="3"><input id="otp3" value="4">
+              <input id="otp4" value="5"><input id="otp5" value="6">
+            </div>
+            <span id="otp-verify-btn" style="display:none"></span>
+
+            <button class="btn-submit" onclick="goStep(3)">✅ I verified my email — Continue</button>
             <button onclick="goStep(1)" style="width:100%;margin-top:10px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">← Back</button>
           </div>
 

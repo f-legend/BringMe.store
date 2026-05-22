@@ -2424,18 +2424,28 @@ function awSocialLogin(p){
         <div class="aw-terms">🔒 Protected under <a href="privacy.html" target="_blank">RA 10173</a>. We never sell your data.</div>
       </div>
 
-      <!-- Step 2: OTP -->
+      <!-- Step 2: Email Verification -->
       <div class="aw-form" id="aw-step-2" style="display:none">
-        <div class="aw-title">Verify your number</div>
-        <div class="aw-sub">Enter the 6-digit code sent to <strong id="aw-otp-dest"></strong></div>
-        <div class="aw-otp-row">
-          ${[0,1,2,3,4,5].map(i=>`<input class="aw-otp" id="ao${i}" maxlength="1" type="tel" oninput="awOtpIn(${i})" onkeydown="awOtpKey(${i},event)">`).join('')}
+        <div class="aw-title">Check your email</div>
+        <div class="aw-sub">Verification link sent to <strong id="aw-otp-dest" style="color:var(--gold)"></strong></div>
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:48px;margin-bottom:12px">📧</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px">Click the link in your email.<br>Check Spam folder if not found.</div>
+          <div style="background:var(--cream2);border-radius:10px;padding:12px;font-size:11px;color:#555;line-height:1.6;margin-bottom:14px">
+            💡 <strong>Beta mode:</strong> Click Continue to proceed — email verification will be enforced after connecting to Supabase.
+          </div>
         </div>
-        <div style="text-align:center;margin-bottom:14px">
-          <button id="aw-resend" onclick="awResend()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer">Resend code</button>
+        <div style="text-align:center;margin-bottom:12px">
+          <button id="aw-resend" onclick="awResend()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer">Resend email</button>
           <span id="aw-timer" style="font-size:12px;color:var(--muted);display:none"> in <span id="aw-timer-val">60</span>s</span>
         </div>
-        <button class="aw-submit" id="aw-otp-btn" onclick="awVerifyOTP()" disabled>Verify →</button>
+        <!-- Hidden OTP inputs to keep JS working -->
+        <div style="display:none">
+          <input id="ao0" value="1"><input id="ao1" value="2"><input id="ao2" value="3">
+          <input id="ao3" value="4"><input id="ao4" value="5"><input id="ao5" value="6">
+        </div>
+        <span id="aw-otp-btn" style="display:none"></span>
+        <button class="aw-submit" onclick="awGoStep(3)">✅ I verified — Continue</button>
         <button onclick="awGoStep(1)" style="width:100%;margin-top:8px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">← Back</button>
       </div>
 
