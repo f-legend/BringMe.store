@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BringMe.Store — Join the Community</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700;800&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#c9a96e;--gold-dk:#a8833d;--gold-lt:#f0d090;
+  --navy:#0f1628;--navy2:#1a2340;--navy3:#243056;
+  --cream:#faf7f2;--cream2:#f0ebe1;--cream3:#e6ddd0;
+  --red:#d93025;--green:#1b6e3a;--green-bg:#e8f5ed;
+  --purple:#5b4fcf;--purple-bg:#ede9ff;
+  --orange:#b45309;--orange-bg:#fff3e0;
+  --border:#e4ddd2;--muted:#7a7a8c;--white:#fff;
+  --shadow:0 4px 24px rgba(0,0,0,0.10);
+  --shadow-lg:0 12px 48px rgba(0,0,0,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);overflow-x:hidden;}
+
+/* ── PAGE SHELL ── */
+.page{min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--navy);height:58px;display:flex;align-items:center;padding:0 24px;gap:16px;position:sticky;top:0;z-index:100;border-bottom:1px solid #1e2a45;}
+.logo{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--gold);text-decoration:none;line-height:1.1;cursor:pointer;}
+.logo small{display:block;font-size:9px;color:#445;font-family:'DM Sans',sans-serif;font-weight:400;}
+.topbar-right{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.btn-ghost{background:none;border:1.5px solid rgba(255,255,255,.15);color:#8899cc;border-radius:9px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.btn-gold{background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;}
+.btn-gold:hover{background:var(--gold-dk);}
+
+/* ── MAIN CONTAINER ── */
+.main{flex:1;display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 58px);}
+
+/* ── LEFT PANEL (community showcase) ── */
+.left-panel{background:var(--navy);padding:60px 56px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+.left-panel::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 30% 40%,rgba(201,169,110,.1) 0%,transparent 70%);}
+.left-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,169,110,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,.03) 1px,transparent 1px);background-size:48px 48px;}
+.lp-content{position:relative;z-index:2;}
+.lp-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(201,169,110,.1);border:1px solid rgba(201,169,110,.2);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;}
+.lp-title{font-family:'DM Serif Display',serif;font-size:clamp(32px,3.5vw,52px);color:#fff;line-height:1.1;margin-bottom:16px;}
+.lp-title em{color:var(--gold);font-style:italic;}
+.lp-sub{font-size:16px;color:#8899bb;line-height:1.7;margin-bottom:40px;max-width:420px;}
+.community-stats{display:flex;gap:32px;margin-bottom:44px;}
+.cs-item{text-align:center;}
+.cs-num{font-family:'Space Mono',monospace;font-size:26px;color:var(--gold);font-weight:700;line-height:1;}
+.cs-lbl{font-size:11px;color:#556;margin-top:4px;}
+/* Member avatars stack */
+.member-stack{display:flex;flex-direction:column;gap:12px;}
+.member-card{background:rgba(255,255,255,.05);border:1px solid rgba(201,169,110,.12);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px;transition:all .2s;}
+.mc-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;border:2px solid rgba(201,169,110,.3);}
+.mc-info{flex:1;}
+.mc-name{font-weight:700;font-size:13px;color:#fff;}
+.mc-role{font-size:11px;color:#6677aa;margin-top:2px;}
+.mc-pts{font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;}
+.role-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px;display:inline-block;margin-right:4px;margin-top:3px;}
+.rb-buyer{background:var(--orange-bg);color:var(--orange);}
+.rb-seller{background:var(--green-bg);color:var(--green);}
+.rb-store{background:#ffeaea;color:var(--red);}
+.rb-helper{background:var(--purple-bg);color:var(--purple);}
+
+/* ── RIGHT PANEL (auth forms) ── */
+.right-panel{background:var(--cream);display:flex;align-items:center;justify-content:center;padding:40px 32px;}
+.auth-card{background:var(--white);border-radius:24px;box-shadow:var(--shadow-lg);width:100%;max-width:460px;overflow:hidden;}
+
+/* AUTH TABS */
+.auth-tabs{display:flex;background:var(--cream2);padding:5px;gap:4px;}
+.auth-tab{flex:1;padding:11px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;background:transparent;color:#888;}
+.auth-tab.active{background:var(--white);color:var(--navy);box-shadow:0 2px 10px rgba(0,0,0,.09);}
+
+/* FORM BODY */
+.auth-body{padding:28px;}
+.auth-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);margin-bottom:4px;}
+.auth-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+
+/* SOCIAL LOGINS */
+.social-row{display:flex;gap:10px;margin-bottom:20px;}
+.social-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:11px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--navy);transition:all .15s;}
+.social-btn:hover{border-color:var(--gold);background:var(--cream);}
+.social-icon{font-size:18px;}
+.divider{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.div-line{flex:1;height:1px;background:var(--border);}
+.div-txt{font-size:12px;color:var(--muted);font-weight:500;white-space:nowrap;}
+
+/* FORM ELEMENTS */
+.form-group{margin-bottom:14px;position:relative;}
+.form-label{font-size:11px;font-weight:700;color:#555;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:6px;}
+.form-input{width:100%;padding:12px 14px;border-radius:10px;border:2px solid var(--border);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:border .2s,box-shadow .2s;}
+.form-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,169,110,.12);}
+.form-input.error{border-color:var(--red);}
+.form-input.success{border-color:var(--green);}
+.form-error{font-size:11px;color:var(--red);margin-top:4px;display:none;}
+.form-error.show{display:block;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.input-icon{position:absolute;right:12px;top:50%;transform:translateY(calc(-50% + 10px));font-size:16px;pointer-events:none;}
+.input-prefix{position:absolute;left:12px;top:50%;transform:translateY(calc(-50% + 10px));font-size:13px;color:var(--muted);font-weight:600;pointer-events:none;}
+
+/* OTP INPUT */
+.otp-row{display:flex;gap:10px;justify-content:center;margin:16px 0;}
+.otp-input{width:52px;height:56px;border-radius:12px;border:2px solid var(--border);font-size:22px;font-weight:800;text-align:center;font-family:'Space Mono',monospace;color:var(--navy);outline:none;transition:border .2s,box-shadow .2s;}
+.otp-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,169,110,.12);}
+.otp-input.filled{border-color:var(--gold);background:rgba(201,169,110,.06);}
+
+/* ROLE SELECTOR */
+.role-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.role-card{border:2px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .18s;text-align:center;position:relative;}
+.role-card:hover{border-color:var(--gold);}
+.role-card.selected{border-color:var(--gold);background:rgba(201,169,110,.06);}
+.role-card.selected::after{content:'✓';position:absolute;top:8px;right:10px;font-size:12px;font-weight:800;color:var(--gold);}
+.role-icon{font-size:28px;margin-bottom:8px;}
+.role-name{font-weight:700;font-size:13px;color:var(--navy);}
+.role-desc{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4;}
+
+/* PHOTO UPLOAD */
+.photo-upload{display:flex;align-items:center;gap:16px;margin-bottom:14px;}
+.photo-circle{width:72px;height:72px;border-radius:50%;background:var(--cream2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:all .2s;flex-shrink:0;overflow:hidden;position:relative;}
+.photo-circle:hover{border-color:var(--gold);background:rgba(201,169,110,.06);}
+.photo-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.photo-info h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.photo-info p{font-size:12px;color:var(--muted);}
+.photo-btns{display:flex;gap:8px;margin-top:8px;}
+.btn-upload{background:var(--cream2);color:var(--navy);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.btn-upload:hover{background:var(--cream3);}
+
+/* NICKNAME */
+.nickname-wrap{position:relative;}
+.nickname-prefix{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--gold);font-size:15px;pointer-events:none;}
+.nickname-input{padding-left:30px !important;}
+.nickname-check{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px;}
+
+/* PASSWORD STRENGTH */
+.pw-strength{margin-top:6px;}
+.pw-bars{display:flex;gap:4px;margin-bottom:4px;}
+.pw-bar{height:4px;flex:1;border-radius:2px;background:var(--border);transition:background .2s;}
+.pw-bar.weak{background:var(--red);}
+.pw-bar.fair{background:var(--orange);}
+.pw-bar.good{background:var(--gold);}
+.pw-bar.strong{background:var(--green);}
+.pw-label{font-size:11px;color:var(--muted);}
+
+/* SUBMIT BTN */
+.btn-submit{width:100%;padding:14px;background:var(--gold);color:var(--navy);border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-submit:hover{background:var(--gold-dk);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,169,110,.4);}
+.btn-submit:disabled{opacity:.6;pointer-events:none;}
+.btn-submit.loading{pointer-events:none;}
+
+/* TERMS */
+.terms-txt{font-size:11px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.6;}
+.terms-txt a{color:var(--gold);text-decoration:none;}
+
+/* STEP INDICATOR */
+.steps-row{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;}
+.step-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;transition:all .2s;flex-shrink:0;}
+.step-dot.done{background:var(--green);color:#fff;}
+.step-dot.active{background:var(--gold);color:var(--navy);}
+.step-dot.pending{background:var(--border);color:var(--muted);}
+.step-line{flex:1;height:2px;max-width:40px;background:var(--border);transition:background .2s;}
+.step-line.done{background:var(--green);}
+.step-label{font-size:10px;font-weight:600;margin-top:4px;text-align:center;color:var(--muted);}
+.step-label.active{color:var(--gold);}
+.step-label.done{color:var(--green);}
+.steps-wrap{display:flex;flex-direction:column;margin-bottom:24px;}
+.steps-top{display:flex;align-items:center;justify-content:center;}
+.steps-labels{display:flex;justify-content:space-between;padding:0 0px;margin-top:4px;}
+.steps-labels span{font-size:9px;font-weight:600;color:var(--muted);flex:1;text-align:center;}
+.steps-labels span.active{color:var(--gold);}
+.steps-labels span.done{color:var(--green);}
+
+/* SUCCESS STATE */
+.success-screen{text-align:center;padding:40px 20px;}
+.success-icon{font-size:64px;margin-bottom:16px;animation:pop .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--navy);margin-bottom:8px;}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px;}
+.success-profile{background:var(--cream2);border-radius:16px;padding:16px;margin-bottom:24px;display:flex;align-items:center;gap:14px;text-align:left;}
+.sp-avatar{width:56px;height:56px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--gold);font-size:18px;flex-shrink:0;}
+.sp-name{font-weight:800;font-size:16px;color:var(--navy);}
+.sp-nick{font-size:13px;color:var(--gold);font-weight:600;margin-top:2px;}
+.sp-roles{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+
+/* SPINNER */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:18px;height:18px;border:2.5px solid rgba(15,22,40,.2);border-top-color:var(--navy);border-radius:50%;animation:spin .6s linear infinite;}
+
+/* PROFILE PAGE */
+.profile-page{display:none;min-height:100vh;background:var(--cream);}
+.profile-header{background:var(--navy);padding:40px 32px 0;position:relative;overflow:hidden;}
+.ph-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 50%,rgba(201,169,110,.1) 0%,transparent 70%);}
+.ph-content{position:relative;z-index:2;display:flex;gap:24px;align-items:flex-end;padding-bottom:0;}
+.ph-avatar{width:96px;height:96px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:var(--navy);border:4px solid rgba(201,169,110,.3);flex-shrink:0;overflow:hidden;cursor:pointer;position:relative;}
+.ph-avatar img{width:100%;height:100%;object-fit:cover;}
+.ph-avatar-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;font-size:20px;border-radius:50%;}
+.ph-avatar:hover .ph-avatar-overlay{display:flex;}
+.ph-info{flex:1;padding-bottom:20px;}
+.ph-name{font-family:'DM Serif Display',serif;font-size:26px;color:#fff;margin-bottom:3px;}
+.ph-nick{font-size:14px;color:var(--gold);font-weight:600;margin-bottom:6px;}
+.ph-bio{font-size:13px;color:#8899bb;line-height:1.5;margin-bottom:10px;max-width:400px;}
+.ph-roles{display:flex;gap:6px;flex-wrap:wrap;}
+.ph-tab-row{display:flex;gap:0;border-top:1px solid rgba(255,255,255,.08);position:relative;z-index:2;}
+.ph-tab{padding:14px 20px;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#6677aa;transition:all .2s;border-bottom:2px solid transparent;}
+.ph-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.profile-body{max-width:800px;margin:0 auto;padding:24px;}
+.profile-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.ps-card{background:var(--white);border-radius:14px;padding:16px;text-align:center;border:1px solid var(--border);}
+.ps-num{font-family:'Space Mono',monospace;font-size:22px;color:var(--gold);font-weight:700;}
+.ps-lbl{font-size:11px;color:var(--muted);margin-top:3px;}
+.activity-feed{display:flex;flex-direction:column;gap:10px;}
+.af-item{background:var(--white);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;border:1px solid var(--border);}
+.af-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.af-text{flex:1;}
+.af-title{font-weight:600;font-size:13px;color:var(--navy);}
+.af-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.af-val{font-size:12px;font-weight:700;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 22px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .main{grid-template-columns:1fr;}
+  .left-panel{display:none;}
+  .right-panel{padding:24px 16px;}
+  .auth-body{padding:20px;}
+  .profile-stats-row{grid-template-columns:1fr 1fr;}
+  .ph-content{flex-direction:column;align-items:flex-start;gap:12px;}
+}
+</style>
+</head>
+<body>
+<div class="page" id="auth-page">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo">BringMe.Store<small>Find It. Buy It. Nearby.</small></div>
+    <div class="topbar-right">
+      <button class="btn-ghost" onclick="showTab('login')">Sign In</button>
+      <button class="btn-gold" onclick="showTab('signup')">Join Free</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT: Community Showcase -->
+    <div class="left-panel">
+      <div class="left-grid"></div>
+      <div class="lp-content">
+        <div class="lp-eyebrow">🏘️ San Jose del Monte Community</div>
+        <h1 class="lp-title">Help each other.<br><em>Earn while</em><br>you help.</h1>
+        <p class="lp-sub">BringMe.Store is built on community. Find what you need, share what you know, and earn real cash just by helping your neighbors.</p>
+
+        <div class="community-stats">
+          <div class="cs-item"><div class="cs-num">1,240</div><div class="cs-lbl">Members</div></div>
+          <div class="cs-item"><div class="cs-num">3,800</div><div class="cs-lbl">Help Replies</div></div>
+          <div class="cs-item"><div class="cs-num">₱47k</div><div class="cs-lbl">Points Earned</div></div>
+        </div>
+
+        <div class="member-stack">
+          <div class="member-card">
+            <div class="mc-avatar" style="background:#1a3a5c">MR</div>
+            <div class="mc-info">
+              <div class="mc-name">Mark R. <span style="font-size:10px;color:#667">@marksjdm</span></div>
+              <div>
+                <span class="role-badge rb-seller">Seller</span>
+                <span class="role-badge rb-helper">Helper</span>
+              </div>
+            </div>
+            <div class="mc-pts">⭐ 23pts</div>
+          </div>
+          <div class="member-card">
+            <div class="mc-avatar" style="background:#3a1a5c">AL</div>
+            <div class="mc-info">
+              <div class="mc-name">Ana L. <span style="font-size:10px;color:#667">@anabags</span></div>
+              <div>
+                <span class="role-badge rb-seller">Seller</span>
+                <span class="role-badge rb-buyer">Buyer</span>
+              </div>
+            </div>
+            <div class="mc-pts">⭐ 18pts</div>
+          </div>
+          <div class="member-card">
+            <div class="mc-avatar" style="background:#1a5c3a">NS</div>
+            <div class="mc-info">
+              <div class="mc-name">Nena S. <span style="font-size:10px;color:#667">@alingnena</span></div>
+              <div>
+                <span class="role-badge rb-store">Store Owner</span>
+                <span class="role-badge rb-helper">Helper</span>
+              </div>
+            </div>
+            <div class="mc-pts">⭐ 41pts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Auth Forms -->
+    <div class="right-panel">
+      <div class="auth-card" id="auth-card">
+
+        <!-- TABS -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-signup" onclick="showTab('signup')">Join Free</button>
+          <button class="auth-tab" id="tab-login" onclick="showTab('login')">Sign In</button>
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div class="auth-body" id="signup-form">
+          <!-- Step indicator -->
+          <div class="steps-wrap">
+            <div class="steps-top" id="steps-top"></div>
+            <div class="steps-labels" id="steps-labels"></div>
+          </div>
+
+          <!-- Step 1: How to sign up -->
+          <div id="step-1">
+            <div class="auth-title">Join the Community</div>
+            <div class="auth-sub">Create your free BringMe.Store account.</div>
+
+            <div class="social-row">
+              <button class="social-btn" onclick="socialSignup('Google')">
+                <span class="social-icon">🔵</span> Google
+              </button>
+              <button class="social-btn" onclick="socialSignup('Facebook')">
+                <span class="social-icon">📘</span> Facebook
+              </button>
+            </div>
+
+            <div class="divider">
+              <div class="div-line"></div>
+              <span class="div-txt">or sign up with</span>
+              <div class="div-line"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">📱 Phone Number</label>
+              <div style="position:relative">
+                <span class="input-prefix" style="top:50%;transform:translateY(-50%)">+63</span>
+                <input class="form-input" id="phone-input" type="tel" placeholder="9171234567" style="padding-left:44px" oninput="validatePhone(this)">
+              </div>
+              <div class="form-error" id="phone-error">Please enter a valid PH number</div>
+            </div>
+
+            <div class="divider" style="margin:16px 0">
+              <div class="div-line"></div>
+              <span class="div-txt">or use email</span>
+              <div class="div-line"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">✉️ Email Address</label>
+              <input class="form-input" id="email-input" type="email" placeholder="you@email.com" oninput="validateEmail(this)">
+              <div class="form-error" id="email-error">Please enter a valid email</div>
+            </div>
+
+            <button class="btn-submit" onclick="goStep(2)">Continue →</button>
+            <div class="terms-txt">By joining, you agree to our <a href="privacy.html#terms">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</div>
+          </div>
+
+          <!-- Step 2: OTP Verification -->
+          <div id="step-2" style="display:none">
+            <div class="auth-title">Verify your number</div>
+            <div class="auth-sub" id="otp-sub">We sent a 6-digit code to <strong id="otp-dest"></strong></div>
+
+            <div class="otp-row">
+              <input class="otp-input" maxlength="1" type="tel" id="otp0" oninput="otpInput(0)" onkeydown="otpKey(0,event)">
+              <input class="otp-input" maxlength="1" type="tel" id="otp1" oninput="otpInput(1)" onkeydown="otpKey(1,event)">
+              <input class="otp-input" maxlength="1" type="tel" id="otp2" oninput="otpInput(2)" onkeydown="otpKey(2,event)">
+              <input class="otp-input" maxlength="1" type="tel" id="otp3" oninput="otpInput(3)" onkeydown="otpKey(3,event)">
+              <input class="otp-input" maxlength="1" type="tel" id="otp4" oninput="otpInput(4)" onkeydown="otpKey(4,event)">
+              <input class="otp-input" maxlength="1" type="tel" id="otp5" oninput="otpInput(5)" onkeydown="otpKey(5,event)">
+            </div>
+
+            <div style="text-align:center;margin-bottom:20px">
+              <span style="font-size:12px;color:var(--muted)">Didn't get it? </span>
+              <button onclick="resendOTP()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer" id="resend-btn">Resend code</button>
+              <span id="resend-timer" style="font-size:12px;color:var(--muted);display:none"> in <span id="timer-val">60</span>s</span>
+            </div>
+
+            <button class="btn-submit" id="otp-verify-btn" onclick="verifyOTP()" disabled>
+              <span>Verify Code</span>
+            </button>
+            <button onclick="goStep(1)" style="width:100%;margin-top:10px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">← Back</button>
+          </div>
+
+          <!-- Step 3: Profile Setup -->
+          <div id="step-3" style="display:none">
+            <div class="auth-title">Set up your profile</div>
+            <div class="auth-sub">Tell the community who you are.</div>
+
+            <!-- Photo Upload -->
+            <div class="photo-upload">
+              <div class="photo-circle" id="photo-circle" onclick="triggerPhotoUpload()">
+                <span id="photo-placeholder">🙂</span>
+                <img id="photo-preview" style="display:none">
+              </div>
+              <div class="photo-info">
+                <h4>Profile Photo</h4>
+                <p>Helps neighbors recognize and trust you</p>
+                <div class="photo-btns">
+                  <button class="btn-upload" onclick="triggerPhotoUpload()">📷 Upload</button>
+                  <button class="btn-upload" onclick="useEmoji()">😊 Use Emoji</button>
+                </div>
+              </div>
+              <input type="file" id="photo-file" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">First Name *</label>
+                <input class="form-input" id="fname" type="text" placeholder="Juan" oninput="checkProfileStep()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name *</label>
+                <input class="form-input" id="lname" type="text" placeholder="dela Cruz" oninput="checkProfileStep()">
+              </div>
+            </div>
+
+            <!-- Nickname -->
+            <div class="form-group">
+              <label class="form-label">Nickname / Username *</label>
+              <div class="nickname-wrap" style="position:relative">
+                <span class="nickname-prefix">@</span>
+                <input class="form-input nickname-input" id="nickname" type="text" placeholder="juansjdm" oninput="checkNickname(this)" autocomplete="off">
+                <span class="nickname-check" id="nick-check"></span>
+              </div>
+              <div class="form-error" id="nick-error">Username already taken</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">This is how the community will know you on the map.</div>
+            </div>
+
+            <!-- Location -->
+            <div class="form-group">
+              <label class="form-label">📍 Your Area in SJDM</label>
+              <select class="form-input" id="location-select">
+                <option value="">Select your barangay...</option>
+                <option>Tungkong Mangga</option>
+                <option>Sapang Palay</option>
+                <option>Minuyan</option>
+                <option>Poblacion</option>
+                <option>Citrus</option>
+                <option>Dulong Bayan</option>
+                <option>Francisco Homes</option>
+                <option>Kaybanban</option>
+                <option>Other / Outside SJDM</option>
+              </select>
+            </div>
+
+            <!-- Bio -->
+            <div class="form-group" style="background:#fff8f0;border:1px solid #f0c080;border-radius:11px;padding:12px;margin-bottom:14px">
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" id="age-cb" style="width:18px;height:18px;accent-color:var(--gold);flex-shrink:0;cursor:pointer">
+                <label for="age-cb" style="font-size:13px;color:#7a4800;font-weight:600;cursor:pointer">I confirm that I am at least 18 years old. ⚠️</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bio <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+              <textarea class="form-input" id="bio" rows="2" placeholder="e.g. Tiangge seller sa Tungkong Mangga. I help neighbors find stuff!" style="resize:none" maxlength="120" oninput="updateBioCount(this)"></textarea>
+              <div style="font-size:11px;color:var(--muted);text-align:right;margin-top:3px"><span id="bio-count">0</span>/120</div>
+            </div>
+
+            <button class="btn-submit" id="profile-next-btn" onclick="checkAgeAndContinue()" disabled>Continue →</button>
+          </div>
+
+          <!-- Step 4: Role Selection -->
+          <div id="step-4" style="display:none">
+            <div class="auth-title">What brings you here?</div>
+            <div class="auth-sub">Pick all that apply — you can change this anytime.</div>
+
+            <div class="role-selector">
+              <div class="role-card" id="role-buyer" onclick="toggleRole('buyer')">
+                <div class="role-icon">🛍️</div>
+                <div class="role-name">Buyer</div>
+                <div class="role-desc">I want to find and buy items near me</div>
+              </div>
+              <div class="role-card" id="role-seller" onclick="toggleRole('seller')">
+                <div class="role-icon">🏷️</div>
+                <div class="role-name">Seller</div>
+                <div class="role-desc">I have items to sell to the community</div>
+              </div>
+              <div class="role-card" id="role-store" onclick="toggleRole('store')">
+                <div class="role-icon">🏪</div>
+                <div class="role-name">Store Owner</div>
+                <div class="role-desc">I own a store and want to get found</div>
+              </div>
+              <div class="role-card" id="role-helper" onclick="toggleRole('helper')">
+                <div class="role-icon">🤝</div>
+                <div class="role-name">Community Helper</div>
+                <div class="role-desc">I know SJDM well and love helping neighbors</div>
+              </div>
+            </div>
+
+            <div style="background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);border-radius:12px;padding:14px;margin-bottom:16px;font-size:13px;color:#555;line-height:1.6">
+              💡 <strong>Helpers earn the most!</strong> Every time you help someone find a store and they confirm it — you earn <strong>⭐ 1 point = ₱1</strong> cashable to GCash!
+            </div>
+
+            <button class="btn-submit" id="role-next-btn" onclick="goStep(5)" disabled>Almost done! →</button>
+          </div>
+
+          <!-- Step 5: Password (for email signups) -->
+          <div id="step-5" style="display:none">
+            <div class="auth-title">Create a password</div>
+            <div class="auth-sub">Make it strong so your account stays safe.</div>
+
+            <div class="form-group">
+              <label class="form-label">Password *</label>
+              <div style="position:relative">
+                <input class="form-input" id="pw-input" type="password" placeholder="At least 8 characters" oninput="checkPassword(this)">
+                <button onclick="togglePw('pw-input',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px">👁️</button>
+              </div>
+              <div class="pw-strength">
+                <div class="pw-bars" id="pw-bars">
+                  <div class="pw-bar" id="pb0"></div>
+                  <div class="pw-bar" id="pb1"></div>
+                  <div class="pw-bar" id="pb2"></div>
+                  <div class="pw-bar" id="pb3"></div>
+                </div>
+                <div class="pw-label" id="pw-label">Enter a password</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Confirm Password *</label>
+              <div style="position:relative">
+                <input class="form-input" id="pw-confirm" type="password" placeholder="Repeat your password" oninput="checkConfirm(this)">
+                <span id="pw-match-icon" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:16px"></span>
+              </div>
+              <div class="form-error" id="pw-error">Passwords do not match</div>
+            </div>
+
+            <button class="btn-submit" id="pw-submit-btn" onclick="submitSignup()" disabled>🎉 Create My Account</button>
+          </div>
+
+          <!-- SUCCESS -->
+          <div id="signup-success" style="display:none">
+            <div class="success-screen">
+              <div class="success-icon">🎉</div>
+              <div class="success-title">Welcome to BringMe.Store!</div>
+              <div class="success-sub">Your account is ready. You're now part of the San Jose del Monte community.</div>
+              <div class="success-profile" id="success-profile"></div>
+              <button class="btn-submit" onclick="openProfile()">🗺️ Explore the Map</button>
+              <div style="font-size:12px;color:var(--muted);margin-top:12px">You earned <strong style="color:var(--gold)">⭐ 5 welcome points</strong> for joining!</div>
+              <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+                <a href="privacy.html" target="_blank" style="font-size:12px;color:var(--gold);text-decoration:none;font-weight:600">📋 Privacy Policy</a>
+                <span style="color:var(--border)">|</span>
+                <a href="privacy.html#delete-account" target="_blank" style="font-size:12px;color:var(--muted);text-decoration:none">🗑️ Delete Account</a>
+                <span style="color:var(--border)">|</span>
+                <a href="privacy.html#your-rights" target="_blank" style="font-size:12px;color:var(--muted);text-decoration:none">⚖️ Your Rights</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div class="auth-body" id="login-form" style="display:none">
+          <div class="auth-title">Welcome back!</div>
+          <div class="auth-sub">Sign in to your BringMe.Store account.</div>
+
+          <div class="social-row">
+            <button class="social-btn" onclick="socialLogin('Google')">
+              <span class="social-icon">🔵</span> Google
+            </button>
+            <button class="social-btn" onclick="socialLogin('Facebook')">
+              <span class="social-icon">📘</span> Facebook
+            </button>
+          </div>
+
+          <div class="divider">
+            <div class="div-line"></div>
+            <span class="div-txt">or sign in with</span>
+            <div class="div-line"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">📱 Phone or Email</label>
+            <input class="form-input" id="login-id" type="text" placeholder="09171234567 or you@email.com">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">🔒 Password</label>
+            <div style="position:relative">
+              <input class="form-input" id="login-pw" type="password" placeholder="Your password">
+              <button onclick="togglePw('login-pw',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px">👁️</button>
+            </div>
+          </div>
+
+          <div style="text-align:right;margin-bottom:16px;margin-top:-6px">
+            <a href="mailto:hello@bringme.store?subject=Password Reset Request" style="font-size:12px;color:var(--gold);text-decoration:none;font-weight:600">Forgot password?</a>
+          </div>
+
+          <button class="btn-submit" onclick="submitLogin()">Sign In →</button>
+
+          <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--muted)">
+            No account yet? <a href="#" onclick="showTab('signup')" style="color:var(--gold);font-weight:700;text-decoration:none">Join free →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div class="profile-page" id="profile-page">
+  <div class="topbar">
+    <div class="logo">BringMe.Store<small>Find It. Buy It. Nearby.</small></div>
+    <div class="topbar-right">
+      <button class="btn-ghost" onclick="window.location='index.html'">🗺️ Open Map</button>
+      <button class="btn-gold" onclick="showToast('Settings coming soon!')">⚙️ Settings</button>
+    </div>
+  </div>
+
+  <div class="profile-header">
+    <div class="ph-bg"></div>
+    <div class="ph-content" style="padding:24px 32px 0">
+      <div class="ph-avatar" id="ph-avatar" onclick="showToast('Photo upload coming soon!')">
+        <div class="ph-avatar-overlay">📷</div>
+      </div>
+      <div class="ph-info">
+        <div class="ph-name" id="ph-name"></div>
+        <div class="ph-nick" id="ph-nick"></div>
+        <div class="ph-bio" id="ph-bio"></div>
+        <div class="ph-roles" id="ph-roles"></div>
+      </div>
+    </div>
+    <div class="ph-tab-row" style="padding:0 32px">
+      <button class="ph-tab active" onclick="switchProfileTab('overview')">Overview</button>
+      <button class="ph-tab" onclick="switchProfileTab('listings')">My Listings</button>
+      <button class="ph-tab" onclick="switchProfileTab('points')">⭐ Points</button>
+      <button class="ph-tab" onclick="switchProfileTab('settings')">Settings</button>
+    </div>
+  </div>
+
+  <div class="profile-body">
+    <div class="profile-stats-row">
+      <div class="ps-card"><div class="ps-num">5</div><div class="ps-lbl">⭐ Welcome Points</div></div>
+      <div class="ps-card"><div class="ps-num">0</div><div class="ps-lbl">Listings Posted</div></div>
+      <div class="ps-card"><div class="ps-num">0</div><div class="ps-lbl">Help Replies</div></div>
+      <div class="ps-card"><div class="ps-num">0</div><div class="ps-lbl">Confirmed Helps</div></div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">Recent Activity</div>
+    <div class="activity-feed">
+      <div class="af-item">
+        <div class="af-icon" style="background:#fffbe6">🎉</div>
+        <div class="af-text">
+          <div class="af-title">Welcome to BringMe.Store!</div>
+          <div class="af-sub">You joined the SJDM community · Just now</div>
+        </div>
+        <div class="af-val" style="color:var(--gold)">+5 pts</div>
+      </div>
+      <div class="af-item" style="opacity:.5">
+        <div class="af-icon" style="background:#f0f6ff">🏷️</div>
+        <div class="af-text">
+          <div class="af-title">Post your first listing</div>
+          <div class="af-sub">Earn +2 pts for your first post</div>
+        </div>
+        <div class="af-val" style="color:var(--muted)">+2 pts</div>
+      </div>
+      <div class="af-item" style="opacity:.5">
+        <div class="af-icon" style="background:#f3f0ff">🤝</div>
+        <div class="af-text">
+          <div class="af-title">Help a neighbor find a store</div>
+          <div class="af-sub">Earn +1 pt per confirmed help</div>
+        </div>
+        <div class="af-val" style="color:var(--muted)">+1 pt</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let currentStep = 1;
+let totalSteps = 5;
+let selectedRoles = new Set();
+let signupMethod = 'phone'; // phone | email
+let userData = {
+  phone: '', email: '', firstName: '', lastName: '',
+  nickname: '', location: '', bio: '', photo: '',
+  roles: [], points: 5
+};
+
+const TAKEN_NICKS = ['mark','ana','jose','clara','renz','danny','nena','liza','admin','bringme'];
+const STEP_LABELS = ['Contact','Verify','Profile','Roles','Password'];
+
+// ── TAB SWITCHING ──────────────────────────────────────────────────────────────
+function showTab(tab) {
+  document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+}
+
+// ── STEP NAVIGATION ────────────────────────────────────────────────────────────
+function goStep(n) {
+  // Validate before going forward
+  if (n > currentStep) {
+    if (currentStep === 1 && !validateStep1()) return;
+    if (currentStep === 2 && !validateOTP()) return;
+    if (currentStep === 3 && !validateStep3()) return;
+    if (currentStep === 4 && selectedRoles.size === 0) { showToast('Please select at least one role'); return; }
+  }
+
+  document.getElementById('step-' + currentStep).style.display = 'none';
+  currentStep = n;
+
+  if (n <= totalSteps) {
+    document.getElementById('step-' + n).style.display = 'block';
+    updateStepIndicator();
+
+    // Auto-actions per step
+    if (n === 2) startResendTimer();
+    if (n === 5 && signupMethod === 'phone') {
+      // Phone users don't need password — skip to success
+      submitSignup();
+      return;
+    }
+  }
+}
+
+function updateStepIndicator() {
+  const top = document.getElementById('steps-top');
+  const lbl = document.getElementById('steps-labels');
+  let topHTML = '', lblHTML = '';
+
+  for (let i = 1; i <= totalSteps; i++) {
+    const done = i < currentStep;
+    const active = i === currentStep;
+    const cls = done ? 'done' : active ? 'active' : 'pending';
+    topHTML += `<div class="step-dot ${cls}">${done ? '✓' : i}</div>`;
+    if (i < totalSteps) topHTML += `<div class="step-line ${done ? 'done' : ''}"></div>`;
+    lblHTML += `<span class="${cls}">${STEP_LABELS[i-1]}</span>`;
+  }
+  top.innerHTML = topHTML;
+  lbl.innerHTML = lblHTML;
+}
+
+// ── STEP 1 VALIDATION ──────────────────────────────────────────────────────────
+function validatePhone(inp) {
+  const v = inp.value.replace(/\D/g,'');
+  const valid = v.length === 10 && v.startsWith('9');
+  inp.classList.toggle('success', valid);
+  inp.classList.toggle('error', inp.value && !valid);
+  document.getElementById('phone-error').classList.toggle('show', inp.value && !valid);
+}
+
+function validateEmail(inp) {
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value);
+  inp.classList.toggle('success', valid && inp.value);
+  inp.classList.toggle('error', inp.value && !valid);
+  document.getElementById('email-error').classList.toggle('show', inp.value && !valid);
+}
+
+function validateStep1() {
+  const phone = document.getElementById('phone-input').value.replace(/\D/,'');
+  const email = document.getElementById('email-input').value;
+  if (phone.length === 10 && phone.startsWith('9')) {
+    userData.phone = '+63' + phone;
+    signupMethod = 'phone';
+    document.getElementById('otp-dest').textContent = '+63' + phone;
+    return true;
+  }
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    userData.email = email;
+    signupMethod = 'email';
+    document.getElementById('otp-dest').textContent = email;
+    return true;
+  }
+  showToast('Please enter a valid phone number or email');
+  return false;
+}
+
+// ── OTP ────────────────────────────────────────────────────────────────────────
+function otpInput(i) {
+  const inp = document.getElementById('otp'+i);
+  inp.classList.toggle('filled', inp.value.length > 0);
+  if (inp.value && i < 5) document.getElementById('otp'+(i+1)).focus();
+  // Check if all filled
+  const allFilled = [0,1,2,3,4,5].every(j => document.getElementById('otp'+j).value);
+  document.getElementById('otp-verify-btn').disabled = !allFilled;
+}
+
+function otpKey(i, e) {
+  if (e.key === 'Backspace' && !document.getElementById('otp'+i).value && i > 0) {
+    document.getElementById('otp'+(i-1)).focus();
+  }
+}
+
+function validateOTP() {
+  const code = [0,1,2,3,4,5].map(i => document.getElementById('otp'+i).value).join('');
+  if (code.length < 6) { showToast('Please enter the 6-digit code'); return false; }
+  return true; // In real app, verify against backend
+}
+
+function verifyOTP() {
+  const btn = document.getElementById('otp-verify-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Verifying...';
+  setTimeout(() => { btn.innerHTML = 'Verify Code'; btn.disabled = false; goStep(3); }, 1200);
+}
+
+let resendTimer;
+function startResendTimer() {
+  let sec = 60;
+  document.getElementById('resend-btn').style.display = 'none';
+  document.getElementById('resend-timer').style.display = 'inline';
+  clearInterval(resendTimer);
+  resendTimer = setInterval(() => {
+    sec--;
+    document.getElementById('timer-val').textContent = sec;
+    if (sec <= 0) {
+      clearInterval(resendTimer);
+      document.getElementById('resend-btn').style.display = 'inline';
+      document.getElementById('resend-timer').style.display = 'none';
+    }
+  }, 1000);
+}
+
+function resendOTP() {
+  showToast('New code sent! ✅');
+  startResendTimer();
+}
+
+// ── STEP 3: PROFILE ────────────────────────────────────────────────────────────
+function validateStep3() {
+  const fname = document.getElementById('fname').value.trim();
+  const lname = document.getElementById('lname').value.trim();
+  const nick = document.getElementById('nickname').value.trim();
+  if (!fname || !lname || !nick) { showToast('Please fill in your name and nickname'); return false; }
+  if (TAKEN_NICKS.includes(nick.toLowerCase())) { showToast('That username is taken'); return false; }
+  userData.firstName = fname; userData.lastName = lname;
+  userData.nickname = nick;
+  userData.location = document.getElementById('location-select').value;
+  userData.bio = document.getElementById('bio').value;
+  return true;
+}
+
+function checkNickname(inp) {
+  const v = inp.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  inp.value = v;
+  const taken = TAKEN_NICKS.includes(v);
+  const check = document.getElementById('nick-check');
+  const err = document.getElementById('nick-error');
+  if (!v) { check.textContent = ''; err.classList.remove('show'); }
+  else if (taken) { check.textContent = '❌'; err.classList.add('show'); inp.classList.add('error'); inp.classList.remove('success'); }
+  else { check.textContent = '✅'; err.classList.remove('show'); inp.classList.remove('error'); inp.classList.add('success'); }
+  checkProfileStep();
+}
+
+function checkProfileStep() {
+  const fname = document.getElementById('fname').value.trim();
+  const lname = document.getElementById('lname').value.trim();
+  const nick = document.getElementById('nickname').value.trim();
+  const taken = TAKEN_NICKS.includes(nick.toLowerCase());
+  const btn = document.getElementById('profile-next-btn');
+  if (btn) btn.disabled = !(fname && lname && nick && !taken);
+}
+
+function updateBioCount(ta) {
+  document.getElementById('bio-count').textContent = ta.value.length;
+}
+
+function triggerPhotoUpload() {
+  document.getElementById('photo-file').click();
+}
+
+function previewPhoto(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('photo-placeholder').style.display = 'none';
+      const img = document.getElementById('photo-preview');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      userData.photo = e.target.result;
+      showToast('Photo uploaded! ✅');
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function useEmoji() {
+  const emojis = ['😊','😎','🙂','🤝','💪','🌟','🛍️','🏪'];
+  const pick = emojis[Math.floor(Math.random()*emojis.length)];
+  document.getElementById('photo-placeholder').textContent = pick;
+  userData.photo = pick;
+  showToast('Emoji set! ' + pick);
+}
+
+// ── STEP 4: ROLES ──────────────────────────────────────────────────────────────
+function toggleRole(role) {
+  const card = document.getElementById('role-' + role);
+  if (selectedRoles.has(role)) {
+    selectedRoles.delete(role);
+    card.classList.remove('selected');
+  } else {
+    selectedRoles.add(role);
+    card.classList.add('selected');
+  }
+  document.getElementById('role-next-btn').disabled = selectedRoles.size === 0;
+  userData.roles = Array.from(selectedRoles);
+}
+
+// ── STEP 5: PASSWORD ───────────────────────────────────────────────────────────
+function checkPassword(inp) {
+  const v = inp.value;
+  const strength = [v.length >= 8, /[A-Z]/.test(v), /[0-9]/.test(v), /[^A-Za-z0-9]/.test(v)];
+  const score = strength.filter(Boolean).length;
+  const classes = ['','weak','fair','good','strong'];
+  const labels = ['Enter a password','Weak — too short','Fair — add numbers','Good — almost there','Strong ✅'];
+  const bar_cls = ['','weak','fair','good','strong'];
+  for (let i=0; i<4; i++) {
+    const b = document.getElementById('pb'+i);
+    b.className = 'pw-bar ' + (i < score ? bar_cls[score] : '');
+  }
+  document.getElementById('pw-label').textContent = labels[score];
+  document.getElementById('pw-label').style.color = score >= 3 ? 'var(--green)' : score === 2 ? 'var(--orange)' : score === 1 ? 'var(--red)' : 'var(--muted)';
+  checkPasswordMatch();
+}
+
+function checkConfirm(inp) { checkPasswordMatch(); }
+
+function checkPasswordMatch() {
+  const pw = document.getElementById('pw-input').value;
+  const conf = document.getElementById('pw-confirm').value;
+  const icon = document.getElementById('pw-match-icon');
+  const err = document.getElementById('pw-error');
+  const btn = document.getElementById('pw-submit-btn');
+  if (!conf) { icon.textContent = ''; err.classList.remove('show'); btn.disabled = true; return; }
+  const match = pw === conf;
+  icon.textContent = match ? '✅' : '❌';
+  err.classList.toggle('show', !match);
+  document.getElementById('pw-confirm').classList.toggle('error', !match);
+  document.getElementById('pw-confirm').classList.toggle('success', match);
+  btn.disabled = !(match && pw.length >= 8);
+}
+
+function togglePw(id, btn) {
+  const inp = document.getElementById(id);
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  btn.textContent = inp.type === 'password' ? '👁️' : '🙈';
+}
+
+// ── SUBMIT SIGNUP ──────────────────────────────────────────────────────────────
+function submitSignup() {
+  const btn = document.getElementById('pw-submit-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Creating account...'; }
+
+  setTimeout(() => {
+    // Hide current step
+    for (let i=1; i<=totalSteps; i++) {
+      const el = document.getElementById('step-'+i);
+      if (el) el.style.display = 'none';
+    }
+    document.getElementById('steps-top').innerHTML = '';
+    document.getElementById('steps-labels').innerHTML = '';
+
+    // Build success profile card
+    const roleColors = { buyer:'rb-buyer', seller:'rb-seller', store:'rb-store', helper:'rb-helper' };
+    const roleLabels = { buyer:'Buyer', seller:'Seller', store:'Store Owner', helper:'Helper' };
+    const rolesHTML = userData.roles.map(r => `<span class="role-badge ${roleColors[r]}">${roleLabels[r]}</span>`).join('');
+    const avatarContent = userData.photo && userData.photo.startsWith('data:')
+      ? `<img src="${userData.photo}" style="width:48px;height:48px;object-fit:cover;border-radius:50%">`
+      : `<span style="font-size:24px">${userData.photo || '🙂'}</span>`;
+
+    document.getElementById('success-profile').innerHTML = `
+      <div class="sp-avatar">${avatarContent}</div>
+      <div>
+        <div class="sp-name">${userData.firstName} ${userData.lastName}</div>
+        <div class="sp-nick">@${userData.nickname}</div>
+        <div class="sp-roles">${rolesHTML}</div>
+        ${userData.location ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">📍 ${userData.location}</div>` : ''}
+      </div>`;
+
+    document.getElementById('signup-success').style.display = 'block';
+  }, 1400);
+}
+
+// ── OPEN PROFILE PAGE ──────────────────────────────────────────────────────────
+function openProfile() {
+  document.getElementById('auth-page').style.display = 'none';
+  document.getElementById('profile-page').style.display = 'block';
+
+  // Populate profile
+  const roleColors = { buyer:'rb-buyer', seller:'rb-seller', store:'rb-store', helper:'rb-helper' };
+  const roleLabels = { buyer:'Buyer', seller:'Seller', store:'Store Owner', helper:'Helper' };
+
+  const avatarEl = document.getElementById('ph-avatar');
+  if (userData.photo && userData.photo.startsWith('data:')) {
+    avatarEl.innerHTML = `<img src="${userData.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"><div class="ph-avatar-overlay">📷</div>`;
+  } else {
+    avatarEl.innerHTML = `<span style="font-size:36px">${userData.photo || '🙂'}</span><div class="ph-avatar-overlay">📷</div>`;
+  }
+  document.getElementById('ph-name').textContent = userData.firstName + ' ' + userData.lastName;
+  document.getElementById('ph-nick').textContent = '@' + userData.nickname;
+  document.getElementById('ph-bio').textContent = userData.bio || 'BringMe.Store community member from SJDM 👋';
+  document.getElementById('ph-roles').innerHTML = userData.roles.map(r =>
+    `<span class="role-badge ${roleColors[r]}" style="font-size:11px;padding:4px 12px">${roleLabels[r]}</span>`
+  ).join('');
+
+  window.scrollTo(0,0);
+}
+
+function switchProfileTab(tab) {
+  document.querySelectorAll('.ph-tab').forEach((t,i) => {
+    t.classList.toggle('active', ['overview','listings','points','settings'][i] === tab);
+  });
+  showToast(`${tab.charAt(0).toUpperCase()+tab.slice(1)} tab — coming soon!`);
+}
+
+// ── LOGIN ──────────────────────────────────────────────────────────────────────
+function submitLogin() {
+  const id = document.getElementById('login-id').value;
+  const pw = document.getElementById('login-pw').value;
+  if (!id || !pw) { showToast('Please fill in all fields'); return; }
+  const btn = document.querySelector('#login-form .btn-submit');
+  btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Signing in...';
+  setTimeout(() => {
+    btn.disabled = false; btn.innerHTML = 'Sign In →';
+    // Demo: populate with sample data
+    userData = { firstName:'Juan', lastName:'Cruz', nickname:'juansjdm', location:'Tungkong Mangga', bio:'Tiangge seller at SJDM community helper!', photo:'😎', roles:['buyer','seller','helper'], points:47 };
+    openProfile();
+  }, 1400);
+}
+
+function socialSignup(provider) {
+  showToast('Connecting to ' + provider + '... (Social login coming soon)');
+  setTimeout(() => {
+    userData.firstName = provider === 'Google' ? 'Juan' : 'Maria';
+    userData.lastName = 'dela Cruz';
+    userData.email = `user@${provider.toLowerCase()}.com`;
+    signupMethod = 'social';
+    goStep(3);
+  }, 1000);
+}
+
+function socialLogin(provider) {
+  showToast('Connecting to ' + provider + '... (Social login coming soon)');
+  setTimeout(() => {
+    userData = { firstName:'Juan', lastName:'Cruz', nickname:'juansjdm', location:'Tungkong Mangga', bio:'Long-time SJDM resident. Love helping neighbors!', photo:'😎', roles:['buyer','seller','helper'], points:47 };
+    openProfile();
+  }, 1200);
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2600);
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+updateStepIndicator();
+</script>
+</body>
+</html>

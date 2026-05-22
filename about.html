@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BringMe.Store — Find It. Buy It. Nearby.</title>
+<meta name="description" content="BringMe.Store connects buyers and sellers in your community. Find what you need nearby, list what you're selling, and help neighbors find local stores.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#c9a96e;--gold-lt:#e8c98a;--gold-dk:#8a6535;
+  --navy:#0a1020;--navy2:#121c35;--navy3:#1a2645;
+  --cream:#faf7f2;--cream2:#f0ebe0;--cream3:#e6ddd0;
+  --red:#d93025;--green:#1b6e3a;--green-bg:#e8f5ed;
+  --white:#fff;--muted:#7a7a8c;
+  --shadow:0 4px 24px rgba(0,0,0,0.10);
+  --shadow-lg:0 16px 64px rgba(0,0,0,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);overflow-x:hidden;}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4;}
+
+/* ── NAVBAR ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;transition:all .3s;}
+nav.scrolled{background:rgba(10,16,32,.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,169,110,.15);}
+.nav-logo{font-family:'Space Mono',monospace;font-size:18px;font-weight:700;color:var(--gold);text-decoration:none;line-height:1;}
+.nav-logo small{display:block;font-size:9px;color:#445;font-family:'DM Sans',sans-serif;font-weight:400;}
+.nav-links{display:flex;gap:8px;align-items:center;}
+.nav-link{color:#8899cc;font-size:14px;font-weight:500;text-decoration:none;padding:7px 14px;border-radius:8px;transition:all .15s;}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,.08);}
+.nav-cta{background:var(--gold);color:var(--navy);font-size:13px;font-weight:700;padding:9px 20px;border-radius:10px;text-decoration:none;transition:background .15s;}
+.nav-cta:hover{background:var(--gold-lt);}
+
+/* ── HERO ── */
+.hero{min-height:100vh;background:var(--navy);position:relative;display:flex;align-items:center;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(201,169,110,.12) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 70%,rgba(91,79,207,.08) 0%,transparent 60%),linear-gradient(160deg,#0a1020 0%,#121c35 50%,#0a1020 100%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,169,110,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,.04) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);}
+.hero-content{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:120px 40px 80px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(201,169,110,.12);border:1px solid rgba(201,169,110,.25);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:24px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(42px,5vw,72px);font-weight:900;color:#fff;line-height:1.08;margin-bottom:24px;}
+.hero-title em{color:var(--gold);font-style:italic;}
+.hero-title .line2{display:block;-webkit-text-stroke:1px rgba(255,255,255,.3);color:transparent;}
+.hero-sub{font-size:18px;color:#8899bb;line-height:1.7;margin-bottom:40px;max-width:480px;}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+.btn-hero-primary{background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:14px 32px;border-radius:12px;text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-hero-primary:hover{background:var(--gold-lt);transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,169,110,.4);}
+.btn-hero-outline{background:transparent;color:#fff;font-size:15px;font-weight:600;padding:13px 28px;border-radius:12px;border:2px solid rgba(255,255,255,.2);text-decoration:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
+.btn-hero-outline:hover{border-color:var(--gold);color:var(--gold);}
+.hero-stats{display:flex;gap:32px;margin-top:56px;padding-top:40px;border-top:1px solid rgba(255,255,255,.08);}
+.h-stat-num{font-family:'Space Mono',monospace;font-size:28px;color:var(--gold);font-weight:700;line-height:1;}
+.h-stat-lbl{font-size:12px;color:#556;margin-top:4px;}
+
+/* HERO PHONE MOCKUP */
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;}
+.phone-wrap{position:relative;width:300px;}
+.phone-glow{position:absolute;inset:-40px;background:radial-gradient(circle,rgba(201,169,110,.2) 0%,transparent 70%);border-radius:50%;animation:glow-pulse 3s ease-in-out infinite;}
+@keyframes glow-pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
+.phone-frame{background:linear-gradient(160deg,#1e2d50,#0f1830);border:2px solid rgba(201,169,110,.3);border-radius:40px;padding:20px 16px;box-shadow:0 40px 100px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);position:relative;z-index:2;}
+.phone-notch{width:80px;height:8px;background:#0a1020;border-radius:100px;margin:0 auto 16px;}
+.phone-screen{background:var(--cream);border-radius:24px;overflow:hidden;}
+.ps-topbar{background:var(--navy);padding:10px 12px;display:flex;align-items:center;justify-content:space-between;}
+.ps-logo{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);font-weight:700;}
+.ps-search{background:#1a2340;border-radius:8px;padding:5px 10px;font-size:9px;color:#445;display:flex;align-items:center;gap:5px;flex:1;margin:0 8px;}
+.ps-map{height:160px;background:linear-gradient(135deg,#c8dfc8,#b8d4b8);position:relative;overflow:hidden;}
+.ps-map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);background-size:24px 24px;}
+.ps-map-road-h{position:absolute;top:50%;left:0;right:0;height:3px;background:rgba(255,255,255,.7);}
+.ps-map-road-v{position:absolute;left:40%;top:0;bottom:0;width:3px;background:rgba(255,255,255,.6);}
+.ps-pin{position:absolute;width:20px;height:20px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);}
+.ps-pin span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);font-size:8px;}
+.ps-pin-you{background:var(--navy);border-color:var(--gold);top:45%;left:42%;}
+.ps-pin-1{background:var(--gold);top:30%;left:25%;}
+.ps-pin-2{background:var(--red);top:20%;left:58%;}
+.ps-pin-3{background:#5b4fcf;top:60%;left:65%;}
+.ps-pin-4{background:var(--gold);top:65%;left:30%;}
+.ps-cards{padding:10px;}
+.ps-card{background:#fff;border-radius:10px;padding:8px;margin-bottom:6px;display:flex;gap:7px;align-items:center;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.ps-card-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ps-card-title{font-size:9px;font-weight:700;color:var(--navy);}
+.ps-card-sub{font-size:8px;color:#aaa;margin-top:1px;}
+.ps-card-price{font-family:'Space Mono',monospace;font-size:9px;color:var(--gold);font-weight:700;margin-left:auto;flex-shrink:0;}
+.ps-navbar{background:var(--navy);padding:8px 16px;display:flex;justify-content:space-around;}
+.ps-nav-item{font-size:7px;color:#667;text-align:center;}
+.ps-nav-item.active{color:var(--gold);}
+/* floating badges */
+.float-badge{position:absolute;background:#fff;border-radius:12px;padding:8px 12px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:8px;animation:float-y 3s ease-in-out infinite;}
+.float-badge:nth-child(2){animation-delay:-1.5s;}
+.fb-left{left:-60px;top:20%;border-left:3px solid var(--gold);}
+.fb-right{right:-50px;bottom:25%;border-left:3px solid var(--red);}
+.fb-icon{font-size:20px;}
+.fb-text{font-size:11px;}
+.fb-title{font-weight:700;color:var(--navy);}
+.fb-sub{color:var(--muted);}
+@keyframes float-y{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ── SECTIONS SHARED ── */
+section{position:relative;z-index:1;}
+.section-inner{max-width:1200px;margin:0 auto;padding:100px 40px;}
+.section-eyebrow{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,52px);font-weight:700;color:var(--navy);line-height:1.15;margin-bottom:20px;}
+.section-title em{color:var(--gold);font-style:italic;}
+.section-sub{font-size:17px;color:#666;line-height:1.7;max-width:560px;}
+.section-title.light{color:#fff;}
+.section-sub.light{color:#8899bb;}
+
+/* ── HOW IT WORKS ── */
+.how-section{background:var(--navy);overflow:hidden;}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:24px;padding:28px 0;border-bottom:1px solid rgba(255,255,255,.07);position:relative;cursor:default;transition:all .2s;}
+.step:last-child{border-bottom:none;}
+.step:hover .step-num{background:var(--gold);color:var(--navy);}
+.step-num{width:44px;height:44px;border-radius:12px;background:rgba(201,169,110,.12);border:1.5px solid rgba(201,169,110,.3);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--gold);flex-shrink:0;transition:all .2s;}
+.step-content{}
+.step-title{font-weight:700;font-size:16px;color:#fff;margin-bottom:6px;}
+.step-desc{font-size:14px;color:#6677aa;line-height:1.6;}
+.how-visual{position:relative;}
+.how-card-stack{position:relative;height:440px;}
+.how-card{background:linear-gradient(135deg,#1a2645,#111c38);border:1px solid rgba(201,169,110,.15);border-radius:20px;padding:24px;position:absolute;width:280px;box-shadow:var(--shadow-lg);}
+.how-card-1{top:0;left:40px;z-index:3;transform:rotate(-2deg);animation:card-float1 4s ease-in-out infinite;}
+.how-card-2{top:60px;left:0;z-index:2;transform:rotate(1deg);animation:card-float2 4s ease-in-out infinite;}
+.how-card-3{top:120px;left:60px;z-index:1;transform:rotate(-1deg);animation:card-float3 4s ease-in-out infinite;}
+@keyframes card-float1{0%,100%{transform:rotate(-2deg) translateY(0)}50%{transform:rotate(-2deg) translateY(-8px)}}
+@keyframes card-float2{0%,100%{transform:rotate(1deg) translateY(-4px)}50%{transform:rotate(1deg) translateY(4px)}}
+@keyframes card-float3{0%,100%{transform:rotate(-1deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-6px)}}
+.hc-icon{font-size:32px;margin-bottom:12px;}
+.hc-title{font-weight:700;font-size:14px;color:#fff;margin-bottom:4px;}
+.hc-sub{font-size:12px;color:#6677aa;}
+.hc-price{font-family:'Space Mono',monospace;color:var(--gold);font-size:18px;font-weight:700;margin-top:10px;}
+.hc-badge{display:inline-block;background:rgba(201,169,110,.15);color:var(--gold);font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;margin-top:8px;}
+.hc-badge.red{background:rgba(217,48,37,.15);color:#ff7070;}
+.hc-badge.pur{background:rgba(91,79,207,.15);color:#9b8fff;}
+
+/* ── FEATURES ── */
+.features-section{background:var(--cream);}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px;}
+.feat-card{background:var(--white);border-radius:20px;padding:32px;border:1px solid var(--cream3);transition:all .25s;position:relative;overflow:hidden;}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-lt));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.feat-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:transparent;}
+.feat-card:hover::before{transform:scaleX(1);}
+.feat-icon{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:20px;}
+.feat-icon.gold{background:rgba(201,169,110,.12);}
+.feat-icon.red{background:rgba(217,48,37,.08);}
+.feat-icon.purple{background:rgba(91,79,207,.08);}
+.feat-icon.green{background:rgba(27,110,58,.08);}
+.feat-icon.blue{background:rgba(37,99,235,.08);}
+.feat-icon.orange{background:rgba(180,83,9,.08);}
+.feat-title{font-weight:700;font-size:17px;color:var(--navy);margin-bottom:8px;}
+.feat-desc{font-size:14px;color:#666;line-height:1.65;}
+
+/* ── POINTS ── */
+.points-section{background:linear-gradient(135deg,var(--navy) 0%,#1a2645 100%);overflow:hidden;}
+.points-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.points-visual{display:flex;flex-direction:column;gap:14px;}
+.pts-card{background:rgba(255,255,255,.04);border:1px solid rgba(201,169,110,.15);border-radius:16px;padding:18px 20px;display:flex;align-items:center;gap:16px;transition:all .2s;}
+.pts-card:hover{background:rgba(201,169,110,.08);border-color:rgba(201,169,110,.3);}
+.pts-card-icon{font-size:28px;width:48px;text-align:center;flex-shrink:0;}
+.pts-card-info{flex:1;}
+.pts-card-title{font-weight:700;font-size:14px;color:#fff;margin-bottom:2px;}
+.pts-card-sub{font-size:12px;color:#6677aa;}
+.pts-card-val{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;color:var(--gold);}
+.pts-total{background:linear-gradient(135deg,rgba(201,169,110,.15),rgba(201,169,110,.05));border:2px solid var(--gold);border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-top:8px;}
+.pts-total-num{font-family:'Space Mono',monospace;font-size:36px;color:var(--gold);font-weight:700;line-height:1;}
+.pts-total-info{flex:1;}
+.pts-total-title{font-weight:700;color:#fff;font-size:15px;}
+.pts-total-sub{font-size:13px;color:#8899bb;margin-top:2px;}
+.cash-out-pill{background:var(--green);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:100px;display:inline-block;margin-top:8px;}
+
+/* ── STORE REGISTER ── */
+.store-section{background:var(--cream2);}
+.store-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.pricing-cards{display:flex;flex-direction:column;gap:14px;}
+.pricing-card{background:var(--white);border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:20px;border:2px solid transparent;transition:all .2s;cursor:default;}
+.pricing-card:hover{border-color:var(--gold);transform:translateX(4px);}
+.pricing-card.popular{border-color:var(--gold);background:linear-gradient(135deg,#fffdf5,#fff8e8);}
+.pc-badge{font-size:10px;font-weight:700;background:var(--gold);color:var(--navy);padding:2px 10px;border-radius:100px;margin-left:8px;}
+.pc-icon{font-size:32px;width:52px;text-align:center;flex-shrink:0;}
+.pc-info{flex:1;}
+.pc-name{font-weight:700;font-size:15px;color:var(--navy);display:flex;align-items:center;}
+.pc-perks{font-size:12px;color:#666;margin-top:3px;line-height:1.5;}
+.pc-price{font-family:'Space Mono',monospace;font-size:20px;color:var(--gold);font-weight:700;text-align:right;}
+.pc-dur{font-size:10px;color:var(--muted);text-align:right;margin-top:2px;}
+.store-cta-box{background:var(--navy);border-radius:20px;padding:36px;margin-top:10px;}
+.store-cta-box h3{font-family:'Playfair Display',serif;font-size:24px;color:#fff;margin-bottom:8px;}
+.store-cta-box p{font-size:14px;color:#8899bb;margin-bottom:24px;line-height:1.6;}
+.btn-store{display:block;text-align:center;background:var(--gold);color:var(--navy);font-size:15px;font-weight:700;padding:14px;border-radius:12px;text-decoration:none;transition:all .2s;}
+.btn-store:hover{background:var(--gold-lt);transform:translateY(-2px);}
+
+/* ── DOWNLOAD APP ── */
+.app-section{background:var(--navy);overflow:hidden;position:relative;}
+.app-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(201,169,110,.08) 0%,transparent 70%);}
+.app-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;position:relative;z-index:2;}
+.app-badges{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;}
+.app-badge{display:inline-flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:12px 24px;text-decoration:none;transition:all .2s;}
+.app-badge:hover{background:rgba(201,169,110,.12);border-color:rgba(201,169,110,.4);}
+.app-badge-icon{font-size:28px;}
+.app-badge-text{}
+.app-badge-sub{font-size:10px;color:#8899bb;display:block;}
+.app-badge-name{font-size:15px;font-weight:700;color:#fff;display:block;}
+.app-screens{display:flex;gap:16px;justify-content:center;align-items:flex-end;}
+.app-screen{background:linear-gradient(160deg,#1a2645,#0f1628);border:1.5px solid rgba(201,169,110,.2);border-radius:28px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.5);}
+.app-screen-1{width:140px;height:260px;transform:rotate(-4deg) translateY(20px);}
+.app-screen-2{width:150px;height:280px;transform:rotate(0deg);}
+.app-screen-3{width:140px;height:260px;transform:rotate(4deg) translateY(20px);}
+.as-top{background:var(--navy);height:40px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:9px;color:var(--gold);font-weight:700;}
+.as-map{height:100px;background:linear-gradient(135deg,#c8dfc8,#b5cfb5);position:relative;}
+.as-map-pin{position:absolute;top:40%;left:45%;width:12px;height:12px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--red);border:2px solid #fff;}
+.as-list{padding:8px;}
+.as-item{background:#fff;border-radius:7px;padding:6px 7px;margin-bottom:5px;display:flex;gap:6px;align-items:center;}
+.as-item-icon{font-size:14px;width:24px;height:24px;background:var(--cream2);border-radius:5px;display:flex;align-items:center;justify-content:center;}
+.as-item-title{font-size:7px;font-weight:700;color:var(--navy);}
+.as-item-price{font-family:'Space Mono',monospace;font-size:7px;color:var(--gold);font-weight:700;margin-left:auto;}
+.as-urgent{background:linear-gradient(135deg,#3a0a0a,#2a0505);padding:8px;}
+.as-urgent-title{font-size:8px;font-weight:700;color:#ff7070;margin-bottom:6px;}
+.as-urgent-item{background:rgba(255,255,255,.07);border-radius:6px;padding:6px;margin-bottom:4px;}
+.as-urgent-text{font-size:7px;color:#aaa;}
+.as-pts{background:var(--navy);padding:10px;text-align:center;}
+.as-pts-num{font-family:'Space Mono',monospace;font-size:22px;color:var(--gold);font-weight:700;}
+.as-pts-lbl{font-size:7px;color:#556;}
+.as-pts-btn{background:var(--green);color:#fff;font-size:7px;font-weight:700;padding:4px 10px;border-radius:5px;display:inline-block;margin-top:5px;}
+
+/* ── CONTACT ── */
+.contact-section{background:var(--cream);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;}
+.contact-methods{display:flex;flex-direction:column;gap:16px;margin-top:32px;}
+.contact-method{display:flex;gap:16px;align-items:flex-start;background:var(--white);border-radius:16px;padding:20px;border:1px solid var(--cream3);transition:all .2s;}
+.contact-method:hover{transform:translateX(4px);border-color:var(--gold);}
+.cm-icon{width:44px;height:44px;border-radius:12px;background:rgba(201,169,110,.1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.cm-title{font-weight:700;font-size:14px;color:var(--navy);margin-bottom:3px;}
+.cm-val{font-size:13px;color:var(--muted);}
+.contact-form{background:var(--white);border-radius:24px;padding:36px;border:1px solid var(--cream3);box-shadow:var(--shadow);}
+.cf-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--navy);margin-bottom:6px;}
+.cf-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+.cf-group{margin-bottom:16px;}
+.cf-label{font-size:12px;font-weight:700;color:#555;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:6px;}
+.cf-input{width:100%;padding:11px 14px;border-radius:10px;border:2px solid var(--cream3);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);background:var(--cream);outline:none;transition:border .2s;}
+.cf-input:focus{border-color:var(--gold);background:#fff;}
+.cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.cf-submit{width:100%;padding:14px;background:var(--gold);color:var(--navy);border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:8px;}
+.cf-submit:hover{background:var(--gold-lt);transform:translateY(-2px);}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);border-top:1px solid rgba(201,169,110,.1);padding:60px 40px 32px;}
+.footer-inner{max-width:1200px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px;}
+.footer-brand .footer-logo{font-family:'Space Mono',monospace;font-size:20px;color:var(--gold);font-weight:700;display:block;margin-bottom:12px;}
+.footer-brand p{font-size:14px;color:#6677aa;line-height:1.7;max-width:260px;}
+.footer-col-title{font-size:11px;font-weight:700;color:#445;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.footer-links a{font-size:14px;color:#6677aa;text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.05);padding-top:24px;display:flex;justify-content:space-between;align-items:center;}
+.footer-copy{font-size:13px;color:#445;}
+.footer-socials{display:flex;gap:12px;}
+.social-btn{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;transition:background .15s;}
+.social-btn:hover{background:rgba(201,169,110,.15);}
+
+/* ── ANIMATIONS ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:.1s;}
+.reveal-delay-2{transition-delay:.2s;}
+.reveal-delay-3{transition-delay:.3s;}
+.reveal-delay-4{transition-delay:.4s;}
+.reveal-delay-5{transition-delay:.5s;}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
+  .hero-content,.how-grid,.points-grid,.store-grid,.app-grid,.contact-grid,.footer-grid{grid-template-columns:1fr;}
+  .hero-visual,.how-visual,.float-badge{display:none;}
+  .section-inner{padding:60px 24px;}
+  .features-grid{grid-template-columns:1fr 1fr;}
+  nav{padding:0 20px;}
+  .hero-content{padding:100px 24px 60px;}
+}
+@media(max-width:600px){
+  .features-grid{grid-template-columns:1fr;}
+  .cf-grid{grid-template-columns:1fr;}
+  .app-screen-1,.app-screen-3{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">BringMe.Store<small>Find It. Buy It. Nearby.</small></a>
+  <div class="nav-links">
+    <a href="#how" class="nav-link">How It Works</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#points" class="nav-link">Earn Points</a>
+    <a href="#stores" class="nav-link">For Stores</a>
+    <a href="#contact" class="nav-link">Contact</a>
+    <a href="index.html" class="nav-cta">Open App →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div>
+      <div class="hero-eyebrow reveal">📍 San Jose del Monte, Bulacan & Beyond</div>
+      <h1 class="hero-title reveal reveal-delay-1">
+        Find what<br>you need,
+        <em>right</em>
+        <span class="line2">nearby.</span>
+      </h1>
+      <p class="hero-sub reveal reveal-delay-2">BringMe.Store connects buyers and sellers in your community. Search the map, find local stores, post listings, and help your neighbors — all in one place.</p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a href="index.html" class="btn-hero-primary">🗺️ Open the Map</a>
+        <a href="#how" class="btn-hero-outline">See How It Works ↓</a>
+      </div>
+      <div class="hero-stats reveal reveal-delay-4">
+        <div><div class="h-stat-num">500+</div><div class="h-stat-lbl">Local Listings</div></div>
+        <div><div class="h-stat-num">120+</div><div class="h-stat-lbl">Registered Stores</div></div>
+        <div><div class="h-stat-num">₱1=1pt</div><div class="h-stat-lbl">Reward System</div></div>
+      </div>
+    </div>
+    <div class="hero-visual reveal reveal-delay-2">
+      <div class="phone-wrap">
+        <div class="phone-glow"></div>
+        <div class="float-badge fb-left">
+          <div class="fb-icon">🆘</div>
+          <div class="fb-text"><div class="fb-title">Help Request</div><div class="fb-sub">Laptop charger needed</div></div>
+        </div>
+        <div class="float-badge fb-right">
+          <div class="fb-icon">⭐</div>
+          <div class="fb-text"><div class="fb-title">+1 Point Earned!</div><div class="fb-sub">= ₱1 to GCash</div></div>
+        </div>
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="ps-topbar">
+              <div class="ps-logo">BringMe</div>
+              <div class="ps-search">🔍 <span>Search nearby...</span></div>
+            </div>
+            <div class="ps-map">
+              <div class="ps-map-grid"></div>
+              <div class="ps-map-road-h"></div>
+              <div class="ps-map-road-v"></div>
+              <div class="ps-pin ps-pin-you"><span>📍</span></div>
+              <div class="ps-pin ps-pin-1"><span>₱</span></div>
+              <div class="ps-pin ps-pin-2"><span>🏪</span></div>
+              <div class="ps-pin ps-pin-3"><span>🆘</span></div>
+              <div class="ps-pin ps-pin-4"><span>₱</span></div>
+            </div>
+            <div class="ps-cards">
+              <div class="ps-card">
+                <div class="ps-card-icon" style="background:#f0f6ff">📱</div>
+                <div><div class="ps-card-title">iPhone 13 Pro</div><div class="ps-card-sub">Tungkong Mangga</div></div>
+                <div class="ps-card-price">₱28,000</div>
+              </div>
+              <div class="ps-card">
+                <div class="ps-card-icon" style="background:#fff0f0">🏪</div>
+                <div><div class="ps-card-title">TechZone SJDM</div><div class="ps-card-sub">⭐ Featured Store</div></div>
+                <div class="ps-card-price">0.4km</div>
+              </div>
+            </div>
+            <div class="ps-navbar">
+              <div class="ps-nav-item active">🏠<br>Browse</div>
+              <div class="ps-nav-item">🚨<br>Urgent</div>
+              <div class="ps-nav-item">➕<br>Post</div>
+              <div class="ps-nav-item">👤<br>Me</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-inner">
+    <div class="how-grid">
+      <div>
+        <div class="section-eyebrow reveal">How It Works</div>
+        <h2 class="section-title light reveal reveal-delay-1">Simple for <em>everyone</em> in the community.</h2>
+        <p class="section-sub light reveal reveal-delay-2">Whether you're buying, selling, or just helping a neighbor — BringMe.Store makes it easy.</p>
+        <div class="steps">
+          <div class="step reveal reveal-delay-1">
+            <div class="step-num">01</div>
+            <div class="step-content">
+              <div class="step-title">Search the Map</div>
+              <div class="step-desc">Open BringMe.Store and see listings, stores, and help requests pinned on a real map of your area. Filter by category or drag the radius slider.</div>
+            </div>
+          </div>
+          <div class="step reveal reveal-delay-2">
+            <div class="step-num">02</div>
+            <div class="step-content">
+              <div class="step-title">Post a Listing or Help Request</div>
+              <div class="step-desc">Selling something? Type the product name and our database auto-fills the details. Need something urgently? Post a Help Request and neighbors reply with store locations.</div>
+            </div>
+          </div>
+          <div class="step reveal reveal-delay-3">
+            <div class="step-num">03</div>
+            <div class="step-content">
+              <div class="step-title">Connect & Deal</div>
+              <div class="step-desc">View contact info, call the store, or get directions — all inside the app. Deals happen your way: meet up, GCash, or delivery.</div>
+            </div>
+          </div>
+          <div class="step reveal reveal-delay-4">
+            <div class="step-num">04</div>
+            <div class="step-content">
+              <div class="step-title">Earn Points for Helping</div>
+              <div class="step-desc">Reply to Help Requests with store locations. When the requester confirms you helped — you earn ⭐ 1 point = ₱1, cashable to GCash or Maya.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="how-visual reveal reveal-delay-2">
+        <div class="how-card-stack">
+          <div class="how-card how-card-1">
+            <div class="hc-icon">📱</div>
+            <div class="hc-title">iPhone 13 Pro 128GB</div>
+            <div class="hc-sub">📍 Tungkong Mangga · Electronics</div>
+            <div class="hc-price">₱28,000</div>
+            <div class="hc-badge">FOR SALE</div>
+          </div>
+          <div class="how-card how-card-2">
+            <div class="hc-icon">🏪</div>
+            <div class="hc-title">TechZone SJDM</div>
+            <div class="hc-sub">📍 Tungkong Mangga · ⏰ 9AM–7PM</div>
+            <div class="hc-price" style="font-size:13px">Laptop · Charger · Earphones</div>
+            <div class="hc-badge" style="background:rgba(201,169,110,.15)">⭐ FEATURED STORE</div>
+          </div>
+          <div class="how-card how-card-3">
+            <div class="hc-icon">🆘</div>
+            <div class="hc-title">Need: 65W USB-C Charger</div>
+            <div class="hc-sub">👤 Carlo M. · 5 min ago</div>
+            <div class="hc-badge pur">HELP REQUEST</div>
+            <div class="hc-badge red" style="margin-left:6px">URGENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="section-inner">
+    <div style="text-align:center;max-width:600px;margin:0 auto 0">
+      <div class="section-eyebrow reveal">Features</div>
+      <h2 class="section-title reveal reveal-delay-1">Everything your <em>community</em> needs.</h2>
+      <p class="section-sub reveal reveal-delay-2" style="margin:0 auto">Built specifically for Filipino communities — local, fast, and free to use.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card reveal reveal-delay-1">
+        <div class="feat-icon gold">🗺️</div>
+        <div class="feat-title">Real Map with Live Pins</div>
+        <div class="feat-desc">Every listing, store, and help request is pinned on a real OpenStreetMap. Adjust your search radius from 0.5km to 20km with a slider.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-2">
+        <div class="feat-icon red">🚨</div>
+        <div class="feat-title">Urgent Find</div>
+        <div class="feat-desc">Need something right now? Post a Help Request and the community directs you to the nearest store that has it — in minutes.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-3">
+        <div class="feat-icon purple">🔍</div>
+        <div class="feat-title">Smart Product Search</div>
+        <div class="feat-desc">Start typing a product name when posting — our database auto-fills the title, category, description, and suggested price. Powered by FakeStore & Open Food Facts APIs.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <div class="feat-icon green">⭐</div>
+        <div class="feat-title">Points = Real Cash</div>
+        <div class="feat-desc">Help neighbors find stores and earn points. Every 1 point = ₱1, cashable to GCash or Maya. No minimum. Cash out anytime.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-2">
+        <div class="feat-icon blue">🏪</div>
+        <div class="feat-title">Store Directory</div>
+        <div class="feat-desc">Stores register themselves on the map with their products, hours, and contact. Buyers find exactly what they need without calling around.</div>
+      </div>
+      <div class="feat-card reveal reveal-delay-3">
+        <div class="feat-icon orange">📊</div>
+        <div class="feat-title">Featured Listings & Stores</div>
+        <div class="feat-desc">Stores and sellers can boost their visibility with plans starting at ₱99/week — appearing at the top of search results and highlighted on the map.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POINTS SYSTEM -->
+<section class="points-section" id="points">
+  <div class="section-inner">
+    <div class="points-grid">
+      <div>
+        <div class="section-eyebrow reveal">Earn & Cash Out</div>
+        <h2 class="section-title light reveal reveal-delay-1">Help your neighbors.<br><em>Earn real money.</em></h2>
+        <p class="section-sub light reveal reveal-delay-2">Every time you help someone find a store and they confirm it was useful, you earn ⭐ 1 point = ₱1. It adds up fast.</p>
+        <div style="margin-top:32px;display:flex;flex-direction:column;gap:14px" class="reveal reveal-delay-3">
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:#8899bb"><span style="color:var(--gold);font-size:20px">✓</span> No minimum payout — cash out ₱1 or ₱1,000</div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:#8899bb"><span style="color:var(--gold);font-size:20px">✓</span> Transfers to GCash or Maya instantly</div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:#8899bb"><span style="color:var(--gold);font-size:20px">✓</span> Points never expire</div>
+          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:#8899bb"><span style="color:var(--gold);font-size:20px">✓</span> The more you help, the more you earn</div>
+        </div>
+      </div>
+      <div class="points-visual reveal reveal-delay-2">
+        <div class="pts-card">
+          <div class="pts-card-icon">🏪</div>
+          <div class="pts-card-info"><div class="pts-card-title">Helped locate TechZone SJDM</div><div class="pts-card-sub">Carlo confirmed your help · Yesterday</div></div>
+          <div class="pts-card-val">+1 pt</div>
+        </div>
+        <div class="pts-card">
+          <div class="pts-card-icon">🏪</div>
+          <div class="pts-card-info"><div class="pts-card-title">Helped locate Aling Rosa's store</div><div class="pts-card-sub">Rica confirmed your help · 2 days ago</div></div>
+          <div class="pts-card-val">+1 pt</div>
+        </div>
+        <div class="pts-card">
+          <div class="pts-card-icon">🏪</div>
+          <div class="pts-card-info"><div class="pts-card-title">Helped locate Mercury Drug SJDM</div><div class="pts-card-sub">Ben confirmed your help · Last week</div></div>
+          <div class="pts-card-val">+1 pt</div>
+        </div>
+        <div class="pts-card">
+          <div class="pts-card-icon">🏪</div>
+          <div class="pts-card-info"><div class="pts-card-title">Helped with laptop charger location</div><div class="pts-card-sub">Liza confirmed your help · Last week</div></div>
+          <div class="pts-card-val">+1 pt</div>
+        </div>
+        <div class="pts-total">
+          <div>
+            <div style="font-size:11px;color:#667;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Your Balance</div>
+            <div class="pts-total-num">47 pts</div>
+            <div class="pts-total-title" style="margin-top:4px">= ₱47.00</div>
+            <div class="pts-total-sub">Ready to cash out to GCash</div>
+            <div class="cash-out-pill">💸 Cash Out Now</div>
+          </div>
+          <div style="font-size:48px">💰</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORE REGISTER -->
+<section class="store-section" id="stores">
+  <div class="section-inner">
+    <div class="store-grid">
+      <div>
+        <div class="section-eyebrow reveal">For Store Owners</div>
+        <h2 class="section-title reveal reveal-delay-1">Get found by<br><em>local buyers</em> instantly.</h2>
+        <p class="section-sub reveal reveal-delay-2">Register your store for free and appear on the map when buyers search for your products. Boost your visibility with affordable featured plans.</p>
+        <div class="pricing-cards reveal reveal-delay-3" style="margin-top:32px">
+          <div class="pricing-card">
+            <div class="pc-icon">📍</div>
+            <div class="pc-info">
+              <div class="pc-name">Free Listing</div>
+              <div class="pc-perks">Appear on the map · Show products & hours · Get calls & directions</div>
+            </div>
+            <div><div class="pc-price">₱0</div><div class="pc-dur">forever</div></div>
+          </div>
+          <div class="pricing-card popular">
+            <div class="pc-icon">⭐</div>
+            <div class="pc-info">
+              <div class="pc-name">Basic Boost <span class="pc-badge">Popular</span></div>
+              <div class="pc-perks">Top of search results · Gold pin on map · Featured in sidebar banner</div>
+            </div>
+            <div><div class="pc-price">₱99</div><div class="pc-dur">per week</div></div>
+          </div>
+          <div class="pricing-card">
+            <div class="pc-icon">🚀</div>
+            <div class="pc-info">
+              <div class="pc-name">Pro Boost</div>
+              <div class="pc-perks">Everything in Basic · Weekly stats report · Bold store card</div>
+            </div>
+            <div><div class="pc-price">₱249</div><div class="pc-dur">4 weeks</div></div>
+          </div>
+          <div class="pricing-card">
+            <div class="pc-icon">💎</div>
+            <div class="pc-info">
+              <div class="pc-name">Max Boost</div>
+              <div class="pc-perks">Everything in Pro · Push alerts to nearby users · Homepage spotlight</div>
+            </div>
+            <div><div class="pc-price">₱499</div><div class="pc-dur">12 weeks</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="store-cta-box">
+          <h3>Register Your Store Today</h3>
+          <p>It takes 2 minutes. Your store appears on the map immediately after registration — completely free.</p>
+          <a href="index.html" class="btn-store">🏪 Register My Store on the Map →</a>
+          <div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)">
+            <div style="font-size:12px;color:#6677aa;margin-bottom:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase">Why store owners love BringMe.Store</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--gold)">✓</span><span style="font-size:13px;color:#8899bb">Buyers searching for your products find you directly on the map</span></div>
+              <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--gold)">✓</span><span style="font-size:13px;color:#8899bb">Community members recommend your store in Help Requests</span></div>
+              <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--gold)">✓</span><span style="font-size:13px;color:#8899bb">Get calls and direction requests directly from the app</span></div>
+              <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--gold)">✓</span><span style="font-size:13px;color:#8899bb">Featured stores report 3× more customer inquiries per week</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD APP -->
+<section class="app-section" id="app">
+  <div class="app-bg"></div>
+  <div class="section-inner">
+    <div class="app-grid">
+      <div>
+        <div class="section-eyebrow reveal">Mobile App</div>
+        <h2 class="section-title light reveal reveal-delay-1">BringMe.Store<br>in your <em>pocket.</em></h2>
+        <p class="section-sub light reveal reveal-delay-2">The full experience — map, listings, urgent finder, points system — available on iOS and Android. Coming soon.</p>
+        <div class="app-badges reveal reveal-delay-3">
+          <a href="#" class="app-badge" title="Coming soon!">
+            <div class="app-badge-icon">🍎</div>
+            <div class="app-badge-text">
+              <span class="app-badge-sub">Coming soon to</span>
+              <span class="app-badge-name">App Store</span>
+            </div>
+          </a>
+          <a href="#" class="app-badge" title="Coming soon!">
+            <div class="app-badge-icon">🤖</div>
+            <div class="app-badge-text">
+              <span class="app-badge-sub">Coming soon to</span>
+              <span class="app-badge-name">Google Play</span>
+            </div>
+          </a>
+        </div>
+        <div style="margin-top:32px;background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);border-radius:14px;padding:18px 22px" class="reveal reveal-delay-4">
+          <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px">📬 Get notified when the app launches</div>
+          <div style="display:flex;gap:10px">
+            <input type="email" placeholder="your@email.com" style="flex:1;padding:10px 14px;border-radius:9px;border:none;background:rgba(255,255,255,.07);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;">
+            <button onclick="this.textContent='✅ Subscribed!';this.style.background='var(--green)';setTimeout(()=>{this.textContent='Notify Me';this.style.background='var(--gold)'},3000)" style="background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .2s">Notify Me</button>
+          </div>
+        </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="app-screens">
+          <div class="app-screen app-screen-1">
+            <div class="as-top">BringMe.Store</div>
+            <div class="as-map"><div class="as-map-pin"></div></div>
+            <div class="as-list">
+              <div class="as-item"><div class="as-item-icon">📱</div><div style="flex:1"><div class="as-item-title">iPhone 13 Pro</div></div><div class="as-item-price">₱28k</div></div>
+              <div class="as-item"><div class="as-item-icon">🏪</div><div style="flex:1"><div class="as-item-title">TechZone SJDM</div></div><div class="as-item-price">0.4km</div></div>
+              <div class="as-item"><div class="as-item-icon">🍳</div><div style="flex:1"><div class="as-item-title">Airfryer 5.5L</div></div><div class="as-item-price">₱3.5k</div></div>
+            </div>
+          </div>
+          <div class="app-screen app-screen-2">
+            <div class="as-top">🚨 Urgent Find</div>
+            <div class="as-urgent">
+              <div class="as-urgent-title">LIVE REQUESTS</div>
+              <div class="as-urgent-item"><div class="as-urgent-text">🔌 65W USB-C Charger · Carlo M.</div></div>
+              <div class="as-urgent-item"><div class="as-urgent-text">💊 Paracetamol 500mg · Rica S.</div></div>
+              <div class="as-urgent-item"><div class="as-urgent-text">🖥️ HDMI Cable 2m · Ben A.</div></div>
+            </div>
+            <div class="as-pts">
+              <div class="as-pts-num">47</div>
+              <div class="as-pts-lbl">⭐ pts = ₱47</div>
+              <div class="as-pts-btn">Cash Out to GCash</div>
+            </div>
+          </div>
+          <div class="app-screen app-screen-3">
+            <div class="as-top">⭐ My Points</div>
+            <div style="padding:10px;">
+              <div class="as-item"><div class="as-item-icon">🏪</div><div style="flex:1"><div class="as-item-title">Helped TechZone SJDM</div></div><div class="as-item-price" style="color:var(--green)">+1pt</div></div>
+              <div class="as-item"><div class="as-item-icon">🏪</div><div style="flex:1"><div class="as-item-title">Helped Aling Rosa</div></div><div class="as-item-price" style="color:var(--green)">+1pt</div></div>
+              <div class="as-item"><div class="as-item-icon">💸</div><div style="flex:1"><div class="as-item-title">GCash Cash Out</div></div><div class="as-item-price" style="color:var(--red)">-20pt</div></div>
+            </div>
+            <div class="as-pts">
+              <div class="as-pts-num">47</div>
+              <div class="as-pts-lbl">Total Balance</div>
+              <div class="as-pts-btn">₱47 Ready</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div>
+        <div class="section-eyebrow reveal">Get in Touch</div>
+        <h2 class="section-title reveal reveal-delay-1">We'd love to <em>hear</em> from you.</h2>
+        <p class="section-sub reveal reveal-delay-2">Questions, partnership inquiries, or just want to say hi — we're a local team based in San Jose del Monte, Bulacan.</p>
+        <div class="contact-methods">
+          <div class="contact-method reveal reveal-delay-2">
+            <div class="cm-icon">📍</div>
+            <div><div class="cm-title">Our Location</div><div class="cm-val">San Jose del Monte, Bulacan, Philippines</div></div>
+          </div>
+          <div class="contact-method reveal reveal-delay-3">
+            <div class="cm-icon">📧</div>
+            <div><div class="cm-title">Email Us</div><div class="cm-val">hello@bringme.store</div></div>
+          </div>
+          <div class="contact-method reveal reveal-delay-4">
+            <div class="cm-icon">💬</div>
+            <div><div class="cm-title">Facebook Page</div><div class="cm-val">facebook.com/BringMeStore</div></div>
+          </div>
+          <div class="contact-method reveal reveal-delay-5">
+            <div class="cm-icon">📱</div>
+            <div><div class="cm-title">For Store Registration</div><div class="cm-val">Open the app and click "Register My Store"</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form reveal reveal-delay-2">
+        <div class="cf-title">Send us a message</div>
+        <div class="cf-sub">We reply within 24 hours.</div>
+        <div class="cf-grid">
+          <div class="cf-group">
+            <label class="cf-label">First Name</label>
+            <input class="cf-input" type="text" placeholder="Juan">
+          </div>
+          <div class="cf-group">
+            <label class="cf-label">Last Name</label>
+            <input class="cf-input" type="text" placeholder="dela Cruz">
+          </div>
+        </div>
+        <div class="cf-group">
+          <label class="cf-label">Email</label>
+          <input class="cf-input" type="email" placeholder="juan@email.com">
+        </div>
+        <div class="cf-group">
+          <label class="cf-label">Subject</label>
+          <select class="cf-input">
+            <option>General Inquiry</option>
+            <option>Store Registration</option>
+            <option>Partnership / Advertising</option>
+            <option>Report an Issue</option>
+            <option>App Feedback</option>
+          </select>
+        </div>
+        <div class="cf-group">
+          <label class="cf-label">Message</label>
+          <textarea class="cf-input" rows="4" placeholder="Tell us how we can help..." style="resize:vertical"></textarea>
+        </div>
+        <button class="cf-submit" onclick="submitContactForm(this)">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="footer-logo">BringMe.Store</span>
+        <p>Connecting buyers, sellers, and stores in Filipino communities. Find what you need, right nearby.</p>
+        <div style="margin-top:16px;font-size:12px;color:#445">📍 San Jose del Monte, Bulacan, PH</div>
+      </div>
+      <div>
+        <div class="footer-col-title">App</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Browse Map</a></li>
+          <li><a href="index.html">Post a Listing</a></li>
+          <li><a href="index.html">Urgent Find</a></li>
+          <li><a href="index.html">Ask for Help</a></li>
+          <li><a href="index.html">My Points</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">For Stores</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Register Free</a></li>
+          <li><a href="#stores">Basic Boost — ₱99</a></li>
+          <li><a href="#stores">Pro Boost — ₱249</a></li>
+          <li><a href="#stores">Max Boost — ₱499</a></li>
+          <li><a href="#contact">Partner With Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="privacy.html#terms">Terms of Service</a></li>
+          <li><a href="privacy.html#your-rights">Your Data Rights</a></li>
+          <li><a href="#app">Download App</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 BringMe.Store · Made with ❤️ in San Jose del Monte, Bulacan · <a href="privacy.html" style="color:var(--gold);text-decoration:none">🇵🇭 RA 10173 Compliant</a></div>
+      <div class="footer-socials">
+        <a href="https://facebook.com/BringMeStore" target="_blank" class="social-btn">📘</a>
+        <a href="https://facebook.com/BringMeStore" target="_blank" class="social-btn">📸</a>
+        <a href="https://facebook.com/BringMeStore" target="_blank" class="social-btn">🐦</a>
+        <a href="https://facebook.com/BringMeStore" target="_blank" class="social-btn">▶️</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Smooth anchor scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+</script>
+
+<script>
+function submitContactForm(btn) {
+  const fname = document.querySelector('.cf-grid .cf-input');
+  const email = document.querySelector('input[type=email].cf-input');
+  const msg = document.querySelector('textarea.cf-input');
+  if (!email || !email.value.trim()) {
+    alert('Please enter your email address.');
+    return;
+  }
+  btn.textContent = '✅ Message Sent!';
+  btn.style.background = 'var(--green)';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'Send Message →';
+    btn.style.background = '';
+    btn.disabled = false;
+  }, 4000);
+  // In production: send to hello@bringme.store via backend
+  window.location.href = 'mailto:hello@bringme.store?subject=Contact from BringMe.Store&body=' + encodeURIComponent((msg ? msg.value : ''));
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BringMe.Store — Find It. Buy It. Nearby.</title>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#c9a96e;--gold-dk:#a8833d;--navy:#0f1628;--navy2:#1a2340;
+  --cream:#faf7f2;--cream2:#f0ebe1;--red:#d93025;--red2:#b71c1c;
+  --green:#1b6e3a;--green-bg:#e8f5ed;--orange:#b45309;--orange-bg:#fff3e0;
+  --purple:#5b4fcf;--purple-bg:#ede9ff;
+  --border:#e4ddd2;--muted:#7a7a8c;--white:#fff;
+  --shadow:0 2px 16px rgba(0,0,0,0.09);--shadow-lg:0 8px 40px rgba(0,0,0,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--navy);color:#1a1a2e;}
+
+/* TOPBAR */
+.topbar{height:58px;background:var(--navy);display:flex;align-items:center;padding:0 16px;gap:10px;border-bottom:1px solid #1e2a45;z-index:1001;position:relative;flex-shrink:0;}
+.logo{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--gold);cursor:pointer;white-space:nowrap;line-height:1.1;}
+.logo small{display:block;font-size:9px;color:#445;font-family:'DM Sans',sans-serif;font-weight:400;}
+.search-bar{flex:1;max-width:460px;position:relative;}
+.search-bar input{width:100%;padding:9px 34px 9px 38px;border-radius:11px;border:none;background:#1a2340;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:background .2s,box-shadow .2s;}
+.search-bar input:focus{background:#1e2a4a;box-shadow:0 0 0 2px var(--gold);}
+.search-bar input::placeholder{color:#445;}
+.s-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
+.s-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#556;cursor:pointer;font-size:13px;}
+.radius-wrap{display:flex;align-items:center;gap:7px;background:#1a2340;border-radius:11px;padding:5px 12px;white-space:nowrap;}
+.radius-wrap label{font-size:11px;color:#778;font-weight:600;}
+.radius-wrap input[type=range]{width:80px;accent-color:var(--gold);cursor:pointer;}
+.radius-val{font-family:'Space Mono',monospace;font-size:11px;color:var(--gold);font-weight:700;min-width:32px;}
+.nav-tabs{display:flex;gap:3px;}
+.n-tab{padding:6px 13px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:all .15s;background:none;color:#6677aa;}
+.n-tab:hover{background:#1a2340;color:#fff;}
+.n-tab.active{background:var(--gold);color:var(--navy);}
+.n-tab.red{color:#ff7777;}
+.n-tab.red.active{background:var(--red);color:#fff;}
+.topbar-right{display:flex;gap:7px;align-items:center;margin-left:auto;}
+.btn-post{background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;white-space:nowrap;}
+.btn-post:hover{background:var(--gold-dk);}
+.pts-badge{background:#1a2340;border-radius:9px;padding:5px 11px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:background .15s;}
+.pts-badge:hover{background:#243056;}
+.pts-num{font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;}
+.pts-lbl{font-size:10px;color:#556;}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;font-weight:700;color:var(--navy);font-size:11px;font-family:'DM Sans',sans-serif;}
+
+/* LAYOUT */
+.app-body{display:flex;height:calc(100vh - 58px);}
+
+/* SIDEBAR */
+.sidebar{width:360px;flex-shrink:0;display:flex;flex-direction:column;background:var(--cream);border-right:1px solid var(--border);overflow:hidden;z-index:100;}
+.sb-head{padding:12px 12px 8px;background:var(--white);border-bottom:1px solid var(--border);flex-shrink:0;}
+.type-row{display:flex;gap:5px;margin-bottom:8px;}
+.type-btn{flex:1;padding:7px 4px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;transition:all .15s;background:var(--cream2);color:#666;}
+.type-btn.active{background:var(--navy);color:var(--gold);}
+.type-btn.red-t.active{background:var(--red);color:#fff;}
+.type-btn.pur-t.active{background:var(--purple);color:#fff;}
+.cat-scroll{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+.cat-scroll::-webkit-scrollbar{display:none;}
+.cat-pill{padding:4px 10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;white-space:nowrap;transition:all .15s;background:var(--cream2);color:#666;}
+.cat-pill.active{background:var(--navy);color:var(--gold);}
+.result-count{font-size:11px;color:var(--muted);margin-top:7px;font-weight:500;}
+.sb-list{flex:1;overflow-y:auto;padding:8px;}
+.sb-list::-webkit-scrollbar{width:3px;}
+.sb-list::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
+.list-card{background:var(--white);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .18s;border:2px solid transparent;box-shadow:var(--shadow);}
+.list-card:hover{border-color:var(--gold);transform:translateX(2px);}
+.list-card.active-card{border-color:var(--gold);background:#fffdf7;}
+.list-card.store-c{border-left:3px solid var(--red);}
+.list-card.store-c.active-card{border-color:var(--red);background:#fff8f8;}
+.list-card.help-c{border-left:3px solid var(--purple);}
+.list-card.help-c.active-card{border-color:var(--purple);background:#f8f7ff;}
+.card-row{display:flex;gap:10px;align-items:flex-start;}
+.c-emoji{font-size:26px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex-shrink:0;}
+.sell-bg{background:#f0f6ff;}.buy-bg{background:#fff8f0;}.store-bg{background:#fff0f0;}.help-bg{background:#f3f0ff;}
+.c-body{flex:1;min-width:0;}
+.c-title{font-weight:700;font-size:13px;color:var(--navy);line-height:1.3;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.c-badges{display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;}
+.b-sell{background:var(--green-bg);color:var(--green);}
+.b-buy{background:var(--orange-bg);color:var(--orange);}
+.b-cat{background:var(--cream2);color:#666;}
+.b-store{background:#ffeaea;color:var(--red);}
+.b-help{background:var(--purple-bg);color:var(--purple);}
+.b-urgent{background:#ffeaea;color:var(--red);}
+.c-foot{display:flex;justify-content:space-between;align-items:center;}
+.c-price{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--gold);}
+.c-loc{font-size:11px;color:var(--muted);}
+.save-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:2px;}
+.c-dist{font-size:10px;background:var(--green-bg);color:var(--green);padding:2px 6px;border-radius:100px;font-weight:700;}
+.stars{color:var(--gold);font-size:10px;}
+.store-detail-panel{background:var(--white);border-top:2px solid var(--border);padding:12px;flex-shrink:0;}
+.store-detail-panel h4{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:5px;}
+.store-meta-txt{font-size:11px;color:var(--muted);margin-bottom:7px;line-height:1.5;}
+.prod-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:9px;}
+.prod-tag{background:var(--cream2);color:#555;font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;}
+.store-btns{display:flex;gap:7px;}
+.store-btns button{flex:1;padding:8px 4px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all .15s;border:none;}
+
+/* MAP */
+.map-wrap{flex:1;position:relative;}
+#map{width:100%;height:100%;}
+@keyframes ripple{0%{transform:scale(0.5);opacity:1}100%{transform:scale(1.8);opacity:0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.pulse{animation:pulse 1.5s infinite;}
+/* Google Maps InfoWindow override */
+.gm-style .gm-style-iw-c{border-radius:14px !important;box-shadow:var(--shadow-lg) !important;border:2px solid var(--gold) !important;padding:0 !important;max-width:240px !important;}
+.gm-style .gm-style-iw-d{overflow:hidden !important;padding:0 !important;}
+.gm-style .gm-style-iw-t::after{display:none !important;}
+.gm-style .gm-ui-hover-effect{top:4px !important;right:4px !important;}
+.popup-box{padding:14px 16px;}
+.popup-title{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:3px;}
+.popup-sub{font-size:11px;color:var(--muted);margin-bottom:5px;}
+.popup-price{font-family:'Space Mono',monospace;font-size:14px;color:var(--gold);font-weight:700;}
+.popup-store{font-size:11px;color:var(--red);font-weight:700;}
+.popup-help{font-size:11px;color:var(--purple);font-weight:700;}
+.popup-btn{display:block;width:100%;margin-top:9px;padding:8px;background:var(--gold);color:var(--navy);border:none;border-radius:9px;font-weight:700;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(10,15,30,.65);z-index:2000;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--white);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.3);animation:slideUp .25s ease;position:relative;max-height:88vh;overflow-y:auto;}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{padding:24px 24px 0;}
+.modal-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);margin-bottom:3px;}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
+.modal-body{padding:0 24px 24px;}
+.close-btn{position:absolute;top:14px;right:14px;background:var(--cream2);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.form-group{margin-bottom:13px;}
+.form-label{font-size:11px;font-weight:700;color:#555;margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px;}
+.form-input{width:100%;padding:10px 12px;border-radius:9px;border:2px solid var(--border);font-size:14px;color:var(--navy);background:var(--white);font-family:'DM Sans',sans-serif;outline:none;transition:border .2s;}
+.form-input:focus{border-color:var(--gold);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.full{grid-column:1/-1;}
+.type-toggle{display:flex;background:var(--cream2);border-radius:10px;padding:4px;gap:4px;margin-bottom:16px;}
+.t-btn{flex:1;padding:9px;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;background:transparent;color:#888;}
+.t-btn.active{background:var(--white);color:var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.btn-primary{background:var(--gold);color:var(--navy);border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:background .15s;margin-top:4px;}
+.btn-primary:hover{background:var(--gold-dk);}
+.btn-red-full{background:var(--red);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:background .15s;margin-top:8px;}
+.btn-red-full:hover{background:var(--red2);}
+.btn-outline{background:transparent;border:2px solid var(--gold);color:var(--gold);border-radius:10px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:all .15s;margin-top:8px;}
+.btn-outline:hover{background:var(--gold);color:var(--navy);}
+.detail-img-box{height:160px;display:flex;align-items:center;justify-content:center;font-size:72px;border-radius:18px 18px 0 0;}
+.seller-box{background:var(--cream2);border-radius:12px;padding:13px;display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.seller-av{width:40px;height:40px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--gold);font-size:13px;flex-shrink:0;}
+.help-reply-box{background:var(--cream2);border-radius:12px;padding:14px;margin-bottom:14px;}
+.help-reply-item{background:var(--white);border-radius:10px;padding:11px;margin-bottom:8px;border:2px solid transparent;cursor:pointer;transition:border .15s;}
+.help-reply-item:hover{border-color:var(--purple);}
+.help-reply-item.confirmed{border-color:var(--green);background:var(--green-bg);}
+.confirm-btn{background:var(--purple);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:7px;}
+.confirmed-badge{background:var(--green);color:#fff;border-radius:7px;padding:4px 10px;font-size:10px;font-weight:700;display:inline-block;margin-top:5px;}
+.pts-hero{background:var(--navy);border-radius:14px;padding:20px;text-align:center;margin-bottom:18px;}
+.pts-big{font-family:'Space Mono',monospace;font-size:48px;color:var(--gold);font-weight:700;line-height:1;}
+.pts-history{display:flex;flex-direction:column;gap:7px;max-height:240px;overflow-y:auto;}
+.pts-row{display:flex;align-items:center;gap:11px;background:var(--cream2);border-radius:9px;padding:10px 12px;}
+.pts-row-val.earn{color:var(--green);font-family:'Space Mono',monospace;font-size:13px;font-weight:700;}
+.pts-row-val.spend{color:var(--red);font-family:'Space Mono',monospace;font-size:13px;font-weight:700;}
+.cash-out-box{background:var(--green-bg);border-radius:12px;padding:14px;margin-top:14px;display:flex;justify-content:space-between;align-items:center;}
+.cash-out-btn{background:var(--green);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease;pointer-events:none;}
+@keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* LEGEND */
+.map-legend{position:absolute;bottom:20px;left:10px;background:rgba(255,255,255,.93);border-radius:11px;padding:10px 13px;box-shadow:var(--shadow);z-index:500;backdrop-filter:blur(4px);}
+.legend-row{display:flex;align-items:center;gap:7px;font-size:11px;color:#444;font-weight:600;margin-bottom:4px;}
+.legend-row:last-child{margin-bottom:0;}
+.leg-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+
+/* REGISTER STORE FAB */
+.fab{position:absolute;bottom:20px;right:10px;z-index:600;}
+.fab button{background:var(--navy);color:var(--gold);border:2px solid var(--gold);border-radius:12px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:var(--shadow-lg);transition:all .15s;display:flex;align-items:center;gap:7px;}
+.fab button:hover{background:var(--gold);color:var(--navy);}
+
+/* locating banner */
+.locating-banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(15,22,40,.88);color:#fff;padding:8px 18px;border-radius:100px;font-size:12px;font-weight:600;z-index:600;backdrop-filter:blur(6px);white-space:nowrap;}
+
+/* ── FEATURED / PROMOTED ── */
+.featured-banner{background:linear-gradient(135deg,#1a2340,#0f1628);border-bottom:1px solid #2a3555;padding:7px 12px;flex-shrink:0;overflow:hidden;}
+.featured-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;align-items:center;}
+.featured-scroll::-webkit-scrollbar{display:none;}
+.featured-lbl{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.feat-chip{background:linear-gradient(135deg,#2a1a00,#3d2800);border:1.5px solid var(--gold);border-radius:100px;padding:4px 12px 4px 8px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.feat-chip:hover{background:linear-gradient(135deg,#3d2800,#5a3d00);transform:translateY(-1px);}
+.feat-chip-icon{font-size:14px;}
+.feat-chip-name{font-size:11px;font-weight:700;color:var(--gold);}
+.feat-chip-cat{font-size:10px;color:#a07840;}
+
+/* promoted listing card */
+.list-card.promoted{border:2px solid var(--gold);background:linear-gradient(135deg,#fffdf5,#fff9ec);}
+.list-card.promoted::before{content:'⭐ FEATURED';font-size:9px;font-weight:800;color:var(--gold-dk);letter-spacing:.8px;display:block;margin-bottom:6px;}
+.list-card.store-c.promoted{border:2px solid var(--gold);background:linear-gradient(135deg,#fffdf5,#fff9ec);}
+.list-card.store-c.promoted::before{content:'⭐ FEATURED STORE';font-size:9px;font-weight:800;color:var(--gold-dk);letter-spacing:.8px;display:block;margin-bottom:6px;}
+
+/* boost modal */
+.boost-plans{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;}
+.plan-card{border:2px solid var(--border);border-radius:14px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.plan-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.plan-card.selected{border-color:var(--gold);background:#fffdf5;}
+.plan-card.popular::after{content:'POPULAR';position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy);font-size:9px;font-weight:800;padding:2px 10px;border-radius:100px;letter-spacing:.8px;}
+.plan-name{font-weight:800;font-size:14px;color:var(--navy);margin-bottom:4px;}
+.plan-price{font-family:'Space Mono',monospace;font-size:22px;color:var(--gold);font-weight:700;margin-bottom:4px;}
+.plan-dur{font-size:11px;color:var(--muted);margin-bottom:10px;}
+.plan-perks{font-size:11px;color:#555;line-height:1.7;text-align:left;}
+.plan-perk{display:flex;align-items:flex-start;gap:5px;margin-bottom:2px;}
+
+/* revenue stats banner on boost modal */
+.rev-stats{display:flex;gap:12px;background:var(--navy);border-radius:12px;padding:14px;margin-bottom:18px;}
+.rev-stat{flex:1;text-align:center;}
+.rev-stat-num{font-family:'Space Mono',monospace;font-size:18px;color:var(--gold);font-weight:700;}
+.rev-stat-lbl{font-size:10px;color:#556;margin-top:2px;}
+
+/* admin revenue dashboard */
+.admin-btn{background:none;border:1.5px solid #2a3555;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:600;color:#6677aa;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.admin-btn:hover{background:#1a2340;color:var(--gold);}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.gold-shine{background:linear-gradient(90deg,var(--gold) 0%,#f0d090 40%,var(--gold) 60%,#a07030 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE  (≤768px)
+   ═══════════════════════════════════════════════════ */
+@media(max-width:768px){
+
+  /* ── TOPBAR: collapse to 2 rows ── */
+  .topbar{
+    flex-wrap:wrap;
+    height:auto;
+    padding:10px 12px 8px;
+    gap:8px;
+  }
+  .logo{order:1;font-size:15px;}
+  .topbar-right{order:2;margin-left:auto;gap:6px;}
+  .search-bar{order:3;max-width:100%;width:100%;flex:none;}
+  .radius-wrap{order:4;flex:1;}
+  .nav-tabs{order:5;width:100%;justify-content:space-between;}
+  .n-tab{flex:1;text-align:center;padding:6px 4px;font-size:11px;}
+
+  /* ── LAYOUT: stack vertically ── */
+  .app-body{flex-direction:column;}
+
+  /* ── SIDEBAR: hidden by default, slides up from bottom ── */
+  .sidebar{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    width:100%;
+    height:70vh;
+    border-radius:20px 20px 0 0;
+    border-right:none;
+    border-top:1px solid var(--border);
+    transform:translateY(100%);
+    transition:transform .35s cubic-bezier(.32,.72,0,1);
+    z-index:500;
+    box-shadow:0 -8px 40px rgba(0,0,0,.18);
+  }
+  .sidebar.open{transform:translateY(0);}
+  .sidebar-handle{
+    width:40px;height:4px;
+    background:#ddd;border-radius:2px;
+    margin:10px auto 4px;
+    flex-shrink:0;
+  }
+
+  /* ── MAP: full screen ── */
+  .map-wrap{
+    flex:1;
+    height:calc(100vh - 96px); /* topbar height */
+  }
+
+  /* ── BOTTOM NAV BAR ── */
+  .mobile-nav{
+    position:fixed;
+    bottom:0;left:0;right:0;
+    height:60px;
+    background:var(--white);
+    border-top:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    z-index:600;
+    box-shadow:0 -4px 20px rgba(0,0,0,.1);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .mn-btn{
+    display:flex;flex-direction:column;align-items:center;
+    gap:2px;background:none;border:none;cursor:pointer;
+    padding:6px 12px;border-radius:10px;
+    transition:all .15s;flex:1;
+  }
+  .mn-btn.active .mn-icon{transform:scale(1.1);}
+  .mn-icon{font-size:20px;line-height:1;}
+  .mn-label{font-size:9px;font-weight:700;color:var(--muted);font-family:'DM Sans',sans-serif;}
+  .mn-btn.active .mn-label{color:var(--gold);}
+  .mn-btn.red-nav .mn-label{color:var(--red);}
+  .mn-btn.red-nav.active .mn-label{color:var(--red);}
+  .mn-post{
+    width:48px;height:48px;
+    border-radius:50%;
+    background:var(--gold);
+    border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;
+    box-shadow:0 4px 16px rgba(201,169,110,.5);
+    transition:transform .15s;
+    flex-shrink:0;
+  }
+  .mn-post:active{transform:scale(.93);}
+
+  /* ── MAP adjusts for bottom nav ── */
+  .map-wrap{padding-bottom:60px;}
+  .map-legend{bottom:76px;}
+  .fab{bottom:76px;}
+  .locating-banner{top:8px;}
+
+  /* ── MODAL: full screen on mobile ── */
+  .overlay{align-items:flex-end;}
+  .modal{
+    width:100% !important;
+    border-radius:20px 20px 0 0 !important;
+    max-height:92vh;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .form-grid{grid-template-columns:1fr;}
+
+  /* ── TOPBAR search full width ── */
+  .search-bar input{font-size:16px;} /* prevent iOS zoom */
+  .form-input{font-size:16px;}       /* prevent iOS zoom */
+
+  /* ── Featured banner full width ── */
+  #featured-banner{padding:6px 10px;}
+
+  /* ── FAB register store: smaller on mobile ── */
+  .fab button{font-size:11px;padding:8px 12px;}
+
+  /* ── Radius: hide label, show only slider + value ── */
+  .radius-wrap label{display:none;}
+}
+
+/* ── Very small phones ── */
+@media(max-width:380px){
+  .n-tab{font-size:10px;padding:5px 2px;}
+  .topbar-right .admin-btn{display:none;}
+}
+
+
+/* ═══════════════════════════════════
+   LOADING STATES
+   ═══════════════════════════════════ */
+
+/* Skeleton shimmer */
+@keyframes shimmer{
+  0%{background-position:-600px 0}
+  100%{background-position:600px 0}
+}
+.skeleton{
+  background:linear-gradient(90deg,#f0ebe1 25%,#e8e0d4 50%,#f0ebe1 75%);
+  background-size:600px 100%;
+  animation:shimmer 1.4s infinite linear;
+  border-radius:8px;
+}
+
+/* Spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{
+  width:22px;height:22px;
+  border:3px solid rgba(201,169,110,.25);
+  border-top-color:var(--gold);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:inline-block;flex-shrink:0;
+}
+.spinner-sm{width:14px;height:14px;border-width:2px;}
+
+/* Loading overlay for map */
+.map-loading-overlay{
+  position:absolute;inset:0;
+  background:rgba(15,22,40,.55);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:50;backdrop-filter:blur(3px);
+  gap:14px;pointer-events:none;
+}
+.map-loading-overlay.hidden{display:none;}
+.map-loading-txt{color:#fff;font-size:13px;font-weight:600;}
+
+/* Submit button loading state */
+.btn-loading{opacity:.75;pointer-events:none;display:flex;align-items:center;justify-content:center;gap:8px;}
+
+/* Product search skeleton rows */
+.suggest-skeleton{padding:10px 14px;display:flex;gap:12px;align-items:center;border-bottom:1px solid var(--border);}
+.skel-img{width:44px;height:44px;border-radius:8px;flex-shrink:0;}
+.skel-lines{flex:1;display:flex;flex-direction:column;gap:7px;}
+.skel-line{height:11px;}
+.skel-short{width:55%;}
+
+/* Geolocation loading state */
+.locating-banner{
+  display:flex;align-items:center;gap:8px;
+}
+.locating-banner .spinner{border-color:rgba(255,255,255,.2);border-top-color:#fff;width:13px;height:13px;border-width:2px;}
+
+/* Sidebar list skeleton */
+.card-skeleton{background:#fff;border-radius:12px;padding:14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;}
+.card-skel-icon{width:44px;height:44px;border-radius:9px;flex-shrink:0;}
+.card-skel-body{flex:1;display:flex;flex-direction:column;gap:8px;}
+.card-skel-line{height:11px;}
+
+/* Toast variants */
+.toast.toast-success{background:var(--green);}
+.toast.toast-error{background:var(--red);}
+.toast.toast-info{background:var(--navy);}
+.toast.toast-loading{background:var(--navy2);display:flex;align-items:center;gap:10px;}
+
+
+/* ═══════════════════════════════════════════════
+   GUEST / AUTH OVERLAY SYSTEM
+   ═══════════════════════════════════════════════ */
+
+/* Dimmed blurred overlay over the whole app for guests */
+.guest-overlay{
+  position:fixed;inset:0;
+  background:rgba(10,16,32,.55);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+  z-index:800;
+  pointer-events:none;
+  transition:opacity .4s ease;
+}
+.guest-overlay.hidden{opacity:0;pointer-events:none;}
+
+/* Guest info strip — teaser bar just above the auth window */
+.guest-teaser{
+  position:fixed;
+  bottom:calc(var(--auth-h, 520px) + 16px);
+  left:50%;
+  transform:translateX(-50%);
+  z-index:850;
+  background:rgba(15,22,40,.9);
+  border:1px solid rgba(201,169,110,.25);
+  border-radius:100px;
+  padding:8px 20px;
+  display:flex;align-items:center;gap:10px;
+  white-space:nowrap;
+  backdrop-filter:blur(8px);
+  transition:all .4s ease;
+  pointer-events:none;
+}
+.guest-teaser.hidden{opacity:0;transform:translateX(-50%) translateY(10px);}
+.gt-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse 1.5s infinite;}
+.gt-txt{font-size:12px;color:#fff;font-weight:600;}
+.gt-txt span{color:var(--gold);}
+
+/* Auth floating window */
+.auth-window{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:480px;
+  z-index:900;
+  border-radius:24px 24px 0 0;
+  background:var(--white);
+  box-shadow:0 -8px 60px rgba(0,0,0,.35);
+  transition:transform .4s cubic-bezier(.32,.72,0,1), opacity .3s ease;
+  max-height:92vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.auth-window.minimized{
+  transform:translateX(-50%) translateY(calc(100% - 60px));
+}
+.auth-window.hidden{
+  transform:translateX(-50%) translateY(100%);
+  opacity:0;
+  pointer-events:none;
+}
+
+/* Auth window drag handle + header */
+.aw-handle-row{
+  display:flex;align-items:center;
+  padding:12px 20px 10px;
+  cursor:pointer;
+  flex-shrink:0;
+  gap:12px;
+  border-bottom:1px solid var(--border);
+  user-select:none;
+}
+.aw-handle{
+  width:40px;height:4px;
+  border-radius:2px;
+  background:#ddd;
+  flex-shrink:0;
+  margin:0 auto;
+  position:absolute;
+  top:12px;left:50%;transform:translateX(-50%);
+}
+.aw-logo{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--gold);}
+.aw-tagline{font-size:11px;color:var(--muted);flex:1;}
+.aw-min-btn{
+  background:var(--cream2);border:none;border-radius:8px;
+  width:32px;height:32px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;transition:background .15s;flex-shrink:0;
+}
+.aw-min-btn:hover{background:var(--cream3);}
+.aw-close-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:14px;padding:4px 8px;
+  font-family:'DM Sans',sans-serif;font-weight:600;
+  border-radius:8px;transition:all .15s;flex-shrink:0;
+}
+.aw-close-btn:hover{background:var(--cream2);color:var(--navy);}
+
+/* Auth window body */
+.aw-body{overflow-y:auto;flex:1;}
+.aw-body::-webkit-scrollbar{width:3px;}
+.aw-body::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
+
+/* Auth tabs */
+.aw-tabs{display:flex;background:var(--cream2);padding:4px;gap:4px;margin:12px 16px;}
+.aw-tab{flex:1;padding:10px;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;background:transparent;color:#888;}
+.aw-tab.active{background:var(--white);color:var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.1);}
+
+/* Auth form inside window */
+.aw-form{padding:4px 20px 32px;}
+.aw-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);margin-bottom:3px;}
+.aw-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
+.aw-social{display:flex;gap:10px;margin-bottom:16px;}
+.aw-social-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--navy);transition:all .15s;}
+.aw-social-btn:hover{border-color:var(--gold);background:var(--cream);}
+.aw-divider{display:flex;align-items:center;gap:10px;margin:12px 0;}
+.aw-div-line{flex:1;height:1px;background:var(--border);}
+.aw-div-txt{font-size:11px;color:var(--muted);}
+.aw-input-wrap{margin-bottom:12px;}
+.aw-label{font-size:11px;font-weight:700;color:#555;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:5px;}
+.aw-input{width:100%;padding:11px 13px;border-radius:10px;border:2px solid var(--border);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:border .2s;}
+.aw-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,.1);}
+.aw-submit{width:100%;padding:13px;background:var(--gold);color:var(--navy);border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.aw-submit:hover{background:var(--gold-dk);}
+.aw-terms{font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6;}
+.aw-terms a{color:var(--gold);text-decoration:none;}
+.aw-switch{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);}
+.aw-switch a{color:var(--gold);font-weight:700;text-decoration:none;cursor:pointer;}
+
+/* OTP in window */
+.aw-otp-row{display:flex;gap:8px;justify-content:center;margin:14px 0;}
+.aw-otp{width:46px;height:52px;border-radius:11px;border:2px solid var(--border);font-size:20px;font-weight:800;text-align:center;font-family:'Space Mono',monospace;color:var(--navy);outline:none;transition:border .2s;}
+.aw-otp:focus{border-color:var(--gold);}
+.aw-otp.filled{border-color:var(--gold);background:rgba(201,169,110,.06);}
+
+/* Role pills in window */
+.aw-roles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.aw-role{border:2px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:all .18s;text-align:center;position:relative;}
+.aw-role:hover{border-color:var(--gold);}
+.aw-role.sel{border-color:var(--gold);background:rgba(201,169,110,.06);}
+.aw-role.sel::after{content:'✓';position:absolute;top:7px;right:9px;font-size:11px;font-weight:800;color:var(--gold);}
+.aw-role-icon{font-size:24px;margin-bottom:6px;}
+.aw-role-name{font-weight:700;font-size:12px;color:var(--navy);}
+.aw-role-desc{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.4;}
+
+/* Step dots */
+.aw-steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:20px;}
+.aw-step-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;transition:all .2s;}
+.aw-step-dot.done{background:var(--green);color:#fff;}
+.aw-step-dot.active{background:var(--gold);color:var(--navy);}
+.aw-step-dot.pending{background:var(--border);color:var(--muted);}
+.aw-step-line{flex:1;height:2px;max-width:36px;background:var(--border);transition:background .2s;}
+.aw-step-line.done{background:var(--green);}
+
+/* Preview label on map */
+.preview-label{
+  position:fixed;top:72px;left:50%;transform:translateX(-50%);
+  background:rgba(201,169,110,.15);
+  border:1px solid rgba(201,169,110,.3);
+  border-radius:100px;
+  padding:6px 18px;
+  font-size:12px;font-weight:600;color:var(--gold);
+  z-index:810;
+  backdrop-filter:blur(4px);
+  pointer-events:none;
+  transition:opacity .3s;
+}
+.preview-label.hidden{opacity:0;}
+
+/* Topbar guest state */
+.guest-join-btn{
+  background:var(--gold);color:var(--navy);border:none;border-radius:9px;
+  padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:background .15s;
+  animation:pulse-gold 2s infinite;
+}
+@keyframes pulse-gold{
+  0%,100%{box-shadow:0 0 0 0 rgba(201,169,110,.4);}
+  50%{box-shadow:0 0 0 6px rgba(201,169,110,0);}
+}
+.guest-join-btn:hover{background:var(--gold-dk);}
+
+/* Restrict interactions for guests */
+.guest-restricted{pointer-events:none;filter:blur(1px);opacity:.7;}
+
+/* Success in window */
+.aw-success{text-align:center;padding:24px 16px 8px;}
+.aw-success-icon{font-size:52px;margin-bottom:12px;animation:pop .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.aw-success-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);margin-bottom:6px;}
+.aw-success-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.aw-profile-preview{background:var(--cream2);border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:16px;text-align:left;}
+.aw-pp-avatar{width:48px;height:48px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--gold);font-size:16px;flex-shrink:0;}
+.aw-pp-name{font-weight:700;font-size:14px;color:var(--navy);}
+.aw-pp-nick{font-size:12px;color:var(--gold);font-weight:600;margin-top:2px;}
+.aw-pp-roles{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;}
+
+/* Password strength mini */
+.pw-bars-mini{display:flex;gap:3px;margin-top:5px;}
+.pw-bar-mini{height:3px;flex:1;border-radius:2px;background:var(--border);transition:background .2s;}
+
+@media(min-width:769px){
+  .auth-window{
+    bottom:20px;
+    border-radius:20px;
+    max-width:460px;
+    max-height:85vh;
+  }
+  .auth-window.minimized{
+    transform:translateX(-50%) translateY(calc(100% - 56px));
+    bottom:20px;
+  }
+  .guest-teaser{bottom:calc(var(--auth-h,520px) + 36px);}
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+.aw-spinner{width:16px;height:16px;border:2px solid rgba(15,22,40,.2);border-top-color:var(--navy);border-radius:50%;animation:spin .6s linear infinite;}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">BringMe.Store<small>Find It. Buy It. Nearby.</small></div>
+  <div class="search-bar">
+    <span class="s-icon">🔍</span>
+    <input type="text" id="search-inp" placeholder="Search listings, stores, items..." oninput="onSearch(this.value)">
+  </div>
+  <div class="radius-wrap">
+    <label>📍 Radius</label>
+    <input type="range" id="radius-sl" min="0.5" max="20" step="0.5" value="3" oninput="onRadius(this.value)">
+    <span class="radius-val" id="radius-lbl">3km</span>
+  </div>
+  <nav class="nav-tabs">
+    <button class="n-tab active" id="tab-all" onclick="setTab('all')">🏠 All</button>
+    <button class="n-tab" id="tab-stores" onclick="setTab('stores')">🏪 Stores</button>
+    <button class="n-tab red" id="tab-help" onclick="setTab('help')">🆘 Ask Help</button>
+  </nav>
+  <div class="topbar-right">
+    <button class="btn-post" onclick="PS={suggestions:[],loading:false,source:'',timer:null};S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};openModal('post')">➕ Post Listing</button>
+    <div class="pts-badge" onclick="openModal('points')" title="Your Points">
+      <span>⭐</span><span class="pts-num" id="pts-display">47</span><span class="pts-lbl">pts = ₱<span id="pts-cash">47</span></span>
+    </div>
+    <button class="admin-btn" onclick="openModal('admin')">📊 Revenue</button>
+    <button class="avatar" onclick="openModal('points')">ME</button>
+  </div>
+</div>
+
+<div class="app-body">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar"><div class="sidebar-handle" id="sb-handle"></div>
+    <div class="sb-head">
+      <div class="type-row" id="type-row">
+        <button class="type-btn active" onclick="setTab('all')">🏠 All</button>
+        <button class="type-btn" onclick="setTab('sell')">🛍️ For Sale</button>
+        <button class="type-btn" onclick="setTab('buy')">🔍 Looking For</button>
+        <button class="type-btn red-t" onclick="setTab('stores')">🏪 Stores</button>
+        <button class="type-btn pur-t" onclick="setTab('help')">🆘 Help</button>
+      </div>
+      <div class="cat-scroll" id="cat-scroll"></div>
+      <div class="result-count" id="result-count">Loading...</div>
+    </div>
+    <div class="featured-banner" id="featured-banner"></div>
+    <div class="sb-list" id="sb-list"></div>
+    <div id="store-detail-panel"></div>
+  </aside>
+
+  <!-- MAP -->
+  <div class="map-wrap">
+    <div id="map"></div>
+    <div class="map-loading-overlay hidden" id="map-overlay"><div class="spinner" style="width:36px;height:36px;border-width:4px"></div><div class="map-loading-txt" id="map-overlay-txt">Loading map...</div></div>
+    <div class="locating-banner" id="locating-banner"><div class="spinner"></div> Getting your location...</div>
+    <div class="map-legend">
+      <div class="legend-row"><div class="leg-dot" style="background:var(--gold)"></div>For Sale</div>
+      <div class="legend-row"><div class="leg-dot" style="background:var(--orange)"></div>Looking For</div>
+      <div class="legend-row"><div class="leg-dot" style="background:var(--red)"></div>Stores</div>
+      <div class="legend-row"><div class="leg-dot" style="background:var(--purple)"></div>Help Requests</div>
+      <div class="legend-row"><div class="leg-dot" style="background:var(--gold);border:2px solid #a07030"></div>Featured Store</div>
+      <div class="legend-row"><div class="leg-dot" style="background:var(--navy);border:2px solid var(--gold)"></div>You</div>
+    </div>
+    <div class="fab">
+      <button onclick="openModal('store-register')">🏪 Register My Store</button>
+    </div>
+    <!-- Privacy footer strip -->
+    <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(15,22,40,.75);padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px);z-index:5;font-size:11px;">
+      <a href="privacy.html" target="_blank" style="color:#6677aa;text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#c9a96e'" onmouseout="this.style.color='#6677aa'">🔒 Privacy Policy</a>
+      <span style="color:#2a3555">|</span>
+      <a href="privacy.html#terms" target="_blank" style="color:#6677aa;text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#c9a96e'" onmouseout="this.style.color='#6677aa'">📋 Terms of Service</a>
+      <span style="color:#2a3555">|</span>
+      <a href="privacy.html#your-rights" target="_blank" style="color:#6677aa;text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#c9a96e'" onmouseout="this.style.color='#6677aa'">⚖️ Your Rights (RA 10173)</a>
+      <span style="color:#2a3555">|</span>
+      <span style="color:#2a3555">🇵🇭 RA 10173 Compliant</span>
+    </div>
+  </div>
+</div>
+
+<!-- Modal container -->
+<div id="modal-root"></div>
+
+<script>
+// ── USER LOCATION (San Jose del Monte, Bulacan, PH) ──────────────────────────
+let USER = { lat: 14.8144, lng: 121.0456, name: "San Jose del Monte, Bulacan" };
+
+// ── DATA (seeded around SJDM) ─────────────────────────────────────────────────
+const CATS = ["All","Electronics","Fashion","Home","Food","Services","Vehicles","Others"];
+const CAT_ICONS = {All:"🏠",Electronics:"📱",Fashion:"👗",Home:"🏡",Food:"🍱",Services:"🛠️",Vehicles:"🏍️",Others:"📦"};
+
+let listings = [
+  {id:1,type:"sell",promoted:true,title:"iPhone 13 Pro 128GB",category:"Electronics",price:28000,location:"Tungkong Mangga",seller:"Mark R.",avatar:"MR",image:"📱",desc:"Good condition, complete accessories, battery health 89%. Original box included.",contact:"09171234567",rating:4.8,lat:14.8160,lng:121.0420},
+  {id:2,type:"sell",title:"Vintage Leather Bag",category:"Fashion",price:1200,location:"Poblacion SJDM",seller:"Ana L.",avatar:"AL",image:"👜",desc:"Genuine leather, light wear. Fits A4 documents plus essentials.",contact:"09281234567",rating:4.5,lat:14.8180,lng:121.0480},
+  {id:3,type:"buy",title:"Looking for 2nd Hand Laptop",category:"Electronics",price:15000,location:"Sapang Palay",buyer:"Jose M.",avatar:"JM",image:"💻",desc:"Need a working laptop for school. Budget flexible for good specs.",contact:"09391234567",rating:4.2,lat:14.8220,lng:121.0510},
+  {id:4,type:"sell",title:"Airfryer Cosori 5.5L",category:"Home",price:3500,location:"Minuyan",seller:"Clara V.",avatar:"CV",image:"🍳",desc:"Used only a few times. Comes with box and recipe book.",contact:"09451234567",rating:4.9,lat:14.8100,lng:121.0430},
+  {id:5,type:"buy",title:"WTB: Mountain Bike",category:"Others",price:8000,location:"City Center SJDM",buyer:"Renz B.",avatar:"RB",image:"🚲",desc:"Looking for MTB in good condition. Hardtail preferred.",contact:"09561234567",rating:4.0,lat:14.8155,lng:121.0500},
+  {id:6,type:"sell",title:"Honda Beat 2021",category:"Vehicles",price:55000,location:"Tungkong Mangga",seller:"Danny O.",avatar:"DO",image:"🏍️",desc:"Low mileage, casa maintained, no issues. Papers complete.",contact:"09671234567",rating:4.7,lat:14.8195,lng:121.0440},
+  {id:7,type:"sell",title:"Homemade Ube Halaya",category:"Food",price:180,location:"Minuyan",seller:"Nena S.",avatar:"NS",image:"🍠",desc:"Per jar 350g. Made fresh every weekend.",contact:"09781234567",rating:5.0,lat:14.8090,lng:121.0465},
+  {id:8,type:"buy",title:"Need Graphic Design Services",category:"Services",price:500,location:"Poblacion",buyer:"Liza P.",avatar:"LP",image:"🎨",desc:"Looking for someone to design a logo for my small business.",contact:"09891234567",rating:4.3,lat:14.8135,lng:121.0395},
+];
+
+let stores = [
+  {id:101,featured:true,featuredPlan:"Pro",name:"TechZone SJDM",categories:["Electronics"],address:"Tungkong Mangga, SJDM",contact:"09171110001",hours:"9AM–7PM",rating:4.6,lat:14.8155,lng:121.0450,products:["Laptop","Smartphone","Tablet","Charger","Earphones"]},
+  {id:102,name:"Mega Electronics",categories:["Electronics"],address:"Poblacion, SJDM",contact:"09281110002",hours:"8AM–8PM",rating:4.4,lat:14.8190,lng:121.0490,products:["Laptop","Desktop","Monitor","Printer","USB Hub"]},
+  {id:103,name:"Fashion Hub Bulacan",categories:["Fashion"],address:"City Mall, SJDM",contact:"09391110003",hours:"10AM–9PM",rating:4.3,lat:14.8115,lng:121.0430,products:["Bag","Shoes","Clothing","Accessories"]},
+  {id:104,name:"Home & More",categories:["Home"],address:"Sapang Palay, SJDM",contact:"09451110004",hours:"8AM–6PM",rating:4.7,lat:14.8230,lng:121.0520,products:["Appliances","Cookware","Furniture","Decor"]},
+  {id:105,name:"AutoParts SJDM",categories:["Vehicles"],address:"National Highway, SJDM",contact:"09561110005",hours:"7AM–5PM",rating:4.5,lat:14.8075,lng:121.0400,products:["Motorcycle Parts","Car Parts","Batteries","Tires"]},
+  {id:106,featured:true,featuredPlan:"Basic",name:"Kakanin ni Aling Rosa",categories:["Food"],address:"Minuyan, SJDM",contact:"09671110006",hours:"6AM–2PM",rating:5.0,lat:14.8100,lng:121.0455,products:["Ube Halaya","Kalamay","Biko","Puto"]},
+  {id:107,name:"AllShop General Store",categories:["Electronics","Home","Others"],address:"Grand Central Mall, SJDM",contact:"09781110007",hours:"9AM–9PM",rating:4.2,lat:14.8210,lng:121.0505,products:["Laptop","Appliances","Tools","School Supplies"]},
+];
+
+let helpRequests = [
+  {id:201,item:"65W USB-C Laptop Charger",category:"Electronics",user:"Carlo M.",avatar:"CM",time:"5 min ago",urgent:true,lat:14.8165,lng:121.0445,
+   replies:[{id:1,name:"Mark R.",avatar:"MR",store:"TechZone SJDM",address:"Tungkong Mangga",msg:"Available here! ₱350 lang.",confirmed:false}]},
+  {id:202,item:"Paracetamol 500mg",category:"Food",user:"Rica S.",avatar:"RS",time:"12 min ago",urgent:true,lat:14.8130,lng:121.0480,
+   replies:[
+     {id:1,name:"Tina A.",avatar:"TA",store:"MedPlus Pharmacy",address:"Poblacion SJDM",msg:"In stock po, ₱8/tablet.",confirmed:false},
+     {id:2,name:"Bong C.",avatar:"BC",store:"Mercury Drug SJDM",address:"City Center",msg:"Meron din kami, 24hrs open.",confirmed:true}
+   ]},
+  {id:203,item:"HDMI Cable 2m",category:"Electronics",user:"Ben A.",avatar:"BA",time:"22 min ago",urgent:false,lat:14.8205,lng:121.0420,replies:[]},
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let S = {
+  tab:"all", category:"All", search:"", radius:3,
+  selectedId:null, selectedType:null,
+  saved:[], points:47,
+  postType:"sell",
+  form:{title:"",category:"Electronics",price:"",location:"",desc:"",contact:""},
+  storeForm:{name:"",address:"",contact:"",hours:"",categories:"Electronics",products:""},
+  helpForm:{item:"",category:"Electronics"},
+  helpReplyForm:{store:"",address:"",msg:""},
+  pointsHistory:[
+    {id:1,icon:"🏪",title:"Helped locate TechZone SJDM",time:"Yesterday",val:1,type:"earn"},
+    {id:2,icon:"🏪",title:"Helped locate Aling Rosa's store",time:"2 days ago",val:1,type:"earn"},
+    {id:3,icon:"💸",title:"Cashed out to GCash",time:"Last week",val:-20,type:"spend"},
+    {id:4,icon:"🏪",title:"Helped locate Mercury Drug",time:"Last week",val:1,type:"earn"},
+  ],
+  modal:null,
+  boostTarget:null, boostTargetType:null, selectedPlan:null,
+  adminStats:{revenue:4850, activeBoosts:3, impressions:12400, clicks:890},
+};
+
+
+// ── MAP INIT (Google Maps) ──────────────────────────────────────────────────────
+let map, radiusCircle = null, markers = [], youMarker = null, infoWindow = null;
+
+map = new google.maps.Map(document.getElementById('map'), {
+  center: { lat: 14.8144, lng: 121.0456 },
+  zoom: 15,
+  mapTypeControl: true,
+  mapTypeControlOptions: {
+    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+    position: google.maps.ControlPosition.TOP_RIGHT,
+    mapTypeIds: ['roadmap','satellite','hybrid','terrain']
+  },
+  streetViewControl: true,
+  fullscreenControl: true,
+  zoomControl: true,
+  styles: [
+    { featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}] },
+    { featureType:'transit',elementType:'labels',stylers:[{visibility:'simplified'}] }
+  ]
+});
+infoWindow = new google.maps.InfoWindow({ maxWidth: 240 });
+
+// Show map loading overlay until tiles are ready
+const mapOverlay = document.getElementById('map-overlay');
+const mapOverlayTxt = document.getElementById('map-overlay-txt');
+if (mapOverlay) mapOverlay.classList.remove('hidden');
+google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
+  if (mapOverlay) mapOverlay.classList.add('hidden');
+});
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function stars(n){ return '★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(n)); }
+
+// ── LOCATE USER ────────────────────────────────────────────────────────────────
+function initLocation(lat, lng, label) {
+  USER = { lat, lng, name: label };
+  document.getElementById('locating-banner').style.display = 'none';
+
+  map.setCenter({ lat, lng });
+  map.setZoom(15);
+
+  // You-are-here marker
+  if (youMarker) youMarker.setMap(null);
+  youMarker = new google.maps.Marker({
+    position: { lat, lng },
+    map,
+    title: `📍 You are here — ${label}`,
+    zIndex: 1000,
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 10,
+      fillColor: '#0f1628',
+      fillOpacity: 1,
+      strokeColor: '#c9a96e',
+      strokeWeight: 3,
+    }
+  });
+
+  drawRadiusCircle();
+  renderAll();
+}
+
+// Try real geolocation first, fall back to SJDM
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    pos => initLocation(pos.coords.latitude, pos.coords.longitude, "Your Location"),
+    () => { if(mapOverlayTxt) mapOverlayTxt.textContent='Using default location (SJDM)...'; initLocation(14.8144, 121.0456, 'San Jose del Monte, Bulacan'); },
+    { timeout: 6000 }
+  );
+} else {
+  initLocation(14.8144, 121.0456, "San Jose del Monte, Bulacan");
+}
+
+// ── RADIUS CIRCLE ──────────────────────────────────────────────────────────────
+function drawRadiusCircle() {
+  if (radiusCircle) radiusCircle.setMap(null);
+  radiusCircle = new google.maps.Circle({
+    map,
+    center: { lat: USER.lat, lng: USER.lng },
+    radius: S.radius * 1000,
+    strokeColor: '#c9a96e',
+    strokeOpacity: 0.7,
+    strokeWeight: 2,
+    fillColor: '#c9a96e',
+    fillOpacity: 0.06,
+  });
+}
+
+// ── MARKERS ────────────────────────────────────────────────────────────────────
+function makeIcon(type, urgent) {
+  const colors = { sell:'#c9a96e', buy:'#b45309', store:'#d93025', help:'#5b4fcf' };
+  const emojis = { sell:'₱', buy:'?', store:'🏪', help:'🆘' };
+  const sizes  = { sell:32, buy:32, store:36, help:32 };
+  const c = colors[type], sz = sizes[type], em = emojis[type];
+  const pulse = urgent ? 'animation:pulse 1.5s infinite;' : '';
+  return {
+    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}">
+        <circle cx="${sz/2}" cy="${sz/2}" r="${sz/2-2}" fill="${c}" stroke="white" stroke-width="2.5"/>
+        <text x="${sz/2}" y="${sz/2+4}" font-size="${sz*0.38}" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">${em}</text>
+      </svg>`
+    ),
+    scaledSize: new google.maps.Size(sz, sz),
+    anchor: new google.maps.Point(sz/2, sz/2),
+  };
+}
+
+function clearMarkers() {
+  markers.forEach(m => m.setMap(null));
+  markers = [];
+}
+
+function addMarker(lat, lng, icon, popupHtml) {
+  const m = new google.maps.Marker({ position: { lat, lng }, map, icon });
+  m.addListener('click', () => {
+    infoWindow.setContent(popupHtml);
+    infoWindow.open(map, m);
+    map.panTo({ lat, lng });
+  });
+  markers.push(m);
+  return m;
+}
+
+function buildMarkers() {
+  clearMarkers();
+
+  // Listings
+  if (S.tab !== 'stores' && S.tab !== 'help') {
+    getFiltered().forEach(l => {
+      const html = `<div class="popup-box">
+        <div class="c-badges" style="margin-bottom:6px">
+          <span class="badge ${l.type==='sell'?'b-sell':'b-buy'}">${l.type==='sell'?'FOR SALE':'LOOKING FOR'}</span>
+          <span class="badge b-cat">${esc(l.category)}</span>
+        </div>
+        <div class="popup-title">${esc(l.title)}</div>
+        <div class="popup-sub">📍 ${esc(l.location)}</div>
+        <div class="popup-price">₱${l.price.toLocaleString()}</div>
+        <button class="popup-btn" onclick="selectItem(${l.id},'listing');infoWindow.close()">View Details →</button>
+      </div>`;
+      addMarker(l.lat, l.lng, makeIcon(l.type), html);
+    });
+  }
+
+  // Stores
+  if (S.tab === 'stores' || S.tab === 'all') {
+    getStoresFiltered().forEach(s => {
+      const html = `<div class="popup-box">
+        <div class="c-badges" style="margin-bottom:6px"><span class="badge b-store">STORE</span>${isFeat?'<span class="badge" style="background:#fffbe6;color:#a07030">⭐ FEATURED</span>':''}</div>
+        <div class="popup-title">🏪 ${esc(s.name)}</div>
+        <div class="popup-sub">📍 ${esc(s.address)}</div>
+        <div class="popup-store">⏰ ${esc(s.hours)}</div>
+        <div class="popup-store" style="margin-top:3px">${stars(s.rating)} ${s.rating}</div>
+        <button class="popup-btn" style="background:var(--red);color:#fff" onclick="selectItem(${s.id},'store');infoWindow.close()">View Store →</button>
+      </div>`;
+      addMarker(s.lat, s.lng, makeIcon('store'), html);
+    });
+  }
+
+  // Help requests
+  if (S.tab === 'help' || S.tab === 'all') {
+    helpRequests.forEach(h => {
+      const html = `<div class="popup-box">
+        <div class="c-badges" style="margin-bottom:6px">
+          <span class="badge b-help">HELP REQUEST</span>
+          ${h.urgent ? '<span class="badge b-urgent">URGENT</span>' : ''}
+        </div>
+        <div class="popup-title">${esc(h.item)}</div>
+        <div class="popup-sub">👤 ${esc(h.user)} · ${esc(h.time)}</div>
+        <div class="popup-help">💬 ${h.replies.length} repl${h.replies.length===1?'y':'ies'} · Help & earn ⭐</div>
+        <button class="popup-btn" style="background:var(--purple);color:#fff" onclick="selectItem(${h.id},'help');infoWindow.close()">Help & Earn →</button>
+      </div>`;
+      addMarker(h.lat, h.lng, makeIcon('help', h.urgent), html);
+    });
+  }
+}
+
+// ── FILTER HELPERS ─────────────────────────────────────────────────────────────
+function getFiltered() {
+  return listings.filter(l => {
+    if (S.tab==='sell' && l.type!=='sell') return false;
+    if (S.tab==='buy' && l.type!=='buy') return false;
+    if (S.category!=='All' && l.category!==S.category) return false;
+    if (S.search && !l.title.toLowerCase().includes(S.search.toLowerCase())) return false;
+    return true;
+  }).sort((a,b) => (b.promoted?1:0)-(a.promoted?1:0));
+}
+function getStoresFiltered() {
+  return stores.filter(s => {
+    if (S.search && !s.name.toLowerCase().includes(S.search.toLowerCase()) &&
+        !s.products.some(p => p.toLowerCase().includes(S.search.toLowerCase()))) return false;
+    return true;
+  }).sort((a,b) => (b.featured?1:0)-(a.featured?1:0));
+}
+function getHelpFiltered() {
+  return helpRequests.filter(h => {
+    if (S.search && !h.item.toLowerCase().includes(S.search.toLowerCase())) return false;
+    return true;
+  });
+}
+
+// ── RENDER SIDEBAR ─────────────────────────────────────────────────────────────
+function renderAll() {
+  renderSidebarSkeleton();
+  renderFeaturedBanner();
+  // Small delay so skeleton shows before heavy marker work
+  requestAnimationFrame(() => {
+    renderSidebar();
+    buildMarkers();
+  });
+}
+
+function renderSidebarSkeleton() {
+  document.getElementById('sb-list').innerHTML = [1,2,3].map(() => `
+    <div class="card-skeleton">
+      <div class="skeleton card-skel-icon"></div>
+      <div class="card-skel-body">
+        <div class="skeleton card-skel-line" style="width:80%"></div>
+        <div class="skeleton card-skel-line" style="width:55%"></div>
+        <div class="skeleton card-skel-line" style="width:65%"></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderSidebar() {
+  // Category pills
+  const catEl = document.getElementById('cat-scroll');
+  catEl.innerHTML = CATS.map(c =>
+    `<button class="cat-pill ${S.category===c?'active':''}" onclick="setCat('${c}')">${CAT_ICONS[c]} ${c}</button>`
+  ).join('');
+
+  // Type buttons
+  const typeRow = document.getElementById('type-row');
+  typeRow.querySelectorAll('.type-btn').forEach((b,i) => {
+    const tabs = ['all','sell','buy','stores','help'];
+    b.className = 'type-btn' + (S.tab===tabs[i]?' active':'') + (i===3?' red-t':'') + (i===4?' pur-t':'');
+  });
+
+  // Nav tabs
+  ['all','stores','help'].forEach(t => {
+    const el = document.getElementById('tab-'+t);
+    if (el) el.className = 'n-tab' + (S.tab===t?' active':'') + (t==='help'?' red':'');
+  });
+
+  let items = [], type = 'listing';
+  if (S.tab==='stores') { items = getStoresFiltered(); type='store'; }
+  else if (S.tab==='help') { items = getHelpFiltered(); type='help'; }
+  else items = getFiltered();
+
+  document.getElementById('result-count').textContent = `${items.length} result${items.length!==1?'s':''} within ${S.radius}km`;
+
+  const list = document.getElementById('sb-list');
+  if (items.length === 0) {
+    list.innerHTML = `<div style="text-align:center;padding:40px 16px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">🔎</div><div style="font-weight:700">Nothing found</div><div style="font-size:12px;margin-top:4px">Try adjusting search or radius</div></div>`;
+  } else {
+    list.innerHTML = items.map(item => {
+      if (type==='store') return buildStoreCard(item);
+      if (type==='help') return buildHelpCard(item);
+      return buildListingCard(item);
+    }).join('');
+    if (S.tab==='help') {
+      list.innerHTML += `<button class="btn-red-full" style="margin-top:4px;border-radius:10px" onclick="openModal('help-request')">🆘 Post a Help Request</button>`;
+    }
+  }
+
+  // Store detail panel
+  const sdp = document.getElementById('store-detail-panel');
+  if (S.selectedType==='store' && S.selectedId) {
+    const s = stores.find(x=>x.id===S.selectedId);
+    if (s) sdp.innerHTML = buildStoreDetailPanel(s);
+    else sdp.innerHTML = '';
+  } else sdp.innerHTML = '';
+
+  // Points display
+  document.getElementById('pts-display').textContent = S.points;
+  document.getElementById('pts-cash').textContent = S.points;
+}
+
+function buildListingCard(l) {
+  const sel = S.selectedId===l.id && S.selectedType==='listing';
+  return `<div class="list-card ${sel?'active-card':''} ${l.promoted?'promoted':''}" onclick="selectItem(${l.id},'listing')">
+    <div class="card-row">
+      <div class="c-emoji ${l.type==='sell'?'sell-bg':'buy-bg'}">${l.image}</div>
+      <div class="c-body">
+        <div class="c-badges">
+          <span class="badge ${l.type==='sell'?'b-sell':'b-buy'}">${l.type==='sell'?'FOR SALE':'LOOKING FOR'}</span>
+          <span class="badge b-cat">${esc(l.category)}</span>
+        </div>
+        <div class="c-title">${esc(l.title)}</div>
+        <div class="c-foot">
+          <span class="c-price">₱${l.price.toLocaleString()}</span>
+          <button class="save-btn" onclick="event.stopPropagation();toggleSave(${l.id})">${S.saved.includes(l.id)?'🔖':'🏷️'}</button>
+        </div>
+        <div class="c-foot" style="margin-top:3px">
+          <span class="c-loc">📍 ${esc(l.location)}</span>
+          <span class="stars">${stars(l.rating)}</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildStoreCard(s) {
+  const sel = S.selectedId===s.id && S.selectedType==='store';
+  return `<div class="list-card store-c ${sel?'active-card':''} ${s.featured?'promoted':''}" onclick="selectItem(${s.id},'store')">
+    <div class="card-row">
+      <div class="c-emoji store-bg">🏪</div>
+      <div class="c-body">
+        <div class="c-badges">
+          <span class="badge b-store">STORE</span>
+          ${s.categories.map(c=>`<span class="badge b-cat">${c}</span>`).join('')}
+        </div>
+        <div class="c-title">${esc(s.name)}</div>
+        <div class="c-foot"><span class="c-loc">📍 ${esc(s.address)}</span></div>
+        <div class="c-foot" style="margin-top:3px">
+          <span class="stars">${stars(s.rating)} ${s.rating}</span>
+          <span class="c-loc">⏰ ${esc(s.hours)}</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildHelpCard(h) {
+  const sel = S.selectedId===h.id && S.selectedType==='help';
+  return `<div class="list-card help-c ${sel?'active-card':''}" onclick="selectItem(${h.id},'help')">
+    <div class="card-row">
+      <div class="c-emoji help-bg">🆘</div>
+      <div class="c-body">
+        <div class="c-badges">
+          <span class="badge b-help">HELP REQUEST</span>
+          ${h.urgent?`<span class="badge b-urgent pulse">URGENT</span>`:''}
+        </div>
+        <div class="c-title">${esc(h.item)}</div>
+        <div class="c-foot">
+          <span class="c-loc">👤 ${esc(h.user)} · ${esc(h.time)}</span>
+          <span class="c-loc">${h.replies.length} repl${h.replies.length===1?'y':'ies'}</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildStoreDetailPanel(s) {
+  return `<div class="store-detail-panel">
+    <h4>🏪 ${esc(s.name)}</h4>
+    <div class="store-meta-txt">
+      📍 ${esc(s.address)}<br>
+      ⏰ ${esc(s.hours)} &nbsp;·&nbsp; ⭐ ${s.rating}
+    </div>
+    <div class="prod-tags">${s.products.map(p=>`<span class="prod-tag">${esc(p)}</span>`).join('')}</div>
+    <div class="store-btns">
+      <button style="background:var(--gold);color:var(--navy)" onclick="showToast('📞 ${s.contact}')">📞 Call</button>
+      <button style="background:var(--navy);color:#fff" onclick="map.setCenter({lat:${s.lat},lng:${s.lng}});map.setZoom(17);showToast('🗺️ Navigating...')">🗺️ Go</button>
+      <button style="background:var(--purple);color:#fff" onclick="prefillHelpReply('${esc(s.name)}','${esc(s.address)}')">📤 Share</button>
+      ${!s.featured?'<button style="background:var(--gold);color:var(--navy)" onclick="openBoost('+s.id+',\'store\')">⭐ Boost</button>':'<span style="font-size:10px;color:var(--gold-dk);font-weight:700;padding:6px 4px">⭐ Featured</span>'}
+    </div>
+  </div>`;
+}
+
+// ── ACTIONS ────────────────────────────────────────────────────────────────────
+function setTab(t) { S.tab=t; S.selectedId=null; S.selectedType=null; renderAll(); }
+function setCat(c) { S.category=c; renderAll(); }
+function onSearch(v) { S.search=v; renderAll(); }
+function onRadius(v) {
+  S.radius=parseFloat(v);
+  document.getElementById('radius-lbl').textContent = v+'km';
+  drawRadiusCircle();
+  renderSidebar();
+}
+
+function selectItem(id, type) {
+  S.selectedId=id; S.selectedType=type;
+  if (type==='listing') openModal('detail');
+  else if (type==='help') openModal('help-detail');
+  else renderSidebar();
+  // Pan map
+  let item;
+  if (type==='listing') item=listings.find(x=>x.id===id);
+  else if (type==='store') item=stores.find(x=>x.id===id);
+  else item=helpRequests.find(x=>x.id===id);
+  if (item) map.panTo({ lat: item.lat, lng: item.lng });
+}
+
+function toggleSave(id) {
+  S.saved = S.saved.includes(id) ? S.saved.filter(x=>x!==id) : [...S.saved, id];
+  renderSidebar();
+  showToast(S.saved.includes(id) ? '🔖 Saved!' : '🏷️ Removed from saved');
+}
+
+function prefillHelpReply(store, address) {
+  S.helpReplyForm = { store, address, msg: '' };
+  openModal('help-detail');
+}
+
+function confirmHelp(helpId, replyId, event) {
+  const h = helpRequests.find(x=>x.id===helpId);
+  if (!h) return;
+  const r = h.replies.find(x=>x.id===replyId);
+  if (!r || r.confirmed) return;
+  r.confirmed = true;
+  S.points += 1;
+  S.pointsHistory = [{id:Date.now(),icon:'⭐',title:`${r.name} helped find ${h.item}`,time:'Just now',val:1,type:'earn'},...S.pointsHistory];
+  openModal('help-detail');
+  showToast(`✅ Confirmed! ⭐ +1 pt awarded to ${r.name}`);
+}
+
+function cashOut() {
+  if (S.points<=0) { showToast('⚠️ No points to cash out.'); return; }
+  const amt=S.points;
+  S.pointsHistory=[{id:Date.now(),icon:'💸',title:`Cashed out ₱${amt} to GCash`,time:'Just now',val:-amt,type:'spend'},...S.pointsHistory];
+  S.points=0;
+  openModal('points');
+  showToast(`💸 ₱${amt} sent to your GCash!`);
+}
+
+function submitPost() {
+  const f=S.form;
+  if (!f.title||!f.price||!f.contact) { showToast('⚠️ Fill in required fields.', 'error'); return; }
+  // Show loading on button
+  const btn = document.querySelector('.post-submit-btn');
+  if (btn) { btn.classList.add('btn-loading'); btn.innerHTML = '<div class="spinner spinner-sm"></div> Posting...'; }
+  setTimeout(() => {
+  listings=[{
+    id:Date.now(),type:S.postType,...f,price:Number(f.price),
+    [S.postType==='sell'?'seller':'buyer']:'You',
+    avatar:'ME',
+    image: f.image||(S.postType==='sell'?'🛍️':'🔍'),
+    imageUrl: f.imageUrl||'',
+    rating:5.0,
+    lat:USER.lat+(Math.random()-.5)*.015,lng:USER.lng+(Math.random()-.5)*.015
+  },...listings];
+  PS.suggestions=[]; PS.loading=false;
+  S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};
+  closeModal(); renderAll(); showToast('✅ Listing posted!', 'success');
+  }, 800); // simulate network delay
+}
+
+function submitHelpRequest() {
+  if (!S.helpForm.item) { showToast('⚠️ Enter what you need.'); return; }
+  const helpBtn = document.querySelector('.help-submit-btn');
+  if (helpBtn) { helpBtn.classList.add('btn-loading'); helpBtn.innerHTML = '<div class="spinner spinner-sm"></div> Posting...'; }
+  setTimeout(() => {
+    helpRequests=[{
+      id:Date.now(),item:S.helpForm.item,category:S.helpForm.category,
+      user:'You',avatar:'ME',time:'Just now',urgent:true,
+      lat:USER.lat+(Math.random()-.5)*.01,lng:USER.lng+(Math.random()-.5)*.01,replies:[]
+    },...helpRequests];
+    S.helpForm={item:'',category:'Electronics'};
+    closeModal(); S.tab='help'; renderAll(); showToast('🆘 Help request posted!', 'success');
+  }, 700);
+}
+
+function submitHelpReply(helpId) {
+  const f=S.helpReplyForm;
+  if (!f.store||!f.msg) { showToast('⚠️ Fill in store name and message.'); return; }
+  const h=helpRequests.find(x=>x.id===helpId);
+  if (!h) return;
+  const replyBtn = document.querySelector('.reply-submit-btn');
+  if (replyBtn) { replyBtn.classList.add('btn-loading'); replyBtn.innerHTML = '<div class="spinner spinner-sm"></div> Sending...'; }
+  setTimeout(() => {
+    h.replies.push({id:Date.now(),name:'You',avatar:'ME',store:f.store,address:f.address||'SJDM',msg:f.msg,confirmed:false});
+    S.helpReplyForm={store:'',address:'',msg:''};
+    openModal('help-detail');
+    showToast("📤 Reply sent! Earn ⭐ when confirmed.", 'success');
+  }, 700);
+}
+
+function submitStore() {
+  const f=S.storeForm;
+  if (!f.name||!f.address||!f.contact) { showToast('⚠️ Fill in required fields.'); return; }
+  stores=[{
+    id:Date.now(),...f,
+    categories:[f.categories],
+    products:f.products.split(',').map(p=>p.trim()).filter(Boolean),
+    rating:5.0,
+    lat:USER.lat+(Math.random()-.5)*.015,lng:USER.lng+(Math.random()-.5)*.015
+  },...stores];
+  S.storeForm={name:'',address:'',contact:'',hours:'',categories:'Electronics',products:''};
+  const regBtn = document.querySelector('.store-reg-btn');
+  if (regBtn) { regBtn.classList.add('btn-loading'); regBtn.innerHTML = '<div class="spinner spinner-sm"></div> Registering...'; }
+  setTimeout(() => { closeModal(); S.tab='stores'; renderAll(); showToast('🏪 Store registered on the map!', 'success'); }, 900);
+}
+
+// ── MODALS ────────────────────────────────────────────────────────────────────
+function openModal(name) { S.modal=name; renderModal(); }
+function closeModal() { S.modal=null; document.getElementById('modal-root').innerHTML=''; }
+
+function renderModal() {
+  const root=document.getElementById('modal-root');
+  if (!S.modal) { root.innerHTML=''; return; }
+  const builders={detail:buildDetailModal,post:buildPostModal,'help-request':buildHelpRequestModal,'help-detail':buildHelpDetailModal,points:buildPointsModal,'store-register':buildStoreRegisterModal,boost:buildBoostModal,'boost-info':buildBoostInfoModal,admin:buildAdminModal};
+  root.innerHTML = (builders[S.modal]||(() => ''))();
+}
+
+function buildDetailModal() {
+  if (!S.selectedId||S.selectedType!=='listing') return '';
+  const l=listings.find(x=>x.id===S.selectedId); if(!l) return '';
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:500px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="detail-img-box ${l.type==='sell'?'sell-bg':'buy-bg'}">${l.image}</div>
+      <div style="padding:22px">
+        <div class="c-badges" style="margin-bottom:10px">
+          <span class="badge ${l.type==='sell'?'b-sell':'b-buy'}">${l.type==='sell'?'FOR SALE':'LOOKING FOR'}</span>
+          <span class="badge b-cat">${esc(l.category)}</span>
+        </div>
+        <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);margin-bottom:5px">${esc(l.title)}</div>
+        <div style="font-family:'Space Mono',monospace;font-size:22px;color:var(--gold);font-weight:700;margin-bottom:12px">₱${l.price.toLocaleString()}</div>
+        <div style="font-size:14px;color:#555;line-height:1.7;margin-bottom:16px">${esc(l.desc)}</div>
+        <div class="seller-box">
+          <div class="seller-av">${l.avatar}</div>
+          <div>
+            <div style="font-weight:700;font-size:14px">${esc(l.seller||l.buyer)}</div>
+            <div class="stars" style="font-size:12px">${stars(l.rating)} <span style="color:var(--muted);font-size:11px">${l.rating}</span></div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">📍 ${esc(l.location)}</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="showToast('📞 Contact: ${l.contact}');closeModal()">📞 View Contact Info</button>
+        <button class="btn-red-full" onclick="setTab('stores');S.search='${esc(l.title.split(' ').slice(0,2).join(' '))}';closeModal();renderAll()">🚨 Find in a Nearby Store</button>
+        <button class="btn-outline" onclick="toggleSave(${l.id})">${S.saved.includes(l.id)?'🔖 Saved':'🏷️ Save Listing'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildPostModal() {
+  const pt=S.postType, f=S.form;
+  const hasProduct = !!(f.title && f.image);
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:600px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title">Create a Listing</div>
+        <div class="modal-sub">Start typing a product name — we'll auto-fill the details for you.</div>
+      </div>
+      <div class="modal-body">
+        <div class="type-toggle">
+          <button class="t-btn ${pt==='sell'?'active':''}" onclick="S.postType='sell';renderModal()">🛍️ I'm Selling</button>
+          <button class="t-btn ${pt==='buy'?'active':''}" onclick="S.postType='buy';renderModal()">🔍 I'm Looking For</button>
+        </div>
+
+        <!-- SMART SEARCH BOX -->
+        <div class="form-group full" style="position:relative">
+          <label class="form-label">🔍 Search Product Database *</label>
+          <div style="position:relative">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none">🔍</span>
+            <input class="form-input" id="product-search-inp" type="text"
+              value="${esc(f.title)}"
+              placeholder="e.g. iPhone, Milo, Airfryer, T-shirt..."
+              style="padding-left:38px;padding-right:${PS.loading?'38px':'12px'}"
+              oninput="onProductSearch(this.value)"
+              autocomplete="off">
+            ${PS.loading?`<span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px;animation:pulse 1s infinite">⏳</span>`:''}
+          </div>
+
+          <!-- SUGGESTIONS DROPDOWN -->
+          ${PS.suggestions.length>0?`
+          <div id="suggestions-box" style="position:absolute;top:100%;left:0;right:0;background:#fff;border:2px solid var(--gold);border-radius:12px;box-shadow:var(--shadow-lg);z-index:3000;max-height:280px;overflow-y:auto;margin-top:4px">
+            <div style="padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)">${PS.source==='food'?'🥫 Open Food Facts':'🛒 Product Database'} — ${PS.suggestions.length} results</div>
+            ${PS.suggestions.map((p,i)=>`
+              <div onclick="applyProduct(${i})" style="display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)" onmouseover="this.style.background='var(--cream2)'" onmouseout="this.style.background='#fff'">
+                <div style="width:44px;height:44px;border-radius:9px;background:var(--cream2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">
+                  ${p.image?`<img src="${esc(p.image)}" style="width:44px;height:44px;object-fit:contain;border-radius:9px" onerror="this.style.display='none';this.nextSibling.style.display='flex'" /><span style="display:none;font-size:22px">${p.emoji||'📦'}</span>`:`<span style="font-size:22px">${p.emoji||'📦'}</span>`}
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:700;font-size:13px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.title)}</div>
+                  <div style="display:flex;gap:6px;margin-top:3px;align-items:center">
+                    <span class="badge b-cat" style="font-size:9px">${esc(p.category)}</span>
+                    ${p.brand?`<span style="font-size:10px;color:var(--muted)">${esc(p.brand)}</span>`:''}
+                  </div>
+                  <div style="font-size:11px;color:#888;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc((p.desc||'').slice(0,80))}${(p.desc||'').length>80?'...':''}</div>
+                </div>
+                ${p.suggestedPrice?`<div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;white-space:nowrap">~₱${p.suggestedPrice.toLocaleString()}</div>`:''}
+              </div>
+            `).join('')}
+          </div>`:''}
+        </div>
+
+        <!-- AUTO-FILLED PREVIEW -->
+        ${hasProduct?`
+        <div style="background:linear-gradient(135deg,#fffdf5,#fff9ec);border:2px solid var(--gold);border-radius:14px;padding:14px;margin-bottom:16px;display:flex;gap:14px;align-items:flex-start">
+          <div style="width:60px;height:60px;border-radius:10px;background:var(--cream2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">
+            ${f.imageUrl?`<img src="${esc(f.imageUrl)}" style="width:60px;height:60px;object-fit:contain;border-radius:10px" onerror="this.style.display='none'" />`:`<span style="font-size:30px">${f.image||'📦'}</span>`}
+          </div>
+          <div style="flex:1">
+            <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:3px">✅ AUTO-FILLED FROM DATABASE</div>
+            <div style="font-weight:700;font-size:14px;color:var(--navy)">${esc(f.title)}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:2px">${esc(f.category)} ${f.brand?'· '+esc(f.brand):''}</div>
+          </div>
+          <button onclick="clearProduct()" style="background:none;border:none;cursor:pointer;font-size:18px;color:#aaa" title="Clear">✕</button>
+        </div>`:''}
+
+        <!-- REST OF FORM -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">${pt==='sell'?'Your Price (₱) *':'Your Budget (₱) *'}</label>
+            <input class="form-input" type="number" id="f-price" value="${esc(f.price)}" placeholder="e.g. 15000" oninput="S.form.price=this.value">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-input" onchange="S.form.category=this.value">
+              ${CATS.filter(c=>c!=='All').map(c=>`<option ${f.category===c?'selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input class="form-input" type="text" value="${esc(f.location)}" placeholder="e.g. Tungkong Mangga" oninput="S.form.location=this.value">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Number *</label>
+            <input class="form-input" type="text" value="${esc(f.contact)}" placeholder="e.g. 09171234567" oninput="S.form.contact=this.value">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Description <span style="font-weight:400;color:var(--muted)">(auto-filled, you can edit)</span></label>
+            <textarea class="form-input" rows="3" placeholder="Details about condition, specs, etc." oninput="S.form.desc=this.value" style="resize:vertical">${esc(f.desc)}</textarea>
+          </div>
+        </div>
+        <button class="btn-primary post-submit-btn" onclick="submitPost()">🚀 Post Listing</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── PRODUCT SEARCH ENGINE ──────────────────────────────────────────────────────
+let PS = { suggestions:[], loading:false, source:'', timer:null };
+
+// Map API categories → BringMe categories
+const CAT_MAP = {
+  "electronics":"Electronics","men's clothing":"Fashion","women's clothing":"Fashion",
+  "jewelery":"Fashion","beauty":"Fashion","furniture":"Home","home":"Home",
+  "kitchen":"Home","food":"Food","beverages":"Food","snacks":"Food","dairy":"Food",
+  "vehicles":"Vehicles","services":"Services","sports":"Others","toys":"Others",
+  "books":"Others","tools":"Others","health":"Others"
+};
+
+function mapCategory(raw) {
+  if (!raw) return 'Others';
+  const lower = raw.toLowerCase();
+  for (const [key,val] of Object.entries(CAT_MAP)) {
+    if (lower.includes(key)) return val;
+  }
+  return 'Others';
+}
+
+// Emoji for category
+function catEmoji(cat) {
+  return {Electronics:'📱',Fashion:'👗',Home:'🏡',Food:'🍱',Services:'🛠️',Vehicles:'🏍️',Others:'📦'}[cat]||'📦';
+}
+
+// PHP conversion rate (approx)
+const PHP_RATE = 56;
+
+function onProductSearch(val) {
+  S.form.title = val;
+  clearTimeout(PS.timer);
+  if (!val || val.length < 2) { PS.suggestions=[]; PS.loading=false; renderModal(); return; }
+  PS.loading = true; renderModal();
+  PS.timer = setTimeout(() => searchProducts(val), 400);
+}
+
+async function searchProducts(query) {
+  const q = query.toLowerCase().trim();
+  const results = [];
+
+  // Show skeleton in dropdown immediately
+  const existingBox = document.getElementById('suggestions-box');
+  if (existingBox) {
+    existingBox.innerHTML = `
+      <div style="padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)">🔍 Searching product database...</div>
+      ${[1,2,3].map(()=>`
+        <div class="suggest-skeleton">
+          <div class="skeleton skel-img"></div>
+          <div class="skel-lines">
+            <div class="skeleton skel-line" style="width:70%"></div>
+            <div class="skeleton skel-line skel-short"></div>
+          </div>
+        </div>`).join('')}`;
+  }
+
+  // Decide source: food-like queries → Open Food Facts, else FakeStore
+  const foodKeywords = ['milo','rice','noodle','biscuit','milk','coffee','juice','bread','sugar','oil','soap','shampoo','medicine','vitamins','sardine','tuna','corned','instant','pasta','chocolate','candy','snack','laba','toothpaste','conditioner','detergent','paracetamol','amoxicillin','food'];
+  const isFood = foodKeywords.some(k => q.includes(k));
+
+  try {
+    if (isFood) {
+      // Open Food Facts search
+      const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=8&fields=product_name,brands,categories_tags,image_front_small_url,ingredients_text,nutriments`;
+      const res = await fetch(url);
+      const data = await res.json();
+      (data.products||[]).slice(0,8).forEach(p => {
+        if (!p.product_name) return;
+        const rawCat = (p.categories_tags||[])[0]||'';
+        const cat = mapCategory(rawCat.replace('en:',''));
+        results.push({
+          title: p.product_name,
+          brand: p.brands||'',
+          category: cat,
+          image: p.image_front_small_url||'',
+          emoji: catEmoji(cat),
+          desc: p.ingredients_text ? 'Ingredients: '+p.ingredients_text.slice(0,120) : '',
+          suggestedPrice: null,
+          source: 'food'
+        });
+      });
+      PS.source = 'food';
+    } else {
+      // FakeStore API — get all and filter client-side
+      const res = await fetch('https://fakestoreapi.com/products');
+      const data = await res.json();
+      data.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q))
+        .slice(0,8)
+        .forEach(p => {
+          const cat = mapCategory(p.category);
+          results.push({
+            title: p.title,
+            brand: '',
+            category: cat,
+            image: p.image||'',
+            emoji: catEmoji(cat),
+            desc: p.description||'',
+            suggestedPrice: Math.round(p.price * PHP_RATE),
+            source: 'fakestore'
+          });
+        });
+      // If no FakeStore results, try Open Food Facts as fallback
+      if (!results.length) {
+        const url2 = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=6&fields=product_name,brands,categories_tags,image_front_small_url,ingredients_text`;
+        const res2 = await fetch(url2);
+        const data2 = await res2.json();
+        (data2.products||[]).slice(0,6).forEach(p => {
+          if (!p.product_name) return;
+          const rawCat = (p.categories_tags||[])[0]||'';
+          const cat = mapCategory(rawCat.replace('en:',''));
+          results.push({
+            title: p.product_name, brand: p.brands||'', category: cat,
+            image: p.image_front_small_url||'', emoji: catEmoji(cat),
+            desc: '', suggestedPrice: null, source: 'food'
+          });
+        });
+        PS.source = 'food';
+      } else {
+        PS.source = 'fakestore';
+      }
+    }
+  } catch(e) {
+    console.warn('Product search error:', e);
+    PS.suggestions = [];
+    PS.loading = false;
+    showToast('⚠️ Could not reach product database. Check your connection.', 'error');
+    renderModal();
+    return;
+  }
+
+  PS.suggestions = results;
+  PS.loading = false;
+  renderModal();
+
+  // Re-focus search input
+  setTimeout(() => {
+    const inp = document.getElementById('product-search-inp');
+    if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+  }, 50);
+}
+
+function applyProduct(idx) {
+  const p = PS.suggestions[idx];
+  if (!p) return;
+  S.form.title = p.title;
+  S.form.category = p.category;
+  S.form.desc = p.desc || '';
+  S.form.image = p.emoji;
+  S.form.imageUrl = p.image || '';
+  S.form.brand = p.brand || '';
+  if (p.suggestedPrice && !S.form.price) S.form.price = p.suggestedPrice;
+  PS.suggestions = [];
+  renderModal();
+  // Focus price field
+  setTimeout(() => { const el=document.getElementById('f-price'); if(el) el.focus(); }, 80);
+}
+
+function clearProduct() {
+  S.form.title=''; S.form.desc=''; S.form.image=''; S.form.imageUrl=''; S.form.brand='';
+  PS.suggestions=[];
+  renderModal();
+  setTimeout(() => { const el=document.getElementById('product-search-inp'); if(el) el.focus(); }, 50);
+}
+
+function buildHelpRequestModal() {
+  const f=S.helpForm;
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:460px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title" style="color:var(--red)">🆘 Ask the Community</div>
+        <div class="modal-sub">Tell neighbors what you urgently need. Helpers earn ⭐ 1 pt = ₱1!</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">What do you need? *</label>
+          <input class="form-input" type="text" value="${esc(f.item)}" placeholder="e.g. 65W USB-C laptop charger" oninput="S.helpForm.item=this.value">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-input" onchange="S.helpForm.category=this.value">
+            ${CATS.filter(c=>c!=='All').map(c=>`<option ${f.category===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div style="background:#fff8f0;border-radius:11px;padding:13px;margin-bottom:14px;font-size:13px;color:#555;line-height:1.6">
+          💡 Members reply with store locations. Confirm it was helpful → they earn <strong>⭐ 1 pt = ₱1</strong> cashable to GCash!
+        </div>
+        <button class="btn-red-full help-submit-btn" onclick="submitHelpRequest()">🆘 Post Help Request</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildHelpDetailModal() {
+  const h=helpRequests.find(x=>x.id===S.selectedId); if(!h) return '';
+  const f=S.helpReplyForm;
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:520px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title">🆘 ${esc(h.item)}</div>
+        <div class="modal-sub">👤 ${esc(h.user)} · ${esc(h.time)} · ${h.category}</div>
+      </div>
+      <div class="modal-body">
+        ${h.replies.length?`
+          <div style="background:var(--purple-bg);border-radius:12px;padding:14px;margin-bottom:14px">
+            <div style="font-weight:700;color:var(--purple);font-size:13px;margin-bottom:10px">💬 Community Replies (${h.replies.length})</div>
+            ${h.replies.map(r=>`
+              <div class="help-reply-item ${r.confirmed?'confirmed':''}">
+                <div style="display:flex;align-items:flex-start;gap:10px">
+                  <div class="seller-av" style="width:34px;height:34px;font-size:11px;flex-shrink:0">${esc(r.avatar)}</div>
+                  <div style="flex:1">
+                    <div style="font-weight:700;font-size:13px">${esc(r.name)}</div>
+                    <div style="font-size:12px;color:#555;margin-top:2px">🏪 ${esc(r.store)} · 📍 ${esc(r.address)}</div>
+                    <div style="font-size:12px;color:#444;margin-top:3px;font-style:italic">"${esc(r.msg)}"</div>
+                    ${r.confirmed
+                      ?`<div class="confirmed-badge">✅ Confirmed helpful — ${esc(r.name)} earned ⭐1pt</div>`
+                      :`<button class="confirm-btn" onclick="confirmHelp(${h.id},${r.id},event)">✅ This helped me! (+⭐1 to ${esc(r.name)})</button>`}
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `:`<div style="text-align:center;padding:20px;color:var(--muted)"><div style="font-size:32px;margin-bottom:8px">💬</div><div style="font-weight:700">No replies yet</div><div style="font-size:12px;margin-top:3px">Be first to help & earn ⭐1pt!</div></div>`}
+        <div class="help-reply-box">
+          <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:10px">📤 Know where to find this? Reply & earn ⭐</div>
+          <div class="form-group">
+            <label class="form-label">Store Name *</label>
+            <input class="form-input" type="text" placeholder="e.g. TechZone SJDM" value="${esc(f.store)}" oninput="S.helpReplyForm.store=this.value">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input class="form-input" type="text" placeholder="e.g. Tungkong Mangga, SJDM" value="${esc(f.address)}" oninput="S.helpReplyForm.address=this.value">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Message *</label>
+            <input class="form-input" type="text" placeholder='e.g. "Available here! ₱350 lang."' value="${esc(f.msg)}" oninput="S.helpReplyForm.msg=this.value">
+          </div>
+          <button class="btn-primary reply-submit-btn" style="margin-top:0" onclick="submitHelpReply(${h.id})">📤 Send Reply & Earn ⭐</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildPointsModal() {
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:420px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title">⭐ My Points</div>
+        <div class="modal-sub">Earn by helping others find stores. 1 pt = ₱1.</div>
+      </div>
+      <div class="modal-body">
+        <div class="pts-hero">
+          <div class="pts-big">${S.points}</div>
+          <div style="font-family:'Space Mono',monospace;font-size:18px;color:var(--gold);margin-top:4px">⭐ points</div>
+          <div style="font-size:13px;color:#556;margin-top:5px">= <span style="color:var(--gold);font-weight:700">₱${S.points}</span> cashable to GCash or Maya</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">History</div>
+        <div class="pts-history">
+          ${S.pointsHistory.map(p=>`
+            <div class="pts-row">
+              <div style="font-size:18px;width:32px;text-align:center">${p.icon}</div>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:13px;color:var(--navy)">${esc(p.title)}</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:1px">${esc(p.time)}</div>
+              </div>
+              <div class="pts-row-val ${p.type==='earn'?'earn':'spend'}">${p.val>0?'+':''}${p.val}</div>
+            </div>
+          `).join('')}
+        </div>
+        ${S.points>0?`
+          <div class="cash-out-box">
+            <div>
+              <div style="font-weight:700;color:var(--green);font-size:14px">💸 Cash Out ₱${S.points}</div>
+              <div style="font-size:12px;color:#555;margin-top:2px">Send to GCash or Maya instantly.</div>
+            </div>
+            <button class="cash-out-btn" onclick="cashOut()">Cash Out</button>
+          </div>`:''}
+        <div style="background:var(--cream2);border-radius:11px;padding:12px;margin-top:13px;font-size:12px;color:#555;line-height:1.6">
+          💡 <strong>How to earn:</strong> Reply to Help Requests with a store location. When the requester confirms it helped, you earn <strong>⭐1 pt = ₱1</strong>!
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildStoreRegisterModal() {
+  const f=S.storeForm;
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:500px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title">🏪 Register Your Store</div>
+        <div class="modal-sub">Appear on the map when buyers need your products.</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Store Name *</label>
+            <input class="form-input" type="text" value="${esc(f.name)}" placeholder="e.g. TechZone SJDM" oninput="S.storeForm.name=this.value">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Address *</label>
+            <input class="form-input" type="text" value="${esc(f.address)}" placeholder="e.g. Tungkong Mangga, SJDM" oninput="S.storeForm.address=this.value">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Number *</label>
+            <input class="form-input" type="text" value="${esc(f.contact)}" placeholder="e.g. 09171234567" oninput="S.storeForm.contact=this.value">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Business Hours</label>
+            <input class="form-input" type="text" value="${esc(f.hours)}" placeholder="e.g. 9AM–7PM" oninput="S.storeForm.hours=this.value">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-input" onchange="S.storeForm.categories=this.value">
+              ${CATS.filter(c=>c!=='All').map(c=>`<option ${f.categories===c?'selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Products (comma-separated)</label>
+            <input class="form-input" type="text" value="${esc(f.products)}" placeholder="e.g. Laptop, Charger, Earphones" oninput="S.storeForm.products=this.value">
+          </div>
+        </div>
+        <button class="btn-primary store-reg-btn" onclick="submitStore()">🚀 Register Store on Map</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+
+// ── FEATURED BANNER ──────────────────────────────────────────────────────────
+function renderFeaturedBanner() {
+  const el = document.getElementById('featured-banner');
+  if (!el) return;
+  const featured = stores.filter(s => s.featured);
+  if (!featured.length) { el.style.display='none'; return; }
+  el.style.display='block';
+  el.innerHTML = `<div class="featured-scroll">
+    <div class="featured-lbl">⭐ Featured</div>
+    ${featured.map(s => `
+      <div class="feat-chip" onclick="selectItem(${s.id},'store')">
+        <span class="feat-chip-icon">🏪</span>
+        <div>
+          <div class="feat-chip-name">${esc(s.name)}</div>
+          <div class="feat-chip-cat">${s.categories[0]}</div>
+        </div>
+      </div>`).join('')}
+    <div class="feat-chip" style="border-style:dashed;opacity:.7" onclick="openModal('boost-info')">
+      <span class="feat-chip-icon">➕</span>
+      <div><div class="feat-chip-name">Feature Your Store</div><div class="feat-chip-cat">From ₱99/week</div></div>
+    </div>
+  </div>`;
+}
+
+// ── BOOST MODALS ──────────────────────────────────────────────────────────────
+function openBoost(id, type) {
+  S.boostTarget = id; S.boostTargetType = type; S.selectedPlan = 'basic';
+  openModal('boost');
+}
+
+function selectPlan(p) { S.selectedPlan = p; renderModal(); }
+
+function submitBoost() {
+  const plans = { basic:{price:99,weeks:1}, pro:{price:249,weeks:4}, max:{price:499,weeks:12} };
+  const plan = plans[S.selectedPlan];
+  if (!plan) return;
+  if (S.boostTargetType === 'store') {
+    const s = stores.find(x => x.id === S.boostTarget);
+    if (s) { s.featured = true; s.featuredPlan = S.selectedPlan.charAt(0).toUpperCase()+S.selectedPlan.slice(1); }
+  } else if (S.boostTargetType === 'listing') {
+    const l = listings.find(x => x.id === S.boostTarget);
+    if (l) l.promoted = true;
+  }
+  S.adminStats.revenue += plan.price;
+  S.adminStats.activeBoosts += 1;
+  const boostBtn = document.querySelector('.boost-submit-btn');
+  if (boostBtn) { boostBtn.classList.add('btn-loading'); boostBtn.innerHTML = '<div class="spinner spinner-sm"></div> Activating...'; }
+  setTimeout(() => { closeModal(); renderAll(); showToast('🚀 Boost activated! You are now featured on the map.', 'success'); }, 1000);
+}
+
+function buildBoostInfoModal() {
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:560px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title"><span class="gold-shine">⭐ Boost Your Visibility</span></div>
+        <div class="modal-sub">Get featured on the map and at the top of search results.</div>
+      </div>
+      <div class="modal-body">
+        <div class="rev-stats">
+          <div class="rev-stat"><div class="rev-stat-num">12,400</div><div class="rev-stat-lbl">Monthly map views</div></div>
+          <div class="rev-stat"><div class="rev-stat-num">890</div><div class="rev-stat-lbl">Store clicks/month</div></div>
+          <div class="rev-stat"><div class="rev-stat-num">3x</div><div class="rev-stat-lbl">More inquiries (featured)</div></div>
+        </div>
+        <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:12px">Choose what to boost:</div>
+        <div style="display:flex;gap:10px;margin-bottom:18px">
+          ${stores.filter(s=>!s.featured).slice(0,3).map(s=>`
+            <div style="flex:1;background:var(--cream2);border-radius:10px;padding:11px;cursor:pointer;border:2px solid transparent;transition:all .15s" onclick="openBoost(${s.id},'store')" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='transparent'">
+              <div style="font-size:18px;margin-bottom:4px">🏪</div>
+              <div style="font-weight:700;font-size:12px;color:var(--navy)">${esc(s.name)}</div>
+              <div style="font-size:10px;color:var(--muted)">${s.categories[0]}</div>
+            </div>`).join('')}
+        </div>
+        <div style="font-size:12px;color:var(--muted);text-align:center">Or <span style="color:var(--gold);cursor:pointer;font-weight:700" onclick="openBoost(1,'listing')">boost a listing →</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildBoostModal() {
+  const plans = [
+    {id:'basic', name:'Basic', price:99, dur:'1 week', perks:['Top of search results','Gold pin on map','Featured in sidebar banner'], popular:false},
+    {id:'pro',   name:'Pro',   price:249,dur:'4 weeks',perks:['Everything in Basic','Priority placement','📊 Weekly stats report','Bold store card'], popular:true},
+    {id:'max',   name:'Max',   price:499,dur:'12 weeks',perks:['Everything in Pro','Homepage spotlight','Push alert to nearby users','Dedicated support'], popular:false},
+  ];
+  const target = S.boostTargetType==='store' ? stores.find(x=>x.id===S.boostTarget) : listings.find(x=>x.id===S.boostTarget);
+  if (!target) return '';
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:580px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title"><span class="gold-shine">⭐ Boost: ${esc(target.name||target.title)}</span></div>
+        <div class="modal-sub">Choose a plan to feature this ${S.boostTargetType} on BringMe.Store</div>
+      </div>
+      <div class="modal-body">
+        <div class="boost-plans">
+          ${plans.map(p=>`
+            <div class="plan-card ${S.selectedPlan===p.id?'selected':''} ${p.popular?'popular':''}" onclick="selectPlan('${p.id}')">
+              <div class="plan-name">${p.name}</div>
+              <div class="plan-price">₱${p.price}</div>
+              <div class="plan-dur">${p.dur}</div>
+              <div class="plan-perks">${p.perks.map(pk=>`<div class="plan-perk"><span>✓</span><span>${pk}</span></div>`).join('')}</div>
+            </div>`).join('')}
+        </div>
+        <div style="background:var(--cream2);border-radius:11px;padding:13px;margin-bottom:16px;font-size:12px;color:#555;line-height:1.7">
+          💳 Payment via <strong>GCash, Maya, or bank transfer</strong>. Your boost goes live within 1 hour of payment confirmation.
+        </div>
+        <button class="btn-primary boost-submit-btn" onclick="submitBoost()">🚀 Activate Boost — ₱${[99,249,499][['basic','pro','max'].indexOf(S.selectedPlan)]}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildAdminModal() {
+  const st = S.adminStats;
+  const boosted = stores.filter(s=>s.featured);
+  const promotedL = listings.filter(l=>l.promoted);
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:560px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title">📊 Revenue Dashboard</div>
+        <div class="modal-sub">BringMe.Store — Advertising & Boost earnings</div>
+      </div>
+      <div class="modal-body">
+        <div class="rev-stats" style="margin-bottom:18px">
+          <div class="rev-stat"><div class="rev-stat-num">₱${st.revenue.toLocaleString()}</div><div class="rev-stat-lbl">Total Revenue</div></div>
+          <div class="rev-stat"><div class="rev-stat-num">${st.activeBoosts}</div><div class="rev-stat-lbl">Active Boosts</div></div>
+          <div class="rev-stat"><div class="rev-stat-num">${st.impressions.toLocaleString()}</div><div class="rev-stat-lbl">Ad Impressions</div></div>
+          <div class="rev-stat"><div class="rev-stat-num">${st.clicks}</div><div class="rev-stat-lbl">Total Clicks</div></div>
+        </div>
+        <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:10px">⭐ Featured Stores (${boosted.length})</div>
+        ${boosted.map(s=>`
+          <div style="display:flex;align-items:center;gap:12px;background:var(--cream2);border-radius:10px;padding:11px 13px;margin-bottom:8px">
+            <div style="font-size:20px">🏪</div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:13px;color:var(--navy)">${esc(s.name)}</div>
+              <div style="font-size:11px;color:var(--muted)">${s.categories[0]} · Plan: ${s.featuredPlan||'Basic'}</div>
+            </div>
+            <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);font-weight:700">LIVE ●</div>
+          </div>`).join('')}
+        ${promotedL.length?`
+          <div style="font-weight:700;font-size:13px;color:var(--navy);margin:14px 0 10px">🛍️ Promoted Listings (${promotedL.length})</div>
+          ${promotedL.map(l=>`
+            <div style="display:flex;align-items:center;gap:12px;background:var(--cream2);border-radius:10px;padding:11px 13px;margin-bottom:8px">
+              <div style="font-size:20px">${l.image}</div>
+              <div style="flex:1">
+                <div style="font-weight:700;font-size:13px;color:var(--navy)">${esc(l.title)}</div>
+                <div style="font-size:11px;color:var(--muted)">₱${l.price.toLocaleString()} · ${l.category}</div>
+              </div>
+              <div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);font-weight:700">LIVE ●</div>
+            </div>`).join('')}`:''}
+        <div style="background:#e8f5ed;border-radius:11px;padding:13px;margin-top:14px">
+          <div style="font-weight:700;color:var(--green);font-size:13px;margin-bottom:4px">💡 Revenue Projection</div>
+          <div style="font-size:12px;color:#555;line-height:1.7">
+            At current growth: <strong>₱${Math.round(st.revenue*1.4).toLocaleString()}/month</strong> at 50 featured stores.<br>
+            At 200 stores: <strong>₱${Math.round(st.revenue*5.6).toLocaleString()}/month</strong> — fully covers hosting, maps, and operations.
+          </div>
+        </div>
+        <button class="btn-primary" style="margin-top:14px" onclick="openModal('boost-info')">➕ Sell a New Boost</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────────
+function showToast(msg, type='info', duration=2800) {
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const t=document.createElement('div');
+  t.className = `toast toast-${type}`;
+  if (type === 'loading') {
+    t.innerHTML = `<div class="spinner" style="width:16px;height:16px;border-width:2px;border-color:rgba(255,255,255,.2);border-top-color:#fff"></div>${msg}`;
+  } else {
+    const icons = {success:'✅', error:'⚠️', info:'💬'};
+    t.textContent = msg;
+  }
+  document.body.appendChild(t);
+  if (duration > 0) setTimeout(()=>t.remove(), duration);
+  return t;
+}
+
+function showLoadingToast(msg) {
+  return showToast(msg, 'loading', 0);
+}
+function dismissToast() {
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+}
+
+// ── MOBILE RESPONSIVE JS ──────────────────────────────────────────────────────
+const isMobile = () => window.innerWidth <= 768;
+
+function mobileNav(tab) {
+  // Update active state
+  ['map','browse','urgent','points'].forEach(t => {
+    const el = document.getElementById('mn-'+t);
+    if (el) el.classList.toggle('active', t===tab);
+  });
+
+  if (tab === 'map') {
+    closeSidebar();
+  } else if (tab === 'browse') {
+    S.tab = 'all';
+    renderSidebar();
+    openSidebar();
+  } else if (tab === 'urgent') {
+    S.tab = 'help';
+    renderSidebar();
+    openSidebar();
+  } else if (tab === 'points') {
+    openModal('points');
+  }
+}
+
+function openSidebar() {
+  if (!isMobile()) return;
+  document.getElementById('sidebar').classList.add('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// Swipe down to close sidebar on mobile
+(function() {
+  let startY = 0;
+  const sb = document.getElementById('sidebar');
+  if (!sb) return;
+
+  sb.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive: true });
+  sb.addEventListener('touchend', e => {
+    const dy = e.changedTouches[0].clientY - startY;
+    if (dy > 60) closeSidebar();
+  }, { passive: true });
+
+  // Tap handle to toggle
+  const handle = document.getElementById('sb-handle');
+  if (handle) handle.addEventListener('click', () => {
+    sb.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+})();
+
+// Close sidebar when clicking map on mobile
+document.getElementById('map').addEventListener('click', () => {
+  if (isMobile()) closeSidebar();
+});
+
+// On desktop, make sure sidebar is always visible
+window.addEventListener('resize', () => {
+  if (!isMobile()) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('mobile-nav').style.display = 'none';
+  } else {
+    document.getElementById('mobile-nav').style.display = 'flex';
+  }
+});
+
+// Hide mobile nav on desktop initially
+if (!isMobile()) {
+  const mn = document.getElementById('mobile-nav');
+  if (mn) mn.style.display = 'none';
+}
+
+// Open sidebar when sidebar tab buttons are clicked on mobile
+const origSetTab = window.setTab;
+window.setTab = function(t) {
+  origSetTab(t);
+  if (isMobile() && t !== 'all') openSidebar();
+};
+
+
+// ═══════════════════════════════════════════════════════════════
+//  AUTH WINDOW SYSTEM
+// ═══════════════════════════════════════════════════════════════
+let IS_GUEST = true;
+let AW_MINIMIZED = false;
+let AW_CUR_STEP = 1;
+const AW_TOTAL_STEPS = 5;
+const AW_TAKEN_NICKS = ['mark','ana','jose','clara','renz','danny','nena','liza','admin','bringme'];
+let AW_ROLES = new Set();
+let AW_USER = { phone:'',email:'',method:'phone',firstName:'',lastName:'',nickname:'',location:'',bio:'',photo:'🙂',roles:[] };
+let AW_EMOJIS = ['😊','😎','🙂','🤝','💪','🌟','🛍️','🏪','🧑','👩'];
+let AW_EMOJI_IDX = 0;
+let AW_RESEND_TIMER;
+
+// ── INIT: show auth window when page loads ────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    if (IS_GUEST) {
+      document.getElementById('auth-window').classList.remove('hidden');
+      awUpdateSteps();
+      // Restrict sidebar interactions for guests
+      document.getElementById('sb-list').classList.add('guest-restricted');
+      // Hide post button
+      const postBtn = document.querySelector('.btn-post');
+      if (postBtn) postBtn.style.opacity = '.5';
+    }
+  }, 1200);
+});
+
+// ── TOGGLE MINIMIZE ────────────────────────────────────────────
+function toggleMinimize() {
+  AW_MINIMIZED = !AW_MINIMIZED;
+  const win = document.getElementById('auth-window');
+  const btn = document.getElementById('aw-min-btn');
+  const teaser = document.getElementById('guest-teaser');
+  const prevLabel = document.getElementById('preview-label');
+  win.classList.toggle('minimized', AW_MINIMIZED);
+  btn.textContent = AW_MINIMIZED ? '⌃' : '⌄';
+  teaser.classList.toggle('hidden', !AW_MINIMIZED);
+  if (prevLabel) prevLabel.classList.toggle('hidden', !AW_MINIMIZED);
+}
+
+// ── DISMISS (browse as guest) ──────────────────────────────────
+function dismissAuth() {
+  const win = document.getElementById('auth-window');
+  const overlay = document.getElementById('guest-overlay');
+  const teaser = document.getElementById('guest-teaser');
+  const prevLabel = document.getElementById('preview-label');
+  win.classList.add('hidden');
+  teaser.classList.add('hidden');
+  if (prevLabel) prevLabel.classList.add('hidden');
+  overlay.style.background = 'rgba(10,16,32,.15)';
+  overlay.style.backdropFilter = 'blur(0px)';
+  // Show topbar join button
+  const topbarRight = document.querySelector('.topbar-right');
+  if (topbarRight) {
+    const joinBtn = document.createElement('button');
+    joinBtn.className = 'guest-join-btn';
+    joinBtn.textContent = '👤 Join Free';
+    joinBtn.onclick = () => {
+      win.classList.remove('hidden');
+      win.classList.remove('minimized');
+      overlay.style.background = 'rgba(10,16,32,.55)';
+      overlay.style.backdropFilter = 'blur(3px)';
+      joinBtn.remove();
+    };
+    topbarRight.insertBefore(joinBtn, topbarRight.firstChild);
+  }
+  showToast('Browsing as guest — some features are limited');
+}
+
+// ── DISMISS AFTER LOGIN (full access) ─────────────────────────
+function awDismissAndEnter() {
+  IS_GUEST = false;
+  const win = document.getElementById('auth-window');
+  const overlay = document.getElementById('guest-overlay');
+  const teaser = document.getElementById('guest-teaser');
+  const prevLabel = document.getElementById('preview-label');
+  win.classList.add('hidden');
+  teaser.classList.add('hidden');
+  if (prevLabel) prevLabel.classList.add('hidden');
+  overlay.classList.add('hidden');
+  // Remove restrictions
+  document.getElementById('sb-list').classList.remove('guest-restricted');
+  const postBtn = document.querySelector('.btn-post');
+  if (postBtn) postBtn.style.opacity = '1';
+  // Update avatar in topbar
+  const av = document.querySelector('.avatar');
+  if (av) av.textContent = (AW_USER.firstName||'?')[0].toUpperCase();
+  showToast('🎉 Welcome to BringMe.Store, @' + (AW_USER.nickname||'member') + '!', 'success');
+}
+
+// ── TAB SWITCHING ──────────────────────────────────────────────
+function awShowTab(tab) {
+  document.getElementById('aw-signup').style.display = tab==='signup'?'block':'none';
+  document.getElementById('aw-login').style.display = tab==='login'?'block':'none';
+  document.getElementById('aw-tab-signup').classList.toggle('active', tab==='signup');
+  document.getElementById('aw-tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('aw-steps-row').style.display = tab==='signup'?'flex':'none';
+  document.getElementById('aw-tagline').textContent = tab==='signup'?'Join the SJDM community — free!':'Welcome back!';
+}
+
+// ── STEP NAVIGATION ────────────────────────────────────────────
+function awGoStep(n) {
+  if (n > AW_CUR_STEP) {
+    if (AW_CUR_STEP===1 && !awValidateStep1()) return;
+    if (AW_CUR_STEP===2 && !awValidateOTP()) return;
+    if (AW_CUR_STEP===3 && !awValidateProfile()) return;
+    if (AW_CUR_STEP===4 && AW_ROLES.size===0) { showToast('Please select at least one role'); return; }
+  }
+  document.getElementById('aw-step-'+AW_CUR_STEP).style.display='none';
+  AW_CUR_STEP = n;
+  document.getElementById('aw-step-'+n).style.display='block';
+  awUpdateSteps();
+  if (n===2) awStartTimer();
+  if (n===5 && AW_USER.method==='phone') { awSubmitSignup(); return; }
+  // Auto scroll window to top
+  document.getElementById('auth-window').scrollTop = 0;
+}
+
+function awUpdateSteps() {
+  const row = document.getElementById('aw-steps-row');
+  if (!row) return;
+  let html = '';
+  for (let i=1; i<=AW_TOTAL_STEPS; i++) {
+    const done=i<AW_CUR_STEP, active=i===AW_CUR_STEP;
+    html += `<div class="aw-step-dot ${done?'done':active?'active':'pending'}">${done?'✓':i}</div>`;
+    if (i<AW_TOTAL_STEPS) html += `<div class="aw-step-line ${done?'done':''}"></div>`;
+  }
+  row.innerHTML = html;
+}
+
+// ── STEP 1 ─────────────────────────────────────────────────────
+function awValidatePhone(inp) {
+  const v = inp.value.replace(/\D/g,'');
+  inp.style.borderColor = (v.length===10&&v.startsWith('9')) ? 'var(--green)' : v.length>0 ? 'var(--red)' : '';
+}
+
+function awValidateStep1() {
+  const ageCb = document.getElementById('aw-age-cb');
+  if (ageCb && !ageCb.checked) { showToast('Please confirm you are 18 or older'); return false; }
+  const phone = document.getElementById('aw-phone').value.replace(/[^0-9]/g,'');
+  const email = document.getElementById('aw-email').value;
+  if (phone.length===10&&phone.startsWith('9')) {
+    AW_USER.phone='+63'+phone; AW_USER.method='phone';
+    document.getElementById('aw-otp-dest').textContent='+63'+phone; return true;
+  }
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    AW_USER.email=email; AW_USER.method='email';
+    document.getElementById('aw-otp-dest').textContent=email; return true;
+  }
+  showToast('Please enter a valid phone number or email');
+  return false;
+}
+
+// ── STEP 2: OTP ────────────────────────────────────────────────
+function awOtpIn(i) {
+  const inp = document.getElementById('ao'+i);
+  inp.classList.toggle('filled', inp.value.length>0);
+  if (inp.value && i<5) document.getElementById('ao'+(i+1)).focus();
+  const all = [0,1,2,3,4,5].every(j=>document.getElementById('ao'+j).value);
+  document.getElementById('aw-otp-btn').disabled = !all;
+}
+function awOtpKey(i,e) {
+  if (e.key==='Backspace'&&!document.getElementById('ao'+i).value&&i>0)
+    document.getElementById('ao'+(i-1)).focus();
+}
+function awValidateOTP() {
+  return [0,1,2,3,4,5].every(i=>document.getElementById('ao'+i).value);
+}
+function awVerifyOTP() {
+  const btn = document.getElementById('aw-otp-btn');
+  btn.disabled=true; btn.innerHTML='<div class="aw-spinner"></div> Verifying...';
+  setTimeout(()=>{ btn.innerHTML='Verify →'; btn.disabled=false; awGoStep(3); }, 1200);
+}
+function awStartTimer() {
+  let s=60;
+  document.getElementById('aw-resend').style.display='none';
+  document.getElementById('aw-timer').style.display='inline';
+  clearInterval(AW_RESEND_TIMER);
+  AW_RESEND_TIMER = setInterval(()=>{
+    s--; document.getElementById('aw-timer-val').textContent=s;
+    if(s<=0){ clearInterval(AW_RESEND_TIMER);
+      document.getElementById('aw-resend').style.display='inline';
+      document.getElementById('aw-timer').style.display='none'; }
+  },1000);
+}
+function awResend(){ showToast('New code sent! ✅'); awStartTimer(); }
+
+// ── STEP 3: PROFILE ────────────────────────────────────────────
+function awPickEmoji() {
+  AW_EMOJI_IDX = (AW_EMOJI_IDX+1) % AW_EMOJIS.length;
+  const emoji = AW_EMOJIS[AW_EMOJI_IDX];
+  document.getElementById('aw-photo-circle').textContent = emoji;
+  AW_USER.photo = emoji;
+}
+function awPreviewPhoto(input) {
+  if (input.files&&input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const circle = document.getElementById('aw-photo-circle');
+      circle.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      AW_USER.photo = e.target.result;
+      showToast('Photo set! ✅');
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+function awCheckNick(inp) {
+  const v = inp.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+  inp.value = v;
+  const taken = AW_TAKEN_NICKS.includes(v);
+  document.getElementById('aw-nick-check').textContent = v ? (taken?'❌':'✅') : '';
+  inp.style.borderColor = v ? (taken?'var(--red)':'var(--green)') : '';
+  awCheckProfile();
+}
+function awCheckProfile() {
+  const fn=document.getElementById('aw-fname').value.trim();
+  const ln=document.getElementById('aw-lname').value.trim();
+  const nk=document.getElementById('aw-nick').value.trim();
+  const taken=AW_TAKEN_NICKS.includes(nk.toLowerCase());
+  const btn=document.getElementById('aw-profile-btn');
+  if(btn) btn.disabled=!(fn&&ln&&nk&&!taken);
+}
+function awValidateProfile() {
+  const fn=document.getElementById('aw-fname').value.trim();
+  const ln=document.getElementById('aw-lname').value.trim();
+  const nk=document.getElementById('aw-nick').value.trim();
+  if(!fn||!ln||!nk){showToast('Please fill in your name and nickname');return false;}
+  if(AW_TAKEN_NICKS.includes(nk.toLowerCase())){showToast('Username already taken');return false;}
+  AW_USER.firstName=fn; AW_USER.lastName=ln; AW_USER.nickname=nk;
+  AW_USER.location=document.getElementById('aw-location').value;
+  AW_USER.bio=document.getElementById('aw-bio').value;
+  return true;
+}
+
+// ── STEP 4: ROLES ──────────────────────────────────────────────
+function awToggleRole(r) {
+  AW_ROLES.has(r)?AW_ROLES.delete(r):AW_ROLES.add(r);
+  document.getElementById('awr-'+r).classList.toggle('sel', AW_ROLES.has(r));
+  document.getElementById('aw-role-btn').disabled = AW_ROLES.size===0;
+  AW_USER.roles = Array.from(AW_ROLES);
+}
+
+// ── STEP 5: PASSWORD ───────────────────────────────────────────
+function awCheckPw() {
+  const v=document.getElementById('aw-pw').value;
+  const checks=[v.length>=8,/[A-Z]/.test(v),/[0-9]/.test(v),/[^A-Za-z0-9]/.test(v)];
+  const score=checks.filter(Boolean).length;
+  const cols=['','#d93025','#b45309','#c9a96e','#1b6e3a'];
+  const lbls=['Enter a password','Weak','Fair','Good','Strong ✅'];
+  for(let i=0;i<4;i++){
+    const b=document.getElementById('awpb'+i);
+    b.style.background=i<score?cols[score]:'var(--border)';
+  }
+  document.getElementById('aw-pw-lbl').textContent=lbls[score];
+  awCheckPwMatch();
+}
+function awCheckPwMatch() {
+  const pw=document.getElementById('aw-pw').value;
+  const c=document.getElementById('aw-pw2').value;
+  const icon=document.getElementById('aw-pw-match');
+  const btn=document.getElementById('aw-pw-btn');
+  if(!c){icon.textContent='';if(btn)btn.disabled=true;return;}
+  const match=pw===c;
+  icon.textContent=match?'✅':'❌';
+  if(btn) btn.disabled=!(match&&pw.length>=8);
+}
+function awTogglePw(id,btn){
+  const inp=document.getElementById(id);
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'👁️':'🙈';
+}
+
+// ── SUBMIT SIGNUP ──────────────────────────────────────────────
+function awSubmitSignup() {
+  const btn = document.getElementById('aw-pw-btn') || document.getElementById('aw-role-btn');
+  if(btn){btn.disabled=true;btn.innerHTML='<div class="aw-spinner"></div> Creating...';}
+  setTimeout(()=>{
+    // Hide all steps
+    for(let i=1;i<=AW_TOTAL_STEPS;i++){
+      const el=document.getElementById('aw-step-'+i);
+      if(el)el.style.display='none';
+    }
+    document.getElementById('aw-steps-row').innerHTML='';
+    // Build profile preview
+    const roleColors={buyer:'#fff3e0',seller:'#e8f5ed',store:'#ffeaea',helper:'#ede9ff'};
+    const roleText={buyer:'#b45309',seller:'#1b6e3a',store:'#d93025',helper:'#5b4fcf'};
+    const roleLabel={buyer:'Buyer',seller:'Seller',store:'Store Owner',helper:'Helper'};
+    const rolesHTML=AW_USER.roles.map(r=>
+      `<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;background:${roleColors[r]||'#eee'};color:${roleText[r]||'#555'}">${roleLabel[r]||r}</span>`
+    ).join('');
+    const avContent = AW_USER.photo&&AW_USER.photo.startsWith('data:')
+      ? `<img src="${AW_USER.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+      : `<span style="font-size:22px">${AW_USER.photo||'🙂'}</span>`;
+    document.getElementById('aw-success-profile').innerHTML=`
+      <div class="aw-pp-avatar">${avContent}</div>
+      <div>
+        <div class="aw-pp-name">${AW_USER.firstName} ${AW_USER.lastName}</div>
+        <div class="aw-pp-nick">@${AW_USER.nickname}</div>
+        <div class="aw-pp-roles">${rolesHTML}</div>
+        ${AW_USER.location?`<div style="font-size:10px;color:var(--muted);margin-top:3px">📍 ${AW_USER.location}</div>`:''}
+      </div>`;
+    document.getElementById('aw-success').style.display='block';
+    // Update tagline
+    document.getElementById('aw-tagline').textContent='Welcome, @'+AW_USER.nickname+'! 🎉';
+  }, 1400);
+}
+
+// ── LOGIN ──────────────────────────────────────────────────────
+function awSubmitLogin() {
+  const id=document.getElementById('aw-login-id').value;
+  const pw=document.getElementById('aw-login-pw').value;
+  if(!id||!pw){showToast('Please fill in all fields');return;}
+  const btn=document.querySelector('#aw-login .aw-submit');
+  btn.disabled=true;btn.innerHTML='<div class="aw-spinner"></div> Signing in...';
+  setTimeout(()=>{
+    AW_USER={firstName:'Juan',lastName:'Cruz',nickname:'juansjdm',location:'Tungkong Mangga',bio:'',photo:'😎',roles:['buyer','seller','helper']};
+    awDismissAndEnter();
+  },1400);
+}
+function awSocialSignup(p){
+  showToast('Connecting to '+p+'...');
+  setTimeout(()=>{
+    AW_USER.method='social';
+    AW_USER.firstName=p==='Google'?'Juan':'Maria';
+    AW_USER.lastName='dela Cruz';
+    awGoStep(3);
+  },900);
+}
+function awSocialLogin(p){
+  showToast('Connecting to '+p+'...');
+  setTimeout(()=>{
+    AW_USER={firstName:'Juan',lastName:'Cruz',nickname:'juansjdm',location:'Tungkong Mangga',bio:'',photo:'😎',roles:['buyer','helper']};
+    awDismissAndEnter();
+  },1200);
+}
+
+</script>
+
+<!-- ═══════════════════════════════════════════
+     GUEST OVERLAY + AUTH WINDOW
+     ═══════════════════════════════════════════ -->
+
+<!-- Dimmed overlay for guests -->
+<div class="guest-overlay" id="guest-overlay"></div>
+
+<!-- Preview label -->
+<div class="preview-label" id="preview-label">👀 Preview Mode — Join free to interact</div>
+
+<!-- Teaser strip -->
+<div class="guest-teaser" id="guest-teaser">
+  <div class="gt-dot"></div>
+  <div class="gt-txt"><span>1,240 members</span> already on the map · Join them free</div>
+</div>
+
+<!-- Floating Auth Window -->
+<div class="auth-window" id="auth-window">
+
+  <!-- Handle Row -->
+  <div class="aw-handle-row" onclick="toggleMinimize()">
+    <div class="aw-handle"></div>
+    <div style="display:flex;align-items:center;gap:10px;width:100%;margin-top:4px">
+      <div class="aw-logo">BringMe.Store</div>
+      <div class="aw-tagline" id="aw-tagline">Join the SJDM community — free!</div>
+      <button class="aw-min-btn" id="aw-min-btn" onclick="event.stopPropagation();toggleMinimize()" title="Minimize">⌄</button>
+      <button class="aw-close-btn" onclick="event.stopPropagation();dismissAuth()" title="Browse as guest">Browse as guest →</button>
+    </div>
+  </div>
+
+  <!-- Auth Tabs -->
+  <div class="aw-tabs">
+    <button class="aw-tab active" id="aw-tab-signup" onclick="awShowTab('signup')">Join Free</button>
+    <button class="aw-tab" id="aw-tab-login" onclick="awShowTab('login')">Sign In</button>
+  </div>
+
+  <!-- Body -->
+  <div class="aw-body">
+
+    <!-- ── SIGNUP ── -->
+    <div id="aw-signup">
+      <!-- Step indicator -->
+      <div class="aw-steps" id="aw-steps-row" style="padding:0 20px"></div>
+
+      <!-- Step 1: Contact -->
+      <div class="aw-form" id="aw-step-1">
+        <div class="aw-title">Join the Community</div>
+        <div class="aw-sub">Create your free account in 2 minutes.</div>
+        <div class="aw-social">
+          <button class="aw-social-btn" onclick="awSocialSignup('Google')">🔵 Google</button>
+          <button class="aw-social-btn" onclick="awSocialSignup('Facebook')">📘 Facebook</button>
+        </div>
+        <div class="aw-divider"><div class="aw-div-line"></div><span class="aw-div-txt">or use phone/email</span><div class="aw-div-line"></div></div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">📱 Phone Number</label>
+          <div style="position:relative">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);font-weight:700">+63</span>
+            <input class="aw-input" id="aw-phone" type="tel" placeholder="9171234567" style="padding-left:44px" oninput="awValidatePhone(this)">
+          </div>
+        </div>
+        <div class="aw-divider" style="margin:10px 0"><div class="aw-div-line"></div><span class="aw-div-txt">or</span><div class="aw-div-line"></div></div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">✉️ Email</label>
+          <input class="aw-input" id="aw-email" type="email" placeholder="you@email.com">
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;background:#f9f7f2;border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:12px">
+          <input type="checkbox" id="aw-consent-cb" style="width:16px;height:16px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer" onchange="document.getElementById('aw-continue-btn').disabled=!this.checked">
+          <label for="aw-consent-cb" style="font-size:11px;color:#555;line-height:1.5;cursor:pointer">
+            I agree to the <a href="privacy.html" target="_blank" style="color:var(--gold);font-weight:700">Privacy Policy</a> & <a href="privacy.html#terms" target="_blank" style="color:var(--gold);font-weight:700">Terms</a> and consent to data processing under <strong>RA 10173</strong>.
+          </label>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:8px;background:#f0f9ff;border:1px solid #b8d8f0;border-radius:10px;padding:11px;margin-bottom:14px">
+          <input type="checkbox" id="aw-age-cb" style="width:16px;height:16px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer">
+          <label for="aw-age-cb" style="font-size:11px;color:#7a4800;cursor:pointer">⚠️ I confirm I am at least <strong>18 years old</strong>.</label>
+        </div>
+        <button class="aw-submit" id="aw-continue-btn" onclick="awGoStep(2)" disabled>Continue →</button>
+        <div class="aw-terms">🔒 Protected under <a href="privacy.html" target="_blank">RA 10173</a>. We never sell your data.</div>
+      </div>
+
+      <!-- Step 2: OTP -->
+      <div class="aw-form" id="aw-step-2" style="display:none">
+        <div class="aw-title">Verify your number</div>
+        <div class="aw-sub">Enter the 6-digit code sent to <strong id="aw-otp-dest"></strong></div>
+        <div class="aw-otp-row">
+          ${[0,1,2,3,4,5].map(i=>`<input class="aw-otp" id="ao${i}" maxlength="1" type="tel" oninput="awOtpIn(${i})" onkeydown="awOtpKey(${i},event)">`).join('')}
+        </div>
+        <div style="text-align:center;margin-bottom:14px">
+          <button id="aw-resend" onclick="awResend()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer">Resend code</button>
+          <span id="aw-timer" style="font-size:12px;color:var(--muted);display:none"> in <span id="aw-timer-val">60</span>s</span>
+        </div>
+        <button class="aw-submit" id="aw-otp-btn" onclick="awVerifyOTP()" disabled>Verify →</button>
+        <button onclick="awGoStep(1)" style="width:100%;margin-top:8px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">← Back</button>
+      </div>
+
+      <!-- Step 3: Profile -->
+      <div class="aw-form" id="aw-step-3" style="display:none">
+        <div class="aw-title">Your profile</div>
+        <div class="aw-sub">Tell the community who you are.</div>
+
+        <!-- Quick photo -->
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+          <div id="aw-photo-circle" onclick="awPickEmoji()" style="width:60px;height:60px;border-radius:50%;background:var(--cream2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;flex-shrink:0;transition:border .2s" title="Pick emoji">🙂</div>
+          <div>
+            <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:3px">Profile Photo</div>
+            <div style="display:flex;gap:7px">
+              <button onclick="awPickEmoji()" style="background:var(--cream2);border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer">😊 Emoji</button>
+              <button onclick="document.getElementById('aw-photo-file').click()" style="background:var(--cream2);border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer">📷 Upload</button>
+            </div>
+            <input type="file" id="aw-photo-file" accept="image/*" style="display:none" onchange="awPreviewPhoto(this)">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="aw-input-wrap" style="margin-bottom:0">
+            <label class="aw-label">First Name *</label>
+            <input class="aw-input" id="aw-fname" type="text" placeholder="Juan" oninput="awCheckProfile()">
+          </div>
+          <div class="aw-input-wrap" style="margin-bottom:0">
+            <label class="aw-label">Last Name *</label>
+            <input class="aw-input" id="aw-lname" type="text" placeholder="Cruz" oninput="awCheckProfile()">
+          </div>
+        </div>
+
+        <div class="aw-input-wrap">
+          <label class="aw-label">@ Nickname *</label>
+          <div style="position:relative">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--gold);font-size:14px">@</span>
+            <input class="aw-input" id="aw-nick" type="text" placeholder="juansjdm" style="padding-left:26px" oninput="awCheckNick(this)">
+            <span id="aw-nick-check" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px"></span>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">Visible on the map to other members</div>
+        </div>
+
+        <div class="aw-input-wrap">
+          <label class="aw-label">📍 Your Area</label>
+          <select class="aw-input" id="aw-location">
+            <option value="">Select barangay...</option>
+            <option>Tungkong Mangga</option><option>Sapang Palay</option>
+            <option>Minuyan</option><option>Poblacion</option>
+            <option>Citrus</option><option>Dulong Bayan</option>
+            <option>Francisco Homes</option><option>Other</option>
+          </select>
+        </div>
+
+        <div class="aw-input-wrap">
+          <label class="aw-label">Bio <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <textarea class="aw-input" id="aw-bio" rows="2" placeholder="e.g. Tiangge seller sa Tungkong Mangga!" style="resize:none" maxlength="100" oninput="this.nextSibling.textContent=this.value.length+'/100'"></textarea>
+          <div style="font-size:10px;color:var(--muted);text-align:right">0/100</div>
+        </div>
+
+        <button class="aw-submit" id="aw-profile-btn" onclick="awGoStep(4)" disabled>Continue →</button>
+      </div>
+
+      <!-- Step 4: Roles -->
+      <div class="aw-form" id="aw-step-4" style="display:none">
+        <div class="aw-title">What brings you here?</div>
+        <div class="aw-sub">Pick all that apply.</div>
+        <div class="aw-roles">
+          <div class="aw-role" id="awr-buyer" onclick="awToggleRole('buyer')">
+            <div class="aw-role-icon">🛍️</div>
+            <div class="aw-role-name">Buyer</div>
+            <div class="aw-role-desc">Find items near me</div>
+          </div>
+          <div class="aw-role" id="awr-seller" onclick="awToggleRole('seller')">
+            <div class="aw-role-icon">🏷️</div>
+            <div class="aw-role-name">Seller</div>
+            <div class="aw-role-desc">Sell to the community</div>
+          </div>
+          <div class="aw-role" id="awr-store" onclick="awToggleRole('store')">
+            <div class="aw-role-icon">🏪</div>
+            <div class="aw-role-name">Store Owner</div>
+            <div class="aw-role-desc">Get my store found</div>
+          </div>
+          <div class="aw-role" id="awr-helper" onclick="awToggleRole('helper')">
+            <div class="aw-role-icon">🤝</div>
+            <div class="aw-role-name">Helper</div>
+            <div class="aw-role-desc">Help neighbors · Earn ⭐</div>
+          </div>
+        </div>
+        <div style="background:rgba(201,169,110,.08);border:1px solid rgba(201,169,110,.2);border-radius:11px;padding:12px;margin-bottom:14px;font-size:12px;color:#555;line-height:1.6">
+          🤝 <strong>Helpers earn ⭐ points = real ₱ cash!</strong> Help neighbors find stores → get confirmed → earn ₱1 per help, cashable to GCash!
+        </div>
+        <button class="aw-submit" id="aw-role-btn" onclick="awGoStep(5)" disabled>Almost there →</button>
+      </div>
+
+      <!-- Step 5: Password -->
+      <div class="aw-form" id="aw-step-5" style="display:none">
+        <div class="aw-title">Create a password</div>
+        <div class="aw-sub">Secure your BringMe.Store account.</div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">Password *</label>
+          <div style="position:relative">
+            <input class="aw-input" id="aw-pw" type="password" placeholder="At least 8 characters" oninput="awCheckPw()">
+            <button onclick="awTogglePw('aw-pw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px">👁️</button>
+          </div>
+          <div class="pw-bars-mini" id="aw-pw-bars">
+            <div class="pw-bar-mini" id="awpb0"></div>
+            <div class="pw-bar-mini" id="awpb1"></div>
+            <div class="pw-bar-mini" id="awpb2"></div>
+            <div class="pw-bar-mini" id="awpb3"></div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px" id="aw-pw-lbl">Enter a password</div>
+        </div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">Confirm Password *</label>
+          <div style="position:relative">
+            <input class="aw-input" id="aw-pw2" type="password" placeholder="Repeat password" oninput="awCheckPwMatch()">
+            <span id="aw-pw-match" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px"></span>
+          </div>
+        </div>
+        <button class="aw-submit" id="aw-pw-btn" onclick="awSubmitSignup()" disabled>🎉 Create Account</button>
+      </div>
+
+      <!-- Success -->
+      <div id="aw-success" style="display:none">
+        <div class="aw-success">
+          <div class="aw-success-icon">🎉</div>
+          <div class="aw-success-title">Welcome!</div>
+          <div class="aw-success-sub">You're now part of the BringMe.Store community.</div>
+          <div class="aw-profile-preview" id="aw-success-profile"></div>
+          <button class="aw-submit" onclick="awDismissAndEnter()">🗺️ Explore the Map</button>
+          <div style="font-size:12px;color:var(--muted);margin-top:10px;text-align:center">You earned <strong style="color:var(--gold)">⭐ 5 welcome points</strong>!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LOGIN ── -->
+    <div id="aw-login" style="display:none">
+      <div class="aw-form">
+        <div class="aw-title">Welcome back!</div>
+        <div class="aw-sub">Sign in to your account.</div>
+        <div class="aw-social">
+          <button class="aw-social-btn" onclick="awSocialLogin('Google')">🔵 Google</button>
+          <button class="aw-social-btn" onclick="awSocialLogin('Facebook')">📘 Facebook</button>
+        </div>
+        <div class="aw-divider"><div class="aw-div-line"></div><span class="aw-div-txt">or</span><div class="aw-div-line"></div></div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">📱 Phone or Email</label>
+          <input class="aw-input" id="aw-login-id" type="text" placeholder="09171234567 or email">
+        </div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">🔒 Password</label>
+          <div style="position:relative">
+            <input class="aw-input" id="aw-login-pw" type="password" placeholder="Your password">
+            <button onclick="awTogglePw('aw-login-pw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px">👁️</button>
+          </div>
+        </div>
+        <div style="text-align:right;margin-bottom:14px"><a href="#" style="font-size:12px;color:var(--gold);text-decoration:none;font-weight:600">Forgot password?</a></div>
+        <button class="aw-submit" onclick="awSubmitLogin()">Sign In →</button>
+        <div class="aw-switch">No account? <a onclick="awShowTab('signup')">Join free →</a></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── MOBILE BOTTOM NAV ── -->
+<div class="mobile-nav" id="mobile-nav">
+  <button class="mn-btn active" id="mn-map" onclick="mobileNav('map')">
+    <span class="mn-icon">🗺️</span>
+    <span class="mn-label">Map</span>
+  </button>
+  <button class="mn-btn" id="mn-browse" onclick="mobileNav('browse')">
+    <span class="mn-icon">🏠</span>
+    <span class="mn-label">Browse</span>
+  </button>
+  <button class="mn-post" onclick="PS={suggestions:[],loading:false,source:'',timer:null};S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};openModal('post')" title="Post Listing">
+    ➕
+  </button>
+  <button class="mn-btn red-nav" id="mn-urgent" onclick="mobileNav('urgent')">
+    <span class="mn-icon">🚨</span>
+    <span class="mn-label">Urgent</span>
+  </button>
+  <button class="mn-btn" id="mn-points" onclick="openModal('points')">
+    <span class="mn-icon">⭐</span>
+    <span class="mn-label">Points</span>
+  </button>
+</div>
+
+</body>
+</html>
