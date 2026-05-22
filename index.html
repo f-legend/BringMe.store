@@ -1729,53 +1729,70 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
 <div class="app-body">
 
-<!-- Panel dim overlay -->
 <div class="panel-dim" id="panel-dim" onclick="closeAllPanels()"></div>
 
-<!-- Left panel edge handle -->
-<div class="panel-edge-handle left-handle" id="left-handle" onclick="togglePanel('left')" title="Requests panel">
+<!-- Left edge handle (mobile) -->
+<div class="panel-edge-handle left-handle" id="left-handle" onclick="togglePanel('left')" title="Requests">
   <span class="peh-arrow" id="left-arrow">›</span>
-  <div class="peh-dot"></div>
-  <div class="peh-dot"></div>
-  <div class="peh-dot"></div>
+  <div class="peh-dot"></div><div class="peh-dot"></div><div class="peh-dot"></div>
 </div>
-
-<!-- Right panel edge handle -->
+<!-- Right edge handle (mobile) -->
 <div class="panel-edge-handle right-handle" id="right-handle" onclick="togglePanel('right')" title="Stores & Listings">
   <span class="peh-arrow" id="right-arrow">‹</span>
-  <div class="peh-dot"></div>
-  <div class="peh-dot"></div>
-  <div class="peh-dot"></div>
+  <div class="peh-dot"></div><div class="peh-dot"></div><div class="peh-dot"></div>
 </div>
-  <!-- SIDEBAR -->
-  <!-- RIGHT PANEL: Stores & Listings -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-handle" id="sb-handle"></div>
-    <div class="sb-head">
-      <div class="sb-title-bar">
-        <div class="sb-title">🏪 Stores & Listings</div>
-        <div class="lp-count" id="result-count">Loading...</div>
-      </div>
-      <div class="sb-search">
-        <span class="si">🔍</span>
-        <input type="text" id="search-inp-right" placeholder="Search stores, items..." oninput="onSearch(this.value)" id="search-inp">
-      </div>
-      <!-- Tab row -->
-      <div style="display:flex;gap:4px;padding:0 12px 10px;">
-        <button class="type-btn active" id="rp-all" onclick="setRightTab('all')" style="flex:1;padding:7px 4px;font-size:10px;">🏠 All</button>
-        <button class="type-btn" id="rp-sell" onclick="setRightTab('sell')" style="flex:1;padding:7px 4px;font-size:10px;">🛍️ For Sale</button>
-        <button class="type-btn red-t" id="rp-stores" onclick="setRightTab('stores')" style="flex:1;padding:7px 4px;font-size:10px;">🏪 Stores</button>
-      </div>
-      <!-- Cat pills -->
-      <div class="cat-scroll" id="cat-scroll" style="padding:0 12px 10px;"></div>
-    </div>
-    <div class="featured-banner" id="featured-banner"></div>
-    <div class="sb-list" id="sb-list"></div>
-    <div id="store-detail-panel"></div>
-  </aside>
 
-  <!-- MAP -->
-  <div class="map-wrap">
+<!-- ══════════════════════════════════════════
+     LEFT PANEL — Requests
+     ══════════════════════════════════════════ -->
+<div class="left-panel" id="left-panel">
+  <div class="lp-head">
+    <div class="lp-title-bar">
+      <div class="lp-title">Requests</div>
+      <div class="lp-count" id="lf-count">0</div>
+    </div>
+    <div class="lp-search-wrap">
+      <span class="si">🔍</span>
+      <input type="text" id="lf-search" placeholder="Search requests..." oninput="renderLeftPanel()">
+    </div>
+  </div>
+
+  <!-- URGENT -->
+  <div class="lp-urgent-section">
+    <div class="lp-section-hdr">
+      <span class="lp-section-icon">🚨</span>
+      <span class="lp-section-title">Help Me — Urgent</span>
+      <span class="lp-section-count" id="urgent-count" style="background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)">0</span>
+    </div>
+    <div id="urgent-list"></div>
+  </div>
+
+  <!-- FIND ME -->
+  <div class="lp-find-section">
+    <div class="lp-section-hdr">
+      <span class="lp-section-icon">🔍</span>
+      <span class="lp-section-title">Find Me — Where to Buy</span>
+      <span class="lp-section-count" id="find-count" style="background:rgba(74,63,181,0.07);color:var(--purple);border:1px solid rgba(74,63,181,0.13)">0</span>
+    </div>
+    <div id="find-list"></div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="lp-actions">
+    <button class="lp-action-btn help-me-btn" onclick="openPostRequest('urgent')">
+      <span class="btn-icon">🆘</span>
+      <span class="btn-label">Help Me!</span>
+      <span class="btn-sub">Cash or Trust pts</span>
+    </button>
+    <button class="lp-action-btn find-me-btn" onclick="openPostRequest('find')">
+      <span class="btn-icon">🔍</span>
+      <span class="btn-label">Find Me</span>
+      <span class="btn-sub">Trust pts only</span>
+    </button>
+  </div>
+</div>
+
+<div class="map-wrap">
     <div id="map"></div>
 
     <!-- ══ BUILT-IN NAVIGATION OVERLAY ══ -->
@@ -2015,6 +2032,61 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
       <span style="color:#1a2a50">🇵🇭 RA 10173</span>
     </div>
   </div>
+
+<!-- ══════════════════════════════════════════
+     RIGHT PANEL — Stores & Listings
+     ══════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-handle" id="sb-handle"></div>
+
+  <!-- STORES SECTION (top) -->
+  <div class="stores-section" id="stores-section">
+    <div class="rp-section-hdr">
+      <span style="font-size:13px">🏪</span>
+      <span class="rp-section-title" style="color:var(--gold)">Nearby Stores</span>
+      <span class="rp-section-count" id="stores-count" style="background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)">0</span>
+    </div>
+    <div class="feat-strip" id="featured-banner"></div>
+    <div class="stores-search">
+      <div class="stores-search-inner">
+        <span class="si">🔍</span>
+        <input type="text" id="store-search" placeholder="Search stores..." oninput="renderRightPanel()">
+      </div>
+    </div>
+    <div class="stores-list" id="stores-list"></div>
+  </div>
+
+  <!-- LISTINGS SECTION (middle) -->
+  <div class="listings-section" id="listings-section">
+    <div class="rp-section-hdr">
+      <span style="font-size:13px">🛍️</span>
+      <span class="rp-section-title" style="color:var(--gold-lt)">Listings</span>
+      <span class="rp-section-count" id="listings-count" style="background:rgba(198,151,63,0.09);color:var(--gold);border:1px solid rgba(198,151,63,0.17)">0</span>
+    </div>
+    <div class="listings-filter">
+      <button class="lf-pill active" id="lf-all" onclick="setListingFilter('all')">🏠 All</button>
+      <button class="lf-pill" id="lf-sell" onclick="setListingFilter('sell')">🛍️ Sale</button>
+      <button class="lf-pill" id="lf-buy" onclick="setListingFilter('buy')">🔍 Wanted</button>
+    </div>
+    <div class="listings-list" id="sb-list"></div>
+    <div id="store-detail-panel"></div>
+  </div>
+
+  <!-- ACTIONS (bottom) -->
+  <div class="rp-actions">
+    <button class="rp-action-btn reg-store-btn" onclick="openModal('store-register')">
+      <span class="ra-icon">🏪</span>
+      <span class="ra-label">Register Store</span>
+      <span class="ra-sub">Get on the map</span>
+    </button>
+    <button class="rp-action-btn post-item-btn" onclick="openModal('post')">
+      <span class="ra-icon">➕</span>
+      <span class="ra-label">List an Item</span>
+      <span class="ra-sub">Sell or buy</span>
+    </button>
+  </div>
+</aside>
+
 </div>
 
 <!-- Modal container -->
@@ -4996,6 +5068,128 @@ window.openNavModal = function(result) {
 function navigateTo(lat, lng, name, addr) {
   openBuiltInNav(lat, lng, name, addr);
 }
+
+
+// ── RIGHT PANEL: Stores + Listings ───────────────────────────────────────────
+let currentListingFilter = 'all';
+let currentStoreSearch = '';
+
+function setListingFilter(f) {
+  currentListingFilter = f;
+  ['all','sell','buy'].forEach(t => {
+    const el = document.getElementById('lf-'+t);
+    if (el) el.classList.toggle('active', t===f);
+  });
+  renderRightPanel();
+}
+
+function renderRightPanel() {
+  const storeSearch = (document.getElementById('store-search')?.value||'').toLowerCase();
+
+  // ── STORES ──
+  const filteredStores = stores.filter(s =>
+    !storeSearch || s.name.toLowerCase().includes(storeSearch) ||
+    (s.categories||[]).some(c=>c.toLowerCase().includes(storeSearch)) ||
+    (s.products||[]).some(p=>p.toLowerCase().includes(storeSearch))
+  ).sort((a,b) => {
+    // Featured first
+    if (a.featured && !b.featured) return -1;
+    if (!a.featured && b.featured) return 1;
+    // Then by distance
+    const da = Math.hypot(a.lat-USER.lat, a.lng-USER.lng);
+    const db = Math.hypot(b.lat-USER.lat, b.lng-USER.lng);
+    return da-db;
+  });
+
+  const storesCountEl = document.getElementById('stores-count');
+  if (storesCountEl) storesCountEl.textContent = filteredStores.length;
+
+  const storesList = document.getElementById('stores-list');
+  if (storesList) {
+    if (!filteredStores.length) {
+      storesList.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px">No stores found</div>';
+    } else {
+      storesList.innerHTML = filteredStores.map(s => {
+        const distKm = haversine(USER.lat, USER.lng, s.lat, s.lng).toFixed(1);
+        return `<div class="store-card-sm ${s.featured?'featured-s':''}" onclick="map&&map.panTo({lat:${s.lat},lng:${s.lng}});selectItem(${s.id},'store')">
+          <div class="sc-row">
+            <div class="sc-emoji">🏪</div>
+            <div class="sc-body">
+              <div class="sc-name">${esc(s.name)}</div>
+              <div class="sc-meta">
+                <span class="sc-loc">📍 ${esc(s.address)}</span>
+                <span class="sc-dist">${distKm}km</span>
+              </div>
+              <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">
+                <span class="sc-badge sc-open">Open</span>
+                ${s.featured?'<span class="sc-badge sc-feat">⭐ Featured</span>':''}
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Featured strip
+  const featBanner = document.getElementById('featured-banner');
+  if (featBanner) {
+    const featured = stores.filter(s=>s.featured);
+    featBanner.innerHTML = `<span class="feat-strip-lbl">⭐</span>` +
+      featured.map(s=>`<div class="feat-strip-chip" onclick="map&&map.panTo({lat:${s.lat},lng:${s.lng}});map&&map.setZoom(17)"><span>🏪</span><span>${esc(s.name)}</span></div>`).join('') +
+      `<div class="feat-strip-chip" style="border-style:dashed;opacity:.6" onclick="openModal('store-register')"><span>➕</span><span>Feature Your Store</span></div>`;
+  }
+
+  // ── LISTINGS ──
+  const filteredListings = listings.filter(l => {
+    if (currentListingFilter==='sell' && l.type!=='sell') return false;
+    if (currentListingFilter==='buy' && l.type!=='buy') return false;
+    return true;
+  }).sort((a,b) => (b.promoted?1:0)-(a.promoted?1:0));
+
+  const listingsCountEl = document.getElementById('listings-count');
+  if (listingsCountEl) listingsCountEl.textContent = filteredListings.length;
+
+  const listingsList = document.getElementById('sb-list');
+  if (listingsList) {
+    if (!filteredListings.length) {
+      listingsList.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px">No listings found</div>';
+    } else {
+      listingsList.innerHTML = filteredListings.map(l => {
+        const distKm = haversine(USER.lat, USER.lng, l.lat, l.lng).toFixed(1);
+        const isSell = l.type==='sell';
+        return `<div class="listing-card-sm ${l.promoted?'promoted-l':''}" onclick="selectItem(${l.id},'listing')">
+          <div class="lc-row">
+            <div class="lc-emoji ${isSell?'lc-sell':'lc-buy'}">${l.image||'📦'}</div>
+            <div class="lc-body">
+              <div class="lc-title">${esc(l.title)}</div>
+              <div class="lc-price">₱${l.price.toLocaleString()}</div>
+              <div class="lc-meta">
+                <span class="lc-loc">📍 ${esc(l.location)} · ${distKm}km</span>
+                <span class="lc-type ${isSell?'lc-sell-b':'lc-buy-b'}">${isSell?'Sale':'Wanted'}</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+}
+
+// Patch renderAll to call renderRightPanel
+const _origRenderAllOld = window.renderAll;
+window.renderAll = function() {
+  if (_origRenderAllOld) _origRenderAllOld();
+  renderRightPanel();
+  renderLeftPanel();
+};
+
+// Also patch initLocation
+const _origInitLoc = window.initLocation;
+window.initLocation = function(lat, lng, label) {
+  if (_origInitLoc) _origInitLoc(lat, lng, label);
+  setTimeout(() => { renderRightPanel(); renderLeftPanel(); }, 500);
+};
 
 </script>
 
