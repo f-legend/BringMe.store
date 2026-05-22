@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <!-- ── FAVICON & APP ICONS ── -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0C1F4A">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BringMe.Store">
+  <meta name="application-name" content="BringMe.Store">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy & Terms of Service — BringMe.Store</title>
+
+<style>
+:root{
+  /* ── LUXURY PALETTE: Royal Blue + Gold ── */
+  --gold:#C6973F;
+  --gold-dk:#9E7A2E;
+  --gold-lt:#E8C97A;
+  --gold-xlt:#FBF5E8;
+  --gold-shine:linear-gradient(135deg,#E8C97A 0%,#C6973F 40%,#9E7A2E 100%);
+
+  /* Royal Blue */
+  --royal:#0C1F4A;
+  --royal2:#142660;
+  --royal3:#1C2F72;
+  --royal4:#243878;
+  --royal-light:#2A4499;
+
+  /* Neutrals */
+  --white:#FFFFFF;
+  --off-white:#F7F9FD;
+  --cream:#F0F4FA;
+  --cream2:#E4EAF5;
+  --cream3:#D4DDED;
+
+  /* Text */
+  --text-dark:#0C1F4A;
+  --text-mid:#3D4F7A;
+  --text-light:#6B7A99;
+  --text-xlight:#A0AACC;
+
+  /* Accents */
+  --border:#C8D2E8;
+  --border-light:#DDE4F0;
+  --red:#B03A2E;--red-bg:#FDECEA;
+  --green:#1A6B3A;--green-bg:#E6F5EE;
+  --muted:#6B7A99;
+
+  /* Shadows */
+  --shadow:0 2px 20px rgba(12,31,74,0.08);
+  --shadow-md:0 4px 30px rgba(12,31,74,0.12);
+  --shadow-lg:0 12px 60px rgba(12,31,74,0.18);
+  --shadow-gold:0 4px 24px rgba(198,151,63,0.3);
+  --shadow-royal:0 8px 40px rgba(12,31,74,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);line-height:1.7;}
+.topbar{background:linear-gradient(135deg,var(--royal),var(--royal2));height:58px;display:flex;align-items:center;padding:0 32px;gap:16px;position:sticky;top:0;z-index:100;border-bottom:1px solid #1e2a45;}
+.logo{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--gold);text-decoration:none;line-height:1.1;}
+.logo small{display:block;font-size:9px;color:#445;font-family:'DM Sans',sans-serif;font-weight:400;}
+.topbar-right{margin-left:auto;display:flex;gap:8px;}
+.btn-ghost{background:none;border:1.5px solid rgba(255,255,255,.15);color:#8899cc;border-radius:9px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.hero{background:linear-gradient(160deg,var(--royal),var(--royal2));padding:60px 32px 48px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(198,151,63,.08) 0%,transparent 70%);}
+.hero-eyebrow{display:inline-block;background:rgba(198,151,63,.12);border:1px solid rgba(198,151,63,.2);border-radius:100px;padding:5px 16px;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:16px;position:relative;}
+.hero-title{font-family:'DM Serif Display',serif;font-size:40px;color:#fff;margin-bottom:12px;position:relative;}
+.hero-sub{font-size:15px;color:#8899bb;max-width:520px;margin:0 auto;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:24px;margin-top:24px;position:relative;}
+.hero-meta-item{font-size:12px;color:#6677aa;display:flex;align-items:center;gap:6px;}
+/* COMPLIANCE BADGE */
+.compliance-strip{background:var(--green-bg);border-top:1px solid #b7dfc6;border-bottom:1px solid #b7dfc6;padding:14px 32px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;}
+.cs-badge{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--green);}
+.cs-icon{font-size:18px;}
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:260px 1fr;max-width:1100px;margin:0 auto;padding:48px 32px;gap:48px;}
+/* TOC SIDEBAR */
+.toc{position:sticky;top:80px;height:fit-content;}
+.toc-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;}
+.toc-item{display:block;padding:7px 12px;border-radius:8px;font-size:13px;color:var(--muted);text-decoration:none;transition:all .15s;margin-bottom:2px;border-left:2px solid transparent;}
+.toc-item:hover{background:var(--cream2);color:var(--navy);}
+.toc-item.active{background:rgba(198,151,63,.1);color:var(--gold);border-left-color:var(--gold);font-weight:600;}
+.toc-divider{height:1px;background:var(--border);margin:10px 12px;}
+/* CONTENT */
+.content{}
+.section{margin-bottom:48px;scroll-margin-top:80px;}
+.section-num{font-family:'Cinzel',serif;font-size:11px;color:var(--gold);font-weight:700;letter-spacing:1px;margin-bottom:6px;}
+.section-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:16px;}
+.section-body{font-size:15px;color:#444;line-height:1.8;}
+.section-body p{margin-bottom:14px;}
+.section-body p:last-child{margin-bottom:0;}
+/* Info box */
+.info-box{background:rgba(198,151,63,.08);border:1px solid rgba(198,151,63,.25);border-radius:14px;padding:18px 20px;margin:18px 0;font-size:14px;color:#555;}
+.info-box strong{color:var(--navy);}
+.warn-box{background:#fff8f0;border:1px solid #f0c080;border-radius:14px;padding:18px 20px;margin:18px 0;font-size:14px;color:#7a4800;}
+.law-box{background:var(--green-bg);border:1px solid #a8d8b8;border-radius:14px;padding:18px 20px;margin:18px 0;font-size:14px;color:var(--green);}
+/* Table */
+.data-table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px;}
+.data-table th{background:linear-gradient(135deg,var(--royal),var(--royal2));color:var(--gold);padding:12px 14px;text-align:left;font-size:12px;letter-spacing:.5px;text-transform:uppercase;}
+.data-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:#444;vertical-align:top;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:nth-child(even) td{background:var(--cream2);}
+/* Rights cards */
+.rights-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+.right-card{background:#fff;border:1px solid var(--border);border-radius:13px;padding:16px;transition:border .2s;}
+.right-card:hover{border-color:var(--gold);}
+.right-icon{font-size:24px;margin-bottom:8px;}
+.right-title{font-weight:700;font-size:14px;color:var(--navy);margin-bottom:4px;}
+.right-desc{font-size:13px;color:var(--muted);line-height:1.5;}
+.right-how{font-size:12px;color:var(--gold);font-weight:600;margin-top:8px;}
+/* Action buttons */
+.action-row{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0;}
+.action-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:all .2s;}
+.action-btn.gold{background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));color:var(--navy);border:none;}
+.action-btn.gold:hover{background:#a8833d;}
+.action-btn.outline{background:transparent;border:2px solid var(--border);color:var(--navy);}
+.action-btn.outline:hover{border-color:var(--gold);}
+.action-btn.red{background:#ffeaea;border:1px solid #ffb3b3;color:var(--red);}
+.action-btn.red:hover{background:#ffd6d6;}
+/* DPO card */
+.dpo-card{background:linear-gradient(135deg,var(--royal),var(--royal3));border-radius:16px;padding:24px;display:flex;gap:20px;align-items:center;margin:18px 0;}
+.dpo-av{width:56px;height:56px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:var(--navy);flex-shrink:0;}
+.dpo-info h4{color:#fff;font-size:15px;font-weight:700;margin-bottom:4px;}
+.dpo-info p{color:#8899bb;font-size:13px;line-height:1.5;}
+.dpo-contact{font-size:12px;color:var(--gold);margin-top:6px;font-weight:600;}
+/* Version badge */
+.version-badge{display:inline-flex;align-items:center;gap:6px;background:var(--cream2);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:24px;}
+/* Footer */
+footer{background:linear-gradient(160deg,var(--royal),var(--royal2));padding:40px 32px;text-align:center;border-top:1px solid #1e2a45;}
+footer p{font-size:13px;color:#445;}
+footer a{color:var(--gold);text-decoration:none;}
+/* Responsive */
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr;padding:24px 16px;}
+  .toc{display:none;}
+  .rights-grid{grid-template-columns:1fr;}
+  .hero{padding:40px 20px 32px;}
+  .hero-title{font-size:28px;}
+  .compliance-strip{padding:12px 16px;gap:14px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="bringme.store.html" class="logo">BringMe.Store<small>Find It. Buy It. Nearby.</small></a>
+  <div class="topbar-right">
+    <a href="about.html" class="btn-ghost">About</a>
+    <a href="membership.html" class="btn-ghost">Join Free</a>
+    <a href="bringme.store.html" class="btn-ghost">🗺️ Open Map</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">Legal & Privacy</div>
+  <h1 class="hero-title">Privacy Policy & Terms of Service</h1>
+  <p class="hero-sub">We are committed to protecting your personal data in accordance with Republic Act No. 10173 (Data Privacy Act of 2012) and all applicable Philippine laws.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">📅 Effective: January 1, 2025</div>
+    <div class="hero-meta-item">🔄 Last updated: May 2025</div>
+    <div class="hero-meta-item">🇵🇭 Governed by Philippine Law</div>
+  </div>
+</div>
+
+<!-- COMPLIANCE STRIP -->
+<div class="compliance-strip">
+  <div class="cs-badge"><span class="cs-icon">🇵🇭</span>RA 10173 Compliant</div>
+  <div class="cs-badge"><span class="cs-icon">🔒</span>Data Encrypted at Rest & Transit</div>
+  <div class="cs-badge"><span class="cs-icon">🛡️</span>NPC Registered</div>
+  <div class="cs-badge"><span class="cs-icon">⭐</span>No Data Sold — Ever</div>
+  <div class="cs-badge"><span class="cs-icon">🗑️</span>Right to Deletion</div>
+</div>
+
+<div class="layout">
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="toc-title">Contents</div>
+    <a href="#who-we-are" class="toc-item active">1. Who We Are</a>
+    <a href="#what-we-collect" class="toc-item">2. What We Collect</a>
+    <a href="#why-we-collect" class="toc-item">3. Why We Collect It</a>
+    <a href="#how-we-protect" class="toc-item">4. How We Protect It</a>
+    <a href="#who-we-share" class="toc-item">5. Who We Share With</a>
+    <a href="#your-rights" class="toc-item">6. Your Rights (RA 10173)</a>
+    <a href="#cookies" class="toc-item">7. Cookies</a>
+    <a href="#children" class="toc-item">8. Children's Privacy</a>
+    <a href="#retention" class="toc-item">9. Data Retention</a>
+    <a href="#breaches" class="toc-item">10. Data Breaches</a>
+    <div class="toc-divider"></div>
+    <a href="#terms" class="toc-item">Terms of Service</a>
+    <a href="#prohibited" class="toc-item">Prohibited Content</a>
+    <a href="#points-terms" class="toc-item">Points & Payments</a>
+    <a href="#contact-dpo" class="toc-item">Contact DPO</a>
+    <div class="toc-divider"></div>
+    <a href="#delete-account" class="toc-item" style="color:var(--red);font-weight:600">🗑️ Delete My Account</a>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="version-badge">📋 Version 1.0 — Effective May 2025</div>
+
+    <!-- 1. WHO WE ARE -->
+    <div class="section" id="who-we-are">
+      <div class="section-num">SECTION 01</div>
+      <div class="section-title">Who We Are</div>
+      <div class="section-body">
+        <p><strong>BringMe.Store</strong> ("we", "us", "our") is a community marketplace platform connecting buyers, sellers, and local store owners in San Jose del Monte, Bulacan and surrounding areas. We operate the website at <strong>bringme.store</strong> and its associated mobile applications.</p>
+        <div class="info-box">
+          <strong>Data Controller:</strong> BringMe.Store<br>
+          <strong>Address:</strong> San Jose del Monte, Bulacan, Philippines<br>
+          <strong>Email:</strong> privacy@bringme.store<br>
+          <strong>NPC Registration No.:</strong> (Pending — to be filed upon reaching 250 users)<br>
+          <strong>Data Protection Officer:</strong> See Section 14
+        </div>
+        <p>As a <strong>Personal Information Controller</strong> under RA 10173, we are responsible for the personal data you provide to us when using BringMe.Store. We take this responsibility seriously.</p>
+      </div>
+    </div>
+
+    <!-- 2. WHAT WE COLLECT -->
+    <div class="section" id="what-we-collect">
+      <div class="section-num">SECTION 02</div>
+      <div class="section-title">What Personal Data We Collect</div>
+      <div class="section-body">
+        <p>We only collect data that is necessary to provide you with BringMe.Store's features. We follow the principle of <strong>data minimization</strong> — we never collect more than we need.</p>
+
+        <table class="data-table">
+          <tr><th>Data Type</th><th>What We Collect</th><th>Required?</th></tr>
+          <tr><td><strong>Account Info</strong></td><td>Name, nickname, email or phone number, password (hashed — never readable)</td><td>Yes</td></tr>
+          <tr><td><strong>Profile</strong></td><td>Profile photo, bio, barangay/area, roles (buyer/seller/helper)</td><td>Optional</td></tr>
+          <tr><td><strong>Listings</strong></td><td>Product name, price, description, contact number, general location</td><td>When posting</td></tr>
+          <tr><td><strong>Location</strong></td><td>GPS coordinates (only when map is open, never stored permanently)</td><td>Optional</td></tr>
+          <tr><td><strong>Points Activity</strong></td><td>Help replies, confirmations, points balance, cash-out requests</td><td>Automatic</td></tr>
+          <tr><td><strong>Device Info</strong></td><td>Browser type, device type (for bug fixing only)</td><td>Automatic</td></tr>
+          <tr><td><strong>Communications</strong></td><td>Help request messages, store replies</td><td>When using feature</td></tr>
+        </table>
+
+        <div class="warn-box">
+          ⚠️ <strong>We never collect:</strong> Government ID numbers, credit card details, full home addresses, biometric data, health information, or any sensitive personal information as defined under RA 10173.
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. WHY WE COLLECT -->
+    <div class="section" id="why-we-collect">
+      <div class="section-num">SECTION 03</div>
+      <div class="section-title">Why We Collect Your Data (Legal Bases)</div>
+      <div class="section-body">
+        <p>Under RA 10173, we may only process your personal data if we have a valid legal basis. Here is exactly why we collect each type of data:</p>
+        <table class="data-table">
+          <tr><th>Purpose</th><th>Legal Basis</th></tr>
+          <tr><td>Creating and managing your account</td><td>Contract performance (you agreed to our Terms)</td></tr>
+          <tr><td>Showing your listings on the map</td><td>Contract performance + your explicit consent</td></tr>
+          <tr><td>Sending OTP verification codes</td><td>Security / legal obligation</td></tr>
+          <tr><td>Processing points and GCash cash-outs</td><td>Contract performance</td></tr>
+          <tr><td>Improving the app (analytics)</td><td>Legitimate interest (anonymized only)</td></tr>
+          <tr><td>Sending feature updates by email</td><td>Your explicit consent (opt-in only)</td></tr>
+          <tr><td>Complying with NPC orders</td><td>Legal obligation</td></tr>
+        </table>
+        <div class="law-box">
+          🇵🇭 <strong>RA 10173 Section 12:</strong> Processing of personal information is allowed when the data subject has given consent, when it is necessary for the fulfillment of a contract, or when required by law.
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. HOW WE PROTECT -->
+    <div class="section" id="how-we-protect">
+      <div class="section-num">SECTION 04</div>
+      <div class="section-title">How We Protect Your Data</div>
+      <div class="section-body">
+        <p>We use industry-standard security measures to protect your data at every layer:</p>
+        <table class="data-table">
+          <tr><th>Protection</th><th>What It Means For You</th></tr>
+          <tr><td>🔒 <strong>TLS 1.2+ Encryption</strong></td><td>All data sent between your device and our servers is fully encrypted</td></tr>
+          <tr><td>💾 <strong>Encryption at Rest</strong></td><td>Your data stored in our database is encrypted on disk</td></tr>
+          <tr><td>🔑 <strong>Password Hashing</strong></td><td>Passwords are scrambled using bcrypt — even we cannot read them</td></tr>
+          <tr><td>🛡️ <strong>Row Level Security</strong></td><td>Database rules ensure you can only access your own data</td></tr>
+          <tr><td>🔥 <strong>Cloudflare WAF</strong></td><td>Firewall blocks hackers, bots, and DDoS attacks before they reach our servers</td></tr>
+          <tr><td>🔐 <strong>2FA Available</strong></td><td>You can enable two-factor authentication on your account</td></tr>
+          <tr><td>💾 <strong>Daily Backups</strong></td><td>Your data is backed up every day and stored securely</td></tr>
+          <tr><td>👁️ <strong>Access Logs</strong></td><td>We monitor for suspicious access patterns 24/7</td></tr>
+        </table>
+        <div class="info-box">
+          <strong>Our hosting:</strong> BringMe.Store is hosted on <strong>Cloudflare Pages</strong> (CDN) with our database on <strong>Supabase</strong> (PostgreSQL). Both providers are SOC 2 Type II certified and comply with international data protection standards.
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. WHO WE SHARE WITH -->
+    <div class="section" id="who-we-share">
+      <div class="section-num">SECTION 05</div>
+      <div class="section-title">Who We Share Your Data With</div>
+      <div class="section-body">
+        <p><strong>We never sell your personal data. Ever.</strong> We only share data with trusted service providers who help us operate BringMe.Store, and only the minimum data needed:</p>
+        <table class="data-table">
+          <tr><th>Service Provider</th><th>What They Receive</th><th>Purpose</th></tr>
+          <tr><td><strong>Supabase</strong> (USA)</td><td>Encrypted database records</td><td>Database hosting</td></tr>
+          <tr><td><strong>Cloudflare</strong> (USA)</td><td>IP address, request logs</td><td>Security & CDN</td></tr>
+          <tr><td><strong>Google Maps</strong> (USA)</td><td>Approximate location only</td><td>Map display</td></tr>
+          <tr><td><strong>Google/Facebook</strong></td><td>Only if you choose social login</td><td>Authentication</td></tr>
+          <tr><td><strong>GCash / Maya</strong></td><td>Phone number, amount</td><td>Points cash-out only</td></tr>
+        </table>
+        <div class="law-box">
+          🇵🇭 <strong>RA 10173 Section 21:</strong> Transfers of personal data outside the Philippines are allowed when the receiving country has adequate protection levels or when the data subject has explicitly consented. All our providers have appropriate data processing agreements in place.
+        </div>
+        <p>We may also disclose your data to law enforcement or the National Privacy Commission <strong>when required by law</strong> or valid court order.</p>
+      </div>
+    </div>
+
+    <!-- 6. YOUR RIGHTS -->
+    <div class="section" id="your-rights">
+      <div class="section-num">SECTION 06</div>
+      <div class="section-title">Your Rights Under RA 10173</div>
+      <div class="section-body">
+        <p>As a data subject under the Philippine Data Privacy Act, you have the following rights. You can exercise any of these rights by contacting our Data Protection Officer:</p>
+        <div class="rights-grid">
+          <div class="right-card">
+            <div class="right-icon">📋</div>
+            <div class="right-title">Right to be Informed</div>
+            <div class="right-desc">Know what data we collect, why we collect it, and how we use it — this Privacy Policy fulfills that right.</div>
+            <div class="right-how">→ This page</div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon">👁️</div>
+            <div class="right-title">Right to Access</div>
+            <div class="right-desc">Request a copy of all personal data we hold about you at any time.</div>
+            <div class="right-how">→ Email privacy@bringme.store</div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon">✏️</div>
+            <div class="right-title">Right to Correction</div>
+            <div class="right-desc">Fix any inaccurate or outdated information in your profile at any time.</div>
+            <div class="right-how">→ Edit in your Profile Settings</div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon">🗑️</div>
+            <div class="right-title">Right to Erasure</div>
+            <div class="right-desc">Request deletion of your account and all associated personal data. We will process this within 30 days.</div>
+            <div class="right-how">→ See "Delete My Account" below</div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon">📦</div>
+            <div class="right-title">Right to Data Portability</div>
+            <div class="right-desc">Download all your data in a machine-readable format (JSON/CSV) to transfer to another service.</div>
+            <div class="right-how">→ Profile → Download My Data</div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon">🚫</div>
+            <div class="right-title">Right to Object</div>
+            <div class="right-desc">Object to certain types of processing, including direct marketing or profiling.</div>
+            <div class="right-how">→ Email privacy@bringme.store</div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon">⏸️</div>
+            <div class="right-title">Right to Restriction</div>
+            <div class="right-desc">Request that we limit how we process your data under certain circumstances.</div>
+            <div class="right-how">→ Email privacy@bringme.store</div>
+          </div>
+          <div class="right-card">
+            <div class="right-icon">⚠️</div>
+            <div class="right-title">Right to Damages</div>
+            <div class="right-desc">Claim compensation if you suffer damage due to inaccurate, incomplete, or unauthorized use of your personal data.</div>
+            <div class="right-how">→ File a complaint with NPC</div>
+          </div>
+        </div>
+        <div class="info-box">
+          <strong>How to exercise your rights:</strong> Email us at <strong>privacy@bringme.store</strong> with the subject line "Data Subject Request — [Your Right]". We will respond within <strong>15 business days</strong> as required by the NPC. You may also file a complaint directly with the <strong>National Privacy Commission</strong> at <a href="https://privacy.gov.ph" style="color:var(--gold)">privacy.gov.ph</a>.
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. COOKIES -->
+    <div class="section" id="cookies">
+      <div class="section-num">SECTION 07</div>
+      <div class="section-title">Cookies & Local Storage</div>
+      <div class="section-body">
+        <p>BringMe.Store uses minimal cookies and browser storage. Here is exactly what we use:</p>
+        <table class="data-table">
+          <tr><th>Cookie / Storage</th><th>Purpose</th><th>Duration</th><th>Can You Opt Out?</th></tr>
+          <tr><td><strong>auth_token</strong></td><td>Keeps you logged in</td><td>30 days</td><td>Log out to clear</td></tr>
+          <tr><td><strong>session_preferences</strong></td><td>Saves your radius, tab preferences</td><td>Browser session</td><td>Clear browser data</td></tr>
+          <tr><td><strong>Cloudflare __cf_bm</strong></td><td>Bot protection (security)</td><td>30 minutes</td><td>No — required for security</td></tr>
+          <tr><td><strong>Google Maps cookies</strong></td><td>Map functionality</td><td>Varies</td><td>Disable map feature</td></tr>
+        </table>
+        <p>We do <strong>not</strong> use advertising cookies, third-party tracking cookies, or any cookies that profile you for marketing purposes.</p>
+      </div>
+    </div>
+
+    <!-- 8. CHILDREN -->
+    <div class="section" id="children">
+      <div class="section-num">SECTION 08</div>
+      <div class="section-title">Children's Privacy</div>
+      <div class="section-body">
+        <p><strong>BringMe.Store is intended for users aged 18 and above.</strong> We do not knowingly collect personal data from anyone under 18 years old.</p>
+        <p>If you are a parent or guardian and believe your child has provided us with personal data, please contact us immediately at <strong>privacy@bringme.store</strong>. We will delete such data within 48 hours of being notified.</p>
+        <div class="warn-box">
+          ⚠️ By creating an account, you confirm that you are at least 18 years old or have parental consent.
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. RETENTION -->
+    <div class="section" id="retention">
+      <div class="section-num">SECTION 09</div>
+      <div class="section-title">How Long We Keep Your Data</div>
+      <div class="section-body">
+        <table class="data-table">
+          <tr><th>Data Type</th><th>Retention Period</th><th>Reason</th></tr>
+          <tr><td>Active account data</td><td>While your account exists</td><td>Service delivery</td></tr>
+          <tr><td>Listings you posted</td><td>Until you delete them + 30 days</td><td>Dispute resolution</td></tr>
+          <tr><td>Points & cash-out history</td><td>7 years</td><td>Financial records requirement</td></tr>
+          <tr><td>Login logs</td><td>90 days</td><td>Security monitoring</td></tr>
+          <tr><td>Deleted account data</td><td>30 days, then permanently erased</td><td>Accidental deletion recovery</td></tr>
+          <tr><td>Backups</td><td>90 days rolling</td><td>Disaster recovery</td></tr>
+        </table>
+        <p>After the retention period, data is <strong>permanently and irreversibly deleted</strong> from our systems and all backups.</p>
+      </div>
+    </div>
+
+    <!-- 10. BREACHES -->
+    <div class="section" id="breaches">
+      <div class="section-num">SECTION 10</div>
+      <div class="section-title">Data Breach Notification</div>
+      <div class="section-body">
+        <p>In the unlikely event of a data breach affecting your personal information, we will:</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin:16px 0">
+          <div style="display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px">
+            <span style="font-size:20px">⏱️</span>
+            <div><strong>Within 72 hours</strong> — Notify the National Privacy Commission (NPC) as required by RA 10173</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px">
+            <span style="font-size:20px">📧</span>
+            <div><strong>Within 7 days</strong> — Notify all affected users by email or SMS with details of what was affected</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px">
+            <span style="font-size:20px">🛡️</span>
+            <div><strong>Immediately</strong> — Contain the breach, patch the vulnerability, and preserve evidence</div>
+          </div>
+          <div style="display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px">
+            <span style="font-size:20px">📋</span>
+            <div><strong>Public disclosure</strong> — Post a notice on BringMe.Store describing the breach and actions taken</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TERMS OF SERVICE -->
+    <div class="section" id="terms" style="border-top:2px solid var(--border);padding-top:40px">
+      <div class="section-num">TERMS OF SERVICE</div>
+      <div class="section-title">Terms of Service</div>
+      <div class="section-body">
+        <p>By using BringMe.Store, you agree to these terms. These terms form a binding agreement between you and BringMe.Store.</p>
+
+        <p><strong>Eligibility:</strong> You must be at least 18 years old to use BringMe.Store. By registering, you confirm this.</p>
+
+        <p><strong>Your account:</strong> You are responsible for keeping your login credentials secure. You are responsible for all activity that occurs under your account.</p>
+
+        <p><strong>Accurate information:</strong> You agree to provide accurate, current, and complete information when registering and posting listings. False listings may result in account suspension.</p>
+
+        <p><strong>Community standards:</strong> BringMe.Store is a community platform. You agree to treat other members with respect. Harassment, scamming, or fraudulent behavior will result in permanent account termination.</p>
+
+        <p><strong>Transactions:</strong> BringMe.Store connects buyers and sellers but is not a party to any transaction. All deals are between members directly. We are not responsible for the quality, safety, legality, or availability of listed items.</p>
+
+        <p><strong>Points system:</strong> Points earned through the community help system have no cash value outside of BringMe.Store's official cash-out mechanism. Points may not be transferred between accounts.</p>
+      </div>
+    </div>
+
+    <!-- PROHIBITED -->
+    <div class="section" id="prohibited">
+      <div class="section-num">TERMS — SECTION 02</div>
+      <div class="section-title">Prohibited Content & Behavior</div>
+      <div class="section-body">
+        <p>The following are strictly prohibited on BringMe.Store. Violations may result in immediate account termination and reporting to authorities:</p>
+        <table class="data-table">
+          <tr><th>Prohibited</th><th>Examples</th></tr>
+          <tr><td>🚫 Illegal items</td><td>Drugs, weapons, stolen goods, counterfeit products</td></tr>
+          <tr><td>🚫 Fraudulent listings</td><td>Non-existent items, scam posts, fake stores</td></tr>
+          <tr><td>🚫 Harassment</td><td>Threatening messages, hate speech, discrimination</td></tr>
+          <tr><td>🚫 Spam</td><td>Repetitive listings, fake help requests for points</td></tr>
+          <tr><td>🚫 Impersonation</td><td>Pretending to be a store, brand, or another member</td></tr>
+          <tr><td>🚫 Minors</td><td>Any content involving or targeting users under 18</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- POINTS TERMS -->
+    <div class="section" id="points-terms">
+      <div class="section-num">TERMS — SECTION 03</div>
+      <div class="section-title">Points System & Cash-Out Terms</div>
+      <div class="section-body">
+        <p>The BringMe.Store points system ("⭐ Points") allows members to earn real cash by helping neighbors find local stores.</p>
+        <table class="data-table">
+          <tr><th>Rule</th><th>Detail</th></tr>
+          <tr><td>Earning rate</td><td>1 point per confirmed help = ₱1</td></tr>
+          <tr><td>Confirmation required</td><td>The requester must confirm your help was useful — no self-confirmation</td></tr>
+          <tr><td>Cash-out minimum</td><td>No minimum — cash out any amount</td></tr>
+          <tr><td>Cash-out method</td><td>GCash or Maya only</td></tr>
+          <tr><td>Processing time</td><td>1–3 business days</td></tr>
+          <tr><td>Abuse policy</td><td>Fake help replies or self-confirmation rings will result in points forfeiture and account ban</td></tr>
+          <tr><td>Expiry</td><td>Points never expire while your account is active</td></tr>
+          <tr><td>On account deletion</td><td>Uncashed points are forfeited after 30-day grace period</td></tr>
+        </table>
+        <div class="warn-box">
+          ⚠️ BringMe.Store reserves the right to withhold cash-outs pending fraud investigation. Any attempt to manipulate the points system will result in permanent account termination.
+        </div>
+      </div>
+    </div>
+
+    <!-- DPO CONTACT -->
+    <div class="section" id="contact-dpo">
+      <div class="section-num">SECTION 14</div>
+      <div class="section-title">Contact Our Data Protection Officer</div>
+      <div class="section-body">
+        <p>Under RA 10173, we have appointed a Data Protection Officer (DPO) responsible for overseeing our data protection practices and handling your privacy requests.</p>
+        <div class="dpo-card">
+          <div class="dpo-av">DPO</div>
+          <div class="dpo-info">
+            <h4>Data Protection Officer — BringMe.Store</h4>
+            <p>Responsible for all matters relating to the protection of personal data under Republic Act No. 10173.</p>
+            <div class="dpo-contact">📧 privacy@bringme.store &nbsp;|&nbsp; 📍 San Jose del Monte, Bulacan</div>
+          </div>
+        </div>
+        <div class="action-row">
+          <a href="mailto:privacy@bringme.store?subject=Data Subject Request" class="action-btn gold">📧 Email DPO</a>
+          <a href="https://privacy.gov.ph" target="_blank" class="action-btn outline">🇵🇭 NPC Website</a>
+        </div>
+        <p style="margin-top:16px;font-size:14px;color:var(--muted)">We aim to respond to all privacy requests within <strong>15 business days</strong>. If you are not satisfied with our response, you have the right to lodge a complaint with the <strong>National Privacy Commission</strong> at privacy.gov.ph.</p>
+      </div>
+    </div>
+
+    <!-- DELETE ACCOUNT -->
+    <div class="section" id="delete-account" style="background:#fff8f8;border:2px solid #ffb3b3;border-radius:20px;padding:32px;">
+      <div class="section-num" style="color:var(--red)">YOUR RIGHT TO ERASURE</div>
+      <div class="section-title">Delete My Account</div>
+      <div class="section-body">
+        <p>Under Section 16(d) of RA 10173, you have the right to request the deletion of your personal data. When you delete your account:</p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin:16px 0">
+          <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--red);font-size:16px">🗑️</span><span>Your profile, nickname, bio, and photo are permanently deleted</span></div>
+          <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--red);font-size:16px">🗑️</span><span>All your listings are removed from the map</span></div>
+          <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--red);font-size:16px">🗑️</span><span>Your help replies are anonymized (content kept for community integrity)</span></div>
+          <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--gold);font-size:16px">⭐</span><span>Uncashed points are forfeited after a 30-day grace period — cash out first!</span></div>
+          <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--muted);font-size:16px">💾</span><span>Financial records (points history) are kept for 7 years as required by law</span></div>
+        </div>
+        <div class="warn-box" style="margin-bottom:20px">
+          ⚠️ <strong>This action cannot be undone.</strong> Make sure to cash out your points and download your data before deleting your account.
+        </div>
+        <div class="action-row">
+          <a href="membership.html#download-data" class="action-btn outline">📦 Download My Data First</a>
+          <button class="action-btn red" onclick="confirmDelete()">🗑️ Delete My Account</button>
+        </div>
+        <p style="font-size:13px;color:var(--muted);margin-top:14px">Or email <strong>privacy@bringme.store</strong> with subject "Account Deletion Request" and we will process it within 30 days.</p>
+      </div>
+    </div>
+
+    <!-- UPDATES -->
+    <div class="section" style="background:var(--cream2);border-radius:16px;padding:24px;margin-top:32px">
+      <div class="section-title" style="font-size:20px">Updates to This Policy</div>
+      <div class="section-body">
+        <p>We may update this Privacy Policy and Terms of Service from time to time. When we make significant changes, we will:</p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+          <div style="display:flex;gap:10px"><span>📧</span><span>Send you an email or in-app notification</span></div>
+          <div style="display:flex;gap:10px"><span>📅</span><span>Update the "Last updated" date at the top of this page</span></div>
+          <div style="display:flex;gap:10px"><span>📋</span><span>Keep a version history so you can see what changed</span></div>
+        </div>
+        <p style="margin-top:14px">Continued use of BringMe.Store after policy updates constitutes acceptance of the new terms.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <p style="margin-bottom:8px"><strong style="color:var(--gold)">BringMe.Store</strong> — San Jose del Monte, Bulacan, Philippines</p>
+  <p>© 2025 BringMe.Store. All rights reserved. &nbsp;|&nbsp; <a href="privacy.html">Privacy Policy</a> &nbsp;|&nbsp; <a href="about.html">About</a> &nbsp;|&nbsp; <a href="bringme.store.html">Open App</a></p>
+  <p style="margin-top:8px;font-size:12px">Compliant with Republic Act No. 10173 (Data Privacy Act of 2012) &nbsp;|&nbsp; Regulated by the <a href="https://privacy.gov.ph" target="_blank">National Privacy Commission</a></p>
+</footer>
+
+<script>
+// TOC active state on scroll
+const sections = document.querySelectorAll('.section[id]');
+const tocItems = document.querySelectorAll('.toc-item');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  tocItems.forEach(item => {
+    item.classList.toggle('active', item.getAttribute('href') === '#' + current);
+  });
+});
+
+function confirmDelete() {
+  const confirmed = confirm('Are you sure you want to delete your account?\n\nThis cannot be undone. All your data will be permanently deleted within 30 days.\n\nMake sure you have cashed out your points first!');
+  if (confirmed) {
+    alert('Account deletion request received.\n\nWe will process your deletion within 30 days and send a confirmation to your registered email.\n\nThank you for being part of the BringMe.Store community.');
+  }
+}
+</script>
+</body>
+</html>

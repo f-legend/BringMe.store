@@ -2,10 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+  <!-- ── FAVICON & APP ICONS ── -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0f1628">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BringMe.Store">
+  <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --gold:#c9a96e;--gold-dk:#a8833d;--navy:#0f1628;--navy2:#1a2340;
@@ -23,9 +35,19 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .logo{font-family:'Space Mono',monospace;font-size:17px;font-weight:700;color:var(--gold);cursor:pointer;white-space:nowrap;line-height:1.1;}
 .logo small{display:block;font-size:9px;color:#445;font-family:'DM Sans',sans-serif;font-weight:400;}
 .search-bar{flex:1;max-width:460px;position:relative;}
-.search-bar input{width:100%;padding:9px 34px 9px 38px;border-radius:11px;border:none;background:#1a2340;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:background .2s,box-shadow .2s;}
-.search-bar input:focus{background:#1e2a4a;box-shadow:0 0 0 2px var(--gold);}
-.search-bar input::placeholder{color:#445;}
+.search-bar input{
+  width:100%;padding:10px 34px 10px 40px;
+  border-radius:10px;border:1px solid rgba(198,151,63,0.15);
+  background:rgba(255,255,255,0.06);color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;
+  transition:all .2s;backdrop-filter:blur(8px);
+}
+.search-bar input:focus{
+  background:rgba(255,255,255,0.1);
+  border-color:rgba(198,151,63,0.5);
+  box-shadow:0 0 0 3px rgba(198,151,63,0.1);
+}
+.search-bar input::placeholder{color:rgba(255,255,255,0.3);}
 .s-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
 .s-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#556;cursor:pointer;font-size:13px;}
 .radius-wrap{display:flex;align-items:center;gap:7px;background:#1a2340;border-radius:11px;padding:5px 12px;white-space:nowrap;}
@@ -39,55 +61,122 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .n-tab.red{color:#ff7777;}
 .n-tab.red.active{background:var(--red);color:#fff;}
 .topbar-right{display:flex;gap:7px;align-items:center;margin-left:auto;}
-.btn-post{background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;white-space:nowrap;}
-.btn-post:hover{background:var(--gold-dk);}
-.pts-badge{background:#1a2340;border-radius:9px;padding:5px 11px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:background .15s;}
-.pts-badge:hover{background:#243056;}
-.pts-num{font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;}
-.pts-lbl{font-size:10px;color:#556;}
-.avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;font-weight:700;color:var(--navy);font-size:11px;font-family:'DM Sans',sans-serif;}
+.btn-post{
+  background:linear-gradient(135deg,var(--gold),var(--gold-dk));
+  color:var(--navy);border:none;border-radius:9px;
+  padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap;
+  letter-spacing:0.3px;box-shadow:var(--shadow-gold);
+}
+.btn-post:hover{
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold));
+  transform:translateY(-1px);box-shadow:0 6px 24px rgba(198,151,63,0.4);
+}
+.pts-badge{
+  background:rgba(198,151,63,0.1);border-radius:9px;
+  padding:6px 12px;display:flex;align-items:center;gap:6px;
+  cursor:pointer;transition:all .2s;
+  border:1px solid rgba(198,151,63,0.2);
+}
+.pts-badge:hover{background:rgba(198,151,63,0.18);border-color:rgba(198,151,63,0.4);}
+.pts-num{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);font-weight:600;letter-spacing:0.5px;}
+.pts-lbl{font-size:10px;color:rgba(198,151,63,0.6);letter-spacing:0.3px;}
+.avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dk));
+  border:2px solid rgba(198,151,63,0.4);
+  cursor:pointer;font-weight:700;color:var(--navy);font-size:12px;
+  font-family:'DM Sans',sans-serif;
+  box-shadow:0 2px 10px rgba(198,151,63,0.3);
+  transition:all .2s;
+}
+.avatar:hover{box-shadow:0 4px 16px rgba(198,151,63,0.5);}
 
 /* LAYOUT */
 .app-body{display:flex;height:calc(100vh - 58px);}
 
 /* SIDEBAR */
-.sidebar{width:360px;flex-shrink:0;display:flex;flex-direction:column;background:var(--cream);border-right:1px solid var(--border);overflow:hidden;z-index:100;}
-.sb-head{padding:12px 12px 8px;background:var(--white);border-bottom:1px solid var(--border);flex-shrink:0;}
+.sidebar{
+  width:360px;flex-shrink:0;display:flex;flex-direction:column;
+  background:var(--cream);border-right:1px solid var(--border);
+  overflow:hidden;z-index:100;
+}
+.sb-head{
+  padding:14px 14px 10px;background:var(--white);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+  box-shadow:0 1px 8px rgba(10,22,60,0.04);
+}
 .type-row{display:flex;gap:5px;margin-bottom:8px;}
-.type-btn{flex:1;padding:7px 4px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;transition:all .15s;background:var(--cream2);color:#666;}
-.type-btn.active{background:var(--navy);color:var(--gold);}
+.type-btn{
+  flex:1;padding:8px 4px;border-radius:7px;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;
+  transition:all .2s;background:transparent;color:var(--muted);
+  letter-spacing:0.3px;text-transform:uppercase;
+}
+.type-btn:hover{background:var(--cream2);color:var(--navy2);}
+.type-btn.active{
+  background:linear-gradient(135deg,var(--royal),var(--royal2));
+  color:var(--gold);
+  box-shadow:0 2px 10px rgba(10,22,60,0.2);
+}
 .type-btn.red-t.active{background:var(--red);color:#fff;}
 .type-btn.pur-t.active{background:var(--purple);color:#fff;}
 .cat-scroll{display:flex;gap:5px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
 .cat-scroll::-webkit-scrollbar{display:none;}
-.cat-pill{padding:4px 10px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;white-space:nowrap;transition:all .15s;background:var(--cream2);color:#666;}
-.cat-pill.active{background:var(--navy);color:var(--gold);}
-.result-count{font-size:11px;color:var(--muted);margin-top:7px;font-weight:500;}
+.cat-pill{
+  padding:5px 13px;border-radius:100px;
+  border:1px solid var(--border);cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;
+  white-space:nowrap;transition:all .2s;
+  background:var(--white);color:var(--muted);
+  letter-spacing:0.2px;
+}
+.cat-pill:hover{border-color:var(--gold);color:var(--navy2);}
+.cat-pill.active{
+  background:linear-gradient(135deg,var(--royal),var(--royal2));
+  color:var(--gold);border-color:transparent;
+  box-shadow:0 2px 10px rgba(10,22,60,0.15);
+}
+.result-count{font-size:11px;color:var(--muted);margin-top:8px;font-weight:500;letter-spacing:0.2px;}
 .sb-list{flex:1;overflow-y:auto;padding:8px;}
 .sb-list::-webkit-scrollbar{width:3px;}
 .sb-list::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
-.list-card{background:var(--white);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .18s;border:2px solid transparent;box-shadow:var(--shadow);}
-.list-card:hover{border-color:var(--gold);transform:translateX(2px);}
-.list-card.active-card{border-color:var(--gold);background:#fffdf7;}
+.list-card{
+  background:var(--white);border-radius:12px;padding:13px;margin-bottom:8px;
+  cursor:pointer;transition:all .2s;
+  border:1px solid var(--border);
+  box-shadow:0 1px 8px rgba(10,22,60,0.05);
+}
+.list-card:hover{
+  border-color:var(--gold);transform:translateX(3px);
+  box-shadow:0 4px 20px rgba(10,22,60,0.1);
+}
+.list-card.active-card{
+  border-color:var(--gold);background:var(--gold-xlt);
+  box-shadow:var(--shadow-gold);
+}
 .list-card.store-c{border-left:3px solid var(--red);}
-.list-card.store-c.active-card{border-color:var(--red);background:#fff8f8;}
+.list-card.store-c.active-card{border-color:var(--gold);background:var(--gold-xlt);}
 .list-card.help-c{border-left:3px solid var(--purple);}
-.list-card.help-c.active-card{border-color:var(--purple);background:#f8f7ff;}
+.list-card.help-c.active-card{border-color:var(--purple);background:var(--purple-bg);}
 .card-row{display:flex;gap:10px;align-items:flex-start;}
 .c-emoji{font-size:26px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:9px;flex-shrink:0;}
 .sell-bg{background:#f0f6ff;}.buy-bg{background:#fff8f0;}.store-bg{background:#fff0f0;}.help-bg{background:#f3f0ff;}
 .c-body{flex:1;min-width:0;}
 .c-title{font-weight:700;font-size:13px;color:var(--navy);line-height:1.3;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .c-badges{display:flex;gap:4px;margin-bottom:4px;flex-wrap:wrap;}
-.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;}
-.b-sell{background:var(--green-bg);color:var(--green);}
-.b-buy{background:var(--orange-bg);color:var(--orange);}
-.b-cat{background:var(--cream2);color:#666;}
-.b-store{background:#ffeaea;color:var(--red);}
-.b-help{background:var(--purple-bg);color:var(--purple);}
-.b-urgent{background:#ffeaea;color:var(--red);}
+.badge{
+  font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;
+  letter-spacing:0.5px;text-transform:uppercase;
+}
+.b-sell{background:#E8F5EE;color:#1A6B3A;border:1px solid rgba(26,107,58,0.15);}
+.b-buy{background:#FEF3E2;color:#92600A;border:1px solid rgba(146,96,10,0.15);}
+.b-cat{background:var(--cream2);color:var(--muted);border:1px solid var(--border);}
+.b-store{background:#FDECEA;color:var(--red);border:1px solid rgba(192,57,43,0.15);}
+.b-help{background:var(--purple-bg);color:var(--purple);border:1px solid rgba(74,63,181,0.15);}
+.b-urgent{background:#FDECEA;color:var(--red);border:1px solid rgba(192,57,43,0.15);}
 .c-foot{display:flex;justify-content:space-between;align-items:center;}
-.c-price{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:var(--gold);}
+.c-price{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:var(--gold-dk);letter-spacing:0.3px;}
 .c-loc{font-size:11px;color:var(--muted);}
 .save-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:2px;}
 .c-dist{font-size:10px;background:var(--green-bg);color:var(--green);padding:2px 6px;border-radius:100px;font-weight:700;}
@@ -107,10 +196,15 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .pulse{animation:pulse 1.5s infinite;}
 /* Google Maps InfoWindow override */
-.gm-style .gm-style-iw-c{border-radius:14px !important;box-shadow:var(--shadow-lg) !important;border:2px solid var(--gold) !important;padding:0 !important;max-width:240px !important;}
+.gm-style .gm-style-iw-c{
+  border-radius:14px !important;
+  box-shadow:0 12px 48px rgba(10,22,60,0.2) !important;
+  border:1px solid rgba(198,151,63,0.25) !important;
+  padding:0 !important;max-width:240px !important;
+}
 .gm-style .gm-style-iw-d{overflow:hidden !important;padding:0 !important;}
 .gm-style .gm-style-iw-t::after{display:none !important;}
-.gm-style .gm-ui-hover-effect{top:4px !important;right:4px !important;}
+.gm-style .gm-ui-hover-effect{top:4px !important;right:4px !important;opacity:.5;}
 .popup-box{padding:14px 16px;}
 .popup-title{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:3px;}
 .popup-sub{font-size:11px;color:var(--muted);margin-bottom:5px;}
@@ -120,10 +214,22 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .popup-btn{display:block;width:100%;margin-top:9px;padding:8px;background:var(--gold);color:var(--navy);border:none;border-radius:9px;font-weight:700;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;}
 
 /* MODAL */
-.overlay{position:fixed;inset:0;background:rgba(10,15,30,.65);z-index:2000;display:flex;align-items:center;justify-content:center;animation:fadeIn .2s ease;}
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(8,18,50,0.8);
+  z-index:2000;display:flex;align-items:center;justify-content:center;
+  animation:fadeIn .2s ease;backdrop-filter:blur(4px);
+}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal{background:var(--white);border-radius:20px;box-shadow:0 24px 80px rgba(0,0,0,.3);animation:slideUp .25s ease;position:relative;max-height:88vh;overflow-y:auto;}
-@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.modal{
+  background:var(--white);
+  border-radius:18px;
+  box-shadow:0 32px 100px rgba(10,22,60,0.35);
+  border:1px solid rgba(198,151,63,0.15);
+  animation:slideUp .25s cubic-bezier(.32,.72,0,1);
+  position:relative;max-height:88vh;overflow-y:auto;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 .modal-head{padding:24px 24px 0;}
 .modal-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);margin-bottom:3px;}
 .modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
@@ -131,19 +237,54 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .close-btn{position:absolute;top:14px;right:14px;background:var(--cream2);border:none;border-radius:50%;width:32px;height:32px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .form-group{margin-bottom:13px;}
 .form-label{font-size:11px;font-weight:700;color:#555;margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px;}
-.form-input{width:100%;padding:10px 12px;border-radius:9px;border:2px solid var(--border);font-size:14px;color:var(--navy);background:var(--white);font-family:'DM Sans',sans-serif;outline:none;transition:border .2s;}
-.form-input:focus{border-color:var(--gold);}
+.form-input{
+  width:100%;padding:11px 14px;border-radius:9px;
+  border:1.5px solid var(--border);font-size:14px;
+  color:var(--navy);background:var(--white);
+  font-family:'DM Sans',sans-serif;outline:none;
+  transition:all .2s;
+}
+.form-input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(198,151,63,0.12);
+}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .full{grid-column:1/-1;}
 .type-toggle{display:flex;background:var(--cream2);border-radius:10px;padding:4px;gap:4px;margin-bottom:16px;}
 .t-btn{flex:1;padding:9px;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .15s;background:transparent;color:#888;}
 .t-btn.active{background:var(--white);color:var(--navy);box-shadow:0 2px 8px rgba(0,0,0,.1);}
-.btn-primary{background:var(--gold);color:var(--navy);border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:background .15s;margin-top:4px;}
-.btn-primary:hover{background:var(--gold-dk);}
-.btn-red-full{background:var(--red);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:background .15s;margin-top:8px;}
-.btn-red-full:hover{background:var(--red2);}
-.btn-outline{background:transparent;border:2px solid var(--gold);color:var(--gold);border-radius:10px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:all .15s;margin-top:8px;}
-.btn-outline:hover{background:var(--gold);color:var(--navy);}
+.btn-primary{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dk) 100%);
+  color:var(--navy);border:none;border-radius:10px;padding:13px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;width:100%;
+  transition:all .2s;margin-top:4px;
+  letter-spacing:0.3px;box-shadow:var(--shadow-gold);
+}
+.btn-primary:hover{
+  background:linear-gradient(135deg,var(--gold-lt) 0%,var(--gold) 100%);
+  transform:translateY(-1px);box-shadow:0 8px 28px rgba(198,151,63,0.35);
+}
+.btn-red-full{
+  background:linear-gradient(135deg,#C0392B,#922B21);
+  color:#fff;border:none;border-radius:10px;padding:13px;
+  font-size:14px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;width:100%;
+  transition:all .2s;margin-top:8px;letter-spacing:0.3px;
+  box-shadow:0 4px 16px rgba(192,57,43,0.25);
+}
+.btn-red-full:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(192,57,43,0.35);}
+.btn-outline{
+  background:transparent;
+  border:1.5px solid var(--gold);color:var(--gold-dk);
+  border-radius:10px;padding:12px;font-size:14px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;
+  transition:all .2s;margin-top:8px;letter-spacing:0.2px;
+}
+.btn-outline:hover{
+  background:var(--gold-xlt);border-color:var(--gold-dk);
+  color:var(--navy);
+}
 .detail-img-box{height:160px;display:flex;align-items:center;justify-content:center;font-size:72px;border-radius:18px 18px 0 0;}
 .seller-box{background:var(--cream2);border-radius:12px;padding:13px;display:flex;align-items:center;gap:12px;margin-bottom:16px;}
 .seller-av{width:40px;height:40px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--gold);font-size:13px;flex-shrink:0;}
@@ -163,7 +304,16 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .cash-out-btn{background:var(--green);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;}
 
 /* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:var(--shadow-lg);animation:fadeUp .3s ease;pointer-events:none;}
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--royal),var(--royal2));
+  color:#fff;padding:12px 24px;border-radius:100px;
+  font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;
+  box-shadow:0 8px 40px rgba(10,22,60,0.4);
+  border:1px solid rgba(198,151,63,0.2);
+  animation:fadeUp .3s ease;pointer-events:none;
+  letter-spacing:0.2px;backdrop-filter:blur(12px);
+}
 @keyframes fadeUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
 /* LEGEND */
@@ -181,12 +331,26 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .locating-banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(15,22,40,.88);color:#fff;padding:8px 18px;border-radius:100px;font-size:12px;font-weight:600;z-index:600;backdrop-filter:blur(6px);white-space:nowrap;}
 
 /* ── FEATURED / PROMOTED ── */
-.featured-banner{background:linear-gradient(135deg,#1a2340,#0f1628);border-bottom:1px solid #2a3555;padding:7px 12px;flex-shrink:0;overflow:hidden;}
+.featured-banner{
+  background:linear-gradient(160deg,var(--royal) 0%,var(--royal2) 60%,var(--royal3) 100%);
+  border-bottom:1px solid rgba(198,151,63,0.15);
+  padding:8px 12px;flex-shrink:0;overflow:hidden;
+}
 .featured-scroll{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;align-items:center;}
 .featured-scroll::-webkit-scrollbar{display:none;}
 .featured-lbl{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:4px;flex-shrink:0;}
-.feat-chip{background:linear-gradient(135deg,#2a1a00,#3d2800);border:1.5px solid var(--gold);border-radius:100px;padding:4px 12px 4px 8px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0;}
-.feat-chip:hover{background:linear-gradient(135deg,#3d2800,#5a3d00);transform:translateY(-1px);}
+.feat-chip{
+  background:rgba(198,151,63,0.1);
+  border:1px solid rgba(198,151,63,0.3);
+  border-radius:100px;padding:5px 14px 5px 10px;
+  display:flex;align-items:center;gap:6px;
+  cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;
+}
+.feat-chip:hover{
+  background:rgba(198,151,63,0.2);
+  border-color:rgba(198,151,63,0.6);
+  transform:translateY(-1px);
+}
 .feat-chip-icon{font-size:14px;}
 .feat-chip-name{font-size:11px;font-weight:700;color:var(--gold);}
 .feat-chip-cat{font-size:10px;color:#a07840;}
@@ -456,21 +620,15 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
 /* Auth floating window */
 .auth-window{
-  position:fixed;
-  bottom:0;
-  left:50%;
+  position:fixed;bottom:0;left:50%;
   transform:translateX(-50%);
-  width:100%;
-  max-width:480px;
-  z-index:900;
-  border-radius:24px 24px 0 0;
+  width:100%;max-width:480px;z-index:900;
+  border-radius:20px 20px 0 0;
   background:var(--white);
-  box-shadow:0 -8px 60px rgba(0,0,0,.35);
+  box-shadow:0 -16px 60px rgba(12,31,74,0.4);
+  border-top:1px solid rgba(198,151,63,0.2);
   transition:transform .4s cubic-bezier(.32,.72,0,1), opacity .3s ease;
-  max-height:92vh;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
+  max-height:92vh;overflow:hidden;display:flex;flex-direction:column;
 }
 .auth-window.minimized{
   transform:translateX(-50%) translateY(calc(100% - 60px));
@@ -484,23 +642,18 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 /* Auth window drag handle + header */
 .aw-handle-row{
   display:flex;align-items:center;
-  padding:12px 20px 10px;
-  cursor:pointer;
-  flex-shrink:0;
-  gap:12px;
+  padding:14px 20px 12px;
+  cursor:pointer;flex-shrink:0;gap:12px;
   border-bottom:1px solid var(--border);
   user-select:none;
+  background:linear-gradient(180deg,rgba(10,22,60,0.02),transparent);
 }
 .aw-handle{
-  width:40px;height:4px;
-  border-radius:2px;
-  background:#ddd;
-  flex-shrink:0;
-  margin:0 auto;
-  position:absolute;
-  top:12px;left:50%;transform:translateX(-50%);
+  width:36px;height:3px;border-radius:2px;
+  background:var(--border);flex-shrink:0;margin:0 auto;
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
 }
-.aw-logo{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:var(--gold);}
+.aw-logo{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:var(--gold-dk);letter-spacing:0.5px;}
 .aw-tagline{font-size:11px;color:var(--muted);flex:1;}
 .aw-min-btn{
   background:var(--cream2);border:none;border-radius:8px;
@@ -541,8 +694,19 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .aw-label{font-size:11px;font-weight:700;color:#555;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:5px;}
 .aw-input{width:100%;padding:11px 13px;border-radius:10px;border:2px solid var(--border);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);background:var(--white);outline:none;transition:border .2s;}
 .aw-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,.1);}
-.aw-submit{width:100%;padding:13px;background:var(--gold);color:var(--navy);border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;}
-.aw-submit:hover{background:var(--gold-dk);}
+.aw-submit{
+  width:100%;padding:14px;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dk) 100%);
+  color:var(--navy);border:none;border-radius:11px;
+  font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .2s;margin-top:6px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  letter-spacing:0.3px;box-shadow:var(--shadow-gold);
+}
+.aw-submit:hover{
+  background:linear-gradient(135deg,var(--gold-lt) 0%,var(--gold) 100%);
+  transform:translateY(-1px);box-shadow:0 8px 28px rgba(198,151,63,0.4);
+}
 .aw-terms{font-size:11px;color:var(--muted);text-align:center;margin-top:12px;line-height:1.6;}
 .aw-terms a{color:var(--gold);text-decoration:none;}
 .aw-switch{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);}
@@ -637,6 +801,902 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 @keyframes spin{to{transform:rotate(360deg)}}
 .aw-spinner{width:16px;height:16px;border:2px solid rgba(15,22,40,.2);border-top-color:var(--navy);border-radius:50%;animation:spin .6s linear infinite;}
 
+
+/* ── STREET VIEW ── */
+.sv-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;
+  display:flex;flex-direction:column;
+  animation:fadeIn .2s ease;
+}
+.sv-header{
+  background:var(--navy);height:52px;display:flex;align-items:center;
+  padding:0 18px;gap:14px;border-bottom:1px solid #1e2a45;flex-shrink:0;
+}
+.sv-title{font-family:'Space Mono',monospace;font-size:13px;color:var(--gold);font-weight:700;}
+.sv-addr{font-size:12px;color:#6677aa;flex:1;}
+.sv-close{background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:8px;
+  padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:background .15s;display:flex;align-items:center;gap:6px;}
+.sv-close:hover{background:rgba(255,255,255,.2);}
+#sv-container{flex:1;width:100%;position:relative;}
+.sv-unavailable{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;color:#fff;text-align:center;gap:14px;
+}
+.sv-unavailable-icon{font-size:64px;}
+.sv-unavailable-title{font-size:20px;font-weight:700;}
+.sv-unavailable-sub{font-size:14px;color:#8899bb;max-width:320px;line-height:1.6;}
+.sv-controls{
+  position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;z-index:10;
+}
+.sv-ctrl-btn{
+  background:rgba(15,22,40,.85);color:#fff;border:1.5px solid rgba(201,169,110,.3);
+  border-radius:10px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:'DM Sans',sans-serif;backdrop-filter:blur(6px);transition:all .15s;
+  display:flex;align-items:center;gap:6px;
+}
+.sv-ctrl-btn:hover{background:rgba(201,169,110,.15);border-color:var(--gold);}
+
+
+/* ── THREE-PANEL EXTRAS ── */
+/* Panel collapse on mobile */
+@media(max-width:1100px){
+  .app-body{grid-template-columns:260px 1fr 260px;}
+}
+@media(max-width:900px){
+  .app-body{grid-template-columns:0 1fr 0;}
+  .left-panel,.sidebar{position:fixed;top:62px;bottom:0;z-index:200;width:300px;transition:transform .35s cubic-bezier(.32,.72,0,1);}
+  .left-panel{left:0;transform:translateX(-100%);}
+  .sidebar{right:0;transform:translateX(100%);}
+  .left-panel.open{transform:translateX(0);}
+  .sidebar.open{transform:translateX(0);}
+}
+/* Right tab active states */
+#rp-all.active,#rp-sell.active{background:linear-gradient(135deg,var(--royal),var(--royal2));color:var(--gold);}
+#rp-stores.active{background:var(--red);color:#fff;}
+/* Panel toggle buttons for mobile */
+.panel-toggle{
+  position:fixed;bottom:70px;z-index:300;
+  background:linear-gradient(135deg,var(--royal),var(--royal2));
+  color:var(--gold);border:1px solid rgba(198,151,63,0.4);
+  border-radius:100px;padding:8px 16px;font-size:12px;font-weight:700;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  box-shadow:var(--shadow-royal);display:none;
+}
+.panel-toggle.left-toggle{left:10px;}
+.panel-toggle.right-toggle{right:10px;}
+@media(max-width:900px){.panel-toggle{display:flex;align-items:center;gap:6px;}}
+/* Divider line between panels */
+.left-panel{border-right:1px solid var(--border);}
+/* Panel section labels */
+.panel-section-lbl{
+  font-size:9px;font-weight:700;color:rgba(198,151,63,0.5);
+  letter-spacing:2px;text-transform:uppercase;
+  padding:6px 14px 4px;
+}
+/* Urgent indicator dot */
+.urgent-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--red);
+  display:inline-block;margin-left:4px;
+  animation:pulse-red 1.5s infinite;
+}
+@keyframes pulse-red{0%,100%{opacity:1}50%{opacity:.3}}
+
+
+/* ══════════════════════════════════════════════
+   LEFT PANEL — 3 SECTIONS
+   ══════════════════════════════════════════════ */
+
+/* Section headers */
+.lp-section{flex-shrink:0;}
+.lp-section-hdr{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px 6px;
+  border-bottom:1px solid rgba(198,151,63,0.12);
+}
+.lp-section-icon{font-size:16px;}
+.lp-section-title{
+  font-family:'Cinzel',serif;font-size:10px;font-weight:500;
+  color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;flex:1;
+}
+.lp-section-count{
+  font-size:9px;color:rgba(198,151,63,0.5);
+  background:rgba(198,151,63,0.08);
+  border:1px solid rgba(198,151,63,0.15);
+  border-radius:100px;padding:2px 8px;font-weight:700;
+}
+
+/* URGENT section — top, gold border */
+.lp-urgent-section{
+  background:linear-gradient(180deg,rgba(176,58,46,0.06),transparent);
+  border-bottom:2px solid rgba(176,58,46,0.15);
+}
+.lp-urgent-section .lp-section-hdr{
+  background:linear-gradient(135deg,rgba(176,58,46,0.12),rgba(176,58,46,0.04));
+}
+.lp-urgent-section .lp-section-title{color:#E05A4E;}
+.lp-urgent-section .lp-section-count{background:rgba(176,58,46,0.1);border-color:rgba(176,58,46,0.2);color:#E05A4E;}
+
+/* FIND ME section — middle, purple */
+.lp-find-section{
+  border-bottom:2px solid rgba(74,63,181,0.12);
+}
+.lp-find-section .lp-section-hdr{
+  background:linear-gradient(135deg,rgba(74,63,181,0.08),transparent);
+}
+.lp-find-section .lp-section-title{color:var(--purple);}
+.lp-find-section .lp-section-count{background:rgba(74,63,181,0.08);border-color:rgba(74,63,181,0.15);color:var(--purple);}
+
+/* Request cards */
+.req-card{
+  background:var(--white);border-radius:12px;padding:12px;margin:0 10px 8px;
+  cursor:pointer;transition:all .2s;border:1px solid var(--border);
+  box-shadow:0 1px 8px rgba(12,31,74,0.05);
+}
+.req-card:hover{transform:translateX(3px);box-shadow:var(--shadow-md);}
+.req-card.urgent-card{border-left:3px solid #E05A4E;}
+.req-card.urgent-card:hover{border-color:#E05A4E;box-shadow:0 4px 20px rgba(176,58,46,0.15);}
+.req-card.find-card{border-left:3px solid var(--purple);}
+.req-card.find-card:hover{border-color:var(--purple);box-shadow:0 4px 20px rgba(74,63,181,0.12);}
+.req-card.active-req{background:var(--gold-xlt);border-color:var(--gold);}
+
+/* Card top row */
+.req-card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.req-emoji{
+  width:38px;height:38px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.req-emoji.urgent-bg{background:rgba(176,58,46,0.08);}
+.req-emoji.find-bg{background:rgba(74,63,181,0.08);}
+.req-info{flex:1;min-width:0;}
+.req-title{font-weight:700;font-size:13px;color:var(--text-dark);line-height:1.3;margin-bottom:3px;}
+.req-cat{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
+
+/* Payment offer row */
+.req-offer{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  padding:7px 10px;border-radius:9px;margin-bottom:7px;
+}
+.req-offer.cash-offer{background:rgba(26,107,58,0.07);border:1px solid rgba(26,107,58,0.15);}
+.req-offer.points-offer{background:rgba(74,63,181,0.06);border:1px solid rgba(74,63,181,0.12);}
+.req-offer.both-offer{background:rgba(198,151,63,0.06);border:1px solid rgba(198,151,63,0.15);}
+.offer-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.3px;}
+.offer-cash{
+  font-family:'Cormorant Garamond',serif;font-size:15px;
+  color:var(--green);font-weight:600;letter-spacing:0.3px;
+}
+.offer-points{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(74,63,181,0.1);border:1px solid rgba(74,63,181,0.2);
+  border-radius:100px;padding:2px 9px;
+  font-size:11px;font-weight:700;color:var(--purple);
+}
+.offer-or{font-size:10px;color:var(--muted);font-weight:600;}
+
+/* Delivery badge */
+.delivery-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:9px;font-weight:700;padding:3px 9px;border-radius:100px;
+  letter-spacing:0.5px;text-transform:uppercase;
+}
+.delivery-doorstep{background:rgba(176,58,46,0.1);color:#C0392B;border:1px solid rgba(176,58,46,0.2);}
+.delivery-info{background:rgba(26,107,58,0.08);color:var(--green);border:1px solid rgba(26,107,58,0.15);}
+.delivery-both{background:rgba(198,151,63,0.1);color:var(--gold-dk);border:1px solid rgba(198,151,63,0.2);}
+
+/* Footer meta */
+.req-footer{display:flex;justify-content:space-between;align-items:center;}
+.req-user{font-size:11px;color:var(--muted);}
+.req-time{font-size:10px;color:var(--muted);}
+.req-replies{
+  font-size:10px;font-weight:700;color:var(--purple);
+  background:rgba(74,63,181,0.08);padding:2px 8px;border-radius:100px;
+}
+.urgent-live{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:9px;font-weight:700;color:#E05A4E;
+  animation:pulse 1.5s infinite;
+}
+
+/* Bottom action buttons */
+.lp-actions{
+  display:flex;gap:8px;padding:10px 10px 12px;flex-shrink:0;
+  border-top:1px solid rgba(198,151,63,0.12);
+  background:linear-gradient(180deg,transparent,rgba(12,31,74,0.03));
+}
+.lp-action-btn{
+  flex:1;padding:11px 8px;border-radius:11px;border:none;
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;transition:all .2s;letter-spacing:0.3px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.lp-action-btn .btn-icon{font-size:18px;}
+.lp-action-btn .btn-label{font-size:10px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;}
+.lp-action-btn .btn-sub{font-size:9px;font-weight:400;opacity:0.75;}
+.help-me-btn{
+  background:linear-gradient(135deg,#C0392B,#922B21);color:#fff;
+  box-shadow:0 4px 16px rgba(176,58,46,0.3);
+}
+.help-me-btn:hover{box-shadow:0 6px 24px rgba(176,58,46,0.45);transform:translateY(-2px);}
+.find-me-btn{
+  background:linear-gradient(135deg,var(--royal2),var(--royal3));color:var(--gold);
+  border:1px solid rgba(198,151,63,0.25);
+  box-shadow:0 4px 16px rgba(12,31,74,0.2);
+}
+.find-me-btn:hover{box-shadow:0 6px 24px rgba(12,31,74,0.3);transform:translateY(-2px);}
+
+/* Trust Points badge in topbar */
+.trust-pts-badge{
+  background:rgba(74,63,181,0.12);border:1px solid rgba(74,63,181,0.25);
+  border-radius:9px;padding:6px 12px;display:flex;align-items:center;gap:6px;
+  cursor:pointer;transition:all .2s;
+}
+.trust-pts-badge:hover{background:rgba(74,63,181,0.2);}
+.trust-pts-num{font-family:'Cormorant Garamond',serif;font-size:14px;color:#8B7CF7;font-weight:600;}
+.trust-pts-lbl{font-size:9px;color:rgba(139,124,247,0.7);letter-spacing:0.5px;text-transform:uppercase;}
+
+/* Post request modal — premium */
+.req-type-toggle{display:flex;gap:10px;margin-bottom:20px;}
+.req-type-card{
+  flex:1;padding:16px;border-radius:14px;border:2px solid var(--border);
+  cursor:pointer;transition:all .2s;text-align:center;
+}
+.req-type-card:hover{border-color:var(--gold);}
+.req-type-card.selected-urgent{border-color:#E05A4E;background:rgba(176,58,46,0.04);}
+.req-type-card.selected-find{border-color:var(--purple);background:rgba(74,63,181,0.04);}
+.req-type-icon{font-size:28px;margin-bottom:8px;}
+.req-type-name{font-weight:700;font-size:14px;color:var(--text-dark);margin-bottom:4px;}
+.req-type-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* Payment selector */
+.payment-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.pay-option{
+  border:1.5px solid var(--border);border-radius:11px;padding:12px;
+  cursor:pointer;transition:all .2s;text-align:center;
+}
+.pay-option:hover{border-color:var(--gold);}
+.pay-option.selected{border-color:var(--gold);background:var(--gold-xlt);}
+.pay-option.selected.trust{border-color:var(--purple);background:rgba(74,63,181,0.05);}
+.pay-icon{font-size:22px;margin-bottom:5px;}
+.pay-label{font-size:12px;font-weight:700;color:var(--text-dark);}
+.pay-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+
+
+/* ════════════════════════════════════════════════
+   FLOATING PROFILE MENU BAR — bottom center of map
+   ════════════════════════════════════════════════ */
+
+/* The floating bar container */
+.float-profile-bar{
+  position:absolute;
+  bottom:48px; /* above privacy strip */
+  left:50%;
+  transform:translateX(-50%);
+  z-index:20;
+  display:flex;
+  align-items:center;
+  gap:0;
+  background:rgba(12,31,74,0.92);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(198,151,63,0.25);
+  border-radius:100px;
+  padding:5px 5px;
+  box-shadow:0 8px 40px rgba(12,31,74,0.45);
+  transition:all .3s ease;
+}
+.float-profile-bar:hover{
+  border-color:rgba(198,151,63,0.45);
+  box-shadow:0 12px 48px rgba(12,31,74,0.55);
+}
+
+/* Divider between profile and actions */
+.fpb-divider{
+  width:1px;height:28px;
+  background:rgba(198,151,63,0.2);
+  margin:0 4px;flex-shrink:0;
+}
+
+/* Profile section (left side of bar) */
+.fpb-profile{
+  display:flex;align-items:center;gap:10px;
+  padding:4px 14px 4px 6px;
+  cursor:pointer;border-radius:100px;
+  transition:background .2s;
+  position:relative;
+}
+.fpb-profile:hover{background:rgba(255,255,255,0.06);}
+.fpb-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));
+  border:2px solid rgba(198,151,63,0.5);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:var(--royal);
+  flex-shrink:0;
+  box-shadow:0 2px 10px rgba(198,151,63,0.3);
+  position:relative;
+}
+.fpb-online{
+  position:absolute;bottom:0;right:0;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--green);border:2px solid rgba(12,31,74,0.92);
+}
+.fpb-user-info{}
+.fpb-name{
+  font-weight:700;font-size:12px;color:#fff;
+  letter-spacing:0.2px;line-height:1.2;
+}
+.fpb-nick{
+  font-size:10px;color:rgba(198,151,63,0.7);
+  font-weight:500;margin-top:1px;
+}
+.fpb-pts-row{
+  display:flex;align-items:center;gap:6px;margin-top:3px;
+}
+.fpb-pts{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:10px;font-weight:700;
+}
+.fpb-pts.cash{color:var(--gold);}
+.fpb-pts.trust{color:#8B7CF7;}
+.fpb-pts-sep{color:rgba(255,255,255,0.2);font-size:10px;}
+
+/* Action buttons (right side of bar) */
+.fpb-actions{
+  display:flex;align-items:center;gap:2px;
+  padding:4px 4px;
+}
+.fpb-btn{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:6px 12px;border-radius:100px;
+  border:none;background:none;cursor:pointer;
+  transition:all .2s;
+  font-family:'DM Sans',sans-serif;
+  min-width:56px;
+}
+.fpb-btn:hover{background:rgba(255,255,255,0.08);}
+.fpb-btn.active-fpb{background:rgba(198,151,63,0.15);}
+.fpb-btn-icon{font-size:18px;line-height:1;}
+.fpb-btn-label{
+  font-size:9px;font-weight:700;
+  color:rgba(255,255,255,0.45);
+  letter-spacing:0.3px;text-transform:uppercase;
+  transition:color .2s;
+}
+.fpb-btn:hover .fpb-btn-label{color:rgba(255,255,255,0.8);}
+.fpb-btn.active-fpb .fpb-btn-label{color:var(--gold);}
+
+/* Notification dot */
+.fpb-notif{
+  position:absolute;top:0;right:6px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--red);border:2px solid rgba(12,31,74,0.92);
+}
+
+/* Profile popup menu — opens above the bar */
+.fpb-popup{
+  position:absolute;
+  bottom:calc(100% + 12px);
+  left:0;
+  background:rgba(12,31,74,0.96);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(198,151,63,0.2);
+  border-radius:16px;
+  padding:8px;
+  min-width:220px;
+  box-shadow:0 12px 48px rgba(12,31,74,0.5);
+  display:none;
+  animation:fadeUp .2s ease;
+}
+.fpb-popup.open{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.popup-user-header{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px 12px;
+  border-bottom:1px solid rgba(198,151,63,0.12);
+  margin-bottom:6px;
+}
+.popup-avatar-lg{
+  width:46px;height:46px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));
+  border:2px solid rgba(198,151,63,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:16px;color:var(--royal);flex-shrink:0;
+}
+.popup-user-name{font-weight:700;font-size:14px;color:#fff;}
+.popup-user-nick{font-size:11px;color:rgba(198,151,63,0.7);margin-top:2px;}
+.popup-user-roles{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
+.popup-role-badge{
+  font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;
+  background:rgba(198,151,63,0.1);color:var(--gold);
+  border:1px solid rgba(198,151,63,0.2);
+}
+
+/* Popup points row */
+.popup-pts-row{
+  display:flex;gap:6px;padding:8px 10px;
+  border-bottom:1px solid rgba(198,151,63,0.1);
+  margin-bottom:6px;
+}
+.popup-pts-item{
+  flex:1;background:rgba(255,255,255,0.04);border-radius:10px;
+  padding:8px;text-align:center;
+}
+.popup-pts-num{
+  font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;line-height:1;
+}
+.popup-pts-lbl{font-size:9px;color:rgba(255,255,255,0.4);margin-top:3px;letter-spacing:0.5px;text-transform:uppercase;}
+
+/* Popup menu items */
+.popup-menu-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:10px;cursor:pointer;
+  transition:background .15s;font-family:'DM Sans',sans-serif;
+}
+.popup-menu-item:hover{background:rgba(255,255,255,0.06);}
+.pmi-icon{font-size:16px;width:24px;text-align:center;flex-shrink:0;}
+.pmi-label{font-size:13px;color:rgba(255,255,255,0.8);font-weight:500;}
+.pmi-arrow{font-size:14px;color:rgba(255,255,255,0.2);margin-left:auto;}
+.popup-menu-divider{height:1px;background:rgba(198,151,63,0.1);margin:4px 8px;}
+.pmi-danger .pmi-label{color:rgba(192,57,43,0.9);}
+.pmi-danger:hover{background:rgba(192,57,43,0.08);}
+
+/* Collapsed state — just avatar on mobile */
+.float-profile-bar.collapsed .fpb-user-info,
+.float-profile-bar.collapsed .fpb-pts-row{display:none;}
+.float-profile-bar.collapsed .fpb-name{display:none;}
+
+@media(max-width:900px){
+  .float-profile-bar{bottom:70px;}
+  .fpb-btn-label{display:none;}
+  .fpb-btn{min-width:40px;padding:6px 8px;}
+  .fpb-user-info{display:none;}
+}
+
+
+/* ════════════════════════════════════════════
+   SWIPEABLE PANELS — narrow screens
+   ════════════════════════════════════════════ */
+
+/* Panel edge handles — visible on narrow screens */
+.panel-edge-handle{
+  display:none;
+  position:fixed;top:50%;transform:translateY(-50%);
+  z-index:250;
+  width:18px;height:60px;
+  background:rgba(12,31,74,0.85);
+  border:1px solid rgba(198,151,63,0.25);
+  border-radius:0 8px 8px 0;
+  backdrop-filter:blur(8px);
+  cursor:pointer;
+  align-items:center;justify-content:center;
+  flex-direction:column;gap:3px;
+  transition:all .2s;
+  box-shadow:2px 0 12px rgba(12,31,74,0.3);
+}
+.panel-edge-handle.right-handle{
+  border-radius:8px 0 0 8px;
+  box-shadow:-2px 0 12px rgba(12,31,74,0.3);
+}
+.panel-edge-handle:hover{
+  background:rgba(12,31,74,0.95);
+  border-color:rgba(198,151,63,0.5);
+}
+.peh-dot{
+  width:3px;height:3px;border-radius:50%;
+  background:rgba(198,151,63,0.6);
+}
+.peh-arrow{
+  font-size:10px;color:rgba(198,151,63,0.8);
+  line-height:1;
+}
+
+/* Narrow screen: panels slide off-screen */
+@media(max-width:1000px){
+  .app-body{
+    grid-template-columns:0 1fr 0 !important;
+    position:relative;
+  }
+
+  /* Left panel — slides from left */
+  .left-panel{
+    position:fixed !important;
+    left:0;top:62px;bottom:0;
+    width:280px !important;
+    z-index:300;
+    transform:translateX(-100%);
+    transition:transform .35s cubic-bezier(.32,.72,0,1),
+               box-shadow .35s ease;
+    box-shadow:none;
+  }
+  .left-panel.panel-open{
+    transform:translateX(0) !important;
+    box-shadow:4px 0 40px rgba(12,31,74,0.4);
+  }
+
+  /* Right panel — slides from right */
+  .sidebar{
+    position:fixed !important;
+    right:0;top:62px;bottom:0;
+    width:280px !important;
+    z-index:300;
+    transform:translateX(100%);
+    transition:transform .35s cubic-bezier(.32,.72,0,1),
+               box-shadow .35s ease;
+    box-shadow:none;
+  }
+  .sidebar.panel-open{
+    transform:translateX(0) !important;
+    box-shadow:-4px 0 40px rgba(12,31,74,0.4);
+  }
+
+  /* Show edge handles */
+  .panel-edge-handle{display:flex;}
+  .left-handle{left:0;}
+  .right-handle{right:0;}
+
+  /* Left handle arrow flips when panel is open */
+  .left-panel.panel-open ~ * .left-handle .peh-arrow,
+  .left-handle.open .peh-arrow{content:'‹';}
+
+  /* Dim overlay behind open panels */
+  .panel-dim{
+    position:fixed;inset:0;
+    background:rgba(8,18,50,0.55);
+    z-index:290;
+    display:none;
+    backdrop-filter:blur(2px);
+  }
+  .panel-dim.visible{display:block;}
+
+  /* Float profile bar moves up on mobile */
+  .float-profile-bar{
+    bottom:16px !important;
+  }
+
+  /* Adjust map search bar on narrow */
+  .map-search-bar{width:min(320px,80%) !important;}
+}
+
+/* Very narrow — shrink panels slightly */
+@media(max-width:600px){
+  .left-panel,.sidebar{width:260px !important;}
+  .float-profile-bar .fpb-user-info{display:none;}
+}
+
+/* Swipe indicator animation */
+@keyframes swipe-hint-left{
+  0%,100%{transform:translateY(-50%) translateX(0)}
+  50%{transform:translateY(-50%) translateX(4px)}
+}
+@keyframes swipe-hint-right{
+  0%,100%{transform:translateY(-50%) translateX(0)}
+  50%{transform:translateY(-50%) translateX(-4px)}
+}
+.panel-edge-handle.hinting-l{animation:swipe-hint-left .6s ease 3;}
+.panel-edge-handle.hinting-r{animation:swipe-hint-right .6s ease 3;}
+
+
+/* ════════════════════════════════════════════
+   MAP CENTER SEARCH BAR — Navigate to nearest
+   ════════════════════════════════════════════ */
+
+/* Search bar wrapper */
+.map-nav-bar{
+  position:absolute;
+  top:12px;left:50%;
+  transform:translateX(-50%);
+  z-index:15;
+  width:min(480px, 70%);
+  display:flex;flex-direction:column;
+  align-items:center;
+  gap:0;
+}
+
+/* Input row */
+.map-nav-input-row{
+  display:flex;align-items:center;gap:0;
+  width:100%;
+  background:rgba(255,255,255,0.97);
+  border-radius:14px;
+  border:1.5px solid rgba(198,151,63,0.25);
+  box-shadow:0 4px 24px rgba(12,31,74,0.18);
+  overflow:hidden;
+  transition:all .2s;
+}
+.map-nav-input-row:focus-within{
+  border-color:var(--gold);
+  box-shadow:0 6px 32px rgba(198,151,63,0.22);
+}
+.map-nav-icon{
+  padding:0 12px;font-size:16px;
+  color:var(--muted);flex-shrink:0;
+}
+.map-nav-input{
+  flex:1;padding:12px 4px;
+  border:none;outline:none;
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;color:var(--text);
+  background:transparent;
+}
+.map-nav-input::placeholder{color:var(--muted);}
+.map-nav-clear{
+  padding:0 10px;font-size:14px;
+  color:var(--muted);cursor:pointer;
+  background:none;border:none;
+  display:none;transition:color .2s;
+}
+.map-nav-clear:hover{color:var(--text);}
+.map-nav-search-btn{
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));
+  color:var(--royal);border:none;
+  padding:0 18px;height:46px;
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:700;
+  cursor:pointer;letter-spacing:0.3px;
+  transition:all .2s;white-space:nowrap;
+  flex-shrink:0;
+}
+.map-nav-search-btn:hover{background:linear-gradient(135deg,var(--gold),var(--gold-dk));}
+
+/* Results dropdown */
+.map-nav-results{
+  width:100%;
+  background:rgba(255,255,255,0.98);
+  border-radius:0 0 14px 14px;
+  border:1.5px solid rgba(198,151,63,0.25);
+  border-top:none;
+  box-shadow:0 8px 32px rgba(12,31,74,0.15);
+  overflow:hidden;
+  display:none;
+  max-height:320px;
+  overflow-y:auto;
+}
+.map-nav-results.visible{display:block;}
+.mnr-header{
+  padding:8px 14px 6px;
+  font-size:10px;font-weight:700;
+  color:var(--muted);letter-spacing:1px;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;
+}
+.mnr-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;cursor:pointer;
+  transition:background .15s;
+  border-bottom:1px solid rgba(200,210,232,0.5);
+}
+.mnr-item:last-child{border-bottom:none;}
+.mnr-item:hover{background:var(--gold-xlt);}
+.mnr-item.active{background:var(--gold-xlt);}
+.mnr-emoji{
+  width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.mnr-emoji.store-em{background:#FEF0F0;}
+.mnr-emoji.listing-em{background:#EEF4FF;}
+.mnr-info{flex:1;min-width:0;}
+.mnr-name{font-weight:700;font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mnr-sub{font-size:11px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:6px;}
+.mnr-type{font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px;letter-spacing:0.4px;text-transform:uppercase;white-space:nowrap;}
+.mnr-store-b{background:#FDECEA;color:var(--red);border:1px solid rgba(192,57,43,0.12);}
+.mnr-sell-b{background:#E6F5EE;color:var(--green);border:1px solid rgba(26,107,58,0.12);}
+.mnr-dist{font-size:10px;font-weight:700;color:var(--green);white-space:nowrap;flex-shrink:0;}
+.mnr-price{font-family:'Cormorant Garamond',serif;font-size:13px;color:var(--gold-dk);font-weight:600;letter-spacing:0.3px;white-space:nowrap;flex-shrink:0;}
+
+/* Navigate modal */
+.nav-modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(8,18,50,0.75);
+  z-index:2000;display:flex;align-items:flex-end;justify-content:center;
+  animation:fadeIn .2s ease;backdrop-filter:blur(4px);
+}
+.nav-modal{
+  background:var(--white);
+  border-radius:20px 20px 0 0;
+  width:100%;max-width:520px;
+  padding:0 0 32px;
+  box-shadow:0 -12px 60px rgba(12,31,74,0.3);
+  border-top:1px solid rgba(198,151,63,0.2);
+  animation:slideUp .3s cubic-bezier(.32,.72,0,1);
+}
+.nav-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;}
+.nav-header{padding:16px 20px 12px;border-bottom:1px solid var(--border);}
+.nav-destination{display:flex;align-items:center;gap:12px;margin-bottom:4px;}
+.nav-dest-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.nav-dest-name{font-weight:700;font-size:16px;color:var(--text);}
+.nav-dest-addr{font-size:12px;color:var(--muted);margin-top:2px;}
+.nav-dest-dist{font-size:12px;color:var(--green);font-weight:700;margin-top:3px;}
+.nav-modes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:16px 20px;}
+.nav-mode{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:14px 8px;border-radius:14px;cursor:pointer;
+  border:1.5px solid var(--border);background:var(--white);
+  transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.nav-mode:hover{border-color:var(--gold);background:var(--gold-xlt);}
+.nav-mode.selected{border-color:var(--gold);background:var(--gold-xlt);box-shadow:var(--shadow-gold);}
+.nav-mode-icon{font-size:28px;}
+.nav-mode-label{font-size:11px;font-weight:700;color:var(--text);letter-spacing:0.2px;}
+.nav-mode-time{font-size:10px;color:var(--muted);}
+.nav-open-btn{
+  display:block;width:calc(100% - 40px);margin:4px 20px 0;
+  padding:14px;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));
+  color:var(--royal);border:none;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+  cursor:pointer;letter-spacing:0.3px;
+  box-shadow:var(--shadow-gold);transition:all .2s;
+  text-align:center;
+}
+.nav-open-btn:hover{box-shadow:0 8px 28px rgba(198,151,63,0.4);transform:translateY(-1px);}
+.nav-google-note{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;padding:0 20px;}
+
+/* Loading state in search */
+.map-nav-loading{
+  padding:16px;text-align:center;
+  font-size:13px;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+
+@media(max-width:768px){
+  .map-nav-bar{width:min(360px,86%);top:8px;}
+  .map-nav-input{font-size:16px;}/* prevent iOS zoom */
+  .nav-modes{grid-template-columns:repeat(2,1fr);}
+}
+
+
+/* ════════════════════════════════════════════════
+   BUILT-IN NAVIGATION — Directions inside the app
+   ════════════════════════════════════════════════ */
+
+/* Full-screen nav overlay ON TOP of map */
+.nav-overlay{
+  position:absolute;inset:0;
+  z-index:100;
+  display:none;
+  flex-direction:column;
+  background:var(--off-white);
+  animation:fadeIn .2s ease;
+}
+.nav-overlay.active{display:flex;}
+
+/* Nav topbar */
+.nav-topbar{
+  background:linear-gradient(135deg,var(--royal),var(--royal2));
+  padding:12px 16px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(198,151,63,0.2);
+  flex-shrink:0;
+  box-shadow:0 2px 16px rgba(12,31,74,0.4);
+  position:relative;
+}
+.nav-topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(198,151,63,0.4),transparent);}
+.nav-back-btn{
+  background:rgba(255,255,255,0.1);border:1px solid rgba(198,151,63,0.2);
+  border-radius:9px;padding:8px 12px;cursor:pointer;
+  font-size:14px;color:var(--gold);font-family:'DM Sans',sans-serif;
+  font-weight:600;transition:all .2s;display:flex;align-items:center;gap:6px;
+  flex-shrink:0;
+}
+.nav-back-btn:hover{background:rgba(255,255,255,0.15);border-color:var(--gold);}
+.nav-destination-info{flex:1;min-width:0;}
+.nav-dest-name{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.nav-dest-addr{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;}
+.nav-live-badge{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(26,107,58,0.2);border:1px solid rgba(26,107,58,0.3);
+  border-radius:100px;padding:4px 10px;flex-shrink:0;
+}
+.nav-live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s infinite;}
+.nav-live-txt{font-size:10px;font-weight:700;color:var(--green);}
+
+/* Transport mode tabs */
+.nav-mode-tabs{
+  background:var(--white);
+  display:flex;gap:0;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.nav-mode-tabs::-webkit-scrollbar{display:none;}
+.nav-mode-tab{
+  flex:1;min-width:80px;padding:10px 8px;
+  border:none;background:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;
+  color:var(--muted);transition:all .2s;
+  border-bottom:2px solid transparent;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  white-space:nowrap;
+}
+.nav-mode-tab:hover{background:var(--cream);color:var(--text);}
+.nav-mode-tab.active{color:var(--royal);border-bottom-color:var(--gold);}
+.nav-mode-tab .mt-icon{font-size:18px;}
+.nav-mode-tab .mt-time{font-size:10px;color:var(--green);font-weight:700;}
+.nav-mode-tab.active .mt-time{color:var(--green);}
+
+/* Directions map area */
+.nav-map-area{flex:1;position:relative;overflow:hidden;}
+#nav-map{width:100%;height:100%;}
+
+/* Route info panel — bottom of nav */
+.nav-route-panel{
+  background:var(--white);
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+  max-height:220px;
+  overflow-y:auto;
+}
+.nav-route-panel::-webkit-scrollbar{width:3px;}
+.nav-route-panel::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px;}
+
+/* Route summary */
+.nav-route-summary{
+  display:flex;align-items:center;gap:16px;
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,var(--royal),var(--royal2));
+}
+.nav-summary-item{text-align:center;}
+.nav-summary-num{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold);font-weight:600;line-height:1;}
+.nav-summary-lbl{font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px;letter-spacing:0.5px;text-transform:uppercase;}
+.nav-summary-sep{width:1px;height:32px;background:rgba(198,151,63,0.2);}
+.nav-start-btn{
+  margin-left:auto;
+  background:linear-gradient(135deg,var(--green),#1a5c32);
+  color:#fff;border:none;border-radius:10px;
+  padding:10px 20px;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .2s;letter-spacing:0.3px;
+  box-shadow:0 4px 14px rgba(26,107,58,0.3);
+  display:flex;align-items:center;gap:7px;
+}
+.nav-start-btn:hover{box-shadow:0 6px 20px rgba(26,107,58,0.4);transform:translateY(-1px);}
+
+/* Turn-by-turn steps */
+.nav-steps{padding:8px;}
+.nav-step{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px;border-radius:10px;margin-bottom:4px;
+  transition:background .15s;
+}
+.nav-step:hover{background:var(--cream);}
+.nav-step-num{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--cream2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--muted);
+  flex-shrink:0;margin-top:1px;
+}
+.nav-step-icon{font-size:18px;flex-shrink:0;}
+.nav-step-body{flex:1;min-width:0;}
+.nav-step-inst{font-size:13px;color:var(--text);line-height:1.4;}
+.nav-step-dist{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* Loading state */
+.nav-loading{
+  position:absolute;inset:0;
+  background:rgba(255,255,255,0.9);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;z-index:5;
+}
+.nav-loading-txt{font-size:14px;color:var(--text);font-weight:600;}
+
+/* Open in Google Maps button */
+.nav-ext-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:8px 12px;padding:11px;
+  background:var(--cream);border:1px solid var(--border);border-radius:10px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;
+  font-weight:600;color:var(--text);transition:all .2s;text-decoration:none;
+}
+.nav-ext-btn:hover{border-color:var(--gold);background:var(--gold-xlt);}
+
 </style>
 </head>
 <body>
@@ -658,6 +1718,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
   </nav>
   <div class="topbar-right">
     <button class="btn-post" onclick="PS={suggestions:[],loading:false,source:'',timer:null};S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};openModal('post')">➕ Post Listing</button>
+    <div class="trust-pts-badge" onclick="openModal('trust-points')" title="Trust Points"><span>🤝</span><span class="trust-pts-num" id="trust-pts">120</span><span class="trust-pts-lbl">Trust</span></div>
     <div class="pts-badge" onclick="openModal('points')" title="Your Points">
       <span>⭐</span><span class="pts-num" id="pts-display">47</span><span class="pts-lbl">pts = ₱<span id="pts-cash">47</span></span>
     </div>
@@ -667,18 +1728,46 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 </div>
 
 <div class="app-body">
+
+<!-- Panel dim overlay -->
+<div class="panel-dim" id="panel-dim" onclick="closeAllPanels()"></div>
+
+<!-- Left panel edge handle -->
+<div class="panel-edge-handle left-handle" id="left-handle" onclick="togglePanel('left')" title="Requests panel">
+  <span class="peh-arrow" id="left-arrow">›</span>
+  <div class="peh-dot"></div>
+  <div class="peh-dot"></div>
+  <div class="peh-dot"></div>
+</div>
+
+<!-- Right panel edge handle -->
+<div class="panel-edge-handle right-handle" id="right-handle" onclick="togglePanel('right')" title="Stores & Listings">
+  <span class="peh-arrow" id="right-arrow">‹</span>
+  <div class="peh-dot"></div>
+  <div class="peh-dot"></div>
+  <div class="peh-dot"></div>
+</div>
   <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar"><div class="sidebar-handle" id="sb-handle"></div>
+  <!-- RIGHT PANEL: Stores & Listings -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-handle" id="sb-handle"></div>
     <div class="sb-head">
-      <div class="type-row" id="type-row">
-        <button class="type-btn active" onclick="setTab('all')">🏠 All</button>
-        <button class="type-btn" onclick="setTab('sell')">🛍️ For Sale</button>
-        <button class="type-btn" onclick="setTab('buy')">🔍 Looking For</button>
-        <button class="type-btn red-t" onclick="setTab('stores')">🏪 Stores</button>
-        <button class="type-btn pur-t" onclick="setTab('help')">🆘 Help</button>
+      <div class="sb-title-bar">
+        <div class="sb-title">🏪 Stores & Listings</div>
+        <div class="lp-count" id="result-count">Loading...</div>
       </div>
-      <div class="cat-scroll" id="cat-scroll"></div>
-      <div class="result-count" id="result-count">Loading...</div>
+      <div class="sb-search">
+        <span class="si">🔍</span>
+        <input type="text" id="search-inp-right" placeholder="Search stores, items..." oninput="onSearch(this.value)" id="search-inp">
+      </div>
+      <!-- Tab row -->
+      <div style="display:flex;gap:4px;padding:0 12px 10px;">
+        <button class="type-btn active" id="rp-all" onclick="setRightTab('all')" style="flex:1;padding:7px 4px;font-size:10px;">🏠 All</button>
+        <button class="type-btn" id="rp-sell" onclick="setRightTab('sell')" style="flex:1;padding:7px 4px;font-size:10px;">🛍️ For Sale</button>
+        <button class="type-btn red-t" id="rp-stores" onclick="setRightTab('stores')" style="flex:1;padding:7px 4px;font-size:10px;">🏪 Stores</button>
+      </div>
+      <!-- Cat pills -->
+      <div class="cat-scroll" id="cat-scroll" style="padding:0 12px 10px;"></div>
     </div>
     <div class="featured-banner" id="featured-banner"></div>
     <div class="sb-list" id="sb-list"></div>
@@ -688,7 +1777,106 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
   <!-- MAP -->
   <div class="map-wrap">
     <div id="map"></div>
+
+    <!-- ══ BUILT-IN NAVIGATION OVERLAY ══ -->
+    <div class="nav-overlay" id="nav-overlay">
+
+      <!-- Nav topbar -->
+      <div class="nav-topbar">
+        <button class="nav-back-btn" onclick="closeBuiltInNav()">← Back</button>
+        <div class="nav-destination-info">
+          <div class="nav-dest-name" id="nav-dest-name">Navigating...</div>
+          <div class="nav-dest-addr" id="nav-dest-addr"></div>
+        </div>
+        <div class="nav-live-badge">
+          <div class="nav-live-dot"></div>
+          <span class="nav-live-txt">LIVE</span>
+        </div>
+      </div>
+
+      <!-- Transport mode tabs -->
+      <div class="nav-mode-tabs" id="nav-mode-tabs">
+        <button class="nav-mode-tab active" id="navtab-driving" onclick="switchNavMode('DRIVING')">
+          <span class="mt-icon">🚗</span>
+          <span>Drive</span>
+          <span class="mt-time" id="navtime-driving">--</span>
+        </button>
+        <button class="nav-mode-tab" id="navtab-transit" onclick="switchNavMode('TRANSIT')">
+          <span class="mt-icon">🚌</span>
+          <span>Transit</span>
+          <span class="mt-time" id="navtime-transit">--</span>
+        </button>
+        <button class="nav-mode-tab" id="navtab-walking" onclick="switchNavMode('WALKING')">
+          <span class="mt-icon">🚶</span>
+          <span>Walk</span>
+          <span class="mt-time" id="navtime-walking">--</span>
+        </button>
+        <button class="nav-mode-tab" id="navtab-bicycling" onclick="switchNavMode('BICYCLING')">
+          <span class="mt-icon">🚲</span>
+          <span>Cycle</span>
+          <span class="mt-time" id="navtime-bicycling">--</span>
+        </button>
+      </div>
+
+      <!-- Directions map -->
+      <div class="nav-map-area">
+        <div id="nav-map"></div>
+        <div class="nav-loading" id="nav-loading">
+          <div class="spinner" style="width:40px;height:40px;border-width:4px"></div>
+          <div class="nav-loading-txt">Calculating route...</div>
+        </div>
+      </div>
+
+      <!-- Route info panel -->
+      <div class="nav-route-panel" id="nav-route-panel">
+        <div class="nav-route-summary" id="nav-route-summary">
+          <div class="nav-summary-item">
+            <div class="nav-summary-num" id="nav-duration">--</div>
+            <div class="nav-summary-lbl">Duration</div>
+          </div>
+          <div class="nav-summary-sep"></div>
+          <div class="nav-summary-item">
+            <div class="nav-summary-num" id="nav-distance">--</div>
+            <div class="nav-summary-lbl">Distance</div>
+          </div>
+          <div class="nav-summary-sep"></div>
+          <div class="nav-summary-item">
+            <div class="nav-summary-num" id="nav-via">--</div>
+            <div class="nav-summary-lbl">Via</div>
+          </div>
+          <button class="nav-start-btn" onclick="openExternalMaps()">
+            <span>🗺️</span> Open in Maps
+          </button>
+        </div>
+        <div class="nav-steps" id="nav-steps"></div>
+        <a class="nav-ext-btn" id="nav-ext-link" href="#" target="_blank">
+          🌐 Open full directions in Google Maps
+        </a>
+      </div>
+    </div>
     <div class="map-loading-overlay hidden" id="map-overlay"><div class="spinner" style="width:36px;height:36px;border-width:4px"></div><div class="map-loading-txt" id="map-overlay-txt">Loading map...</div></div>
+    <!-- MAP CENTER SEARCH & NAVIGATE BAR -->
+    <div class="map-nav-bar" id="map-nav-bar">
+      <div class="map-nav-input-row">
+        <span class="map-nav-icon">🔍</span>
+        <input
+          class="map-nav-input"
+          id="map-nav-input"
+          type="text"
+          placeholder="Find nearest store, listing, or item..."
+          autocomplete="off"
+          oninput="onMapNavSearch(this.value)"
+          onkeydown="onMapNavKey(event)"
+        >
+        <button class="map-nav-clear" id="map-nav-clear" onclick="clearMapNav()">✕</button>
+        <button class="map-nav-search-btn" onclick="triggerMapNavSearch()">🗺️ Navigate</button>
+      </div>
+      <div class="map-nav-results" id="map-nav-results"></div>
+    </div>
+
+    <!-- Nav modal (transport mode picker) -->
+    <div id="nav-modal-root"></div>
+
     <div class="locating-banner" id="locating-banner"><div class="spinner"></div> Getting your location...</div>
     <div class="map-legend">
       <div class="legend-row"><div class="leg-dot" style="background:var(--gold)"></div>For Sale</div>
@@ -701,15 +1889,130 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
     <div class="fab">
       <button onclick="openModal('store-register')">🏪 Register My Store</button>
     </div>
+    <!-- ── FLOATING PROFILE MENU BAR ── -->
+    <div class="float-profile-bar" id="float-profile-bar">
+
+      <!-- Profile Section -->
+      <div class="fpb-profile" id="fpb-profile-btn" onclick="toggleProfilePopup()">
+        <div class="fpb-avatar" id="fpb-avatar">
+          ME
+          <div class="fpb-online"></div>
+        </div>
+        <div class="fpb-user-info">
+          <div class="fpb-name" id="fpb-name">My Account</div>
+          <div class="fpb-nick" id="fpb-nick">@member</div>
+          <div class="fpb-pts-row">
+            <span class="fpb-pts cash">⭐ <span id="fpb-cash-pts">47</span>pts</span>
+            <span class="fpb-pts-sep">·</span>
+            <span class="fpb-pts trust">🤝 <span id="fpb-trust-pts">120</span></span>
+          </div>
+        </div>
+
+        <!-- Profile Popup -->
+        <div class="fpb-popup" id="fpb-popup">
+          <div class="popup-user-header">
+            <div class="popup-avatar-lg" id="popup-avatar-lg">ME</div>
+            <div>
+              <div class="popup-user-name" id="popup-full-name">My Account</div>
+              <div class="popup-user-nick" id="popup-nick">@member · San Jose del Monte</div>
+              <div class="popup-user-roles">
+                <span class="popup-role-badge">Buyer</span>
+                <span class="popup-role-badge">Seller</span>
+                <span class="popup-role-badge">Helper</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Points row -->
+          <div class="popup-pts-row">
+            <div class="popup-pts-item" onclick="openModal('points');toggleProfilePopup()">
+              <div class="popup-pts-num" style="color:var(--gold)">47</div>
+              <div class="popup-pts-lbl">⭐ Cash Points</div>
+            </div>
+            <div class="popup-pts-item" onclick="openModal('trust-points');toggleProfilePopup()">
+              <div class="popup-pts-num" style="color:#8B7CF7">120</div>
+              <div class="popup-pts-lbl">🤝 Trust Points</div>
+            </div>
+          </div>
+
+          <!-- Menu items -->
+          <div class="popup-menu-item" onclick="openModal('post');toggleProfilePopup()">
+            <span class="pmi-icon">➕</span>
+            <span class="pmi-label">Post a Listing</span>
+            <span class="pmi-arrow">›</span>
+          </div>
+          <div class="popup-menu-item" onclick="openPostRequest('urgent');toggleProfilePopup()">
+            <span class="pmi-icon">🆘</span>
+            <span class="pmi-label">Post Help Request</span>
+            <span class="pmi-arrow">›</span>
+          </div>
+          <div class="popup-menu-item" onclick="openModal('store-register');toggleProfilePopup()">
+            <span class="pmi-icon">🏪</span>
+            <span class="pmi-label">Register My Store</span>
+            <span class="pmi-arrow">›</span>
+          </div>
+          <div class="popup-menu-divider"></div>
+          <div class="popup-menu-item" onclick="openModal('points');toggleProfilePopup()">
+            <span class="pmi-icon">⭐</span>
+            <span class="pmi-label">My Points & Cash Out</span>
+            <span class="pmi-arrow">›</span>
+          </div>
+          <div class="popup-menu-item">
+            <span class="pmi-icon">🔔</span>
+            <span class="pmi-label">Notifications</span>
+            <div class="fpb-notif" style="position:relative;top:0;right:0;width:7px;height:7px;margin-left:auto;margin-right:8px"></div>
+            <span class="pmi-arrow">›</span>
+          </div>
+          <div class="popup-menu-item" onclick="window.open('membership.html','_blank');toggleProfilePopup()">
+            <span class="pmi-icon">⚙️</span>
+            <span class="pmi-label">Profile Settings</span>
+            <span class="pmi-arrow">›</span>
+          </div>
+          <div class="popup-menu-divider"></div>
+          <div class="popup-menu-item pmi-danger" onclick="toggleProfilePopup()">
+            <span class="pmi-icon">🚪</span>
+            <span class="pmi-label">Sign Out</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="fpb-divider"></div>
+
+      <!-- Action Buttons -->
+      <div class="fpb-actions">
+        <button class="fpb-btn active-fpb" id="fpb-map" onclick="fpbNav('map')" title="Map">
+          <span class="fpb-btn-icon">🗺️</span>
+          <span class="fpb-btn-label">Map</span>
+        </button>
+        <button class="fpb-btn" id="fpb-urgent" onclick="fpbNav('urgent')" title="Urgent Requests" style="position:relative">
+          <span class="fpb-btn-icon">🚨</span>
+          <span class="fpb-btn-label">Urgent</span>
+          <div class="fpb-notif"></div>
+        </button>
+        <button class="fpb-btn" id="fpb-nearby" onclick="fpbNav('nearby')" title="Nearby Stores">
+          <span class="fpb-btn-icon">📍</span>
+          <span class="fpb-btn-label">Nearby</span>
+        </button>
+        <button class="fpb-btn" id="fpb-saved" onclick="fpbNav('saved')" title="Saved Items">
+          <span class="fpb-btn-icon">🔖</span>
+          <span class="fpb-btn-label">Saved</span>
+        </button>
+        <button class="fpb-btn" id="fpb-points-btn" onclick="openModal('points')" title="Points">
+          <span class="fpb-btn-icon">⭐</span>
+          <span class="fpb-btn-label">Points</span>
+        </button>
+      </div>
+    </div>
+
     <!-- Privacy footer strip -->
-    <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(15,22,40,.75);padding:6px 14px;display:flex;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(4px);z-index:5;font-size:11px;">
-      <a href="privacy.html" target="_blank" style="color:#6677aa;text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#c9a96e'" onmouseout="this.style.color='#6677aa'">🔒 Privacy Policy</a>
-      <span style="color:#2a3555">|</span>
-      <a href="privacy.html#terms" target="_blank" style="color:#6677aa;text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#c9a96e'" onmouseout="this.style.color='#6677aa'">📋 Terms of Service</a>
-      <span style="color:#2a3555">|</span>
-      <a href="privacy.html#your-rights" target="_blank" style="color:#6677aa;text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#c9a96e'" onmouseout="this.style.color='#6677aa'">⚖️ Your Rights (RA 10173)</a>
-      <span style="color:#2a3555">|</span>
-      <span style="color:#2a3555">🇵🇭 RA 10173 Compliant</span>
+    <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(12,31,74,0.8);padding:5px 14px;display:flex;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(6px);z-index:5;font-size:10px;">
+      <a href="privacy.html" target="_blank" style="color:rgba(198,151,63,0.5);text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#C6973F'" onmouseout="this.style.color='rgba(198,151,63,0.5)'">🔒 Privacy</a>
+      <span style="color:#1a2a50">|</span>
+      <a href="privacy.html#terms" target="_blank" style="color:rgba(198,151,63,0.5);text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#C6973F'" onmouseout="this.style.color='rgba(198,151,63,0.5)'">📋 Terms</a>
+      <span style="color:#1a2a50">|</span>
+      <a href="privacy.html#your-rights" target="_blank" style="color:rgba(198,151,63,0.5);text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#C6973F'" onmouseout="this.style.color='rgba(198,151,63,0.5)'">⚖️ Your Rights</a>
+      <span style="color:#1a2a50">|</span>
+      <span style="color:#1a2a50">🇵🇭 RA 10173</span>
     </div>
   </div>
 </div>
@@ -747,14 +2050,59 @@ let stores = [
 ];
 
 let helpRequests = [
-  {id:201,item:"65W USB-C Laptop Charger",category:"Electronics",user:"Carlo M.",avatar:"CM",time:"5 min ago",urgent:true,lat:14.8165,lng:121.0445,
-   replies:[{id:1,name:"Mark R.",avatar:"MR",store:"TechZone SJDM",address:"Tungkong Mangga",msg:"Available here! ₱350 lang.",confirmed:false}]},
-  {id:202,item:"Paracetamol 500mg",category:"Food",user:"Rica S.",avatar:"RS",time:"12 min ago",urgent:true,lat:14.8130,lng:121.0480,
+  // URGENT — Help Me (cash or trust points, delivery options)
+  {id:201, reqType:'urgent',
+   item:"65W USB-C Laptop Charger", category:"Electronics",
+   user:"Carlo M.", avatar:"CM", time:"5 min ago",
+   offer:{ type:'both', cash:150, points:50 },
+   delivery:'doorstep',
+   note:"Need it delivered to Tungkong Mangga ASAP for WFH",
+   lat:14.8165, lng:121.0445,
+   replies:[{id:1,name:"Mark R.",avatar:"MR",store:"TechZone SJDM",address:"Tungkong Mangga",msg:"Available! ₱350 lang.",confirmed:false}]},
+  {id:202, reqType:'urgent',
+   item:"Paracetamol 500mg (10 tablets)", category:"Food",
+   user:"Rica S.", avatar:"RS", time:"12 min ago",
+   offer:{ type:'cash', cash:80, points:0 },
+   delivery:'doorstep',
+   note:"Sick at home, need medicine delivered NOW",
+   lat:14.8130, lng:121.0480,
    replies:[
-     {id:1,name:"Tina A.",avatar:"TA",store:"MedPlus Pharmacy",address:"Poblacion SJDM",msg:"In stock po, ₱8/tablet.",confirmed:false},
-     {id:2,name:"Bong C.",avatar:"BC",store:"Mercury Drug SJDM",address:"City Center",msg:"Meron din kami, 24hrs open.",confirmed:true}
+     {id:1,name:"Tina A.",avatar:"TA",store:"MedPlus Pharmacy",address:"Poblacion SJDM",msg:"In stock, ₱8/tablet.",confirmed:false},
+     {id:2,name:"Bong C.",avatar:"BC",store:"Mercury Drug SJDM",address:"City Center",msg:"24hrs open, meron kami.",confirmed:true}
    ]},
-  {id:203,item:"HDMI Cable 2m",category:"Electronics",user:"Ben A.",avatar:"BA",time:"22 min ago",urgent:false,lat:14.8205,lng:121.0420,replies:[]},
+  {id:204, reqType:'urgent',
+   item:"Birthday Cake (chocolate)", category:"Food",
+   user:"Jenny L.", avatar:"JL", time:"2 min ago",
+   offer:{ type:'both', cash:200, points:80 },
+   delivery:'both',
+   note:"Party tonight at 6PM, need delivered by 5PM",
+   lat:14.8170, lng:121.0470,
+   replies:[]},
+  // FIND ME — Not urgent (trust points only)
+  {id:203, reqType:'find',
+   item:"HDMI Cable 2m", category:"Electronics",
+   user:"Ben A.", avatar:"BA", time:"22 min ago",
+   offer:{ type:'points', cash:0, points:20 },
+   delivery:'info',
+   note:"Just need to know which store near SJDM sells this",
+   lat:14.8205, lng:121.0420,
+   replies:[]},
+  {id:205, reqType:'find',
+   item:"Baon containers (3-layer)", category:"Home",
+   user:"Mama Cita", avatar:"MC", time:"1 hr ago",
+   offer:{ type:'points', cash:0, points:15 },
+   delivery:'info',
+   note:"Where to buy sa SJDM area?",
+   lat:14.8140, lng:121.0440,
+   replies:[]},
+  {id:206, reqType:'find',
+   item:"2nd Hand Gaming Chair", category:"Others",
+   user:"Gab R.", avatar:"GR", time:"3 hrs ago",
+   offer:{ type:'points', cash:0, points:30 },
+   delivery:'info',
+   note:"Looking for affordable gaming chair, blue color preferred",
+   lat:14.8190, lng:121.0430,
+   replies:[]},
 ];
 
 // ── STATE ──────────────────────────────────────────────────────────────────────
@@ -839,6 +2187,7 @@ function initLocation(lat, lng, label) {
 
   drawRadiusCircle();
   renderAll();
+  renderLeftPanel();
 }
 
 // Try real geolocation first, fall back to SJDM
@@ -916,7 +2265,10 @@ function buildMarkers() {
         <div class="popup-title">${esc(l.title)}</div>
         <div class="popup-sub">📍 ${esc(l.location)}</div>
         <div class="popup-price">₱${l.price.toLocaleString()}</div>
-        <button class="popup-btn" onclick="selectItem(${l.id},'listing');infoWindow.close()">View Details →</button>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${l.id},'listing');infoWindow.close()">View Details →</button>
+          <button class="popup-btn" style="background:#1a2340;color:var(--gold);flex:1;margin-top:0" onclick="infoWindow.close();openStreetView(${l.lat},${l.lng},'${esc(l.location)}')">🚶 Street View</button>
+        </div>
       </div>`;
       addMarker(l.lat, l.lng, makeIcon(l.type), html);
     });
@@ -983,7 +2335,7 @@ function getHelpFiltered() {
 function renderAll() {
   renderSidebarSkeleton();
   renderFeaturedBanner();
-  // Small delay so skeleton shows before heavy marker work
+  renderLeftPanel();
   requestAnimationFrame(() => {
     renderSidebar();
     buildMarkers();
@@ -1131,7 +2483,10 @@ function buildStoreDetailPanel(s) {
     <div class="prod-tags">${s.products.map(p=>`<span class="prod-tag">${esc(p)}</span>`).join('')}</div>
     <div class="store-btns">
       <button style="background:var(--gold);color:var(--navy)" onclick="showToast('📞 ${s.contact}')">📞 Call</button>
-      <button style="background:var(--navy);color:#fff" onclick="map.setCenter({lat:${s.lat},lng:${s.lng}});map.setZoom(17);showToast('🗺️ Navigating...')">🗺️ Go</button>
+      <button style="background:var(--navy);color:#fff" onclick="openBuiltInNav(${s.lat},${s.lng},'${esc(s.name)}','${esc(s.address)}')">🗺️ Go</button>
+      <button style="background:#1a2340;color:var(--gold);border:1px solid var(--gold)" onclick="openStreetView(${s.lat},${s.lng},'${esc(s.name)}')">🚶 Street View</button>
+    </div>
+    <div class="store-btns" style="margin-top:6px">
       <button style="background:var(--purple);color:#fff" onclick="prefillHelpReply('${esc(s.name)}','${esc(s.address)}')">📤 Share</button>
       ${!s.featured?'<button style="background:var(--gold);color:var(--navy)" onclick="openBoost('+s.id+',\'store\')">⭐ Boost</button>':'<span style="font-size:10px;color:var(--gold-dk);font-weight:700;padding:6px 4px">⭐ Featured</span>'}
     </div>
@@ -1269,7 +2624,7 @@ function closeModal() { S.modal=null; document.getElementById('modal-root').inne
 function renderModal() {
   const root=document.getElementById('modal-root');
   if (!S.modal) { root.innerHTML=''; return; }
-  const builders={detail:buildDetailModal,post:buildPostModal,'help-request':buildHelpRequestModal,'help-detail':buildHelpDetailModal,points:buildPointsModal,'store-register':buildStoreRegisterModal,boost:buildBoostModal,'boost-info':buildBoostInfoModal,admin:buildAdminModal};
+  const builders={detail:buildDetailModal,post:buildPostModal,'help-request':buildHelpRequestModal,'help-detail':buildHelpDetailModal,points:buildPointsModal,'store-register':buildStoreRegisterModal,boost:buildBoostModal,'boost-info':buildBoostInfoModal,admin:buildAdminModal,'trust-points':buildTrustPointsModal,'post-request':buildPostRequestModal};
   root.innerHTML = (builders[S.modal]||(() => ''))();
 }
 
@@ -1298,6 +2653,7 @@ function buildDetailModal() {
         </div>
         <button class="btn-primary" onclick="showToast('📞 Contact: ${l.contact}');closeModal()">📞 View Contact Info</button>
         <button class="btn-red-full" onclick="setTab('stores');S.search='${esc(l.title.split(' ').slice(0,2).join(' '))}';closeModal();renderAll()">🚨 Find in a Nearby Store</button>
+        <button style="width:100%;padding:13px;background:#1a2340;color:var(--gold);border:2px solid var(--gold);border-radius:11px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px" onclick="closeModal();openBuiltInNav(${l.lat},${l.lng},'${esc(l.title)}','${esc(l.location)}')">🚶 Street View</button>
         <button class="btn-outline" onclick="toggleSave(${l.id})">${S.saved.includes(l.id)?'🔖 Saved':'🏷️ Save Listing'}</button>
       </div>
     </div>
@@ -2327,13 +3683,19 @@ function awSubmitLogin() {
   },1400);
 }
 function awSocialSignup(p){
-  showToast('Connecting to '+p+'...');
+  const btn = event.target.closest('button');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<div class="aw-spinner"></div> Connecting...';
+  btn.disabled = true;
   setTimeout(()=>{
+    btn.innerHTML = orig; btn.disabled = false;
     AW_USER.method='social';
     AW_USER.firstName=p==='Google'?'Juan':'Maria';
     AW_USER.lastName='dela Cruz';
+    AW_USER.photo=p==='Google'?'🔵':'📘';
+    AW_TOTAL_STEPS=3;
     awGoStep(3);
-  },900);
+  },1200);
 }
 function awSocialLogin(p){
   showToast('Connecting to '+p+'...');
@@ -2341,6 +3703,1298 @@ function awSocialLogin(p){
     AW_USER={firstName:'Juan',lastName:'Cruz',nickname:'juansjdm',location:'Tungkong Mangga',bio:'',photo:'😎',roles:['buyer','helper']};
     awDismissAndEnter();
   },1200);
+}
+
+
+// ── STREET VIEW ──────────────────────────────────────────────────────────────
+let svPanorama = null;
+let svHeading = 0;
+
+function openStreetView(lat, lng, label) {
+  const overlay = document.getElementById('sv-overlay');
+  const container = document.getElementById('sv-container');
+  document.getElementById('sv-addr').textContent = label || 'Loading address...';
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  // Check if Street View is available at this location
+  const svService = new google.maps.StreetViewService();
+  svService.getPanorama(
+    { location: { lat, lng }, radius: 100, preference: google.maps.StreetViewPreference.NEAREST },
+    (data, status) => {
+      if (status === google.maps.StreetViewStatus.OK) {
+        // Street View available — show it
+        svHeading = google.maps.geometry.spherical.computeHeading(
+          data.location.latLng,
+          new google.maps.LatLng(lat, lng)
+        );
+        svPanorama = new google.maps.StreetViewPanorama(container, {
+          position: { lat, lng },
+          pov: { heading: svHeading, pitch: 0 },
+          zoom: 1,
+          addressControl: true,
+          showRoadLabels: true,
+          motionTracking: false,
+          motionTrackingControl: false,
+          fullscreenControl: false,
+          panControl: true,
+          zoomControl: true,
+          linksControl: true,
+        });
+        document.getElementById('sv-addr').textContent = '📍 ' + (label || 'Street View');
+      } else {
+        // Street View not available at this location
+        container.innerHTML = `
+          <div class="sv-unavailable">
+            <div class="sv-unavailable-icon">🌏</div>
+            <div class="sv-unavailable-title">Street View not available here</div>
+            <div class="sv-unavailable-sub">
+              Google hasn't captured Street View imagery for this location yet.<br>
+              Try using the Directions button to see it on Google Maps.
+            </div>
+            <button class="sv-ctrl-btn" onclick="window.open('https://maps.google.com/?q=${lat},${lng}&layer=c','_blank')" style="margin-top:8px">
+              🗺️ Open in Google Maps
+            </button>
+          </div>`;
+      }
+    }
+  );
+}
+
+function closeSV() {
+  document.getElementById('sv-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  if (svPanorama) {
+    svPanorama = null;
+    document.getElementById('sv-container').innerHTML = '';
+  }
+}
+
+function svRotate(deg) {
+  if (!svPanorama) return;
+  const pov = svPanorama.getPov();
+  svPanorama.setPov({ heading: pov.heading + deg, pitch: pov.pitch });
+}
+
+function svZoom(dir) {
+  if (!svPanorama) return;
+  svPanorama.setZoom(Math.max(0, Math.min(3, svPanorama.getZoom() + dir)));
+}
+
+// Close with Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSV();
+});
+
+
+// ── LEFT PANEL: Urgent + Find Me Requests ───────────────────────────────────
+let selectedLF = null;
+let S_trustPoints = 120;
+
+// Offer display helper
+function renderOffer(req) {
+  const o = req.offer;
+  if (o.type === 'cash') return `
+    <div class="req-offer cash-offer">
+      <span class="offer-label">Offering:</span>
+      <span class="offer-cash">₱${o.cash} cash</span>
+    </div>`;
+  if (o.type === 'points') return `
+    <div class="req-offer points-offer">
+      <span class="offer-label">Offering:</span>
+      <span class="offer-points">🤝 ${o.points} Trust pts</span>
+    </div>`;
+  return `
+    <div class="req-offer both-offer">
+      <span class="offer-label">Offering:</span>
+      <span class="offer-cash">₱${o.cash}</span>
+      <span class="offer-or">or</span>
+      <span class="offer-points">🤝 ${o.points} Trust pts</span>
+    </div>`;
+}
+
+// Delivery badge helper
+function renderDelivery(delivery) {
+  if (delivery === 'doorstep') return '<span class="delivery-badge delivery-doorstep">🏠 Doorstep Delivery</span>';
+  if (delivery === 'info') return '<span class="delivery-badge delivery-info">📍 Info Only</span>';
+  return '<span class="delivery-badge delivery-both">🏠 Delivery or 📍 Info</span>';
+}
+
+function renderLeftPanel() {
+  const search = (document.getElementById('lf-search')?.value || '').toLowerCase();
+
+  const urgentReqs = helpRequests.filter(r =>
+    r.reqType === 'urgent' && (!search || r.item.toLowerCase().includes(search))
+  );
+  const findReqs = helpRequests.filter(r =>
+    r.reqType === 'find' && (!search || r.item.toLowerCase().includes(search))
+  );
+  // Also include buy listings in find section
+  const buyListings = listings.filter(l =>
+    l.type === 'buy' && (!search || l.title.toLowerCase().includes(search))
+  );
+
+  const total = urgentReqs.length + findReqs.length + buyListings.length;
+  const countEl = document.getElementById('lf-count');
+  if (countEl) countEl.textContent = total;
+
+  const urgentCountEl = document.getElementById('urgent-count');
+  if (urgentCountEl) urgentCountEl.textContent = urgentReqs.length;
+
+  const findCountEl = document.getElementById('find-count');
+  if (findCountEl) findCountEl.textContent = findReqs.length + buyListings.length;
+
+  // ── URGENT LIST ──
+  const urgentList = document.getElementById('urgent-list');
+  if (urgentList) {
+    urgentList.innerHTML = urgentReqs.length ? urgentReqs.map(r => `
+      <div class="req-card urgent-card ${selectedLF===String(r.id)?'active-req':''}"
+           onclick="selectRequest(${r.id},'urgent')">
+        <div class="req-card-top">
+          <div class="req-emoji urgent-bg">🆘</div>
+          <div class="req-info">
+            <div class="req-title">${r.item}</div>
+            <div class="req-cat">${r.category}</div>
+          </div>
+          <div class="urgent-live">● LIVE</div>
+        </div>
+        ${renderOffer(r)}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px">
+          ${renderDelivery(r.delivery)}
+        </div>
+        ${r.note ? `<div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:7px;line-height:1.4">"${r.note}"</div>` : ''}
+        <div class="req-footer">
+          <span class="req-user">👤 ${r.user} · ${r.time}</span>
+          ${r.replies.length ? `<span class="req-replies">💬 ${r.replies.length}</span>` : '<span style="font-size:10px;color:var(--muted)">No replies yet</span>'}
+        </div>
+      </div>`).join('') :
+    `<div style="text-align:center;padding:20px;color:var(--muted)">
+      <div style="font-size:28px;margin-bottom:6px">🕊️</div>
+      <div style="font-size:12px;font-weight:600">No urgent requests</div>
+    </div>`;
+  }
+
+  // ── FIND LIST ──
+  const findList = document.getElementById('find-list');
+  if (findList) {
+    let html = findReqs.map(r => `
+      <div class="req-card find-card ${selectedLF===String(r.id)?'active-req':''}"
+           onclick="selectRequest(${r.id},'find')">
+        <div class="req-card-top">
+          <div class="req-emoji find-bg">🔍</div>
+          <div class="req-info">
+            <div class="req-title">${r.item}</div>
+            <div class="req-cat">${r.category}</div>
+          </div>
+        </div>
+        ${renderOffer(r)}
+        ${r.note ? `<div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:7px;line-height:1.4">"${r.note}"</div>` : ''}
+        <div class="req-footer">
+          <span class="req-user">👤 ${r.user} · ${r.time}</span>
+          ${r.replies.length ? `<span class="req-replies">💬 ${r.replies.length}</span>` : ''}
+        </div>
+      </div>`).join('');
+
+    // Buy listings in find section
+    if (buyListings.length) {
+      html += `<div style="font-size:9px;font-weight:700;color:rgba(74,63,181,0.5);letter-spacing:2px;text-transform:uppercase;padding:4px 10px 2px">Looking to Buy</div>`;
+      html += buyListings.map(l => `
+        <div class="req-card find-card ${selectedLF===String(l.id)+'-buy'?'active-req':''}"
+             onclick="selectRequest(${l.id},'buy')">
+          <div class="req-card-top">
+            <div class="req-emoji find-bg">${l.image}</div>
+            <div class="req-info">
+              <div class="req-title">${l.title}</div>
+              <div class="req-cat">${l.category}</div>
+            </div>
+          </div>
+          <div class="req-offer points-offer">
+            <span class="offer-label">Budget:</span>
+            <span style="font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--gold-dk);font-weight:600">₱${l.price.toLocaleString()}</span>
+          </div>
+          <div class="req-footer">
+            <span class="req-user">👤 ${l.buyer||'Anonymous'} · 📍 ${l.location}</span>
+          </div>
+        </div>`).join('');
+    }
+
+    findList.innerHTML = html || `<div style="text-align:center;padding:20px;color:var(--muted)">
+      <div style="font-size:28px;margin-bottom:6px">🔍</div>
+      <div style="font-size:12px;font-weight:600">No find requests</div>
+    </div>`;
+  }
+}
+
+function selectRequest(id, type) {
+  selectedLF = type === 'buy' ? String(id)+'-buy' : String(id);
+  renderLeftPanel();
+  let item;
+  if (type === 'buy') item = listings.find(l => l.id === id);
+  else item = helpRequests.find(r => r.id === id);
+  if (item && map) map.panTo({ lat: item.lat, lng: item.lng });
+  if (type === 'buy') { S.selectedId = id; S.selectedType = 'listing'; openModal('detail'); }
+  else { S.selectedId = id; S.selectedType = 'help'; openModal('help-detail'); }
+}
+
+function openPostRequest(type) {
+  S._postReqType = type;
+  openModal('post-request');
+}
+
+// Trust Points modal
+function buildTrustPointsModal() {
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:440px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title">🤝 Trust Points</div>
+        <div class="modal-sub">Earned by helping. Spent to get help. Separate from cash.</div>
+      </div>
+      <div class="modal-body">
+        <div style="background:linear-gradient(135deg,var(--royal),var(--royal2));border-radius:16px;padding:24px;text-align:center;margin-bottom:20px;border:1px solid rgba(74,63,181,0.3)">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:52px;color:#8B7CF7;font-weight:600;line-height:1">${S_trustPoints}</div>
+          <div style="font-size:16px;color:#8B7CF7;margin-top:4px">🤝 Trust Points</div>
+          <div style="font-size:13px;color:rgba(139,124,247,0.6);margin-top:6px">Not convertible to cash — used to pay for community help</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+          <div style="background:var(--green-bg);border-radius:12px;padding:14px;text-align:center;border:1px solid rgba(26,107,58,0.15)">
+            <div style="font-size:22px;margin-bottom:6px">💰</div>
+            <div style="font-weight:700;font-size:13px;color:var(--green)">How to Earn</div>
+            <div style="font-size:12px;color:#555;margin-top:4px;line-height:1.5">Help someone find a store or item → they confirm → +1 Trust Point</div>
+          </div>
+          <div style="background:rgba(74,63,181,0.06);border-radius:12px;padding:14px;text-align:center;border:1px solid rgba(74,63,181,0.12)">
+            <div style="font-size:22px;margin-bottom:6px">🛍️</div>
+            <div style="font-weight:700;font-size:13px;color:var(--purple)">How to Spend</div>
+            <div style="font-size:12px;color:#555;margin-top:4px;line-height:1.5">Post a "Find Me" request and offer Trust Points as reward</div>
+          </div>
+        </div>
+        <div style="background:var(--cream2);border-radius:12px;padding:14px;font-size:12px;color:#555;line-height:1.7">
+          💡 <strong>Why separate from cash?</strong> Trust Points build community reputation. The more you help, the more points you earn — and the more help you can request back from the community.
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// Post Request modal
+function buildPostRequestModal() {
+  const type = S._postReqType || 'urgent';
+  const f = S._reqForm || { item:'', category:'Electronics', cash:'', points:'', delivery:'doorstep', note:'', payType:'cash' };
+  S._reqForm = f;
+
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal" style="width:520px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title" style="color:${type==='urgent'?'#C0392B':'var(--purple)'}">
+          ${type==='urgent'?'🆘 Help Me — Urgent Request':'🔍 Find Me — Where to Buy'}
+        </div>
+        <div class="modal-sub">${type==='urgent'
+          ? 'Offer cash or Trust Points. Helper finds & delivers the item to you.'
+          : 'Offer Trust Points. Helper tells you where to find the item nearby.'}</div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">What do you need? *</label>
+          <input class="form-input" type="text" placeholder="e.g. 65W USB-C charger, Paracetamol 500mg..."
+            value="${f.item}" oninput="S._reqForm.item=this.value">
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-input" onchange="S._reqForm.category=this.value">
+              ${['Electronics','Food','Fashion','Home','Services','Vehicles','Others'].map(c=>`<option ${f.category===c?'selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+          ${type==='urgent' ? `
+          <div class="form-group">
+            <label class="form-label">Delivery Preference</label>
+            <select class="form-input" onchange="S._reqForm.delivery=this.value">
+              <option value="doorstep" ${f.delivery==='doorstep'?'selected':''}>🏠 Deliver to my door</option>
+              <option value="info" ${f.delivery==='info'?'selected':''}>📍 Just tell me where</option>
+              <option value="both" ${f.delivery==='both'?'selected':''}>Either is fine</option>
+            </select>
+          </div>` : `
+          <div class="form-group">
+            <label class="form-label">Your Location</label>
+            <input class="form-input" type="text" placeholder="e.g. Tungkong Mangga"
+              value="${f.location||''}" oninput="S._reqForm.location=this.value">
+          </div>`}
+        </div>
+
+        <!-- Payment section -->
+        <div class="form-group">
+          <label class="form-label">${type==='urgent'?'What will you offer the helper?':'Reward for helper'}</label>
+          <div class="payment-selector">
+            <div class="pay-option ${f.payType==='cash'?'selected':''}" onclick="S._reqForm.payType='cash';renderModal()">
+              <div class="pay-icon">💵</div>
+              <div class="pay-label">Cash</div>
+              <div class="pay-sub">GCash / Cash on delivery</div>
+            </div>
+            <div class="pay-option ${f.payType==='points'?'selected trust':''}" onclick="S._reqForm.payType='points';renderModal()">
+              <div class="pay-icon">🤝</div>
+              <div class="pay-label">Trust Points</div>
+              <div class="pay-sub">You have ${S_trustPoints} pts</div>
+            </div>
+            ${type==='urgent'?`
+            <div class="pay-option ${f.payType==='both'?'selected':''}" onclick="S._reqForm.payType='both';renderModal()" style="grid-column:1/-1">
+              <div class="pay-icon">💵 + 🤝</div>
+              <div class="pay-label">Both — helper chooses</div>
+              <div class="pay-sub">Offer cash AND trust points</div>
+            </div>`:''}
+          </div>
+        </div>
+
+        ${f.payType==='cash'||f.payType==='both' ? `
+        <div class="form-group">
+          <label class="form-label">Cash Amount (₱) *</label>
+          <input class="form-input" type="number" placeholder="e.g. 150"
+            value="${f.cash}" oninput="S._reqForm.cash=this.value">
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">This goes to the helper who successfully helps you</div>
+        </div>` : ''}
+
+        ${f.payType==='points'||f.payType==='both' ? `
+        <div class="form-group">
+          <label class="form-label">Trust Points to Offer *</label>
+          <input class="form-input" type="number" placeholder="e.g. 20" min="1" max="${S_trustPoints}"
+            value="${f.points}" oninput="S._reqForm.points=this.value">
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">You have <strong style="color:var(--purple)">${S_trustPoints} Trust Points</strong> available</div>
+        </div>` : ''}
+
+        <div class="form-group">
+          <label class="form-label">Additional Notes</label>
+          <textarea class="form-input" rows="2" placeholder="Brand preference, color, size, urgency details..."
+            style="resize:none" oninput="S._reqForm.note=this.value">${f.note}</textarea>
+        </div>
+
+        <button class="${type==='urgent'?'btn-red-full':'btn-primary'}" onclick="submitPostRequest()" style="margin-top:4px">
+          ${type==='urgent'?'🆘 Post Urgent Request':'🔍 Post Find Request'}
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function submitPostRequest() {
+  const f = S._reqForm || {};
+  if (!f.item) { showToast('⚠️ Please describe what you need.', 'error'); return; }
+  const type = S._postReqType || 'urgent';
+  const newReq = {
+    id: Date.now(), reqType: type,
+    item: f.item, category: f.category || 'Others',
+    user: 'You', avatar: 'ME', time: 'Just now',
+    offer: { type: f.payType||'cash', cash: Number(f.cash)||0, points: Number(f.points)||0 },
+    delivery: f.delivery || 'info',
+    note: f.note || '',
+    lat: USER.lat + (Math.random()-.5)*.01,
+    lng: USER.lng + (Math.random()-.5)*.01,
+    replies: []
+  };
+  helpRequests = [newReq, ...helpRequests];
+  S._reqForm = { item:'', category:'Electronics', cash:'', points:'', delivery:'doorstep', note:'', payType:'cash' };
+  closeModal();
+  renderAll();
+  showToast(type==='urgent'?'🆘 Urgent request posted! Helpers nearby will see it.':'🔍 Find request posted!', 'success');
+}
+
+function openLFPost() { openPostRequest('urgent'); }
+
+
+function setRightTab(tab) {
+  // Update right panel tab buttons
+  ['all','sell','stores'].forEach(t => {
+    const el = document.getElementById('rp-' + t);
+    if (el) {
+      el.className = 'type-btn' + (t === tab ? ' active' : '') + (t === 'stores' ? ' red-t' : '');
+    }
+  });
+  S.tab = tab;
+  renderAll();
+}
+
+// Mobile panel toggles
+function toggleLeftPanel() {
+  const lp = document.getElementById('left-panel');
+  lp.classList.toggle('open');
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleRightPanel() {
+  const sb = document.getElementById('sidebar');
+  sb.classList.toggle('open');
+  document.getElementById('left-panel').classList.remove('open');
+}
+
+// Patch renderAll to also render left panel
+const _origRenderAll = renderAll;
+
+
+// ── FLOATING PROFILE MENU BAR ────────────────────────────────────────────────
+let profilePopupOpen = false;
+let fpbActiveBtn = 'map';
+
+function toggleProfilePopup() {
+  profilePopupOpen = !profilePopupOpen;
+  const popup = document.getElementById('fpb-popup');
+  const bar = document.getElementById('float-profile-bar');
+  if (popup) popup.classList.toggle('open', profilePopupOpen);
+  if (bar) bar.style.borderColor = profilePopupOpen
+    ? 'rgba(198,151,63,0.5)'
+    : 'rgba(198,151,63,0.25)';
+}
+
+// Close popup when clicking outside
+document.addEventListener('click', (e) => {
+  if (profilePopupOpen && !e.target.closest('#float-profile-bar')) {
+    profilePopupOpen = false;
+    const popup = document.getElementById('fpb-popup');
+    if (popup) popup.classList.remove('open');
+  }
+});
+
+function fpbNav(tab) {
+  // Update active button
+  fpbActiveBtn = tab;
+  ['map','urgent','nearby','saved','points-btn'].forEach(t => {
+    const el = document.getElementById('fpb-' + t);
+    if (el) el.classList.toggle('active-fpb', t === tab || (tab === 'points' && t === 'points-btn'));
+  });
+
+  if (tab === 'map') {
+    // Already on map — just close any panels
+    if (isMobile()) { closeSidebar(); }
+    showToast('📍 Map view');
+  } else if (tab === 'urgent') {
+    // Scroll left panel to urgent section
+    const urgentList = document.getElementById('urgent-list');
+    if (urgentList) urgentList.scrollIntoView({ behavior: 'smooth' });
+    if (isMobile()) openSidebar();
+    showToast('🚨 Urgent requests');
+  } else if (tab === 'nearby') {
+    // Pan to user location
+    if (map && USER) {
+      map.panTo({ lat: USER.lat, lng: USER.lng });
+      map.setZoom(16);
+    }
+    showToast('📍 Centering on your location');
+  } else if (tab === 'saved') {
+    showToast('🔖 Saved items — coming soon!');
+  }
+}
+
+// Update profile bar when user logs in
+function updateProfileBar(user) {
+  if (!user) return;
+  const name = user.firstName ? user.firstName + ' ' + user.lastName : 'My Account';
+  const nick = user.nickname ? '@' + user.nickname : '@member';
+  const initial = (user.firstName || 'M')[0].toUpperCase();
+
+  // Avatar
+  ['fpb-avatar','popup-avatar-lg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      if (user.photo && user.photo.startsWith('data:')) {
+        el.innerHTML = `<img src="${user.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+      } else {
+        el.innerHTML = user.photo || initial;
+        if (id === 'fpb-avatar') el.innerHTML += '<div class="fpb-online"></div>';
+      }
+    }
+  });
+
+  // Names
+  const nameEl = document.getElementById('fpb-name');
+  const nickEl = document.getElementById('fpb-nick');
+  const fullNameEl = document.getElementById('popup-full-name');
+  const popupNickEl = document.getElementById('popup-nick');
+  if (nameEl) nameEl.textContent = user.firstName || 'My Account';
+  if (nickEl) nickEl.textContent = nick;
+  if (fullNameEl) fullNameEl.textContent = name;
+  if (popupNickEl) popupNickEl.textContent = nick + ' · ' + (user.location || 'San Jose del Monte');
+}
+
+// Call updateProfileBar when auth completes
+const _origDismissAndEnter = awDismissAndEnter;
+
+
+// ════════════════════════════════════════════
+//  SWIPEABLE PANELS
+// ════════════════════════════════════════════
+const NARROW = () => window.innerWidth <= 1000;
+
+// Panel state
+let leftOpen = false;
+let rightOpen = false;
+
+function togglePanel(side) {
+  if (side === 'left') {
+    leftOpen = !leftOpen;
+    if (leftOpen && rightOpen) closePanel('right');
+    applyPanelState();
+  } else {
+    rightOpen = !rightOpen;
+    if (rightOpen && leftOpen) closePanel('left');
+    applyPanelState();
+  }
+}
+
+function closePanel(side) {
+  if (side === 'left') leftOpen = false;
+  else rightOpen = false;
+  applyPanelState();
+}
+
+function closeAllPanels() {
+  leftOpen = false;
+  rightOpen = false;
+  applyPanelState();
+}
+
+function applyPanelState() {
+  if (!NARROW()) return; // no-op on wide screens
+
+  const lp = document.getElementById('left-panel');
+  const rp = document.getElementById('sidebar');
+  const dim = document.getElementById('panel-dim');
+  const la = document.getElementById('left-arrow');
+  const ra = document.getElementById('right-arrow');
+  const lh = document.getElementById('left-handle');
+  const rh = document.getElementById('right-handle');
+
+  if (lp) lp.classList.toggle('panel-open', leftOpen);
+  if (rp) rp.classList.toggle('panel-open', rightOpen);
+  if (dim) dim.classList.toggle('visible', leftOpen || rightOpen);
+  if (la) la.textContent = leftOpen ? '‹' : '›';
+  if (ra) ra.textContent = rightOpen ? '›' : '‹';
+  if (lh) lh.style.left = leftOpen ? '280px' : '0';
+  if (rh) rh.style.right = rightOpen ? '280px' : '0';
+}
+
+// ── TOUCH/SWIPE HANDLING ──────────────────────────────────────────────────────
+let touchStartX = 0;
+let touchStartY = 0;
+let touchTarget = null; // 'left' | 'right' | 'map'
+
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  const W = window.innerWidth;
+
+  // Detect which zone the touch started in
+  if (touchStartX < 30) touchTarget = 'left-edge';
+  else if (touchStartX > W - 30) touchTarget = 'right-edge';
+  else if (leftOpen) touchTarget = 'left-panel';
+  else if (rightOpen) touchTarget = 'right-panel';
+  else touchTarget = 'map';
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+  if (!NARROW()) return;
+
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+
+  // Only register horizontal swipes (more horizontal than vertical)
+  if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx)) return;
+
+  const swipeRight = dx > 0;
+  const swipeLeft = dx < 0;
+
+  if (touchTarget === 'left-edge' && swipeRight) {
+    // Swipe right from left edge → open left panel
+    leftOpen = true;
+    if (rightOpen) rightOpen = false;
+    applyPanelState();
+  } else if ((touchTarget === 'left-panel' || touchTarget === 'map') && swipeLeft && leftOpen) {
+    // Swipe left on open left panel → close it
+    leftOpen = false;
+    applyPanelState();
+  } else if (touchTarget === 'right-edge' && swipeLeft) {
+    // Swipe left from right edge → open right panel
+    rightOpen = true;
+    if (leftOpen) leftOpen = false;
+    applyPanelState();
+  } else if ((touchTarget === 'right-panel' || touchTarget === 'map') && swipeRight && rightOpen) {
+    // Swipe right on open right panel → close it
+    rightOpen = false;
+    applyPanelState();
+  } else if (touchTarget === 'map' && swipeRight && !leftOpen) {
+    // Swipe right on map → open left panel
+    leftOpen = true;
+    applyPanelState();
+  } else if (touchTarget === 'map' && swipeLeft && !rightOpen) {
+    // Swipe left on map → open right panel
+    rightOpen = true;
+    applyPanelState();
+  }
+}, { passive: true });
+
+// ── INSIDE PANEL: swipe away to close ────────────────────────────────────────
+(function() {
+  const panels = [
+    { id: 'left-panel', side: 'left' },
+    { id: 'sidebar', side: 'right' }
+  ];
+  panels.forEach(({ id, side }) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let sx = 0;
+    el.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+    el.addEventListener('touchend', e => {
+      if (!NARROW()) return;
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+      if (Math.abs(dx) < 50 || dy > Math.abs(dx)) return;
+      // Left panel: swipe left closes it
+      if (side === 'left' && dx < -50 && leftOpen) { leftOpen = false; applyPanelState(); }
+      // Right panel: swipe right closes it
+      if (side === 'right' && dx > 50 && rightOpen) { rightOpen = false; applyPanelState(); }
+    }, { passive: true });
+  });
+})();
+
+// ── KEYBOARD: Escape closes panels ───────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeAllPanels();
+});
+
+// ── RESIZE: reset on wide screen ─────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  if (!NARROW()) {
+    leftOpen = false;
+    rightOpen = false;
+    const lp = document.getElementById('left-panel');
+    const rp = document.getElementById('sidebar');
+    const dim = document.getElementById('panel-dim');
+    if (lp) lp.classList.remove('panel-open');
+    if (rp) rp.classList.remove('panel-open');
+    if (dim) dim.classList.remove('visible');
+  }
+});
+
+// ── HINT ANIMATION on first load (narrow only) ───────────────────────────────
+window.addEventListener('load', () => {
+  if (NARROW()) {
+    setTimeout(() => {
+      const lh = document.getElementById('left-handle');
+      const rh = document.getElementById('right-handle');
+      if (lh) { lh.classList.add('hinting-l'); setTimeout(()=>lh.classList.remove('hinting-l'),2000); }
+      if (rh) { rh.classList.add('hinting-r'); setTimeout(()=>rh.classList.remove('hinting-r'),2200); }
+    }, 2000);
+  }
+});
+
+// ── PATCH MOBILE NAV to use new panel system ─────────────────────────────────
+// Override old mobileNav function
+window.mobileNav = function(tab) {
+  ['map','browse','urgent','points'].forEach(t => {
+    const el = document.getElementById('mn-'+t);
+    if (el) el.classList.toggle('active', t===tab);
+  });
+  if (tab === 'map') {
+    closeAllPanels();
+  } else if (tab === 'browse') {
+    S.tab = 'all'; renderSidebar();
+    rightOpen = true; if (leftOpen) leftOpen = false;
+    applyPanelState();
+  } else if (tab === 'urgent') {
+    leftOpen = true; if (rightOpen) rightOpen = false;
+    applyPanelState();
+    setTimeout(() => {
+      const ul = document.getElementById('urgent-list');
+      if (ul) ul.scrollIntoView({ behavior: 'smooth' });
+    }, 400);
+  } else if (tab === 'points') {
+    openModal('points');
+  }
+};
+
+// ── PATCH fpbNav to use new panel system ─────────────────────────────────────
+window.fpbNav = function(tab) {
+  ['map','urgent','nearby','saved','points-btn'].forEach(t => {
+    const el = document.getElementById('fpb-'+t);
+    if (el) el.classList.toggle('active-fpb', t===tab);
+  });
+  if (tab === 'map') {
+    closeAllPanels();
+  } else if (tab === 'urgent') {
+    if (NARROW()) { leftOpen = true; if (rightOpen) rightOpen = false; applyPanelState(); }
+    const ul = document.getElementById('urgent-list');
+    if (ul) setTimeout(() => ul.scrollIntoView({ behavior: 'smooth' }), 400);
+  } else if (tab === 'nearby') {
+    if (map && USER) { map.panTo({ lat: USER.lat, lng: USER.lng }); map.setZoom(16); }
+    closeAllPanels();
+    showToast('📍 Centering on your location');
+  } else if (tab === 'saved') {
+    showToast('🔖 Saved items — coming soon!');
+  }
+};
+
+
+// ════════════════════════════════════════════════════════════════
+//  MAP CENTER SEARCH & NAVIGATE TO NEAREST
+// ════════════════════════════════════════════════════════════════
+
+let navSearchTimer = null;
+let navResults = [];
+let navSelectedIdx = -1;
+let navSelectedItem = null;
+let navSelectedMode = 'driving';
+
+// ── Haversine distance (km) ──────────────────────────────────────
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ── Estimate travel time ─────────────────────────────────────────
+function estimateTime(distKm, mode) {
+  const speeds = { driving:40, walking:5, transit:25, cycling:15 };
+  const mins = Math.round((distKm / speeds[mode]) * 60);
+  if (mins < 1) return '< 1 min';
+  if (mins < 60) return mins + ' min';
+  return Math.floor(mins/60) + 'h ' + (mins%60) + 'm';
+}
+
+// ── Ontype search ────────────────────────────────────────────────
+function onMapNavSearch(val) {
+  const clearBtn = document.getElementById('map-nav-clear');
+  if (clearBtn) clearBtn.style.display = val ? 'block' : 'none';
+
+  clearTimeout(navSearchTimer);
+  if (!val || val.length < 2) {
+    hideNavResults();
+    return;
+  }
+  // Show loading
+  showNavResults([{ loading: true }]);
+
+  navSearchTimer = setTimeout(() => {
+    doNavSearch(val);
+  }, 300);
+}
+
+function doNavSearch(query) {
+  const q = query.toLowerCase().trim();
+  const results = [];
+
+  // Search stores
+  stores.forEach(s => {
+    const score =
+      s.name.toLowerCase().includes(q) ? 3 :
+      s.categories.some(c => c.toLowerCase().includes(q)) ? 2 :
+      (s.products || []).some(p => p.toLowerCase().includes(q)) ? 1 : 0;
+    if (score > 0) {
+      const dist = haversine(USER.lat, USER.lng, s.lat, s.lng);
+      results.push({ type:'store', item:s, dist, score: score + (1/dist) });
+    }
+  });
+
+  // Search listings
+  listings.forEach(l => {
+    const score =
+      l.title.toLowerCase().includes(q) ? 3 :
+      l.category.toLowerCase().includes(q) ? 1 : 0;
+    if (score > 0) {
+      const dist = haversine(USER.lat, USER.lng, l.lat, l.lng);
+      results.push({ type:'listing', item:l, dist, score: score + (1/dist) });
+    }
+  });
+
+  // Sort: score desc, then distance asc
+  results.sort((a,b) => b.score - a.score || a.dist - b.dist);
+  navResults = results.slice(0, 8);
+  showNavResults(navResults);
+}
+
+function showNavResults(results) {
+  const box = document.getElementById('map-nav-results');
+  if (!box) return;
+
+  if (results[0]?.loading) {
+    box.innerHTML = '<div class="map-nav-loading"><div class="spinner spinner-sm"></div> Searching...</div>';
+    box.classList.add('visible');
+    return;
+  }
+
+  if (!results.length) {
+    box.innerHTML = '<div class="map-nav-loading">😔 No results found nearby</div>';
+    box.classList.add('visible');
+    return;
+  }
+
+  const storeResults = results.filter(r => r.type === 'store');
+  const listingResults = results.filter(r => r.type === 'listing');
+
+  let html = '';
+
+  if (storeResults.length) {
+    html += `<div class="mnr-header">🏪 Nearby Stores <span style="margin-left:auto;color:var(--green);font-weight:700">${storeResults.length} found</span></div>`;
+    html += storeResults.map((r, i) => {
+      const s = r.item;
+      return `<div class="mnr-item" onclick="selectNavResult(${results.indexOf(r)})" id="mnr-${results.indexOf(r)}">
+        <div class="mnr-emoji store-em">🏪</div>
+        <div class="mnr-info">
+          <div class="mnr-name">${s.name}</div>
+          <div class="mnr-sub">
+            <span class="mnr-type mnr-store-b">Store</span>
+            <span>${s.address}</span>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="mnr-dist">${r.dist.toFixed(1)}km</div>
+          <div style="font-size:10px;color:var(--muted)">⏰ ${s.hours||'Open'}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  if (listingResults.length) {
+    html += `<div class="mnr-header">🛍️ Nearby Listings <span style="margin-left:auto;color:var(--green);font-weight:700">${listingResults.length} found</span></div>`;
+    html += listingResults.map((r, i) => {
+      const l = r.item;
+      return `<div class="mnr-item" onclick="selectNavResult(${results.indexOf(r)})" id="mnr-${results.indexOf(r)}">
+        <div class="mnr-emoji listing-em">${l.image||'📦'}</div>
+        <div class="mnr-info">
+          <div class="mnr-name">${l.title}</div>
+          <div class="mnr-sub">
+            <span class="mnr-type mnr-sell-b">${l.type==='sell'?'For Sale':'Wanted'}</span>
+            <span>${l.location}</span>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="mnr-price">₱${l.price.toLocaleString()}</div>
+          <div class="mnr-dist">${r.dist.toFixed(1)}km</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  box.innerHTML = html;
+  box.classList.add('visible');
+}
+
+function hideNavResults() {
+  const box = document.getElementById('map-nav-results');
+  if (box) box.classList.remove('visible');
+  navSelectedIdx = -1;
+}
+
+function selectNavResult(idx) {
+  navSelectedItem = navResults[idx];
+  const item = navSelectedItem.item;
+  // Pan map
+  if (map) map.panTo({ lat: item.lat, lng: item.lng });
+  // Update input
+  const inp = document.getElementById('map-nav-input');
+  if (inp) inp.value = navSelectedItem.type === 'store' ? item.name : item.title;
+  hideNavResults();
+  // Open navigation modal
+  openNavModal(navSelectedItem);
+}
+
+function triggerMapNavSearch() {
+  const val = document.getElementById('map-nav-input')?.value?.trim();
+  if (!val) { showToast('Type what you're looking for first!'); return; }
+  doNavSearch(val);
+  // If results exist, pick the closest
+  setTimeout(() => {
+    if (navResults.length) selectNavResult(0);
+  }, 350);
+}
+
+function clearMapNav() {
+  const inp = document.getElementById('map-nav-input');
+  const clearBtn = document.getElementById('map-nav-clear');
+  if (inp) inp.value = '';
+  if (clearBtn) clearBtn.style.display = 'none';
+  hideNavResults();
+  navSelectedItem = null;
+}
+
+// Keyboard nav in results
+function onMapNavKey(e) {
+  const results = document.getElementById('map-nav-results');
+  if (!results?.classList.contains('visible')) {
+    if (e.key === 'Enter') triggerMapNavSearch();
+    return;
+  }
+  if (e.key === 'ArrowDown') {
+    navSelectedIdx = Math.min(navSelectedIdx + 1, navResults.length - 1);
+    highlightNavResult(navSelectedIdx);
+    e.preventDefault();
+  } else if (e.key === 'ArrowUp') {
+    navSelectedIdx = Math.max(navSelectedIdx - 1, 0);
+    highlightNavResult(navSelectedIdx);
+    e.preventDefault();
+  } else if (e.key === 'Enter' && navSelectedIdx >= 0) {
+    selectNavResult(navSelectedIdx);
+    e.preventDefault();
+  } else if (e.key === 'Escape') {
+    hideNavResults();
+  }
+}
+
+function highlightNavResult(idx) {
+  document.querySelectorAll('.mnr-item').forEach((el,i) => el.classList.toggle('active', i===idx));
+}
+
+// Close results when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.map-nav-bar')) hideNavResults();
+});
+
+// ── NAVIGATION MODAL ─────────────────────────────────────────────
+function openNavModal(result) {
+  const item = result.item;
+  const isStore = result.type === 'store';
+  const name = isStore ? item.name : item.title;
+  const addr = isStore ? item.address : item.location;
+  const emoji = isStore ? '🏪' : (item.image || '🛍️');
+  const dist = result.dist;
+  navSelectedMode = 'driving';
+
+  const modes = [
+    { id:'driving',   icon:'🚗', label:'Drive',   gmMode:'driving'   },
+    { id:'transit',   icon:'🚌', label:'Transit',  gmMode:'transit'   },
+    { id:'walking',   icon:'🚶', label:'Walk',     gmMode:'walking'   },
+    { id:'cycling',   icon:'🚲', label:'Cycle',    gmMode:'bicycling' },
+  ];
+
+  const modesHTML = modes.map(m => `
+    <div class="nav-mode ${m.id==='driving'?'selected':''}"
+         id="nav-mode-${m.id}"
+         onclick="selectNavMode('${m.id}')">
+      <div class="nav-mode-icon">${m.icon}</div>
+      <div class="nav-mode-label">${m.label}</div>
+      <div class="nav-mode-time" id="navtime-${m.id}">${estimateTime(dist, m.id)}</div>
+    </div>`).join('');
+
+  const modal = document.getElementById('nav-modal-root');
+  modal.innerHTML = `
+    <div class="nav-modal-overlay" onclick="if(event.target===this)closeNavModal()">
+      <div class="nav-modal" onclick="event.stopPropagation()">
+        <div class="nav-handle"></div>
+        <div class="nav-header">
+          <div class="nav-destination">
+            <div class="nav-dest-icon ${isStore?'store-em':'listing-em'}">${emoji}</div>
+            <div>
+              <div class="nav-dest-name">${name}</div>
+              <div class="nav-dest-addr">📍 ${addr}</div>
+              <div class="nav-dest-dist">📏 ${dist.toFixed(2)}km from your location</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-modes">${modesHTML}</div>
+
+        <button class="nav-open-btn" onclick="openGoogleMapsNav()">
+          🗺️ Open in Google Maps
+        </button>
+        <div class="nav-google-note">
+          Opens Google Maps with turn-by-turn directions to ${name}
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectNavMode(mode) {
+  navSelectedMode = mode;
+  document.querySelectorAll('.nav-mode').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('nav-mode-' + mode);
+  if (el) el.classList.add('selected');
+}
+
+function openGoogleMapsNav() {
+  if (!navSelectedItem) return;
+  const item = navSelectedItem.item;
+  const isStore = navSelectedItem.type === 'store';
+  const name = isStore ? item.name : item.title;
+  const addr = isStore ? item.address : item.location;
+  closeNavModal();
+  openBuiltInNav(item.lat, item.lng, name, addr);
+}
+
+function closeNavModal() {
+  const modal = document.getElementById('nav-modal-root');
+  if (modal) modal.innerHTML = '';
+}
+
+
+// ════════════════════════════════════════════════════════════════
+//  BUILT-IN GOOGLE MAPS DIRECTIONS NAVIGATION
+// ════════════════════════════════════════════════════════════════
+
+let navMap = null;
+let navDirectionsService = null;
+let navDirectionsRenderer = null;
+let navCurrentDest = null;
+let navCurrentMode = 'DRIVING';
+let navRouteCache = {};
+
+// Modes config
+const NAV_MODES = [
+  { id:'driving',   gm:'DRIVING',   icon:'🚗', label:'Drive'   },
+  { id:'transit',   gm:'TRANSIT',   icon:'🚌', label:'Transit' },
+  { id:'walking',   gm:'WALKING',   icon:'🚶', label:'Walk'    },
+  { id:'bicycling', gm:'BICYCLING', icon:'🚲', label:'Cycle'   },
+];
+
+// ── OPEN BUILT-IN NAVIGATION ─────────────────────────────────────
+function openBuiltInNav(destLat, destLng, destName, destAddr) {
+  navCurrentDest = { lat: destLat, lng: destLng, name: destName, addr: destAddr };
+  navCurrentMode = 'DRIVING';
+  navRouteCache = {};
+
+  // Show overlay
+  const overlay = document.getElementById('nav-overlay');
+  overlay.classList.add('active');
+
+  // Update header
+  document.getElementById('nav-dest-name').textContent = destName;
+  document.getElementById('nav-dest-addr').textContent = '📍 ' + destAddr;
+
+  // Reset tabs
+  NAV_MODES.forEach(m => {
+    const tab = document.getElementById('navtab-' + m.id);
+    if (tab) tab.classList.toggle('active', m.id === 'driving');
+    const timeEl = document.getElementById('navtime-' + m.id);
+    if (timeEl) timeEl.textContent = '--';
+  });
+
+  // Init nav map if not yet created
+  if (!navMap) {
+    navMap = new google.maps.Map(document.getElementById('nav-map'), {
+      center: { lat: USER.lat, lng: USER.lng },
+      zoom: 14,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      zoomControl: true,
+      styles: [{ featureType:'poi', elementType:'labels', stylers:[{ visibility:'off' }] }]
+    });
+    navDirectionsService = new google.maps.DirectionsService();
+    navDirectionsRenderer = new google.maps.DirectionsRenderer({
+      map: navMap,
+      polylineOptions: {
+        strokeColor: '#C6973F',
+        strokeWeight: 5,
+        strokeOpacity: 0.85
+      },
+      markerOptions: {
+        origin: {
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 9,
+            fillColor: '#0C1F4A',
+            fillOpacity: 1,
+            strokeColor: '#C6973F',
+            strokeWeight: 3,
+          }
+        },
+        destination: {
+          label: {
+            text: destName[0] || '📍',
+            color: '#0C1F4A',
+            fontWeight: 'bold',
+            fontSize: '13px',
+          }
+        }
+      }
+    });
+  } else {
+    // Update destination marker label
+    navDirectionsRenderer.setOptions({
+      markerOptions: {
+        destination: { label: { text: destName[0] || '📍', color: '#0C1F4A', fontWeight: 'bold', fontSize: '13px' } }
+      }
+    });
+  }
+
+  // Calculate route for all modes (fetch all in parallel for tab times)
+  calcRoute('DRIVING');
+  prefetchRouteTimes();
+
+  // Update external link
+  updateExtLink();
+}
+
+// ── CALCULATE ROUTE ──────────────────────────────────────────────
+function calcRoute(travelMode) {
+  if (!navDirectionsService || !navCurrentDest) return;
+
+  // Show loading
+  document.getElementById('nav-loading').style.display = 'flex';
+  document.getElementById('nav-steps').innerHTML = '';
+  document.getElementById('nav-duration').textContent = '--';
+  document.getElementById('nav-distance').textContent = '--';
+
+  // Check cache
+  const cacheKey = travelMode;
+  if (navRouteCache[cacheKey]) {
+    renderRoute(navRouteCache[cacheKey], travelMode);
+    return;
+  }
+
+  const request = {
+    origin: new google.maps.LatLng(USER.lat, USER.lng),
+    destination: new google.maps.LatLng(navCurrentDest.lat, navCurrentDest.lng),
+    travelMode: google.maps.TravelMode[travelMode],
+    provideRouteAlternatives: false,
+    unitSystem: google.maps.UnitSystem.METRIC,
+  };
+
+  navDirectionsService.route(request, (result, status) => {
+    if (status === 'OK') {
+      navRouteCache[cacheKey] = result;
+      renderRoute(result, travelMode);
+    } else {
+      // Route not available for this mode
+      document.getElementById('nav-loading').style.display = 'none';
+      document.getElementById('nav-steps').innerHTML = `
+        <div style="padding:20px;text-align:center;color:var(--muted)">
+          <div style="font-size:32px;margin-bottom:8px">🚧</div>
+          <div style="font-weight:700">Route not available</div>
+          <div style="font-size:12px;margin-top:4px">Try a different transport mode</div>
+        </div>`;
+      const timeEl = document.getElementById('navtime-' + travelMode.toLowerCase());
+      if (timeEl) timeEl.textContent = 'N/A';
+    }
+  });
+}
+
+// ── RENDER ROUTE ─────────────────────────────────────────────────
+function renderRoute(result, travelMode) {
+  navDirectionsRenderer.setDirections(result);
+  document.getElementById('nav-loading').style.display = 'none';
+
+  const leg = result.routes[0].legs[0];
+  const duration = leg.duration.text;
+  const distance = leg.distance.text;
+  const via = result.routes[0].summary || 'Local road';
+
+  // Update summary
+  document.getElementById('nav-duration').textContent = duration;
+  document.getElementById('nav-distance').textContent = distance;
+  document.getElementById('nav-via').textContent = via;
+
+  // Update tab time
+  const modeKey = travelMode.toLowerCase();
+  const timeEl = document.getElementById('navtime-' + modeKey);
+  if (timeEl) timeEl.textContent = duration;
+
+  // Turn-by-turn steps
+  const steps = leg.steps;
+  let stepsHTML = '';
+  steps.forEach((step, i) => {
+    const inst = step.instructions.replace(/<[^>]*>/g, ''); // strip HTML
+    const maneuver = step.maneuver || '';
+    const icon = getManeuverIcon(maneuver);
+    stepsHTML += `
+      <div class="nav-step">
+        <div class="nav-step-icon">${icon}</div>
+        <div class="nav-step-body">
+          <div class="nav-step-inst">${inst}</div>
+          <div class="nav-step-dist">${step.distance.text}</div>
+        </div>
+      </div>`;
+  });
+  document.getElementById('nav-steps').innerHTML = stepsHTML;
+}
+
+// ── MANEUVER ICONS ────────────────────────────────────────────────
+function getManeuverIcon(maneuver) {
+  const icons = {
+    'turn-left':'↰','turn-right':'↱','turn-slight-left':'↖️',
+    'turn-slight-right':'↗️','turn-sharp-left':'◁','turn-sharp-right':'▷',
+    'uturn-left':'↩️','uturn-right':'↪️','roundabout-left':'🔄',
+    'roundabout-right':'🔄','straight':'⬆️','ramp-left':'↖️',
+    'ramp-right':'↗️','merge':'⬆️','fork-left':'↖️','fork-right':'↗️',
+    'ferry':'⛴️','ferry-train':'🚂',''  :'📍',
+  };
+  return icons[maneuver] || '➡️';
+}
+
+// ── PREFETCH ALL MODE TIMES in background ────────────────────────
+function prefetchRouteTimes() {
+  NAV_MODES.forEach(({ gm, id }) => {
+    if (gm === 'DRIVING') return; // already fetching
+    if (!navDirectionsService || !navCurrentDest) return;
+    navDirectionsService.route({
+      origin: new google.maps.LatLng(USER.lat, USER.lng),
+      destination: new google.maps.LatLng(navCurrentDest.lat, navCurrentDest.lng),
+      travelMode: google.maps.TravelMode[gm],
+    }, (result, status) => {
+      if (status === 'OK') {
+        navRouteCache[gm] = result;
+        const duration = result.routes[0].legs[0].duration.text;
+        const timeEl = document.getElementById('navtime-' + id);
+        if (timeEl) timeEl.textContent = duration;
+      } else {
+        const timeEl = document.getElementById('navtime-' + id);
+        if (timeEl) timeEl.textContent = 'N/A';
+      }
+    });
+  });
+}
+
+// ── SWITCH TRANSPORT MODE ────────────────────────────────────────
+function switchNavMode(mode) {
+  navCurrentMode = mode;
+  // Update active tab
+  NAV_MODES.forEach(m => {
+    const tab = document.getElementById('navtab-' + m.id);
+    if (tab) tab.classList.toggle('active', m.gm === mode);
+  });
+  calcRoute(mode);
+  updateExtLink();
+}
+
+// ── OPEN EXTERNAL MAPS ───────────────────────────────────────────
+function openExternalMaps() {
+  if (!navCurrentDest) return;
+  const dest = `${navCurrentDest.lat},${navCurrentDest.lng}`;
+  const origin = `${USER.lat},${USER.lng}`;
+  const modeMap = { DRIVING:'driving', WALKING:'walking', TRANSIT:'transit', BICYCLING:'bicycling' };
+  const travelMode = modeMap[navCurrentMode] || 'driving';
+  window.open(`https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&travelmode=${travelMode}`, '_blank');
+}
+
+function updateExtLink() {
+  if (!navCurrentDest) return;
+  const dest = `${navCurrentDest.lat},${navCurrentDest.lng}`;
+  const origin = `${USER.lat},${USER.lng}`;
+  const modeMap = { DRIVING:'driving', WALKING:'walking', TRANSIT:'transit', BICYCLING:'bicycling' };
+  const travelMode = modeMap[navCurrentMode] || 'driving';
+  const link = document.getElementById('nav-ext-link');
+  if (link) link.href = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}&travelmode=${travelMode}`;
+}
+
+// ── CLOSE NAV ────────────────────────────────────────────────────
+function closeBuiltInNav() {
+  document.getElementById('nav-overlay').classList.remove('active');
+  if (navDirectionsRenderer) navDirectionsRenderer.setDirections({ routes: [] });
+}
+
+// ── PATCH: openNavModal → use built-in nav instead ───────────────
+// Override the old nav modal to use built-in nav
+const _origOpenNavModal = window.openNavModal;
+window.openNavModal = function(result) {
+  const item = result.item;
+  const isStore = result.type === 'store';
+  const name = isStore ? item.name : item.title;
+  const addr = isStore ? item.address : item.location;
+  openBuiltInNav(item.lat, item.lng, name, addr);
+};
+
+// ── PATCH: store detail "Go" button → use built-in nav ───────────
+// This is handled via renderSidebar which calls openBuiltInNav
+// We'll add a helper function stores/listings can call
+function navigateTo(lat, lng, name, addr) {
+  openBuiltInNav(lat, lng, name, addr);
 }
 
 </script>
@@ -2610,6 +5264,29 @@ function awSocialLogin(p){
 
   </div>
 </div>
+
+
+<!-- ── STREET VIEW OVERLAY ── -->
+<div id="sv-overlay" class="sv-overlay" style="display:none">
+  <div class="sv-header">
+    <div>
+      <div class="sv-title">🚶 Street View</div>
+      <div class="sv-addr" id="sv-addr">Loading...</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button class="sv-ctrl-btn" onclick="svRotate(-90)">◀ Rotate</button>
+      <button class="sv-ctrl-btn" onclick="svRotate(90)">Rotate ▶</button>
+      <button class="sv-ctrl-btn" onclick="svZoom(1)">🔍+</button>
+      <button class="sv-ctrl-btn" onclick="svZoom(-1)">🔍-</button>
+      <button class="sv-close" onclick="closeSV()">✕ Close</button>
+    </div>
+  </div>
+  <div id="sv-container"></div>
+</div>
+
+<!-- Panel toggle buttons (mobile) -->
+<button class="panel-toggle left-toggle" onclick="toggleLeftPanel()">🔍 Requests</button>
+<button class="panel-toggle right-toggle" onclick="toggleRightPanel()">🏪 Stores</button>
 
 <!-- ── MOBILE BOTTOM NAV ── -->
 <div class="mobile-nav" id="mobile-nav">

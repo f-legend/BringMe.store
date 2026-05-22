@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <!-- ── FAVICON & APP ICONS ── -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0C1F4A">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BringMe.Store">
+  <meta name="application-name" content="BringMe.Store">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page Not Found — BringMe.Store</title>
+
+<style>
+:root{
+  /* ── LUXURY PALETTE: Royal Blue + Gold ── */
+  --gold:#C6973F;
+  --gold-dk:#9E7A2E;
+  --gold-lt:#E8C97A;
+  --gold-xlt:#FBF5E8;
+  --gold-shine:linear-gradient(135deg,#E8C97A 0%,#C6973F 40%,#9E7A2E 100%);
+
+  /* Royal Blue */
+  --royal:#0C1F4A;
+  --royal2:#142660;
+  --royal3:#1C2F72;
+  --royal4:#243878;
+  --royal-light:#2A4499;
+
+  /* Neutrals */
+  --white:#FFFFFF;
+  --off-white:#F7F9FD;
+  --cream:#F0F4FA;
+  --cream2:#E4EAF5;
+  --cream3:#D4DDED;
+
+  /* Text */
+  --text-dark:#0C1F4A;
+  --text-mid:#3D4F7A;
+  --text-light:#6B7A99;
+  --text-xlight:#A0AACC;
+
+  /* Accents */
+  --border:#C8D2E8;
+  --border-light:#DDE4F0;
+  --red:#B03A2E;--red-bg:#FDECEA;
+  --green:#1A6B3A;--green-bg:#E6F5EE;
+  --muted:#6B7A99;
+
+  /* Shadows */
+  --shadow:0 2px 20px rgba(12,31,74,0.08);
+  --shadow-md:0 4px 30px rgba(12,31,74,0.12);
+  --shadow-lg:0 12px 60px rgba(12,31,74,0.18);
+  --shadow-gold:0 4px 24px rgba(198,151,63,0.3);
+  --shadow-royal:0 8px 40px rgba(12,31,74,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;font-family:'DM Sans',sans-serif;background:linear-gradient(160deg,var(--royal),var(--royal2));color:var(--white);overflow-x:hidden;}
+
+/* ── TOPBAR ── */
+.topbar{height:58px;background:linear-gradient(160deg,var(--royal),var(--royal2));display:flex;align-items:center;padding:0 28px;border-bottom:1px solid #1e2a45;position:relative;z-index:10;}
+.logo{font-family:'Cinzel',serif;font-size:17px;font-weight:700;color:var(--gold);text-decoration:none;line-height:1.1;}
+.logo small{display:block;font-size:9px;color:#445;font-family:'DM Sans',sans-serif;font-weight:400;}
+.topbar-right{margin-left:auto;display:flex;gap:8px;}
+.btn-outline{background:none;border:1.5px solid rgba(255,255,255,.15);color:#8899cc;border-radius:9px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-flex;align-items:center;transition:all .15s;}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);}
+.btn-gold{background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-flex;align-items:center;transition:background .15s;}
+.btn-gold:hover{background:var(--gold-dk);}
+
+/* ── MAIN ── */
+.main{min-height:calc(100vh - 58px);display:flex;align-items:center;justify-content:center;padding:40px 24px;position:relative;overflow:hidden;}
+
+/* ── BACKGROUND GRID ── */
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(198,151,63,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(198,151,63,.04) 1px,transparent 1px);background-size:56px 56px;}
+.bg-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(198,151,63,.08) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+
+/* ── 404 MAP ILLUSTRATION ── */
+.map-illustration{position:relative;width:320px;height:320px;flex-shrink:0;}
+.map-bg{width:100%;height:100%;border-radius:24px;background:linear-gradient(135deg,#1a2a1a,#1e3a1e);border:2px solid rgba(198,151,63,.15);overflow:hidden;position:relative;}
+.map-road-h{position:absolute;top:45%;left:0;right:0;height:5px;background:rgba(255,255,255,.12);}
+.map-road-h2{position:absolute;top:70%;left:0;right:0;height:3px;background:rgba(255,255,255,.08);}
+.map-road-v{position:absolute;left:38%;top:0;bottom:0;width:4px;background:rgba(255,255,255,.1);}
+.map-road-v2{position:absolute;left:65%;top:0;bottom:0;width:3px;background:rgba(255,255,255,.07);}
+.map-block{position:absolute;border-radius:6px;background:rgba(255,255,255,.06);}
+.map-label{position:absolute;font-size:9px;color:rgba(255,255,255,.2);font-weight:600;}
+
+/* Lost pin — animated */
+.lost-pin{position:absolute;top:38%;left:42%;transform:translate(-50%,-100%);animation:pin-lost 3s ease-in-out infinite;}
+@keyframes pin-lost{
+  0%,100%{transform:translate(-50%,-100%) rotate(-8deg);}
+  25%{transform:translate(-50%,-110%) rotate(8deg);}
+  50%{transform:translate(-50%,-100%) rotate(-5deg);}
+  75%{transform:translate(-50%,-108%) rotate(6deg);}
+}
+.lost-pin-body{width:36px;height:36px;background:linear-gradient(135deg,#B03A2E,#922B21);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 16px rgba(217,48,37,.5);display:flex;align-items:center;justify-content:center;}
+.lost-pin-icon{transform:rotate(45deg);font-size:16px;}
+.lost-pin-shadow{width:16px;height:6px;background:rgba(0,0,0,.3);border-radius:50%;position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);filter:blur(3px);}
+
+/* Question marks floating */
+.qmark{position:absolute;font-size:20px;font-weight:800;color:rgba(198,151,63,.4);animation:float-q 3s ease-in-out infinite;}
+.qmark:nth-child(1){top:20%;left:15%;animation-delay:0s;}
+.qmark:nth-child(2){top:60%;left:75%;animation-delay:-.8s;font-size:14px;}
+.qmark:nth-child(3){top:25%;left:70%;animation-delay:-1.5s;font-size:24px;}
+@keyframes float-q{0%,100%{transform:translateY(0) rotate(-5deg);opacity:.4;}50%{transform:translateY(-10px) rotate(5deg);opacity:.7;}}
+
+/* Other pins (faded) */
+.map-pin-sm{position:absolute;width:20px;height:20px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;opacity:.4;}
+.mp-gold{background:var(--gold);}
+.mp-purple{background:var(--purple);}
+.mp-green{background:var(--green);}
+
+/* "You are here" with confusion */
+.you-dot{position:absolute;bottom:25%;left:20%;width:16px;height:16px;border-radius:50%;background:linear-gradient(160deg,var(--royal),var(--royal2));border:3px solid var(--gold);box-shadow:0 0 0 6px rgba(198,151,63,.15);}
+.you-label{position:absolute;bottom:25%;left:24%;font-size:8px;font-weight:700;color:rgba(255,255,255,.5);white-space:nowrap;}
+
+/* Compass rose */
+.compass{position:absolute;bottom:10px;right:12px;font-size:28px;opacity:.25;animation:spin-slow 20s linear infinite;}
+@keyframes spin-slow{to{transform:rotate(360deg);}}
+
+/* ── TEXT CONTENT ── */
+.content{max-width:480px;position:relative;z-index:2;}
+.error-code{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.error-code::before{content:'';flex:1;max-width:40px;height:1px;background:var(--gold);opacity:.4;}
+.error-code::after{content:'';flex:1;max-width:40px;height:1px;background:var(--gold);opacity:.4;}
+.title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,56px);line-height:1.1;margin-bottom:16px;}
+.title em{color:var(--gold);font-style:italic;}
+.subtitle{font-size:16px;color:#8899bb;line-height:1.7;margin-bottom:32px;}
+
+/* ── SEARCH BAR ── */
+.search-wrap{position:relative;margin-bottom:28px;}
+.search-input{width:100%;padding:14px 50px 14px 20px;border-radius:14px;border:2px solid rgba(198,151,63,.2);background:rgba(255,255,255,.05);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border .2s,background .2s;backdrop-filter:blur(4px);}
+.search-input:focus{border-color:var(--gold);background:rgba(255,255,255,.08);}
+.search-input::placeholder{color:#445;}
+.search-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));border:none;border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:background .15s;}
+.search-btn:hover{background:var(--gold-dk);}
+
+/* ── QUICK LINKS ── */
+.quick-links{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:32px;}
+.ql-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px;text-decoration:none;transition:all .18s;cursor:pointer;}
+.ql-card:hover{background:rgba(198,151,63,.08);border-color:rgba(198,151,63,.25);transform:translateY(-2px);}
+.ql-icon{font-size:24px;width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ql-text{}
+.ql-label{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.ql-sub{font-size:11px;color:#6677aa;}
+
+/* ── BACK BUTTON ── */
+.back-row{display:flex;gap:10px;flex-wrap:wrap;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;}
+.back-btn.primary{background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));color:var(--navy);border:none;}
+.back-btn.primary:hover{background:var(--gold-dk);transform:translateY(-2px);box-shadow:0 6px 24px rgba(198,151,63,.4);}
+.back-btn.secondary{background:transparent;border:2px solid rgba(255,255,255,.15);color:#8899cc;}
+.back-btn.secondary:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── LAYOUT ── */
+.inner{display:flex;align-items:center;gap:72px;max-width:1100px;margin:0 auto;width:100%;}
+
+/* ── FOOTER ── */
+footer{background:linear-gradient(160deg,var(--royal),var(--royal2));border-top:1px solid #1e2a45;padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;z-index:10;}
+.footer-copy{font-size:12px;color:#445;}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{font-size:12px;color:#556;text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:var(--gold);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .inner{flex-direction:column;align-items:center;text-align:center;gap:40px;}
+  .map-illustration{width:260px;height:260px;}
+  .error-code::before,.error-code::after{display:none;}
+  .quick-links{grid-template-columns:1fr;}
+  .back-row{justify-content:center;}
+  .search-wrap{max-width:400px;margin:0 auto 28px;}
+}
+@media(max-width:480px){
+  .map-illustration{width:220px;height:220px;}
+  .topbar{padding:0 16px;}
+  .topbar-right .btn-outline{display:none;}
+}
+
+/* Pulse animation for lost pin dot */
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(217,48,37,.4);}50%{box-shadow:0 0 0 10px rgba(217,48,37,0);}}
+.pulse-red{animation:pulse-red 2s infinite;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a href="bringme.store.html" class="logo">BringMe.Store<small>Find It. Buy It. Nearby.</small></a>
+  <nav class="topbar-right">
+    <a href="about.html" class="btn-outline">About</a>
+    <a href="membership.html" class="btn-outline">Sign In</a>
+    <a href="bringme.store.html" class="btn-gold">🗺️ Open Map</a>
+  </nav>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <div class="inner">
+
+    <!-- MAP ILLUSTRATION -->
+    <div class="map-illustration">
+      <div class="map-bg">
+        <!-- Roads -->
+        <div class="map-road-h"></div>
+        <div class="map-road-h2"></div>
+        <div class="map-road-v"></div>
+        <div class="map-road-v2"></div>
+        <!-- Blocks -->
+        <div class="map-block" style="top:10%;left:5%;width:28%;height:22%"></div>
+        <div class="map-block" style="top:10%;left:45%;width:18%;height:16%"></div>
+        <div class="map-block" style="top:10%;left:70%;width:25%;height:20%"></div>
+        <div class="map-block" style="top:52%;left:5%;width:22%;height:18%"></div>
+        <div class="map-block" style="top:52%;left:45%;width:30%;height:14%"></div>
+        <div class="map-block" style="top:76%;left:70%;width:24%;height:16%"></div>
+        <!-- Labels -->
+        <div class="map-label" style="top:12%;left:7%">Tungkong</div>
+        <div class="map-label" style="top:12%;left:46%">Poblacion</div>
+        <div class="map-label" style="top:54%;left:7%">Minuyan</div>
+        <!-- Other pins -->
+        <div class="map-pin-sm mp-gold" style="top:15%;right:28%"></div>
+        <div class="map-pin-sm mp-purple" style="bottom:30%;left:12%"></div>
+        <div class="map-pin-sm mp-green" style="bottom:18%;right:15%"></div>
+        <!-- You dot -->
+        <div class="you-dot"></div>
+        <div class="you-label">You</div>
+        <!-- Lost pin -->
+        <div class="lost-pin">
+          <div class="lost-pin-body pulse-red">
+            <span class="lost-pin-icon">❓</span>
+          </div>
+          <div class="lost-pin-shadow"></div>
+        </div>
+        <!-- Question marks -->
+        <div class="qmark">?</div>
+        <div class="qmark">?</div>
+        <div class="qmark">?</div>
+        <!-- Compass -->
+        <div class="compass">🧭</div>
+      </div>
+    </div>
+
+    <!-- TEXT -->
+    <div class="content">
+      <div class="error-code">Error 404</div>
+      <h1 class="title">Looks like you're<br><em>lost on the map.</em></h1>
+      <p class="subtitle">The page you're looking for doesn't exist — it may have been moved, deleted, or you may have typed the wrong URL. Don't worry, we'll help you find your way back.</p>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <input class="search-input" type="text" id="search-inp" placeholder="Search for listings, stores, or items..." onkeydown="if(event.key==='Enter')doSearch()">
+        <button class="search-btn" onclick="doSearch()">🔍</button>
+      </div>
+
+      <!-- Quick links -->
+      <div class="quick-links">
+        <a href="bringme.store.html" class="ql-card">
+          <div class="ql-icon">🗺️</div>
+          <div class="ql-text">
+            <div class="ql-label">Browse the Map</div>
+            <div class="ql-sub">Find listings near you</div>
+          </div>
+        </a>
+        <a href="bringme.store.html" class="ql-card">
+          <div class="ql-icon">🚨</div>
+          <div class="ql-text">
+            <div class="ql-label">Urgent Find</div>
+            <div class="ql-sub">Need something now?</div>
+          </div>
+        </a>
+        <a href="membership.html" class="ql-card">
+          <div class="ql-icon">👤</div>
+          <div class="ql-text">
+            <div class="ql-label">Join / Sign In</div>
+            <div class="ql-sub">Create your account</div>
+          </div>
+        </a>
+        <a href="about.html#stores" class="ql-card">
+          <div class="ql-icon">🏪</div>
+          <div class="ql-text">
+            <div class="ql-label">Register Your Store</div>
+            <div class="ql-sub">Get found on the map</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Back buttons -->
+      <div class="back-row">
+        <a href="bringme.store.html" class="back-btn primary">🗺️ Go to Map</a>
+        <a href="javascript:history.back()" class="back-btn secondary">← Go Back</a>
+        <a href="about.html#contact" class="back-btn secondary">💬 Contact Us</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2025 BringMe.Store · San Jose del Monte, Bulacan</div>
+  <div class="footer-links">
+    <a href="bringme.store.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="membership.html">Join Free</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="about.html#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+function doSearch() {
+  const q = document.getElementById('search-inp').value.trim();
+  if (!q) return;
+  // Redirect to map with search query
+  window.location.href = 'index.html?search=' + encodeURIComponent(q);
+}
+
+// Show how long ago they got lost (fun detail)
+const times = ['a moment', '2 seconds', 'a few seconds'];
+const t = times[Math.floor(Math.random() * times.length)];
+
+// Auto-redirect countdown (optional — uncomment to enable)
+// let count = 30;
+// const countdown = setInterval(() => {
+//   count--;
+//   if (count <= 0) { clearInterval(countdown); window.location.href = 'index.html'; }
+// }, 1000);
+</script>
+
+</body>
+</html>
