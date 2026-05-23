@@ -3616,20 +3616,12 @@ function awValidatePhone(inp) {
 }
 
 function awValidateStep1() {
-  const ageCb = document.getElementById('aw-age-cb');
-  if (ageCb && !ageCb.checked) { showToast('Please confirm you are 18 or older'); return false; }
-  const phone = document.getElementById('aw-phone').value.replace(/[^0-9]/g,'');
-  const email = document.getElementById('aw-email').value;
-  if (phone.length===10&&phone.startsWith('9')) {
-    AW_USER.phone='+63'+phone; AW_USER.method='phone';
-    document.getElementById('aw-otp-dest').textContent='+63'+phone; return true;
+  const consent = document.getElementById('aw-consent-cb');
+  if (consent && !consent.checked) {
+    showToast('Please agree to the Privacy Policy first');
+    return false;
   }
-  if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    AW_USER.email=email; AW_USER.method='email';
-    document.getElementById('aw-otp-dest').textContent=email; return true;
-  }
-  showToast('Please enter a valid phone number or email');
-  return false;
+  return true;
 }
 
 // ── STEP 2: OTP ────────────────────────────────────────────────
@@ -3799,9 +3791,15 @@ function awSubmitLogin() {
   },1400);
 }
 function awSocialSignup(p){
+  const consent = document.getElementById('aw-consent-cb');
+  if (consent && !consent.checked) {
+    showToast('Please agree to the Privacy Policy first');
+    return;
+  }
   const btn = event.target.closest('button');
   const orig = btn.innerHTML;
-  btn.innerHTML = '<div class="aw-spinner"></div> Connecting...';
+  const spinColor = p === 'Facebook' ? 'rgba(255,255,255,.3)' : 'rgba(0,0,51,.2)';
+  btn.innerHTML = `<div class="aw-spinner" style="border-color:${spinColor};border-top-color:${p==='Facebook'?'#fff':'var(--royal)'}"></div> Connecting to ${p}...`;
   btn.disabled = true;
   setTimeout(()=>{
     btn.innerHTML = orig; btn.disabled = false;
@@ -3810,8 +3808,8 @@ function awSocialSignup(p){
     AW_USER.lastName='dela Cruz';
     AW_USER.photo=p==='Google'?'🔵':'📘';
     AW_TOTAL_STEPS=3;
-    awGoStep(3);
-  },1200);
+    awGoStep(3); // Skip contact + verify, go straight to profile
+  },1400);
 }
 function awSocialLogin(p){
   showToast('Connecting to '+p+'...');
@@ -5315,6 +5313,269 @@ window.initLocation = function(lat, lng, label) {
         <button class="aw-submit" id="aw-continue-btn" onclick="awGoStep(2)" disabled>Continue →</button>
         <div class="aw-terms">🔒 Protected under <a href="privacy.html" target="_blank">RA 10173</a>. We never sell your data.</div>
       </div>
+
+      <!-- Step 2: Email Verification -->
+      <div class="aw-form" id="aw-step-2" style="display:none">
+        <div class="aw-title">Check your email</div>
+        <div class="aw-sub">Verification link sent to <strong id="aw-otp-dest" style="color:var(--gold)"></strong></div>
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:48px;margin-bottom:12px">📧</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px">Click the link in your email.<br>Check Spam folder if not found.</div>
+          <div style="background:var(--cream2);border-radius:10px;padding:12px;font-size:11px;color:#555;line-height:1.6;margin-bottom:14px">
+            💡 <strong>Beta mode:</strong> Click Continue to proceed — email verification will be enforced after connecting to Supabase.
+          </div>
+        </div>
+        <div style="text-align:center;margin-bottom:12px">
+          <button id="aw-resend" onclick="awResend()" style="background:none;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer">Resend email</button>
+          <span id="aw-timer" style="font-size:12px;color:var(--muted);display:none"> in <span id="aw-timer-val">60</span>s</span>
+        </div>
+        <!-- Hidden OTP inputs to keep JS working -->
+        <div style="display:none">
+          <input id="ao0" value="1"><input id="ao1" value="2"><input id="ao2" value="3">
+          <input id="ao3" value="4"><input id="ao4" value="5"><input id="ao5" value="6">
+        </div>
+        <span id="aw-otp-btn" style="display:none"></span>
+        <button class="aw-submit" onclick="awGoStep(3)">✅ I verified — Continue</button>
+        <button onclick="awGoStep(1)" style="width:100%;margin-top:8px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif">← Back</button>
+      </div>
+
+      <!-- Step 3: Profile -->
+      <div class="aw-form" id="aw-step-3" style="display:none">
+        <div class="aw-title">Your profile</div>
+        <div class="aw-sub">Tell the community who you are.</div>
+
+        <!-- Quick photo -->
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+          <div id="aw-photo-circle" onclick="awPickEmoji()" style="width:60px;height:60px;border-radius:50%;background:var(--cream2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;flex-shrink:0;transition:border .2s" title="Pick emoji">🙂</div>
+          <div>
+            <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:3px">Profile Photo</div>
+            <div style="display:flex;gap:7px">
+              <button onclick="awPickEmoji()" style="background:var(--cream2);border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer">😊 Emoji</button>
+              <button onclick="document.getElementById('aw-photo-file').click()" style="background:var(--cream2);border:none;border-radius:7px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer">📷 Upload</button>
+            </div>
+            <input type="file" id="aw-photo-file" accept="image/*" style="display:none" onchange="awPreviewPhoto(this)">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="aw-input-wrap" style="margin-bottom:0">
+            <label class="aw-label">First Name *</label>
+            <input class="aw-input" id="aw-fname" type="text" placeholder="Juan" oninput="awCheckProfile()">
+          </div>
+          <div class="aw-input-wrap" style="margin-bottom:0">
+            <label class="aw-label">Last Name *</label>
+            <input class="aw-input" id="aw-lname" type="text" placeholder="Cruz" oninput="awCheckProfile()">
+          </div>
+        </div>
+
+        <div class="aw-input-wrap">
+          <label class="aw-label">@ Nickname *</label>
+          <div style="position:relative">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--gold);font-size:14px">@</span>
+            <input class="aw-input" id="aw-nick" type="text" placeholder="juansjdm" style="padding-left:26px" oninput="awCheckNick(this)">
+            <span id="aw-nick-check" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px"></span>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">Visible on the map to other members</div>
+        </div>
+
+        <div class="aw-input-wrap">
+          <label class="aw-label">📍 Your Area</label>
+          <select class="aw-input" id="aw-location">
+            <option value="">Select barangay...</option>
+            <option>Tungkong Mangga</option><option>Sapang Palay</option>
+            <option>Minuyan</option><option>Poblacion</option>
+            <option>Citrus</option><option>Dulong Bayan</option>
+            <option>Francisco Homes</option><option>Other</option>
+          </select>
+        </div>
+
+        <div class="aw-input-wrap">
+          <label class="aw-label">Bio <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+          <textarea class="aw-input" id="aw-bio" rows="2" placeholder="e.g. Tiangge seller sa Tungkong Mangga!" style="resize:none" maxlength="100" oninput="this.nextSibling.textContent=this.value.length+'/100'"></textarea>
+          <div style="font-size:10px;color:var(--muted);text-align:right">0/100</div>
+        </div>
+
+        <button class="aw-submit" id="aw-profile-btn" onclick="awGoStep(4)" disabled>Continue →</button>
+      </div>
+
+      <!-- Step 4: Roles -->
+      <div class="aw-form" id="aw-step-4" style="display:none">
+        <div class="aw-title">What brings you here?</div>
+        <div class="aw-sub">Pick all that apply.</div>
+        <div class="aw-roles">
+          <div class="aw-role" id="awr-buyer" onclick="awToggleRole('buyer')">
+            <div class="aw-role-icon">🛍️</div>
+            <div class="aw-role-name">Buyer</div>
+            <div class="aw-role-desc">Find items near me</div>
+          </div>
+          <div class="aw-role" id="awr-seller" onclick="awToggleRole('seller')">
+            <div class="aw-role-icon">🏷️</div>
+            <div class="aw-role-name">Seller</div>
+            <div class="aw-role-desc">Sell to the community</div>
+          </div>
+          <div class="aw-role" id="awr-store" onclick="awToggleRole('store')">
+            <div class="aw-role-icon">🏪</div>
+            <div class="aw-role-name">Store Owner</div>
+            <div class="aw-role-desc">Get my store found</div>
+          </div>
+          <div class="aw-role" id="awr-helper" onclick="awToggleRole('helper')">
+            <div class="aw-role-icon">🤝</div>
+            <div class="aw-role-name">Helper</div>
+            <div class="aw-role-desc">Help neighbors · Earn ⭐</div>
+          </div>
+        </div>
+        <div style="background:rgba(205,149,12,.08);border:1px solid rgba(205,149,12,.2);border-radius:11px;padding:12px;margin-bottom:14px;font-size:12px;color:#555;line-height:1.6">
+          🤝 <strong>Helpers earn ⭐ points = real ₱ cash!</strong> Help neighbors find stores → get confirmed → earn ₱1 per help, cashable to GCash!
+        </div>
+        <button class="aw-submit" id="aw-role-btn" onclick="awGoStep(5)" disabled>Almost there →</button>
+      </div>
+
+      <!-- Step 5: Password -->
+      <div class="aw-form" id="aw-step-5" style="display:none">
+        <div class="aw-title">Create a password</div>
+        <div class="aw-sub">Secure your BringMe.Store account.</div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">Password *</label>
+          <div style="position:relative">
+            <input class="aw-input" id="aw-pw" type="password" placeholder="At least 8 characters" oninput="awCheckPw()">
+            <button onclick="awTogglePw('aw-pw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px">👁️</button>
+          </div>
+          <div class="pw-bars-mini" id="aw-pw-bars">
+            <div class="pw-bar-mini" id="awpb0"></div>
+            <div class="pw-bar-mini" id="awpb1"></div>
+            <div class="pw-bar-mini" id="awpb2"></div>
+            <div class="pw-bar-mini" id="awpb3"></div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px" id="aw-pw-lbl">Enter a password</div>
+        </div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">Confirm Password *</label>
+          <div style="position:relative">
+            <input class="aw-input" id="aw-pw2" type="password" placeholder="Repeat password" oninput="awCheckPwMatch()">
+            <span id="aw-pw-match" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px"></span>
+          </div>
+        </div>
+        <button class="aw-submit" id="aw-pw-btn" onclick="awSubmitSignup()" disabled>🎉 Create Account</button>
+      </div>
+
+      <!-- Success -->
+      <div id="aw-success" style="display:none">
+        <div class="aw-success">
+          <div class="aw-success-icon">🎉</div>
+          <div class="aw-success-title">Welcome!</div>
+          <div class="aw-success-sub">You're now part of the BringMe.Store community.</div>
+          <div class="aw-profile-preview" id="aw-success-profile"></div>
+          <button class="aw-submit" onclick="awDismissAndEnter()">🗺️ Explore the Map</button>
+          <div style="font-size:12px;color:var(--muted);margin-top:10px;text-align:center">You earned <strong style="color:var(--gold)">⭐ 5 welcome points</strong>!</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LOGIN ── -->
+    <div id="aw-login" style="display:none">
+      <div class="aw-form">
+        <div class="aw-title">Welcome back!</div>
+        <div class="aw-sub">Sign in to your account.</div>
+        <div class="aw-social">
+          <button class="aw-social-btn" onclick="awSocialLogin('Google')">🔵 Google</button>
+          <button class="aw-social-btn" onclick="awSocialLogin('Facebook')">📘 Facebook</button>
+        </div>
+        <div class="aw-divider"><div class="aw-div-line"></div><span class="aw-div-txt">or</span><div class="aw-div-line"></div></div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">📱 Phone or Email</label>
+          <input class="aw-input" id="aw-login-id" type="text" placeholder="09171234567 or email">
+        </div>
+        <div class="aw-input-wrap">
+          <label class="aw-label">🔒 Password</label>
+          <div style="position:relative">
+            <input class="aw-input" id="aw-login-pw" type="password" placeholder="Your password">
+            <button onclick="awTogglePw('aw-login-pw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px">👁️</button>
+          </div>
+        </div>
+        <div style="text-align:right;margin-bottom:14px"><a href="#" style="font-size:12px;color:var(--gold);text-decoration:none;font-weight:600">Forgot password?</a></div>
+        <button class="aw-submit" onclick="awSubmitLogin()">Sign In →</button>
+        <div class="aw-switch">No account? <a onclick="awShowTab('signup')">Join free →</a></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ── STREET VIEW OVERLAY ── -->
+<div id="sv-overlay" class="sv-overlay" style="display:none">
+  <div class="sv-header">
+    <div>
+      <div class="sv-title">🚶 Street View</div>
+      <div class="sv-addr" id="sv-addr">Loading...</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button class="sv-ctrl-btn" onclick="svRotate(-90)">◀ Rotate</button>
+      <button class="sv-ctrl-btn" onclick="svRotate(90)">Rotate ▶</button>
+      <button class="sv-ctrl-btn" onclick="svZoom(1)">🔍+</button>
+      <button class="sv-ctrl-btn" onclick="svZoom(-1)">🔍-</button>
+      <button class="sv-close" onclick="closeSV()">✕ Close</button>
+    </div>
+  </div>
+  <div id="sv-container"></div>
+</div>
+
+<!-- Panel toggle buttons (mobile) -->
+<button class="panel-toggle left-toggle" onclick="toggleLeftPanel()">🔍 Requests</button>
+<button class="panel-toggle right-toggle" onclick="toggleRightPanel()">🏪 Stores</button>
+
+<!-- ── MOBILE BOTTOM NAV ── -->
+<div class="mobile-nav" id="mobile-nav">
+  <button class="mn-btn active" id="mn-map" onclick="mobileNav('map')">
+    <span class="mn-icon">🗺️</span>
+    <span class="mn-label">Map</span>
+  </button>
+  <button class="mn-btn" id="mn-browse" onclick="mobileNav('browse')">
+    <span class="mn-icon">🏠</span>
+    <span class="mn-label">Browse</span>
+  </button>
+  <button class="mn-post" onclick="PS={suggestions:[],loading:false,source:'',timer:null};S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};openModal('post')" title="Post Listing">
+    ➕
+  </button>
+  <button class="mn-btn red-nav" id="mn-urgent" onclick="mobileNav('urgent')">
+    <span class="mn-icon">🚨</span>
+    <span class="mn-label">Urgent</span>
+  </button>
+  <button class="mn-btn" id="mn-points" onclick="openModal('points')">
+    <span class="mn-icon">⭐</span>
+    <span class="mn-label">Points</span>
+  </button>
+</div>
+
+</body>
+</html>        <div class="aw-form" id="aw-step-1">
+          <div class="aw-title">Join BringMe.Store</div>
+          <div class="aw-sub">Sign up in one tap — no password needed.</div>
+
+          <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:14px">
+            <button class="aw-social-btn" style="padding:13px;font-size:14px;font-weight:700;border-radius:12px;border:2px solid var(--border);background:var(--white);color:var(--text-dark);display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;" onclick="awSocialSignup('Google')">
+              <span style="font-size:22px">🔵</span> Continue with Google
+            </button>
+            <button class="aw-social-btn" style="padding:13px;font-size:14px;font-weight:700;border-radius:12px;border:none;background:linear-gradient(135deg,#1565C0,#0D47A1);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="awSocialSignup('Facebook')">
+              <span style="font-size:22px">📘</span> Continue with Facebook
+            </button>
+          </div>
+
+          <div style="background:var(--green-bg);border:1px solid rgba(26,107,58,0.18);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:var(--green);line-height:1.5;display:flex;gap:7px;">
+            <span>🔒</span><span>We only access your name, email and photo. We never post on your behalf.</span>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;gap:8px;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:4px;">
+            <input type="checkbox" id="aw-consent-cb" style="width:16px;height:16px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer">
+            <label for="aw-consent-cb" style="font-size:11px;color:var(--muted);line-height:1.5;cursor:pointer">
+              I agree to the <a href="privacy.html" target="_blank" style="color:var(--gold);font-weight:700">Privacy Policy</a> & <a href="privacy.html#terms" target="_blank" style="color:var(--gold);font-weight:700">Terms</a> (RA 10173).
+            </label>
+          </div>
+
+          <!-- Hidden for JS compatibility -->
+          <input type="hidden" id="aw-phone" value="">
+          <input type="hidden" id="aw-email" value="">
+        </div>
 
       <!-- Step 2: Email Verification -->
       <div class="aw-form" id="aw-step-2" style="display:none">
