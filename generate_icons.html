@@ -26,7 +26,7 @@ function drawIcon(canvas, size) {
   ctx.lineTo(0, r);
   ctx.quadraticCurveTo(0, 0, r, 0);
   ctx.closePath();
-  ctx.fillStyle = '#0A1628';
+  ctx.fillStyle = '#000033';
   ctx.fill();
 
   // Gold circle background for pin
@@ -42,17 +42,17 @@ function drawIcon(canvas, size) {
   ctx.quadraticCurveTo(cx + pinR * 0.5, cy + pinR * 1.8, cx, cy + pinR * 2.2);
   ctx.quadraticCurveTo(cx - pinR * 0.5, cy + pinR * 1.8, cx - pinR * Math.cos(Math.PI * 0.1), cy + pinR * Math.sin(Math.PI * 0.1));
   ctx.closePath();
-  ctx.fillStyle = '#C6973F';
+  ctx.fillStyle = '#CD950C';
   ctx.fill();
 
   // Inner circle (navy)
   ctx.beginPath();
   ctx.arc(cx, cy, pinR * 0.55, 0, Math.PI * 2);
-  ctx.fillStyle = '#0A1628';
+  ctx.fillStyle = '#000033';
   ctx.fill();
 
   // Letter B in inner circle
-  ctx.fillStyle = '#C6973F';
+  ctx.fillStyle = '#CD950C';
   ctx.font = `bold ${size * 0.22}px Arial`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -60,7 +60,7 @@ function drawIcon(canvas, size) {
 
   // "BRING ME" text at bottom for larger sizes
   if (size >= 192) {
-    ctx.fillStyle = '#C6973F';
+    ctx.fillStyle = '#CD950C';
     ctx.font = `bold ${size * 0.085}px Arial`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
