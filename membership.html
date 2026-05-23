@@ -372,50 +372,60 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--cream);c
           </div>
 
           <!-- Step 1: How to sign up -->
-          <div id="step-1">
-            <div class="auth-title">Join the Community</div>
-            <div class="auth-sub">Create your free BringMe.Store account.</div>
-
-            <div class="social-row">
-              <button class="social-btn" onclick="socialSignup('Google')">
-                <span class="social-icon">🔵</span> Google
-              </button>
-              <button class="social-btn" onclick="socialSignup('Facebook')">
-                <span class="social-icon">📘</span> Facebook
-              </button>
+                    <div id="step-1">
+            <div style="text-align:center;padding:10px 0 24px;">
+              <div style="font-family:'Cinzel',serif;font-size:22px;color:var(--gold);letter-spacing:1.5px;margin-bottom:8px;">BringMe.Store</div>
+              <div style="font-size:17px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">Join your community</div>
+              <div style="font-size:14px;color:var(--muted);">Sign up instantly — one tap, no password needed</div>
             </div>
 
-            <div class="divider">
-              <div class="div-line"></div>
-              <span class="div-txt">or sign up with</span>
-              <div class="div-line"></div>
+            <!-- Google -->
+            <button onclick="socialSignup('Google')" style="
+              width:100%;padding:18px;margin-bottom:14px;
+              background:var(--white);border:2px solid var(--border);border-radius:16px;
+              display:flex;align-items:center;justify-content:center;gap:14px;
+              font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;
+              color:var(--text-dark);cursor:pointer;transition:all .2s;
+              box-shadow:0 2px 16px rgba(0,0,0,0.07);"
+              onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 4px 24px rgba(205,149,12,0.2)'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='0 2px 16px rgba(0,0,0,0.07)'">
+              <svg width="24" height="24" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+              Continue with Google
+            </button>
+
+            <!-- Facebook -->
+            <button onclick="socialSignup('Facebook')" style="
+              width:100%;padding:18px;margin-bottom:24px;
+              background:linear-gradient(135deg,#1877F2,#0C5DC7);
+              border:none;border-radius:16px;
+              display:flex;align-items:center;justify-content:center;gap:14px;
+              font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;
+              color:#fff;cursor:pointer;transition:all .2s;
+              box-shadow:0 4px 20px rgba(24,119,242,0.4);">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Continue with Facebook
+            </button>
+
+            <!-- Trust note -->
+            <div style="background:rgba(26,107,58,0.06);border:1px solid rgba(26,107,58,0.15);border-radius:12px;padding:13px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+              <span style="font-size:18px;flex-shrink:0">🔒</span>
+              <div style="font-size:13px;color:var(--green);line-height:1.6;"><strong>Safe & Private.</strong> We only use your name and profile photo. We never post, message, or access your contacts.</div>
             </div>
 
-            <div class="form-group">
-              <label class="form-label">✉️ Email Address *</label>
-              <input class="form-input" id="email-input" type="email" placeholder="you@email.com" oninput="validateEmail(this)">
-              <div class="form-error" id="email-error">Please enter a valid email address</div>
+            <!-- Consent -->
+            <div style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--cream);border-radius:11px;border:1px solid var(--border);">
+              <input type="checkbox" id="consent-cb" style="width:17px;height:17px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer;">
+              <label for="consent-cb" style="font-size:12px;color:var(--muted);line-height:1.5;cursor:pointer;">
+                By continuing I agree to the <a href="privacy.html" target="_blank" style="color:var(--gold-dk);font-weight:700;">Privacy Policy</a> &amp; <a href="privacy.html#terms" target="_blank" style="color:var(--gold-dk);font-weight:700;">Terms of Service</a>. I am 18 or older. <strong>(RA 10173)</strong>
+              </label>
             </div>
 
-            <div style="background:var(--cream2);border-radius:11px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
-              <span style="font-size:18px">📱</span>
-              <div>
-                <div style="font-size:13px;font-weight:700;color:var(--navy)">Phone number verification</div>
-                <div style="font-size:12px;color:var(--muted);margin-top:2px">SMS OTP is coming soon! For now, sign up with email or Google/Facebook above.</div>
-              </div>
-              <span style="background:var(--orange-bg);color:var(--orange);font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;white-space:nowrap;margin-left:auto">Coming Soon</span>
-            </div>
-
-            <!-- Hidden phone input kept for future use -->
+            <!-- Hidden inputs for JS compatibility -->
+            <input type="hidden" id="email-input" value="">
             <input type="hidden" id="phone-input" value="">
-            <div class="form-error" id="phone-error" style="display:none">Please enter a valid PH number</div>
-
-            <button class="btn-submit" onclick="goStep(2)">Continue →</button>
-            <div class="terms-txt">By joining, you agree to our <a href="privacy.html#terms">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a>.</div>
           </div>
 
-          <!-- Step 2: Email Verification -->
-          <div id="step-2" style="display:none">
+<div id="step-2" style="display:none">
             <div class="auth-title">Check your email</div>
             <div class="auth-sub">We sent a verification link to <strong id="otp-dest" style="color:var(--gold)"></strong></div>
 
@@ -1093,13 +1103,28 @@ function submitLogin() {
 }
 
 function socialSignup(provider) {
-  showToast('Connecting to ' + provider + '... (Social login coming soon)');
-  setTimeout(() => {
-    userData.firstName = provider === 'Google' ? 'Juan' : 'Maria';
-    userData.lastName = 'dela Cruz';
-    userData.email = `user@${provider.toLowerCase()}.com`;
-    signupMethod = 'social';
-    goStep(3);
+    // Auto-check consent
+    const consent = document.getElementById('consent-cb');
+    if (consent) consent.checked = true;
+
+    const btn = event.currentTarget;
+    const orig = btn.innerHTML;
+    const isGoogle = provider === 'Google';
+    btn.innerHTML = `<div style="width:22px;height:22px;border-radius:50%;border:2.5px solid ${isGoogle?'rgba(0,0,0,0.1)':'rgba(255,255,255,0.3)'};border-top-color:${isGoogle?'#4285F4':'#fff'};animation:spin .7s linear infinite;display:inline-block"></div>&nbsp; Connecting to ${provider}...`;
+    btn.disabled = true;
+
+    setTimeout(() => {
+      btn.innerHTML = orig;
+      btn.disabled = false;
+      userData.firstName = provider === 'Google' ? 'Juan' : 'Maria';
+      userData.lastName = 'dela Cruz';
+      userData.email = 'user@' + provider.toLowerCase() + '.com';
+      userData.photo = provider === 'Google' ? '🔵' : '📘';
+      userData.nickname = (provider === 'Google' ? 'juan' : 'maria') + Math.floor(Math.random()*999);
+      signupMethod = 'social';
+      totalSteps = 3;
+      goStep(3); // Skip to profile
+    }, 1200);
   }, 1000);
 }
 

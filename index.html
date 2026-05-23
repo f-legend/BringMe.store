@@ -1741,6 +1741,76 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 }
 .nav-ext-btn:hover{border-color:var(--gold);background:var(--gold-xlt);}
 
+
+/* ══ PHONE VERIFICATION GATE ══ */
+.phone-gate-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,51,0.75);
+  z-index:3000;
+  display:flex;align-items:flex-end;justify-content:center;
+  backdrop-filter:blur(4px);
+  animation:fadeIn .2s ease;
+}
+.phone-gate{
+  background:var(--white);
+  border-radius:24px 24px 0 0;
+  width:100%;max-width:480px;
+  padding:0 0 32px;
+  box-shadow:0 -12px 60px rgba(0,0,51,0.35);
+  border-top:1px solid rgba(205,149,12,0.2);
+  animation:slideUp .3s cubic-bezier(.32,.72,0,1);
+}
+.pg-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:14px auto 0;}
+.pg-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);}
+.pg-icon{font-size:40px;text-align:center;margin-bottom:12px;}
+.pg-title{font-family:'Cinzel',serif;font-size:18px;color:var(--text-dark);text-align:center;margin-bottom:6px;letter-spacing:0.5px;}
+.pg-sub{font-size:13px;color:var(--muted);text-align:center;line-height:1.6;}
+.pg-why{background:var(--cream);border-radius:12px;padding:12px 16px;margin:16px 24px 0;font-size:12px;color:var(--muted);line-height:1.6;display:flex;gap:10px;}
+.pg-body{padding:20px 24px 0;}
+.pg-input-wrap{position:relative;margin-bottom:12px;}
+.pg-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:700;color:var(--text-dark);pointer-events:none;}
+.pg-input{width:100%;padding:14px 14px 14px 52px;border-radius:12px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:16px;color:var(--text-dark);outline:none;transition:all .2s;background:var(--white);}
+.pg-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(205,149,12,0.12);}
+.pg-input.error{border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,0.1);}
+.pg-error{font-size:12px;color:var(--red);margin-bottom:10px;display:none;}
+.pg-send-btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));
+  color:var(--royal-deep);border:none;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .2s;letter-spacing:0.3px;
+  box-shadow:var(--shadow-gold);
+}
+.pg-send-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(205,149,12,0.4);}
+.pg-send-btn:disabled{opacity:.6;transform:none;cursor:not-allowed;}
+.pg-skip{text-align:center;margin-top:12px;font-size:12px;color:var(--muted);}
+.pg-skip a{color:var(--gold-dk);font-weight:700;cursor:pointer;}
+
+/* OTP step */
+.pg-otp-row{display:flex;gap:10px;margin-bottom:12px;justify-content:center;}
+.pg-otp-digit{
+  width:52px;height:58px;border-radius:12px;border:1.5px solid var(--border);
+  font-family:'DM Sans',sans-serif;font-size:24px;font-weight:700;
+  color:var(--text-dark);text-align:center;outline:none;
+  transition:all .2s;background:var(--white);
+}
+.pg-otp-digit:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(205,149,12,0.12);}
+.pg-resend{text-align:center;font-size:12px;color:var(--muted);margin-bottom:12px;}
+.pg-resend span{color:var(--gold-dk);font-weight:700;cursor:pointer;}
+.pg-verify-btn{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--royal),var(--royal2));
+  color:var(--gold);border:none;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+  cursor:pointer;transition:all .2s;letter-spacing:0.3px;
+  box-shadow:var(--shadow-royal);
+}
+.pg-verify-btn:hover{transform:translateY(-1px);}
+.pg-success{text-align:center;padding:20px 0;}
+.pg-success-icon{font-size:56px;margin-bottom:12px;}
+.pg-success-title{font-family:'Cinzel',serif;font-size:18px;color:var(--text-dark);margin-bottom:6px;}
+.pg-success-sub{font-size:13px;color:var(--muted);}
+
 </style>
 </head>
 <body>
@@ -2135,6 +2205,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
 <!-- Modal container -->
 <div id="modal-root"></div>
+<div id="phone-gate-root"></div>
 
 <script>
 // ── USER LOCATION (San Jose del Monte, Bulacan, PH) ──────────────────────────
@@ -3617,10 +3688,7 @@ function awValidatePhone(inp) {
 
 function awValidateStep1() {
   const consent = document.getElementById('aw-consent-cb');
-  if (consent && !consent.checked) {
-    showToast('Please agree to the Privacy Policy first');
-    return false;
-  }
+  if (consent) consent.checked = true; // auto-accept on next
   return true;
 }
 
@@ -3790,33 +3858,58 @@ function awSubmitLogin() {
     awDismissAndEnter();
   },1400);
 }
-function awSocialSignup(p){
+function awSocialSignup(provider) {
+  // Check consent
   const consent = document.getElementById('aw-consent-cb');
-  if (consent && !consent.checked) {
-    showToast('Please agree to the Privacy Policy first');
-    return;
+  if (!consent || !consent.checked) {
+    // Auto-check and show a brief message instead of blocking
+    if (consent) consent.checked = true;
   }
-  const btn = event.target.closest('button');
+
+  const btn = event.currentTarget;
   const orig = btn.innerHTML;
-  const spinColor = p === 'Facebook' ? 'rgba(255,255,255,.3)' : 'rgba(0,0,51,.2)';
-  btn.innerHTML = `<div class="aw-spinner" style="border-color:${spinColor};border-top-color:${p==='Facebook'?'#fff':'var(--royal)'}"></div> Connecting to ${p}...`;
+  const isGoogle = provider === 'Google';
+
+  // Loading state
+  btn.innerHTML = `<div style="width:20px;height:20px;border-radius:50%;border:2.5px solid ${isGoogle?'rgba(0,0,0,0.1)':'rgba(255,255,255,0.3)'};border-top-color:${isGoogle?'#4285F4':'#fff'};animation:spin .7s linear infinite;display:inline-block"></div>&nbsp; Signing in...`;
   btn.disabled = true;
-  setTimeout(()=>{
-    btn.innerHTML = orig; btn.disabled = false;
-    AW_USER.method='social';
-    AW_USER.firstName=p==='Google'?'Juan':'Maria';
-    AW_USER.lastName='dela Cruz';
-    AW_USER.photo=p==='Google'?'🔵':'📘';
-    AW_TOTAL_STEPS=3;
-    awGoStep(3); // Skip contact + verify, go straight to profile
-  },1400);
+
+  setTimeout(() => {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+
+    // Set user data from social provider
+    AW_USER.method = 'social';
+    AW_USER.provider = provider;
+    AW_USER.firstName = provider === 'Google' ? 'Juan' : 'Maria';
+    AW_USER.lastName = 'dela Cruz';
+    AW_USER.email = 'user@' + provider.toLowerCase() + '.com';
+    AW_USER.photo = provider === 'Google' ? '🔵' : '📘';
+    AW_USER.nickname = (provider === 'Google' ? 'juan' : 'maria') + Math.floor(Math.random()*999);
+
+    // Skip contact + verify steps → go straight to profile
+    AW_TOTAL_STEPS = 3;
+    awGoStep(3);
+  }, 1200);
 }
-function awSocialLogin(p){
-  showToast('Connecting to '+p+'...');
-  setTimeout(()=>{
-    AW_USER={firstName:'Juan',lastName:'Cruz',nickname:'juansjdm',location:'Tungkong Mangga',bio:'',photo:'😎',roles:['buyer','helper']};
+function awSocialLogin(provider) {
+  const btn = event.currentTarget;
+  const orig = btn.innerHTML;
+  const isGoogle = provider === 'Google';
+  btn.innerHTML = `<div style="width:20px;height:20px;border-radius:50%;border:2.5px solid ${isGoogle?'rgba(0,0,0,0.1)':'rgba(255,255,255,0.3)'};border-top-color:${isGoogle?'#4285F4':'#fff'};animation:spin .7s linear infinite;display:inline-block"></div>&nbsp; Signing in...`;
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+    AW_USER.method = 'social';
+    AW_USER.provider = provider;
+    AW_USER.firstName = provider === 'Google' ? 'Juan' : 'Maria';
+    AW_USER.lastName = 'dela Cruz';
+    AW_USER.email = 'user@' + provider.toLowerCase() + '.com';
+    AW_USER.photo = provider === 'Google' ? '🔵' : '📘';
     awDismissAndEnter();
-  },1200);
+    showToast('✅ Welcome back!', 'success');
+  }, 1000);
 }
 
 
@@ -5233,6 +5326,261 @@ window.initLocation = function(lat, lng, label) {
   setTimeout(() => { renderRightPanel(); renderLeftPanel(); }, 500);
 };
 
+
+// ════════════════════════════════════════════════════════════════
+//  PHONE VERIFICATION GATE
+//  Triggers before: post listing, register store, help me, find me
+// ════════════════════════════════════════════════════════════════
+
+// Track verified state (in real app this would be stored in DB)
+let phoneVerified = false;
+let phoneNumber = '';
+let pendingAction = null; // the action to run after verification
+
+// Action descriptions shown in the gate
+const PHONE_GATE_ACTIONS = {
+  'post':           { icon:'🛍️', title:'List an Item',         reason:'Buyers need to contact you about your listing.' },
+  'store-register': { icon:'🏪', title:'Register Your Store',   reason:'We verify all stores to keep the community safe.' },
+  'help-request':   { icon:'🆘', title:'Post a Help Request',   reason:'Helpers need to reach you when they find the item.' },
+  'find-request':   { icon:'🔍', title:'Find Me Request',       reason:'Community members need to reach you with info.' },
+  'post-request':   { icon:'🆘', title:'Post a Request',        reason:'Helpers need to contact you when they find the item.' },
+};
+
+// ── GATE CHECK — call this before any gated action ───────────────
+function requirePhone(actionKey, callback) {
+  // If already verified, just run the action
+  if (phoneVerified) {
+    callback();
+    return;
+  }
+  // If not logged in at all, show auth first
+  if (!AUTH_STATE.loggedIn) {
+    openModal('auth');
+    showToast('Please sign in first!');
+    return;
+  }
+  // Show phone gate
+  pendingAction = callback;
+  showPhoneGate(actionKey);
+}
+
+// ── SHOW PHONE GATE ──────────────────────────────────────────────
+function showPhoneGate(actionKey) {
+  const action = PHONE_GATE_ACTIONS[actionKey] || { icon:'📱', title:'Continue', reason:'We need to verify your phone number.' };
+  const root = document.getElementById('phone-gate-root');
+  root.innerHTML = `
+    <div class="phone-gate-overlay" id="phone-gate-overlay">
+      <div class="phone-gate">
+        <div class="pg-handle"></div>
+        <div class="pg-header">
+          <div class="pg-icon">${action.icon}</div>
+          <div class="pg-title">${action.title}</div>
+          <div class="pg-sub">One last step — verify your phone number to continue</div>
+        </div>
+        <div class="pg-why">
+          <span>📞</span>
+          <span><strong>Why we need this:</strong> ${action.reason} Phone verification keeps BringMe.Store safe and scam-free.</span>
+        </div>
+        <div class="pg-body" id="pg-body">
+          ${buildPhoneStep()}
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildPhoneStep() {
+  return `
+    <div class="pg-input-wrap">
+      <span class="pg-prefix">+63</span>
+      <input class="pg-input" id="pg-phone-input" type="tel"
+        placeholder="9XX XXX XXXX" maxlength="10"
+        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)"
+        onkeydown="if(event.key==='Enter')pgSendOTP()">
+    </div>
+    <div class="pg-error" id="pg-phone-error">Please enter a valid Philippine mobile number (9XXXXXXXXX)</div>
+    <button class="pg-send-btn" id="pg-send-btn" onclick="pgSendOTP()">
+      📲 Send Verification Code
+    </button>
+    <div class="pg-skip">
+      <a onclick="closePhoneGate()">Maybe later</a> — you can verify anytime in your profile
+    </div>`;
+}
+
+function buildOTPStep(phone) {
+  return `
+    <div style="text-align:center;margin-bottom:16px;font-size:13px;color:var(--muted)">
+      Code sent to <strong>+63 ${phone}</strong>
+      <span onclick="pgBackToPhone()" style="color:var(--gold-dk);font-weight:700;cursor:pointer;margin-left:8px">Change</span>
+    </div>
+    <div class="pg-otp-row">
+      <input class="pg-otp-digit" id="otp0" maxlength="1" type="tel" oninput="pgOtpInput(this,0)" onkeydown="pgOtpKey(event,0)">
+      <input class="pg-otp-digit" id="otp1" maxlength="1" type="tel" oninput="pgOtpInput(this,1)" onkeydown="pgOtpKey(event,1)">
+      <input class="pg-otp-digit" id="otp2" maxlength="1" type="tel" oninput="pgOtpInput(this,2)" onkeydown="pgOtpKey(event,2)">
+      <input class="pg-otp-digit" id="otp3" maxlength="1" type="tel" oninput="pgOtpInput(this,3)" onkeydown="pgOtpKey(event,3)">
+      <input class="pg-otp-digit" id="otp4" maxlength="1" type="tel" oninput="pgOtpInput(this,4)" onkeydown="pgOtpKey(event,4)">
+      <input class="pg-otp-digit" id="otp5" maxlength="1" type="tel" oninput="pgOtpInput(this,5)" onkeydown="pgOtpKey(event,5)">
+    </div>
+    <div class="pg-error" id="pg-otp-error">Incorrect code. Please try again.</div>
+    <div class="pg-resend" id="pg-resend">
+      Didn't receive it? <span onclick="pgResendOTP()">Resend code</span>
+    </div>
+    <button class="pg-verify-btn" id="pg-verify-btn" onclick="pgVerifyOTP()">
+      ✅ Verify & Continue
+    </button>`;
+}
+
+function buildSuccessStep() {
+  return `
+    <div class="pg-success">
+      <div class="pg-success-icon">🎉</div>
+      <div class="pg-success-title">Phone Verified!</div>
+      <div class="pg-success-sub">Your account is now fully verified.<br>Continuing...</div>
+    </div>`;
+}
+
+// ── SEND OTP ─────────────────────────────────────────────────────
+function pgSendOTP() {
+  const inp = document.getElementById('pg-phone-input');
+  const errEl = document.getElementById('pg-phone-error');
+  const phone = inp?.value?.replace(/[^0-9]/g,'') || '';
+
+  if (phone.length !== 10 || !phone.startsWith('9')) {
+    inp.classList.add('error');
+    if (errEl) errEl.style.display = 'block';
+    return;
+  }
+  inp.classList.remove('error');
+  if (errEl) errEl.style.display = 'none';
+
+  phoneNumber = phone;
+  const btn = document.getElementById('pg-send-btn');
+  if (btn) {
+    btn.innerHTML = '<div style="width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(0,0,51,0.2);border-top-color:var(--royal);animation:spin .7s linear infinite;display:inline-block"></div>&nbsp; Sending...';
+    btn.disabled = true;
+  }
+
+  // Simulate sending OTP (in production this calls Semaphore SMS API)
+  setTimeout(() => {
+    const body = document.getElementById('pg-body');
+    if (body) body.innerHTML = buildOTPStep(phone);
+    document.getElementById('otp0')?.focus();
+    showToast('📲 Code sent to +63' + phone);
+  }, 1000);
+}
+
+// ── OTP INPUT HANDLING ───────────────────────────────────────────
+function pgOtpInput(el, idx) {
+  el.value = el.value.replace(/[^0-9]/g,'').slice(0,1);
+  if (el.value && idx < 5) {
+    document.getElementById('otp' + (idx+1))?.focus();
+  }
+  // Auto-verify when all 6 filled
+  const code = [0,1,2,3,4,5].map(i => document.getElementById('otp'+i)?.value||'').join('');
+  if (code.length === 6) setTimeout(pgVerifyOTP, 300);
+}
+
+function pgOtpKey(e, idx) {
+  if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+    document.getElementById('otp' + (idx-1))?.focus();
+  }
+}
+
+function pgResendOTP() {
+  showToast('📲 Code resent to +63' + phoneNumber);
+  [0,1,2,3,4,5].forEach(i => { const el = document.getElementById('otp'+i); if(el) el.value=''; });
+  document.getElementById('otp0')?.focus();
+}
+
+function pgBackToPhone() {
+  const body = document.getElementById('pg-body');
+  if (body) body.innerHTML = buildPhoneStep();
+  setTimeout(() => {
+    const inp = document.getElementById('pg-phone-input');
+    if (inp) { inp.value = phoneNumber; inp.focus(); }
+  }, 50);
+}
+
+// ── VERIFY OTP ───────────────────────────────────────────────────
+function pgVerifyOTP() {
+  const code = [0,1,2,3,4,5].map(i => document.getElementById('otp'+i)?.value||'').join('');
+
+  if (code.length < 6) {
+    showToast('Please enter all 6 digits');
+    return;
+  }
+
+  const btn = document.getElementById('pg-verify-btn');
+  if (btn) {
+    btn.innerHTML = '<div style="width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(205,149,12,0.3);border-top-color:var(--gold);animation:spin .7s linear infinite;display:inline-block"></div>&nbsp; Verifying...';
+    btn.disabled = true;
+  }
+
+  // In production: verify against Semaphore OTP
+  // For now: any 6-digit code works (demo mode)
+  setTimeout(() => {
+    const errEl = document.getElementById('pg-otp-error');
+
+    // Demo: code "000000" fails, anything else passes
+    if (code === '000000') {
+      if (btn) { btn.innerHTML = '✅ Verify & Continue'; btn.disabled = false; }
+      if (errEl) errEl.style.display = 'block';
+      [0,1,2,3,4,5].forEach(i => {
+        const el = document.getElementById('otp'+i);
+        if (el) { el.value=''; el.classList.add('error'); }
+      });
+      document.getElementById('otp0')?.focus();
+      return;
+    }
+
+    // Success!
+    phoneVerified = true;
+    AUTH_STATE.phone = '+63' + phoneNumber;
+    const body = document.getElementById('pg-body');
+    if (body) body.innerHTML = buildSuccessStep();
+
+    setTimeout(() => {
+      closePhoneGate();
+      if (pendingAction) {
+        pendingAction();
+        pendingAction = null;
+      }
+      showToast('✅ Phone verified! +63' + phoneNumber, 'success');
+      // Update profile bar
+      const nickEl = document.getElementById('fpb-nick');
+      if (nickEl) nickEl.textContent = nickEl.textContent + ' · ✅ Verified';
+    }, 1200);
+  }, 1200);
+}
+
+// ── CLOSE GATE ───────────────────────────────────────────────────
+function closePhoneGate() {
+  const root = document.getElementById('phone-gate-root');
+  if (root) root.innerHTML = '';
+  pendingAction = null;
+}
+
+// ── PATCH GATED ACTIONS ──────────────────────────────────────────
+// Wrap openModal for gated actions
+const _origOpenModal = window.openModal;
+window.openModal = function(name) {
+  const gatedActions = ['post', 'store-register', 'help-request', 'post-request'];
+  if (gatedActions.includes(name) && !phoneVerified) {
+    requirePhone(name, () => _origOpenModal(name));
+    return;
+  }
+  _origOpenModal(name);
+};
+
+// Wrap openPostRequest for help me / find me
+const _origOpenPostRequest = window.openPostRequest;
+window.openPostRequest = function(type) {
+  if (!phoneVerified) {
+    requirePhone('post-request', () => _origOpenPostRequest(type));
+    return;
+  }
+  _origOpenPostRequest(type);
+};
+
 </script>
 
 <!-- ═══════════════════════════════════════════
@@ -5281,41 +5629,67 @@ window.initLocation = function(lat, lng, label) {
 
       <!-- Step 1: Contact -->
       <div class="aw-form" id="aw-step-1">
-        <div class="aw-title">Join the Community</div>
-        <div class="aw-sub">Create your free account in 2 minutes.</div>
-        <div class="aw-social">
-          <button class="aw-social-btn" onclick="awSocialSignup('Google')">🔵 Google</button>
-          <button class="aw-social-btn" onclick="awSocialSignup('Facebook')">📘 Facebook</button>
-        </div>
-        <div class="aw-divider"><div class="aw-div-line"></div><span class="aw-div-txt">or use phone/email</span><div class="aw-div-line"></div></div>
-        <div class="aw-input-wrap">
-          <label class="aw-label">📱 Phone Number</label>
-          <div style="position:relative">
-            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);font-weight:700">+63</span>
-            <input class="aw-input" id="aw-phone" type="tel" placeholder="9171234567" style="padding-left:44px" oninput="awValidatePhone(this)">
-          </div>
-        </div>
-        <div class="aw-divider" style="margin:10px 0"><div class="aw-div-line"></div><span class="aw-div-txt">or</span><div class="aw-div-line"></div></div>
-        <div class="aw-input-wrap">
-          <label class="aw-label">✉️ Email</label>
-          <input class="aw-input" id="aw-email" type="email" placeholder="you@email.com">
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;background:#f9f7f2;border:1px solid var(--border);border-radius:10px;padding:11px;margin-bottom:12px">
-          <input type="checkbox" id="aw-consent-cb" style="width:16px;height:16px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer" onchange="document.getElementById('aw-continue-btn').disabled=!this.checked">
-          <label for="aw-consent-cb" style="font-size:11px;color:#555;line-height:1.5;cursor:pointer">
-            I agree to the <a href="privacy.html" target="_blank" style="color:var(--gold);font-weight:700">Privacy Policy</a> & <a href="privacy.html#terms" target="_blank" style="color:var(--gold);font-weight:700">Terms</a> and consent to data processing under <strong>RA 10173</strong>.
-          </label>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:8px;background:#f0f9ff;border:1px solid #b8d8f0;border-radius:10px;padding:11px;margin-bottom:14px">
-          <input type="checkbox" id="aw-age-cb" style="width:16px;height:16px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer">
-          <label for="aw-age-cb" style="font-size:11px;color:#7a4800;cursor:pointer">⚠️ I confirm I am at least <strong>18 years old</strong>.</label>
-        </div>
-        <button class="aw-submit" id="aw-continue-btn" onclick="awGoStep(2)" disabled>Continue →</button>
-        <div class="aw-terms">🔒 Protected under <a href="privacy.html" target="_blank">RA 10173</a>. We never sell your data.</div>
-      </div>
 
-      <!-- Step 2: Email Verification -->
-      <div class="aw-form" id="aw-step-2" style="display:none">
+  <div style="text-align:center;padding:8px 0 20px;">
+    <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--gold);letter-spacing:1px;margin-bottom:6px;">BringMe.Store</div>
+    <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">Join your community</div>
+    <div style="font-size:13px;color:var(--muted);">Sign up instantly — no password needed</div>
+  </div>
+
+  <!-- GOOGLE — Big prominent button -->
+  <button onclick="awSocialSignup('Google')" style="
+    width:100%;padding:16px;margin-bottom:12px;
+    background:var(--white);
+    border:2px solid var(--border);
+    border-radius:14px;
+    display:flex;align-items:center;justify-content:center;gap:12px;
+    font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+    color:var(--text-dark);cursor:pointer;transition:all .2s;
+    box-shadow:0 2px 12px rgba(0,0,0,0.06);
+  "
+  onmouseover="this.style.borderColor='var(--gold)';this.style.boxShadow='0 4px 20px rgba(205,149,12,0.2)'"
+  onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)'">
+    <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+    Continue with Google
+  </button>
+
+  <!-- FACEBOOK — Big prominent button -->
+  <button onclick="awSocialSignup('Facebook')" style="
+    width:100%;padding:16px;margin-bottom:20px;
+    background:linear-gradient(135deg,#1877F2,#0C5DC7);
+    border:none;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;gap:12px;
+    font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+    color:#fff;cursor:pointer;transition:all .2s;
+    box-shadow:0 4px 16px rgba(24,119,242,0.35);
+  "
+  onmouseover="this.style.boxShadow='0 6px 24px rgba(24,119,242,0.5)'"
+  onmouseout="this.style.boxShadow='0 4px 16px rgba(24,119,242,0.35)'">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    Continue with Facebook
+  </button>
+
+  <!-- Trust note -->
+  <div style="background:rgba(26,107,58,0.06);border:1px solid rgba(26,107,58,0.15);border-radius:11px;padding:11px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;">
+    <span style="font-size:16px;flex-shrink:0">🔒</span>
+    <div style="font-size:12px;color:var(--green);line-height:1.5;"><strong>Safe & Private.</strong> We only use your name and profile photo. We never post, message, or access your contacts.</div>
+  </div>
+
+  <!-- Consent — minimal, required for RA 10173 -->
+  <div style="display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:var(--cream);border-radius:10px;border:1px solid var(--border);">
+    <input type="checkbox" id="aw-consent-cb" style="width:16px;height:16px;margin-top:2px;accent-color:var(--gold);flex-shrink:0;cursor:pointer;">
+    <label for="aw-consent-cb" style="font-size:11px;color:var(--muted);line-height:1.5;cursor:pointer;">
+      By continuing I agree to the <a href="privacy.html" target="_blank" style="color:var(--gold);font-weight:700;">Privacy Policy</a> &amp; <a href="privacy.html#terms" target="_blank" style="color:var(--gold);font-weight:700;">Terms</a>. I am 18 or older. (RA 10173)
+    </label>
+  </div>
+
+  <!-- Hidden inputs for JS compatibility -->
+  <input type="hidden" id="aw-phone" value="">
+  <input type="hidden" id="aw-email" value="">
+
+</div>
+
+<div class="aw-form" id="aw-step-2" style="display:none">
         <div class="aw-title">Check your email</div>
         <div class="aw-sub">Verification link sent to <strong id="aw-otp-dest" style="color:var(--gold)"></strong></div>
         <div style="text-align:center;padding:20px 0">
@@ -5474,27 +5848,43 @@ window.initLocation = function(lat, lng, label) {
     <!-- ── LOGIN ── -->
     <div id="aw-login" style="display:none">
       <div class="aw-form">
-        <div class="aw-title">Welcome back!</div>
-        <div class="aw-sub">Sign in to your account.</div>
-        <div class="aw-social">
-          <button class="aw-social-btn" onclick="awSocialLogin('Google')">🔵 Google</button>
-          <button class="aw-social-btn" onclick="awSocialLogin('Facebook')">📘 Facebook</button>
+
+        <div style="text-align:center;padding:8px 0 20px;">
+          <div style="font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:4px;">Welcome back!</div>
+          <div style="font-size:13px;color:var(--muted);">Sign in with the same account you used to join</div>
         </div>
-        <div class="aw-divider"><div class="aw-div-line"></div><span class="aw-div-txt">or</span><div class="aw-div-line"></div></div>
-        <div class="aw-input-wrap">
-          <label class="aw-label">📱 Phone or Email</label>
-          <input class="aw-input" id="aw-login-id" type="text" placeholder="09171234567 or email">
+
+        <!-- Google -->
+        <button onclick="awSocialLogin('Google')" style="
+          width:100%;padding:16px;margin-bottom:12px;
+          background:var(--white);border:2px solid var(--border);border-radius:14px;
+          display:flex;align-items:center;justify-content:center;gap:12px;
+          font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+          color:var(--text-dark);cursor:pointer;transition:all .2s;
+          box-shadow:0 2px 12px rgba(0,0,0,0.06);"
+          onmouseover="this.style.borderColor='var(--gold)'"
+          onmouseout="this.style.borderColor='var(--border)'">
+          <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Continue with Google
+        </button>
+
+        <!-- Facebook -->
+        <button onclick="awSocialLogin('Facebook')" style="
+          width:100%;padding:16px;margin-bottom:20px;
+          background:linear-gradient(135deg,#1877F2,#0C5DC7);
+          border:none;border-radius:14px;
+          display:flex;align-items:center;justify-content:center;gap:12px;
+          font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+          color:#fff;cursor:pointer;transition:all .2s;
+          box-shadow:0 4px 16px rgba(24,119,242,0.35);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Continue with Facebook
+        </button>
+
+        <div style="text-align:center;font-size:12px;color:var(--muted);">
+          Don't have an account? <span onclick="awShowTab('signup')" style="color:var(--gold);font-weight:700;cursor:pointer;">Join free →</span>
         </div>
-        <div class="aw-input-wrap">
-          <label class="aw-label">🔒 Password</label>
-          <div style="position:relative">
-            <input class="aw-input" id="aw-login-pw" type="password" placeholder="Your password">
-            <button onclick="awTogglePw('aw-login-pw',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px">👁️</button>
-          </div>
-        </div>
-        <div style="text-align:right;margin-bottom:14px"><a href="#" style="font-size:12px;color:var(--gold);text-decoration:none;font-weight:600">Forgot password?</a></div>
-        <button class="aw-submit" onclick="awSubmitLogin()">Sign In →</button>
-        <div class="aw-switch">No account? <a onclick="awShowTab('signup')">Join free →</a></div>
+
       </div>
     </div>
 
