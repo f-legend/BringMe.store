@@ -92,7 +92,7 @@
   /* ══ ROYAL BLUE + GOLD — Exact Palette ══ */
   /* Royal Blues */
   --royal-deep:#000033;        /* near-black navy */
-  --royal:#0C1B6B;             /* deep royal blue */
+  --navy:#000033;--royal:#0C1B6B;             /* deep royal blue */
   --royal2:#1A2FA0;            /* vivid royal blue */
   --royal3:#2541C4;            /* bright royal blue */
   --royal-light:#4169E1;       /* classic royal blue */
@@ -4450,9 +4450,18 @@ function awTogglePw(id,btn){
 async function awSubmitSignup() {
   const btn = document.getElementById('aw-pw-btn') || document.getElementById('aw-role-btn');
   if(btn){btn.disabled=true;btn.innerHTML='<div class="aw-spinner"></div> Creating...';}
-  // Real Supabase account creation (if an email + password were provided)
+  // Capture email + password from the form (if the email/password path was used)
+  const emailEl = document.getElementById('aw-email');
+  const pwEl    = document.getElementById('aw-pw');
+  if (emailEl && emailEl.value) AW_USER.email = emailEl.value.trim();
+  if (pwEl && pwEl.value)       AW_USER.password = pwEl.value;
+  // Real Supabase account creation (needs email + password)
   if (sb && typeof sbSignUp === 'function' && AW_USER.email && AW_USER.password) {
-    await sbSignUp(AW_USER.email, AW_USER.password, AW_USER.firstName, AW_USER.nickname);
+    const { error } = await sbSignUp(AW_USER.email, AW_USER.password, AW_USER.firstName, AW_USER.nickname);
+    if (error) {
+      if(btn){btn.disabled=false;btn.innerHTML='🎉 Create Account';}
+      return; // stop — don't show success if the account wasn't created
+    }
   }
   setTimeout(()=>{
     // Hide all steps
@@ -6963,6 +6972,50 @@ window.submitPostRequest = function() {
     Continue with Facebook
   </button>
 
+  <!-- OR divider -->
+  <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
+    <div style="flex:1;height:1px;background:var(--border);"></div>
+    <div style="font-size:12px;color:var(--muted);font-weight:600;">or</div>
+    <div style="flex:1;height:1px;background:var(--border);"></div>
+  </div>
+
+  <!-- EMAIL SIGNUP (collapsed → expands) -->
+  <div id="aw-email-collapsed">
+    <button onclick="document.getElementById('aw-email-collapsed').style.display='none';document.getElementById('aw-email-expanded').style.display='block';" style="
+      width:100%;padding:15px;
+      background:var(--white);border:2px solid var(--border);border-radius:14px;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+      color:var(--text-dark);cursor:pointer;transition:all .2s;">
+      <span style="font-size:18px;">✉️</span> Sign up with Email
+    </button>
+  </div>
+
+  <!-- EMAIL FORM (expanded) -->
+  <div id="aw-email-expanded" style="display:none;">
+    <input id="aw-signup-email" type="email" placeholder="Email address" autocomplete="email" style="
+      width:100%;padding:14px;margin-bottom:10px;
+      border:2px solid var(--border);border-radius:12px;
+      font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text-dark);outline:none;box-sizing:border-box;"
+      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+    <input id="aw-signup-pw" type="password" placeholder="Create a password (min 6 characters)" autocomplete="new-password" style="
+      width:100%;padding:14px;margin-bottom:10px;
+      border:2px solid var(--border);border-radius:12px;
+      font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text-dark);outline:none;box-sizing:border-box;"
+      onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+    <button id="aw-email-signup-btn" onclick="awEmailSignup()" style="
+      width:100%;padding:15px;margin-bottom:8px;
+      background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));
+      border:none;border-radius:14px;
+      font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+      color:#000033;cursor:pointer;transition:all .2s;">
+      Create Account
+    </button>
+    <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.5;">
+      We'll send a confirmation link to your email.
+    </div>
+  </div>
+
   <!-- Trust note -->
   <div style="background:rgba(26,107,58,0.06);border:1px solid rgba(26,107,58,0.15);border-radius:11px;padding:11px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start;">
     <span style="font-size:16px;flex-shrink:0">🔒</span>
@@ -7405,6 +7458,49 @@ async function sbCreateRequest(req) {
 
 // Boot auth on load
 document.addEventListener('DOMContentLoaded', () => { setTimeout(sbInitAuth, 300); });
+</script>
+
+<script>
+// ── EMAIL SIGN-UP (works immediately with Supabase, no OAuth needed) ──
+async function awEmailSignup() {
+  const email = (document.getElementById('aw-signup-email')||{}).value?.trim();
+  const pw    = (document.getElementById('aw-signup-pw')||{}).value;
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email'); return; }
+  if (!pw || pw.length < 6) { showToast('Password must be at least 6 characters'); return; }
+
+  const btn = document.getElementById('aw-email-signup-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="aw-spinner"></div> Creating...'; }
+
+  // Save for later steps
+  AW_USER.email = email;
+  AW_USER.password = pw;
+  AW_USER.method = 'email';
+
+  if (!sb || typeof sbSignUp !== 'function') {
+    showToast('Not connected to database');
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Create Account'; }
+    return;
+  }
+
+  // Create the account in Supabase (profile + 5 welcome points auto-created by DB trigger)
+  const { data, error } = await sbSignUp(email, pw, AW_USER.firstName || '', AW_USER.nickname || '');
+
+  if (error) {
+    // Common: "User already registered"
+    const msg = (error.message || '').toLowerCase().includes('already')
+      ? 'That email is already registered. Try signing in instead.'
+      : ('Sign up failed: ' + (error.message || 'unknown error'));
+    showToast(msg);
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Create Account'; }
+    return;
+  }
+
+  // Success — move them into the profile-setup steps
+  if (btn) { btn.disabled = false; btn.innerHTML = 'Create Account'; }
+  showToast('✅ Account created! Continue setting up your profile.', 'success');
+  // Advance to step 3 (profile details) — email+password already done
+  if (typeof awGoStep === 'function') awGoStep(3);
+}
 </script>
 </body>
 </html>        <div class="aw-form" id="aw-step-1">
