@@ -1,7 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-PH">
 <head>
 <meta charset="UTF-8">
+  <!-- ══ SEO META TAGS ══ -->
+  <meta name="description" content="BringMe.Store — San Jose del Monte's community marketplace. Find nearby stores, buy and sell items, get urgent help from neighbors, and earn real cash points. 🇵🇭">
+  <meta name="keywords" content="BringMe Store, SJDM marketplace, San Jose del Monte, buy sell near me, community marketplace, Bulacan online shop, help me find item, barangay marketplace">
+  <meta name="author" content="BringMe.Store">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://bringme.store/">
+
+  <!-- ══ OPEN GRAPH (Facebook, Messenger, Viber previews) ══ -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bringme.store/">
+  <meta property="og:title" content="BringMe.Store — Find It. Buy It. Nearby.">
+  <meta property="og:description" content="San Jose del Monte's community marketplace. Buy & sell nearby, find stores on the map, earn cash points by helping neighbors. Join free!">
+  <meta property="og:image" content="https://bringme.store/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:locale" content="en_PH">
+  <meta property="og:site_name" content="BringMe.Store">
+
+  <!-- ══ TWITTER / X CARD ══ -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://bringme.store/">
+  <meta name="twitter:title" content="BringMe.Store — Find It. Buy It. Nearby.">
+  <meta name="twitter:description" content="San Jose del Monte's community marketplace. Buy & sell nearby, find stores on the map, earn cash points by helping neighbors.">
+  <meta name="twitter:image" content="https://bringme.store/icon-512.png">
+
+  <!-- ══ STRUCTURED DATA (Google rich results) ══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "BringMe.Store",
+    "url": "https://bringme.store",
+    "description": "San Jose del Monte's community marketplace. Find nearby stores, buy and sell items, get urgent help from neighbors, and earn real cash points.",
+    "applicationCategory": "ShoppingApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "PHP"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "BringMe.Store",
+      "url": "https://bringme.store",
+      "email": "hello@bringme.store",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "San Jose del Monte",
+        "addressRegion": "Bulacan",
+        "addressCountry": "PH"
+      }
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "San Jose del Monte",
+      "containedInPlace": {
+        "@type": "State",
+        "name": "Bulacan"
+      }
+    }
+  }
+  </script>
+
+  <!-- ══ FONT PRECONNECT (performance) ══ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://maps.googleapis.com">
+  <link rel="dns-prefetch" href="https://maps.gstatic.com">
+
   <!-- ── FAVICON & APP ICONS ── -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -1811,15 +1880,347 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .pg-success-title{font-family:'Cinzel',serif;font-size:18px;color:var(--text-dark);margin-bottom:6px;}
 .pg-success-sub{font-size:13px;color:var(--muted);}
 
+
+/* Smooth scroll & focus styles */
+html{scroll-behavior:smooth;}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px;}
+.skip-link:focus{top:0 !important;}
+/* Selection color */
+::selection{background:rgba(205,149,12,0.25);color:var(--royal-deep);}
+::-moz-selection{background:rgba(205,149,12,0.25);color:var(--royal-deep);}
+
+
+/* ── OFFLINE BANNER ── */
+.offline-banner{
+  position:fixed;bottom:0;left:0;right:0;
+  background:linear-gradient(135deg,#B03A2E,#922B21);
+  color:#fff;padding:10px 20px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  z-index:9999;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:600;
+  transform:translateY(100%);transition:transform .3s ease;
+  box-shadow:0 -4px 20px rgba(176,58,46,0.4);
+}
+.offline-banner.show{transform:translateY(0);}
+.offline-banner.online{background:linear-gradient(135deg,var(--green),#1a5c32);}
+
+
+/* ══════════════════════════════════════════
+   IMAGE UPLOAD — Listing Photos
+   ══════════════════════════════════════════ */
+
+.img-upload-section{
+  margin-bottom:18px;
+}
+.img-upload-label{
+  font-size:12px;font-weight:700;color:var(--text-dark);
+  letter-spacing:0.3px;margin-bottom:8px;display:block;
+}
+.img-upload-label span{
+  font-size:11px;font-weight:400;color:var(--muted);margin-left:4px;
+}
+
+/* Main upload grid */
+.img-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+/* Upload slot */
+.img-slot{
+  aspect-ratio:1;border-radius:12px;position:relative;
+  overflow:hidden;cursor:pointer;
+  transition:all .2s;
+}
+
+/* Empty slot — dashed border */
+.img-slot.empty{
+  border:2px dashed var(--border);
+  background:var(--cream);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:4px;
+}
+.img-slot.empty:hover{
+  border-color:var(--gold);
+  background:var(--gold-pale);
+}
+.img-slot.empty .slot-icon{font-size:22px;opacity:.5;}
+.img-slot.empty .slot-txt{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.3px;}
+
+/* First slot — main photo, bigger label */
+.img-slot:first-child.empty .slot-txt::before{content:'Main Photo';}
+.img-slot:not(:first-child).empty .slot-txt::before{content:'Add Photo';}
+
+/* Filled slot — shows image */
+.img-slot.filled{border:2px solid var(--gold);}
+.img-slot.filled img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+/* Main photo badge */
+.img-slot:first-child .main-badge{
+  position:absolute;bottom:5px;left:5px;
+  background:rgba(0,0,51,0.8);color:var(--gold);
+  font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px;
+  letter-spacing:0.5px;text-transform:uppercase;backdrop-filter:blur(4px);
+}
+/* Remove button */
+.img-slot .remove-img{
+  position:absolute;top:5px;right:5px;
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(192,57,43,0.9);color:#fff;
+  border:none;cursor:pointer;font-size:11px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;backdrop-filter:blur(4px);
+}
+.img-slot .remove-img:hover{background:var(--red);transform:scale(1.1);}
+
+/* Progress overlay during upload/compress */
+.img-slot .img-progress{
+  position:absolute;inset:0;
+  background:rgba(0,0,51,0.6);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;
+  backdrop-filter:blur(2px);
+}
+.img-progress-bar{
+  width:60%;height:3px;background:rgba(255,255,255,0.2);
+  border-radius:2px;overflow:hidden;
+}
+.img-progress-fill{
+  height:100%;background:var(--gold);border-radius:2px;
+  transition:width .3s ease;
+}
+.img-progress-txt{font-size:10px;color:#fff;font-weight:600;}
+
+/* Image tips */
+.img-tips{
+  margin-top:8px;
+  display:flex;gap:16px;flex-wrap:wrap;
+}
+.img-tip{
+  display:flex;align-items:center;gap:5px;
+  font-size:10px;color:var(--muted);font-weight:600;
+}
+.img-tip-icon{font-size:13px;}
+
+/* Drag & drop highlight */
+.img-grid.dragover .img-slot.empty:first-of-type{
+  border-color:var(--gold);
+  background:var(--gold-pale);
+  transform:scale(1.02);
+}
+
+/* Preview modal */
+.img-preview-modal{
+  position:fixed;inset:0;background:rgba(0,0,0,0.9);
+  z-index:5000;display:flex;align-items:center;justify-content:center;
+  cursor:zoom-out;
+}
+.img-preview-modal img{
+  max-width:90vw;max-height:90vh;border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.img-preview-close{
+  position:absolute;top:20px;right:20px;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,0.15);color:#fff;
+  border:none;cursor:pointer;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(8px);
+}
+
+/* Hidden file input */
+#listing-img-input{display:none;}
+
+
+/* ══════════════════════════════════════════════════
+   MAP PIN LABELS — show on top of map pins
+   ══════════════════════════════════════════════════ */
+
+/* Custom Google Maps marker label bubble */
+.map-pin-label {
+  background: rgba(0,0,51,0.88);
+  color: #fff;
+  border: 1px solid rgba(205,149,12,0.35);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 10px rgba(0,0,51,0.3);
+  pointer-events: none;
+}
+.map-pin-label.sell  { border-color: rgba(205,149,12,0.5); color: #EEAD0E; }
+.map-pin-label.buy   { border-color: rgba(146,96,10,0.5);  color: #F5C842; }
+.map-pin-label.store { border-color: rgba(192,57,43,0.5);  color: #FF8070; }
+.map-pin-label.urgent{ border-color: rgba(224,90,78,0.6);  color: #FF8070; }
+.map-pin-label.find  { border-color: rgba(74,63,181,0.5);  color: #A5B4FC; }
+
+/* Pin placement UI — map picker modal */
+.pin-picker-overlay {
+  position: fixed; inset: 0;
+  z-index: 3000;
+  display: flex; flex-direction: column;
+  background: #000;
+}
+.pin-picker-topbar {
+  background: linear-gradient(135deg, var(--royal-deep), var(--royal));
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid rgba(205,149,12,0.2);
+  flex-shrink: 0;
+}
+.pin-picker-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px; color: var(--gold);
+  letter-spacing: 1px; flex: 1;
+}
+.pin-picker-done {
+  background: linear-gradient(135deg, var(--gold-lt), var(--gold-dk));
+  color: var(--royal-deep); border: none;
+  border-radius: 9px; padding: 8px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer; box-shadow: var(--shadow-gold);
+}
+.pin-picker-cancel {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  border-radius: 9px; padding: 8px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.pin-picker-hint {
+  position: absolute; top: 70px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,51,0.88);
+  color: #fff; border-radius: 100px;
+  padding: 8px 18px; font-size: 12px;
+  font-weight: 600; z-index: 10;
+  border: 1px solid rgba(205,149,12,0.2);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.pin-picker-crosshair {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -100%);
+  z-index: 10; pointer-events: none;
+  animation: bounce-pin 1s ease-in-out infinite;
+}
+@keyframes bounce-pin {
+  0%,100% { transform: translate(-50%,-100%); }
+  50%      { transform: translate(-50%,-115%); }
+}
+.pin-picker-crosshair-dot {
+  width: 36px; height: 36px;
+  border-radius: 50% 50% 50% 0;
+  background: linear-gradient(135deg, var(--gold-lt), var(--gold-dk));
+  border: 3px solid #fff;
+  transform: rotate(-45deg);
+  display: flex; align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(205,149,12,0.4);
+}
+.pin-picker-crosshair-dot span {
+  transform: rotate(45deg);
+  font-size: 16px; display: block;
+}
+.pin-picker-shadow {
+  width: 12px; height: 4px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 50%;
+  margin: 4px auto 0;
+}
+#pin-picker-map { width: 100%; flex: 1; }
+
+/* Location method pills */
+.loc-methods {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.loc-method-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 600;
+  color: var(--text); cursor: pointer;
+  transition: all .2s;
+}
+.loc-method-btn:hover { border-color: var(--gold); background: var(--gold-pale); }
+.loc-method-btn.active {
+  border-color: var(--gold);
+  background: var(--gold-pale);
+  color: var(--gold-dk);
+}
+.loc-method-btn .lmb-icon { font-size: 16px; }
+.loc-set-display {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--green-bg);
+  border: 1px solid rgba(26,107,58,0.15);
+  border-radius: 10px; padding: 10px 13px;
+  font-size: 13px; color: var(--green);
+  font-weight: 600; margin-bottom: 12px;
+  display: none;
+}
+.loc-set-display.visible { display: flex; }
+
+
+/* Live button pulse */
+@keyframes livePulse2 {
+  0%,100%{box-shadow:0 0 0 0 rgba(255,59,48,0.4);}
+  50%{box-shadow:0 0 0 5px rgba(255,59,48,0);}
+}
+:root{--live-red:#FF3B30;}
+
 </style>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('[SW] Registered:', reg.scope))
+          .catch(err => console.log('[SW] Failed:', err));
+      });
+    }
+  </script>
+
+<!-- ═══ SUPABASE CONNECTION ═══ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// BringMe.Store — live database connection
+const SUPABASE_URL = 'https://hbydivbxtytgjcbzmpyi.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_oXYAycKxtQQnR31ELfkXhA_S7CLbpY4';
+let sb = null;
+try {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  console.log('[BringMe] Supabase connected');
+} catch (e) {
+  console.warn('[BringMe] Supabase init failed — running in demo mode', e);
+}
+</script>
 </head>
 <body>
+<a href="#map" class="skip-link" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--royal-deep);padding:8px 16px;border-radius:0 0 8px 0;font-weight:700;font-size:13px;z-index:9999;transition:top .2s" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to map</a>
 <div class="topbar">
   <div class="logo">BringMe.Store<small>Find It. Buy It. Nearby.</small></div>
   <div class="search-bar">
     <span class="s-icon">🔍</span>
     <input type="text" id="search-inp" placeholder="Search listings, stores, items..." oninput="onSearch(this.value)">
   </div>
+  <button id="label-mode-btn" onclick="cycleLabelMode()" style="background:rgba(255,255,255,0.07);border:1px solid rgba(205,149,12,0.15);border-radius:8px;padding:6px 11px;color:rgba(255,255,255,0.7);font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'">🏷️ Labels: Title</button>
   <div class="radius-wrap">
     <label>📍 Radius</label>
     <input type="range" id="radius-sl" min="0.5" max="20" step="0.5" value="3" oninput="onRadius(this.value)">
@@ -1831,6 +2232,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
     <button class="n-tab red" id="tab-help" onclick="setTab('help')">🆘 Ask Help</button>
   </nav>
   <div class="topbar-right">
+    <a href="live.html" style="display:inline-flex;align-items:center;gap:5px;background:var(--live-red);color:#fff;border-radius:9px;padding:7px 13px;font-size:12px;font-weight:700;text-decoration:none;letter-spacing:0.5px;box-shadow:0 2px 10px rgba(255,59,48,0.3);transition:all .2s;white-space:nowrap;flex-shrink:0" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">🔴 Live</a>
     <button class="btn-post" onclick="PS={suggestions:[],loading:false,source:'',timer:null};S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};openModal('post')">➕ Post Listing</button>
     <div class="trust-pts-badge" onclick="openModal('trust-points')" title="Trust Points"><span>🤝</span><span class="trust-pts-num" id="trust-pts">120</span><span class="trust-pts-lbl">Trust</span></div>
     <div class="pts-badge" onclick="openModal('points')" title="Your Points">
@@ -1867,7 +2269,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
     </div>
     <div class="lp-search-wrap">
       <span class="si">🔍</span>
-      <input type="text" id="lf-search" placeholder="Search requests..." oninput="renderLeftPanel()">
+      <input type="text" id="lf-search" placeholder="Search requests..." aria-label="Search help requests" oninput="renderLeftPanel()">
     </div>
   </div>
 
@@ -1893,12 +2295,12 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
   <!-- ACTIONS -->
   <div class="lp-actions">
-    <button class="lp-action-btn help-me-btn" onclick="openPostRequest('urgent')">
+    <button class="lp-action-btn help-me-btn" onclick="openPostRequest('urgent')" aria-label="Post urgent help request">
       <span class="btn-icon">🆘</span>
       <span class="btn-label">Help Me!</span>
       <span class="btn-sub">Cash or Trust pts</span>
     </button>
-    <button class="lp-action-btn find-me-btn" onclick="openPostRequest('find')">
+    <button class="lp-action-btn find-me-btn" onclick="openPostRequest('find')" aria-label="Post find me request">
       <span class="btn-icon">🔍</span>
       <span class="btn-label">Find Me</span>
       <span class="btn-sub">Trust pts only</span>
@@ -1914,7 +2316,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
       <!-- Nav topbar -->
       <div class="nav-topbar">
-        <button class="nav-back-btn" onclick="closeBuiltInNav()">← Back</button>
+        <button class="nav-back-btn" onclick="closeBuiltInNav()" aria-label="Close navigation">← Back</button>
         <div class="nav-destination-info">
           <div class="nav-dest-name" id="nav-dest-name">Navigating...</div>
           <div class="nav-dest-addr" id="nav-dest-addr"></div>
@@ -2024,14 +2426,14 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
     <div class="float-profile-bar" id="float-profile-bar">
 
       <!-- Profile Section -->
-      <div class="fpb-profile" id="fpb-profile-btn" onclick="toggleProfilePopup()">
+      <div class="fpb-profile" id="fpb-profile-btn" aria-label="Open profile menu" aria-expanded="false" title="Tap for menu · Tap name to view profile">
         <div class="fpb-avatar" id="fpb-avatar">
           ME
           <div class="fpb-online"></div>
         </div>
-        <div class="fpb-user-info">
-          <div class="fpb-name" id="fpb-name">My Account</div>
-          <div class="fpb-nick" id="fpb-nick">@member</div>
+        <div class="fpb-user-info" onclick="window.location.href='profile.html'" style="cursor:pointer" title="View Profile">
+          <div class="fpb-name" id="fpb-name" style="text-decoration:underline;text-decoration-color:rgba(205,149,12,0.4);text-underline-offset:2px;">My Account</div>
+          <div class="fpb-nick" id="fpb-nick">@member &nbsp;›</div>
           <div class="fpb-pts-row">
             <span class="fpb-pts cash">⭐ <span id="fpb-cash-pts">47</span>pts</span>
             <span class="fpb-pts-sep">·</span>
@@ -2067,6 +2469,12 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
           </div>
 
           <!-- Menu items -->
+          <div class="popup-menu-item" onclick="window.location.href='profile.html'" style="background:rgba(205,149,12,0.08);margin-bottom:4px;">
+            <span class="pmi-icon">👤</span>
+            <span class="pmi-label" style="color:var(--gold);font-weight:700;">View My Profile</span>
+            <span class="pmi-arrow" style="color:var(--gold);">›</span>
+          </div>
+          <div class="popup-menu-divider"></div>
           <div class="popup-menu-item" onclick="openModal('post');toggleProfilePopup()">
             <span class="pmi-icon">➕</span>
             <span class="pmi-label">Post a Listing</span>
@@ -2094,7 +2502,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
             <div class="fpb-notif" style="position:relative;top:0;right:0;width:7px;height:7px;margin-left:auto;margin-right:8px"></div>
             <span class="pmi-arrow">›</span>
           </div>
-          <div class="popup-menu-item" onclick="window.open('membership.html','_blank');toggleProfilePopup()">
+          <div class="popup-menu-item" onclick="window.location.href='profile.html#settings';toggleProfilePopup()">
             <span class="pmi-icon">⚙️</span>
             <span class="pmi-label">Profile Settings</span>
             <span class="pmi-arrow">›</span>
@@ -2188,7 +2596,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
   <!-- ACTIONS (bottom) -->
   <div class="rp-actions">
-    <button class="rp-action-btn reg-store-btn" onclick="openModal('store-register')">
+    <button class="rp-action-btn reg-store-btn" onclick="openModal('store-register')" aria-label="Register your store">
       <span class="ra-icon">🏪</span>
       <span class="ra-label">Register Store</span>
       <span class="ra-sub">Get on the map</span>
@@ -2206,6 +2614,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 <!-- Modal container -->
 <div id="modal-root"></div>
 <div id="phone-gate-root"></div>
+<div class="offline-banner" id="offline-banner">📡 No internet connection — some features may not work</div>
 
 <script>
 // ── USER LOCATION (San Jose del Monte, Bulacan, PH) ──────────────────────────
@@ -2348,6 +2757,60 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 function stars(n){ return '★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(n)); }
 
 // ── LOCATE USER ────────────────────────────────────────────────────────────────
+
+// Turn the user's GPS coords into a readable area name (e.g. their barangay/city)
+
+// ── Signup-area fallback coordinates (SJDM barangays, approximate centers) ──
+const AREA_COORDS = {
+  'Tungkong Mangga': { lat: 14.8144, lng: 121.0456 },
+  'Sapang Palay':    { lat: 14.8370, lng: 121.0790 },
+  'Minuyan':         { lat: 14.8500, lng: 121.0600 },
+  'Poblacion':       { lat: 14.8139, lng: 121.0453 },
+  'Citrus':          { lat: 14.8050, lng: 121.0420 },
+  'Dulong Bayan':    { lat: 14.8170, lng: 121.0440 },
+  'Francisco Homes': { lat: 14.8090, lng: 121.0500 },
+};
+
+// Resolve a signup area name → coordinates.
+// 1) Use the known barangay map, else 2) ask Google to geocode the typed text.
+function locateFromSignupArea(areaName, cb) {
+  if (!areaName) { cb(null); return; }
+  if (AREA_COORDS[areaName]) { cb(AREA_COORDS[areaName], areaName); return; }
+  // Unknown/typed area — geocode it (append region for accuracy)
+  if (window.google && google.maps && google.maps.Geocoder) {
+    const geo = new google.maps.Geocoder();
+    geo.geocode({ address: areaName + ', Philippines' }, (res, status) => {
+      if (status === 'OK' && res[0]) {
+        const loc = res[0].geometry.location;
+        cb({ lat: loc.lat(), lng: loc.lng() }, areaName);
+      } else { cb(null); }
+    });
+  } else { cb(null); }
+}
+
+function reverseGeocodeUser(lat, lng) {
+  if (!window.google || !google.maps || !google.maps.Geocoder) return;
+  try {
+    const geo = new google.maps.Geocoder();
+    geo.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === 'OK' && results[0]) {
+        // Pick a friendly locality name from the address components
+        let area = '';
+        for (const comp of results[0].address_components) {
+          if (comp.types.includes('locality') || comp.types.includes('sublocality') || comp.types.includes('administrative_area_level_3')) {
+            area = comp.long_name; break;
+          }
+        }
+        if (area) {
+          USER.name = area;
+          if (USER.label !== undefined) USER.label = area;
+          if (youMarker) youMarker.setTitle('📍 You are here — ' + area);
+        }
+      }
+    });
+  } catch(e) { /* ignore */ }
+}
+
 function initLocation(lat, lng, label) {
   USER = { lat, lng, name: label };
   document.getElementById('locating-banner').style.display = 'none';
@@ -2377,12 +2840,37 @@ function initLocation(lat, lng, label) {
   renderLeftPanel();
 }
 
-// Try real geolocation first, fall back to SJDM
+// Center the map on the user's REAL current location.
+// Falls back to a default only if they deny permission or GPS fails.
 if (navigator.geolocation) {
+  if (mapOverlayTxt) mapOverlayTxt.textContent = '📍 Finding your location...';
   navigator.geolocation.getCurrentPosition(
-    pos => initLocation(pos.coords.latitude, pos.coords.longitude, "Your Location"),
-    () => { if(mapOverlayTxt) mapOverlayTxt.textContent='Using default location (SJDM)...'; initLocation(14.8144, 121.0456, 'San Jose del Monte, Bulacan'); },
-    { timeout: 6000 }
+    pos => {
+      // Success — center on the user wherever they are
+      initLocation(pos.coords.latitude, pos.coords.longitude, "Your Location");
+      if (typeof reverseGeocodeUser === 'function') reverseGeocodeUser(pos.coords.latitude, pos.coords.longitude);
+    },
+    err => {
+      // GPS denied/failed — fall back to the AREA THEY PICKED at signup
+      const area = (typeof AW_USER === 'object' && AW_USER.location) ? AW_USER.location
+                 : (typeof USER === 'object' && USER.signupArea) ? USER.signupArea : '';
+      if (area) {
+        if (mapOverlayTxt) mapOverlayTxt.textContent = '📍 Using your area: ' + area;
+        locateFromSignupArea(area, (coords, name) => {
+          if (coords) { initLocation(coords.lat, coords.lng, name || area); }
+          else {
+            // couldn't resolve their area either — ask them to enable location
+            if (mapOverlayTxt) mapOverlayTxt.textContent = 'Turn on location to see what\'s near you.';
+            showToast('📍 Enable location to see nearby items');
+          }
+        });
+      } else {
+        // no signup area on file (guest) — prompt to enable location
+        if (mapOverlayTxt) mapOverlayTxt.textContent = 'Turn on location to see what\'s near you.';
+        showToast('📍 Please enable location to see nearby items');
+      }
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
   );
 } else {
   initLocation(14.8144, 121.0456, "San Jose del Monte, Bulacan");
@@ -2441,60 +2929,180 @@ function addMarker(lat, lng, icon, popupHtml) {
 function buildMarkers() {
   clearMarkers();
 
-  // Listings
+  // ── helper: create a rich labeled marker ──
+  function makeMarker(lat, lng, opts) {
+    // opts: { icon, label, color, borderColor, shadowColor, onClick, popupHtml }
+    const markerIcon = {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 0,
+    };
+
+    // Build custom HTML overlay using OverlayView for rich labels
+    const marker = new google.maps.Marker({
+      position: { lat, lng },
+      map,
+      title: opts.label,
+      icon: {
+        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="48" viewBox="0 0 40 48">
+            <defs>
+              <linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:${opts.color1||opts.color}"/>
+                <stop offset="100%" style="stop-color:${opts.color2||opts.color}"/>
+              </linearGradient>
+            </defs>
+            <path d="M20 2 C10 2 2 10 2 20 C2 32 20 46 20 46 C20 46 38 32 38 20 C38 10 30 2 20 2Z"
+              fill="url(#pg)" stroke="white" stroke-width="2.5"/>
+            <circle cx="20" cy="20" r="11" fill="rgba(0,0,0,0.2)"/>
+            <text x="20" y="25" font-family="Arial" font-size="13" font-weight="bold"
+              fill="white" text-anchor="middle">${opts.icon}</text>
+          </svg>`),
+        scaledSize: new google.maps.Size(40, 48),
+        anchor: new google.maps.Point(20, 46),
+        labelOrigin: new google.maps.Point(20, -8),
+      },
+      label: S.showLabels !== false && opts.label ? {
+        text: opts.label.length > 18 ? opts.label.slice(0,18)+'…' : opts.label,
+        className: 'map-pin-label ' + (opts.labelClass||''),
+        fontSize: '11px',
+        fontFamily: "'DM Sans', sans-serif",
+        fontWeight: '600',
+      } : null,
+      animation: opts.animate ? google.maps.Animation.DROP : null,
+    });
+
+    if (opts.onClick) marker.addListener('click', opts.onClick);
+    if (opts.popupHtml) {
+      marker.addListener('click', () => {
+        infoWindow.setContent(opts.popupHtml);
+        infoWindow.open(map, marker);
+      });
+    }
+    return marker;
+  }
+
+  // ── LISTINGS ──
   if (S.tab !== 'stores' && S.tab !== 'help') {
     getFiltered().forEach(l => {
-      const html = `<div class="popup-box">
-        <div class="c-badges" style="margin-bottom:6px">
-          <span class="badge ${l.type==='sell'?'b-sell':'b-buy'}">${l.type==='sell'?'FOR SALE':'LOOKING FOR'}</span>
-          <span class="badge b-cat">${esc(l.category)}</span>
-        </div>
-        <div class="popup-title">${esc(l.title)}</div>
-        <div class="popup-sub">📍 ${esc(l.location)}</div>
-        <div class="popup-price">₱${l.price.toLocaleString()}</div>
-        <div style="display:flex;gap:6px;margin-top:8px">
-          <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${l.id},'listing');infoWindow.close()">View Details →</button>
-          <button class="popup-btn" style="background:#0C1B6B;color:var(--gold);flex:1;margin-top:0" onclick="infoWindow.close();openStreetView(${l.lat},${l.lng},'${esc(l.location)}')">🚶 Street View</button>
+      const isSell = l.type === 'sell';
+      const pinImg = l.images?.[0]
+        ? `<img src="${l.images[0]}" style="width:100%;height:80px;object-fit:cover;border-radius:10px 10px 0 0">`
+        : `<div style="height:60px;display:flex;align-items:center;justify-content:center;font-size:36px;background:var(--cream);border-radius:10px 10px 0 0">${l.image||'📦'}</div>`;
+
+      const popupHtml = `<div class="popup-box">
+        ${pinImg}
+        <div style="padding:10px">
+          <div class="c-badges" style="margin-bottom:6px;display:flex;gap:4px;flex-wrap:wrap">
+            <span class="badge ${isSell?'b-sell':'b-buy'}">${isSell?'FOR SALE':'WANTED'}</span>
+            <span class="badge b-cat">${esc(l.category)}</span>
+          </div>
+          <div class="popup-title">${esc(l.title)}</div>
+          <div class="popup-sub">📍 ${esc(l.location)}</div>
+          <div class="popup-price">₱${l.price.toLocaleString()}</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${l.id},'listing');infoWindow.close()">View Details →</button>
+            <button class="popup-btn" style="flex:1;margin-top:0;background:linear-gradient(135deg,var(--royal),var(--royal2));color:var(--gold)" onclick="navigateTo(${l.lat},${l.lng},'${esc(l.title)}','${esc(l.location)}');infoWindow.close()">🗺️ Navigate</button>
+          </div>
         </div>
       </div>`;
-      addMarker(l.lat, l.lng, makeIcon(l.type), html);
+
+      // Label shown based on filter
+      const label = S.labelMode === 'price' ? '₱'+l.price.toLocaleString()
+                  : S.labelMode === 'none'  ? null
+                  : l.title;
+
+      const m = makeMarker(l.lat, l.lng, {
+        icon: isSell ? '₱' : '🔍',
+        label,
+        labelClass: isSell ? 'sell' : 'buy',
+        color: isSell ? '#CD950C' : '#8B6508',
+        color1: isSell ? '#EEAD0E' : '#CD950C',
+        color2: isSell ? '#8B6508' : '#7A5500',
+        popupHtml,
+      });
+      markers.push(m);
     });
   }
 
-  // Stores
-  if (S.tab === 'stores' || S.tab === 'all') {
-    getStoresFiltered().forEach(s => {
-      const html = `<div class="popup-box">
-        <div class="c-badges" style="margin-bottom:6px"><span class="badge b-store">STORE</span>${isFeat?'<span class="badge" style="background:#fffbe6;color:#a07030">⭐ FEATURED</span>':''}</div>
-        <div class="popup-title">🏪 ${esc(s.name)}</div>
-        <div class="popup-sub">📍 ${esc(s.address)}</div>
-        <div class="popup-store">⏰ ${esc(s.hours)}</div>
-        <div class="popup-store" style="margin-top:3px">${stars(s.rating)} ${s.rating}</div>
-        <button class="popup-btn" style="background:var(--red);color:#fff" onclick="selectItem(${s.id},'store');infoWindow.close()">View Store →</button>
+  // ── STORES ──
+  if (S.tab === 'all' || S.tab === 'stores') {
+    stores.forEach(s => {
+      const popupHtml = `<div class="popup-box">
+        <div style="padding:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <span style="font-size:28px">🏪</span>
+            <div>
+              <div class="popup-title">${esc(s.name)}</div>
+              ${s.featured ? '<span class="badge b-sell" style="font-size:9px">⭐ Featured</span>' : ''}
+            </div>
+          </div>
+          <div class="popup-sub">📍 ${esc(s.address)}</div>
+          <div class="popup-sub">⏰ ${esc(s.hours||'Open')}</div>
+          <div class="popup-sub">📂 ${(s.categories||[]).join(', ')}</div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${s.id},'store');infoWindow.close()">View Store →</button>
+            <button class="popup-btn" style="flex:1;margin-top:0;background:linear-gradient(135deg,var(--royal),var(--royal2));color:var(--gold)" onclick="navigateTo(${s.lat},${s.lng},'${esc(s.name)}','${esc(s.address)}');infoWindow.close()">🗺️ Navigate</button>
+          </div>
+        </div>
       </div>`;
-      addMarker(s.lat, s.lng, makeIcon('store'), html);
+
+      const label = S.labelMode === 'none' ? null : s.name;
+      const m = makeMarker(s.lat, s.lng, {
+        icon: '🏪',
+        label,
+        labelClass: 'store',
+        color: '#C0392B',
+        color1: '#E05A4E',
+        color2: '#922B21',
+        popupHtml,
+      });
+      markers.push(m);
     });
   }
 
-  // Help requests
-  if (S.tab === 'help' || S.tab === 'all') {
-    helpRequests.forEach(h => {
-      const html = `<div class="popup-box">
-        <div class="c-badges" style="margin-bottom:6px">
-          <span class="badge b-help">HELP REQUEST</span>
-          ${h.urgent ? '<span class="badge b-urgent">URGENT</span>' : ''}
+  // ── HELP REQUESTS ──
+  if (S.tab === 'all' || S.tab === 'help') {
+    helpRequests.forEach(r => {
+      const isUrgent = r.reqType === 'urgent';
+      const offerTxt = r.offer?.type==='cash' ? `₱${r.offer.cash}`
+                     : r.offer?.type==='points' ? `🤝${r.offer.points}pts`
+                     : r.offer ? `₱${r.offer.cash} or 🤝${r.offer.points}pts` : '';
+      const popupHtml = `<div class="popup-box">
+        <div style="padding:10px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span style="font-size:24px">${isUrgent?'🆘':'🔍'}</span>
+            <div>
+              <div class="popup-title">${esc(r.item)}</div>
+              <span class="badge ${isUrgent?'b-urgent':'b-help'}">${isUrgent?'URGENT':'FIND ME'}</span>
+            </div>
+          </div>
+          <div class="popup-sub">👤 ${esc(r.user)} · ${r.time}</div>
+          ${offerTxt ? `<div class="popup-sub" style="color:var(--green);font-weight:700">💰 Offering: ${offerTxt}</div>` : ''}
+          ${r.note ? `<div class="popup-sub" style="font-style:italic">"${esc(r.note)}"</div>` : ''}
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectRequest(${r.id},'${r.reqType}');infoWindow.close()">Reply 💬</button>
+          </div>
         </div>
-        <div class="popup-title">${esc(h.item)}</div>
-        <div class="popup-sub">👤 ${esc(h.user)} · ${esc(h.time)}</div>
-        <div class="popup-help">💬 ${h.replies.length} repl${h.replies.length===1?'y':'ies'} · Help & earn ⭐</div>
-        <button class="popup-btn" style="background:var(--purple);color:#fff" onclick="selectItem(${h.id},'help');infoWindow.close()">Help & Earn →</button>
       </div>`;
-      addMarker(h.lat, h.lng, makeIcon('help', h.urgent), html);
+
+      const label = S.labelMode === 'none' ? null
+                  : isUrgent ? (r.item.length>16 ? r.item.slice(0,16)+'…' : r.item)
+                  : r.item;
+      const m = makeMarker(r.lat, r.lng, {
+        icon: isUrgent ? '🆘' : '🔍',
+        label,
+        labelClass: isUrgent ? 'urgent' : 'find',
+        color: isUrgent ? '#E05A4E' : '#4A3FB5',
+        color1: isUrgent ? '#FF6B5B' : '#6B5ED4',
+        color2: isUrgent ? '#C0392B' : '#2A1A80',
+        animate: isUrgent,
+        popupHtml,
+      });
+      markers.push(m);
     });
   }
 }
 
-// ── FILTER HELPERS ─────────────────────────────────────────────────────────────
 function getFiltered() {
   return listings.filter(l => {
     if (S.tab==='sell' && l.type!=='sell') return false;
@@ -2685,10 +3293,13 @@ function setTab(t) { S.tab=t; S.selectedId=null; S.selectedType=null; renderAll(
 function setCat(c) { S.category=c; renderAll(); }
 function onSearch(v) { S.search=v; renderAll(); }
 function onRadius(v) {
-  S.radius=parseFloat(v);
-  document.getElementById('radius-lbl').textContent = v+'km';
+  S.radius = parseFloat(v);
+  const lbl = document.getElementById('radius-lbl');
+  if (lbl) lbl.textContent = v + 'km';
   drawRadiusCircle();
   renderSidebar();
+  renderRightPanel();  // update stores/listings panel
+  renderLeftPanel();   // update requests panel
 }
 
 function selectItem(id, type) {
@@ -2915,6 +3526,8 @@ function buildPostModal() {
         </div>`:''}
 
         <!-- REST OF FORM -->
+        \${buildImageUploadUI()}
+
         <div class="form-grid">
           <div class="form-group">
             <label class="form-label">${pt==='sell'?'Your Price (₱) *':'Your Budget (₱) *'}</label>
@@ -2927,8 +3540,26 @@ function buildPostModal() {
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Location</label>
-            <input class="form-input" type="text" value="${esc(f.location)}" placeholder="e.g. Tungkong Mangga" oninput="S.form.location=this.value">
+            <label class="form-label">📍 Location *</label>
+            <!-- Location set indicator -->
+            <div class="loc-set-display" id="loc-set-display">
+              <span>📍</span>
+              <span id="loc-set-text">Location set on map</span>
+              <span onclick="clearPinLocation()" style="margin-left:auto;cursor:pointer;color:var(--red);font-size:11px;font-weight:700">✕ Clear</span>
+            </div>
+            <!-- 3 method buttons -->
+            <div class="loc-methods">
+              <button type="button" class="loc-method-btn" onclick="useMyGPS()">
+                <span class="lmb-icon">📍</span> Use My Location
+              </button>
+              <button type="button" class="loc-method-btn" onclick="openPinPicker()">
+                <span class="lmb-icon">🗺️</span> Drop Pin on Map
+              </button>
+              <button type="button" class="loc-method-btn" onclick="typeAddress()">
+                <span class="lmb-icon">✏️</span> Type Address
+              </button>
+            </div>
+            <input class="form-input" type="text" id="f-location" value="${esc(f.location)}" placeholder="e.g. Near SM Clark, Angeles" oninput="S.form.location=this.value;S.form.lat=null;S.form.lng=null;updateLocDisplay()">
           </div>
           <div class="form-group">
             <label class="form-label">Contact Number *</label>
@@ -3621,6 +4252,10 @@ function dismissAuth() {
 
 // ── DISMISS AFTER LOGIN (full access) ─────────────────────────
 function awDismissAndEnter() {
+  // Remember the area they chose at signup — used as location fallback
+  if (typeof USER === 'object' && typeof AW_USER === 'object' && AW_USER.location) {
+    USER.signupArea = AW_USER.location;
+  }
   IS_GUEST = false;
   const win = document.getElementById('auth-window');
   const overlay = document.getElementById('guest-overlay');
@@ -3812,9 +4447,13 @@ function awTogglePw(id,btn){
 }
 
 // ── SUBMIT SIGNUP ──────────────────────────────────────────────
-function awSubmitSignup() {
+async function awSubmitSignup() {
   const btn = document.getElementById('aw-pw-btn') || document.getElementById('aw-role-btn');
   if(btn){btn.disabled=true;btn.innerHTML='<div class="aw-spinner"></div> Creating...';}
+  // Real Supabase account creation (if an email + password were provided)
+  if (sb && typeof sbSignUp === 'function' && AW_USER.email && AW_USER.password) {
+    await sbSignUp(AW_USER.email, AW_USER.password, AW_USER.firstName, AW_USER.nickname);
+  }
   setTimeout(()=>{
     // Hide all steps
     for(let i=1;i<=AW_TOTAL_STEPS;i++){
@@ -3847,16 +4486,22 @@ function awSubmitSignup() {
 }
 
 // ── LOGIN ──────────────────────────────────────────────────────
-function awSubmitLogin() {
+async function awSubmitLogin() {
   const id=document.getElementById('aw-login-id').value;
   const pw=document.getElementById('aw-login-pw').value;
   if(!id||!pw){showToast('Please fill in all fields');return;}
   const btn=document.querySelector('#aw-login .aw-submit');
   btn.disabled=true;btn.innerHTML='<div class="aw-spinner"></div> Signing in...';
-  setTimeout(()=>{
-    AW_USER={firstName:'Juan',lastName:'Cruz',nickname:'juansjdm',location:'Tungkong Mangga',bio:'',photo:'😎',roles:['buyer','seller','helper']};
-    awDismissAndEnter();
-  },1400);
+  // Real Supabase sign-in (email + password).
+  // The "id" field accepts an email address.
+  if (sb && typeof sbSignIn === 'function') {
+    const { error } = await sbSignIn(id, pw);
+    btn.disabled=false; btn.innerHTML='Sign In';
+    if (!error) awDismissAndEnter();
+  } else {
+    showToast('Not connected to database');
+    btn.disabled=false; btn.innerHTML='Sign In';
+  }
 }
 function awSocialSignup(provider) {
   // Check consent
@@ -3892,24 +4537,22 @@ function awSocialSignup(provider) {
     awGoStep(3);
   }, 1200);
 }
-function awSocialLogin(provider) {
+async function awSocialLogin(provider) {
   const btn = event.currentTarget;
   const orig = btn.innerHTML;
   const isGoogle = provider === 'Google';
   btn.innerHTML = `<div style="width:20px;height:20px;border-radius:50%;border:2.5px solid ${isGoogle?'rgba(0,0,0,0.1)':'rgba(255,255,255,0.3)'};border-top-color:${isGoogle?'#4285F4':'#fff'};animation:spin .7s linear infinite;display:inline-block"></div>&nbsp; Signing in...`;
   btn.disabled = true;
-  setTimeout(() => {
-    btn.innerHTML = orig;
-    btn.disabled = false;
-    AW_USER.method = 'social';
-    AW_USER.provider = provider;
-    AW_USER.firstName = provider === 'Google' ? 'Juan' : 'Maria';
-    AW_USER.lastName = 'dela Cruz';
-    AW_USER.email = 'user@' + provider.toLowerCase() + '.com';
-    AW_USER.photo = provider === 'Google' ? '🔵' : '📘';
-    awDismissAndEnter();
-    showToast('✅ Welcome back!', 'success');
-  }, 1000);
+  // Real Supabase OAuth — redirects to Google/Facebook.
+  // (Works once you enable the provider in Supabase → Authentication → Providers.)
+  if (typeof sbSocialSignIn === 'function' && sb) {
+    await sbSocialSignIn(provider);
+    // If provider isn't configured yet, sbSocialSignIn shows a message; restore button.
+    setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1500);
+  } else {
+    btn.innerHTML = orig; btn.disabled = false;
+    showToast('Not connected to database yet');
+  }
 }
 
 
@@ -4223,9 +4866,17 @@ function buildPostRequestModal() {
             </select>
           </div>` : `
           <div class="form-group">
-            <label class="form-label">Your Location</label>
-            <input class="form-input" type="text" placeholder="e.g. Tungkong Mangga"
-              value="${f.location||''}" oninput="S._reqForm.location=this.value">
+            <label class="form-label">📍 Your Location</label>
+            <div class="loc-methods">
+              <button type="button" class="loc-method-btn" onclick="useMyGPSForReq()">
+                <span class="lmb-icon">📍</span> Use My Location
+              </button>
+              <button type="button" class="loc-method-btn" onclick="openPinPickerForReq()">
+                <span class="lmb-icon">🗺️</span> Drop Pin on Map
+              </button>
+            </div>
+            <input class="form-input" type="text" id="req-location" placeholder="e.g. Near SM Clark, Angeles"
+              value="${f.location||''}" oninput="S._reqForm.location=this.value;S._reqForm.lat=null;S._reqForm.lng=null">
           </div>`}
         </div>
 
@@ -4805,7 +5456,7 @@ function selectNavResult(idx) {
 
 function triggerMapNavSearch() {
   const val = document.getElementById('map-nav-input')?.value?.trim();
-  if (!val) { showToast('Type what you're looking for first!'); return; }
+  if (!val) { showToast('Type what you\'re looking for first!'); return; }
   doNavSearch(val);
   // If results exist, pick the closest
   setTimeout(() => {
@@ -5581,6 +6232,649 @@ window.openPostRequest = function(type) {
   _origOpenPostRequest(type);
 };
 
+
+// Lazy load helper for dynamic content
+function lazyImg(src, alt, cls='') {
+  return `<img src="${src}" alt="${alt}" class="${cls}" loading="lazy" onerror="this.style.display='none'">`;
+}
+
+
+// ── OFFLINE / ONLINE DETECTION ────────────────────────────────────────────
+function updateOnlineStatus() {
+  const banner = document.getElementById('offline-banner');
+  if (!banner) return;
+  if (!navigator.onLine) {
+    banner.textContent = '📡 No internet — map and search may not work';
+    banner.classList.remove('online');
+    banner.classList.add('show');
+  } else {
+    banner.textContent = '✅ Back online!';
+    banner.classList.add('online', 'show');
+    setTimeout(() => banner.classList.remove('show'), 3000);
+  }
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+
+// ── PULL TO REFRESH (mobile) ─────────────────────────────────────────────
+let ptr_startY = 0;
+let ptr_pulling = false;
+let ptr_indicator = null;
+
+function initPullToRefresh() {
+  const mapWrap = document.querySelector('.map-wrap');
+  if (!mapWrap) return;
+
+  // Create indicator
+  ptr_indicator = document.createElement('div');
+  ptr_indicator.style.cssText = `
+    position:absolute;top:-50px;left:50%;transform:translateX(-50%);
+    background:rgba(0,0,51,0.88);color:var(--gold);
+    border:1px solid rgba(205,149,12,0.25);
+    border-radius:100px;padding:8px 18px;
+    font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;
+    z-index:50;transition:top .2s ease;white-space:nowrap;
+    backdrop-filter:blur(8px);
+  `;
+  ptr_indicator.textContent = '↓ Pull to refresh';
+  mapWrap.appendChild(ptr_indicator);
+
+  mapWrap.addEventListener('touchstart', e => {
+    if (window.scrollY === 0) {
+      ptr_startY = e.touches[0].clientY;
+      ptr_pulling = true;
+    }
+  }, { passive: true });
+
+  mapWrap.addEventListener('touchmove', e => {
+    if (!ptr_pulling) return;
+    const dy = e.touches[0].clientY - ptr_startY;
+    if (dy > 60) {
+      ptr_indicator.style.top = '10px';
+      ptr_indicator.textContent = '↑ Release to refresh';
+    } else if (dy > 20) {
+      ptr_indicator.style.top = Math.min(dy - 40, 10) + 'px';
+      ptr_indicator.textContent = '↓ Pull to refresh';
+    }
+  }, { passive: true });
+
+  mapWrap.addEventListener('touchend', e => {
+    if (!ptr_pulling) return;
+    ptr_pulling = false;
+    const dy = e.changedTouches[0].clientY - ptr_startY;
+    ptr_indicator.style.top = '-50px';
+    ptr_indicator.textContent = '↓ Pull to refresh';
+    if (dy > 60) {
+      ptr_indicator.textContent = '🔄 Refreshing...';
+      ptr_indicator.style.top = '10px';
+      renderAll();
+      renderRightPanel();
+      renderLeftPanel();
+      showToast('🔄 Refreshed!');
+      setTimeout(() => { ptr_indicator.style.top = '-50px'; }, 1500);
+    }
+  }, { passive: true });
+}
+
+// Init after map loads
+window.addEventListener('load', () => {
+  initPullToRefresh();
+  updateOnlineStatus();
+});
+
+
+// ── LISTING EXPIRY — auto-hide listings older than 30 days ───────────────
+function isListingExpired(listing) {
+  if (!listing.createdAt) return false;
+  const created = new Date(listing.createdAt);
+  const now = new Date();
+  const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+  return diffDays > 30;
+}
+
+function getExpiryLabel(listing) {
+  if (!listing.createdAt) return '';
+  const created = new Date(listing.createdAt);
+  const now = new Date();
+  const diffDays = Math.floor((now - created) / (1000 * 60 * 60 * 24));
+  const remaining = 30 - diffDays;
+  if (remaining <= 0) return '⚠️ Expired';
+  if (remaining <= 3) return `⚠️ ${remaining}d left`;
+  if (remaining <= 7) return `${remaining}d left`;
+  return '';
+}
+
+// Add createdAt to sample listings
+listings.forEach((l, i) => {
+  if (!l.createdAt) {
+    const d = new Date();
+    d.setDate(d.getDate() - (i * 3)); // stagger dates for demo
+    l.createdAt = d.toISOString();
+  }
+});
+
+
+// ── SEARCH HISTORY ───────────────────────────────────────────────────────
+let searchHistory = JSON.parse(localStorage.getItem('bm_search_history') || '[]');
+
+function addToSearchHistory(query) {
+  if (!query || query.length < 2) return;
+  searchHistory = [query, ...searchHistory.filter(q => q !== query)].slice(0, 8);
+  try { localStorage.setItem('bm_search_history', JSON.stringify(searchHistory)); } catch(e) {}
+}
+
+function showSearchHistory() {
+  const results = document.getElementById('map-nav-results');
+  if (!results || searchHistory.length === 0) return;
+  results.innerHTML = `
+    <div class="mnr-header">🕐 Recent Searches <span onclick="clearSearchHistory()" style="margin-left:auto;color:var(--red);font-size:10px;font-weight:700;cursor:pointer">Clear</span></div>
+    ${searchHistory.map(q => `
+      <div class="mnr-item" onclick="document.getElementById('map-nav-input').value='${q}';onMapNavSearch('${q}')">
+        <div class="mnr-emoji listing-em">🕐</div>
+        <div class="mnr-info"><div class="mnr-name">${q}</div></div>
+      </div>`).join('')}`;
+  results.classList.add('visible');
+}
+
+function clearSearchHistory() {
+  searchHistory = [];
+  try { localStorage.removeItem('bm_search_history'); } catch(e) {}
+  hideNavResults();
+}
+
+// Patch map nav input to show history on focus
+const mapNavInput = document.getElementById('map-nav-input');
+if (mapNavInput) {
+  mapNavInput.addEventListener('focus', () => {
+    if (!mapNavInput.value) showSearchHistory();
+  });
+  mapNavInput.addEventListener('input', function() {
+    if (this.value.length > 0) onMapNavSearch(this.value);
+    else showSearchHistory();
+  });
+}
+
+// Patch selectNavResult to save to history
+const _origSelectNavResult = window.selectNavResult;
+window.selectNavResult = function(idx) {
+  const item = navResults[idx];
+  if (item) {
+    const q = item.type === 'store' ? item.item.name : item.item.title;
+    addToSearchHistory(q);
+  }
+  _origSelectNavResult(idx);
+};
+
+// Also save on manual search trigger
+const _origTrigger = window.triggerMapNavSearch;
+window.triggerMapNavSearch = function() {
+  const val = document.getElementById('map-nav-input')?.value?.trim();
+  if (val) addToSearchHistory(val);
+  _origTrigger();
+};
+
+
+// ════════════════════════════════════════════════════════════════
+//  LISTING IMAGE UPLOAD
+//  Up to 4 photos per listing
+//  Compresses to max 800px / 200KB before storing as base64
+// ════════════════════════════════════════════════════════════════
+
+// Store uploaded images in state
+if (!S.form.images) S.form.images = [];
+
+const MAX_IMAGES = 4;
+const MAX_SIZE_KB = 200;
+const MAX_DIM = 800;
+
+// ── BUILD IMAGE UPLOAD UI ─────────────────────────────────────────
+function buildImageUploadUI() {
+  const images = S.form.images || [];
+  const slots = [];
+
+  // Filled slots
+  for (let i = 0; i < images.length; i++) {
+    slots.push(`
+      <div class="img-slot filled" id="img-slot-${i}">
+        <img src="${images[i]}" alt="Listing photo ${i+1}"
+          onclick="previewListingImg(event,'${i}')" loading="lazy">
+        ${i===0?'<span class="main-badge">Main</span>':''}
+        <button class="remove-img" onclick="removeListingImg(event,${i})" title="Remove">✕</button>
+      </div>`);
+  }
+
+  // Empty slots
+  const remaining = MAX_IMAGES - images.length;
+  for (let i = 0; i < remaining; i++) {
+    const slotIdx = images.length + i;
+    slots.push(`
+      <div class="img-slot empty" id="img-slot-empty-${i}"
+        onclick="triggerImgUpload()"
+        ondragover="onImgDragOver(event)"
+        ondrop="onImgDrop(event)"
+        ondragleave="onImgDragLeave(event)">
+        <span class="slot-icon">📷</span>
+        <span class="slot-txt"></span>
+      </div>`);
+  }
+
+  return `
+    <div class="img-upload-section">
+      <label class="img-upload-label">
+        📸 Photos
+        <span>(${images.length}/${MAX_IMAGES} · tap to add)</span>
+      </label>
+      <div class="img-grid" id="img-grid">
+        ${slots.join('')}
+      </div>
+      <div class="img-tips">
+        <div class="img-tip"><span class="img-tip-icon">💡</span>First photo = main photo shown on listing</div>
+        <div class="img-tip"><span class="img-tip-icon">📐</span>Max ${MAX_SIZE_KB}KB per photo, auto-compressed</div>
+        <div class="img-tip"><span class="img-tip-icon">📱</span>Drag & drop or tap to upload</div>
+      </div>
+      <input type="file" id="listing-img-input" accept="image/*" multiple onchange="onImgFileSelect(this)">
+    </div>`;
+}
+
+// ── TRIGGER FILE PICKER ───────────────────────────────────────────
+function triggerImgUpload() {
+  if ((S.form.images||[]).length >= MAX_IMAGES) {
+    showToast(`Max ${MAX_IMAGES} photos per listing`, 'error');
+    return;
+  }
+  document.getElementById('listing-img-input')?.click();
+}
+
+// ── FILE SELECTED ─────────────────────────────────────────────────
+function onImgFileSelect(input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+
+  const remaining = MAX_IMAGES - (S.form.images||[]).length;
+  const toProcess = files.slice(0, remaining);
+
+  if (files.length > remaining) {
+    showToast(`Only ${remaining} more photo${remaining!==1?'s':''} allowed`, 'error');
+  }
+
+  // Show loading state on first empty slot
+  const firstEmpty = document.querySelector('.img-slot.empty');
+  if (firstEmpty) {
+    firstEmpty.innerHTML = `
+      <div class="img-progress">
+        <div style="font-size:20px">⏳</div>
+        <div class="img-progress-bar"><div class="img-progress-fill" id="compress-bar" style="width:0%"></div></div>
+        <div class="img-progress-txt">Compressing...</div>
+      </div>`;
+  }
+
+  // Process each file
+  let processed = 0;
+  toProcess.forEach((file, idx) => {
+    compressImage(file, (compressed) => {
+      if (!S.form.images) S.form.images = [];
+      S.form.images.push(compressed);
+      processed++;
+      const bar = document.getElementById('compress-bar');
+      if (bar) bar.style.width = (processed/toProcess.length*100) + '%';
+      if (processed === toProcess.length) {
+        // Re-render the modal to show new images
+        setTimeout(renderModal, 200);
+        showToast(`✅ ${processed} photo${processed!==1?'s':''} added!`, 'success');
+      }
+    });
+  });
+
+  // Reset input
+  input.value = '';
+}
+
+// ── COMPRESS IMAGE ────────────────────────────────────────────────
+function compressImage(file, callback) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      // Calculate new dimensions
+      let { width, height } = img;
+      if (width > MAX_DIM || height > MAX_DIM) {
+        const ratio = Math.min(MAX_DIM/width, MAX_DIM/height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      // Draw on canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      // White background (for transparent PNGs)
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Compress — start at quality 0.85, reduce until under MAX_SIZE_KB
+      let quality = 0.85;
+      let dataUrl = canvas.toDataURL('image/jpeg', quality);
+
+      while (dataUrl.length > MAX_SIZE_KB * 1024 * 1.37 && quality > 0.3) {
+        quality -= 0.1;
+        dataUrl = canvas.toDataURL('image/jpeg', quality);
+      }
+
+      callback(dataUrl);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── REMOVE IMAGE ──────────────────────────────────────────────────
+function removeListingImg(event, idx) {
+  event.stopPropagation();
+  if (!S.form.images) return;
+  S.form.images.splice(idx, 1);
+  renderModal();
+  showToast('Photo removed');
+}
+
+// ── PREVIEW IMAGE ─────────────────────────────────────────────────
+function previewListingImg(event, idx) {
+  event.stopPropagation();
+  const src = S.form.images?.[idx];
+  if (!src) return;
+  const preview = document.createElement('div');
+  preview.className = 'img-preview-modal';
+  preview.innerHTML = `
+    <button class="img-preview-close" onclick="this.parentElement.remove()">✕</button>
+    <img src="${src}" alt="Preview">`;
+  preview.onclick = (e) => { if (e.target === preview) preview.remove(); };
+  document.body.appendChild(preview);
+}
+
+// ── DRAG & DROP ────────────────────────────────────────────────────
+function onImgDragOver(event) {
+  event.preventDefault();
+  document.getElementById('img-grid')?.classList.add('dragover');
+}
+function onImgDragLeave(event) {
+  document.getElementById('img-grid')?.classList.remove('dragover');
+}
+function onImgDrop(event) {
+  event.preventDefault();
+  document.getElementById('img-grid')?.classList.remove('dragover');
+  const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  if (!files.length) return;
+  // Create fake input event
+  const fakeInput = { files, value: '' };
+  onImgFileSelect(fakeInput);
+}
+
+// ── REORDER — tap to make main photo ──────────────────────────────
+function makeMainPhoto(idx) {
+  if (!S.form.images || idx === 0) return;
+  const [photo] = S.form.images.splice(idx, 1);
+  S.form.images.unshift(photo);
+  renderModal();
+  showToast('⭐ Main photo updated!');
+}
+
+// ── RESET images on new listing ───────────────────────────────────
+const _origOpenModalForPost = window.openModal;
+window.openModal = function(name) {
+  if (name === 'post') {
+    // Reset images when opening fresh post modal
+    if (!S._editingListing) S.form.images = [];
+  }
+  _origOpenModalForPost(name);
+};
+
+
+// ════════════════════════════════════════════════════════════════
+//  PIN PLACEMENT SYSTEM
+//  3 methods: GPS, drag pin on map, type address
+// ════════════════════════════════════════════════════════════════
+
+let pinPickerMap = null;
+let pinPickerMarker = null;
+let pinPickerCallback = null; // fn(lat, lng, address)
+let pinPickerMode = 'listing'; // 'listing' or 'request'
+
+// ── METHOD 1: USE MY GPS ─────────────────────────────────────────
+function useMyGPS() {
+  if (!navigator.geolocation) { showToast('GPS not available on this device', 'error'); return; }
+  showToast('📍 Getting your location...');
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      S.form.lat = lat;
+      S.form.lng = lng;
+      S.form.location = `Near ${USER.label || 'your location'}`;
+      // Reverse geocode using Google Maps
+      if (window.google && google.maps) {
+        const gc = new google.maps.Geocoder();
+        gc.geocode({ location: { lat, lng } }, (res, status) => {
+          if (status === 'OK' && res[0]) {
+            const addr = res[0].formatted_address;
+            S.form.location = addr;
+            const inp = document.getElementById('f-location');
+            if (inp) inp.value = addr;
+          }
+        });
+      }
+      updateLocDisplay(lat, lng);
+      showToast('✅ Location set to your GPS!', 'success');
+    },
+    () => showToast('Could not get location. Try another method.', 'error'),
+    { timeout: 8000 }
+  );
+}
+
+function useMyGPSForReq() {
+  if (!navigator.geolocation) { showToast('GPS not available', 'error'); return; }
+  showToast('📍 Getting your location...');
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      if (S._reqForm) {
+        S._reqForm.lat = pos.coords.latitude;
+        S._reqForm.lng = pos.coords.longitude;
+        S._reqForm.location = `Near ${USER.label || 'your location'}`;
+        const inp = document.getElementById('req-location');
+        if (inp) inp.value = S._reqForm.location;
+      }
+      showToast('✅ Location set!', 'success');
+    },
+    () => showToast('Could not get location', 'error'),
+    { timeout: 8000 }
+  );
+}
+
+// ── METHOD 2: DROP PIN ON MAP ────────────────────────────────────
+function openPinPicker(forReq) {
+  pinPickerMode = forReq ? 'request' : 'listing';
+  const startLat = S.form.lat || USER.lat;
+  const startLng = S.form.lng || USER.lng;
+
+  // Build full-screen pin picker
+  const root = document.getElementById('modal-root');
+  root.innerHTML = `
+    <div class="pin-picker-overlay" id="pin-picker-overlay">
+      <div class="pin-picker-topbar">
+        <button class="pin-picker-cancel" onclick="closePinPicker()">✕ Cancel</button>
+        <div class="pin-picker-title">📍 Drop Your Pin</div>
+        <button class="pin-picker-done" onclick="confirmPinLocation()">✅ Confirm</button>
+      </div>
+      <div style="position:relative;flex:1">
+        <div id="pin-picker-map" style="width:100%;height:100%"></div>
+        <div class="pin-picker-hint">Drag the map · Pin stays in center</div>
+        <!-- Crosshair pin always in center -->
+        <div class="pin-picker-crosshair" style="position:absolute;top:50%;left:50%">
+          <div class="pin-picker-crosshair-dot"><span>📍</span></div>
+          <div class="pin-picker-shadow"></div>
+        </div>
+        <!-- Current address display -->
+        <div id="pin-addr-display" style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,51,0.92);color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;border:1px solid rgba(205,149,12,0.2);backdrop-filter:blur(8px);max-width:80%;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          📍 Getting address...
+        </div>
+      </div>
+    </div>`;
+
+  // Init the pin picker map after render
+  setTimeout(() => {
+    pinPickerMap = new google.maps.Map(document.getElementById('pin-picker-map'), {
+      center: { lat: startLat, lng: startLng },
+      zoom: 16,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+    });
+
+    // Listen for map center change — pin stays at center
+    let geocodeTimer = null;
+    pinPickerMap.addListener('center_changed', () => {
+      clearTimeout(geocodeTimer);
+      document.getElementById('pin-addr-display').textContent = '📍 Move map to set location...';
+      geocodeTimer = setTimeout(() => reverseGeocodeCenter(), 600);
+    });
+
+    reverseGeocodeCenter();
+  }, 100);
+}
+
+function openPinPickerForReq() { openPinPicker(true); }
+
+// Reverse geocode the current map center
+function reverseGeocodeCenter() {
+  if (!pinPickerMap) return;
+  const center = pinPickerMap.getCenter();
+  const lat = center.lat(), lng = center.lng();
+  const display = document.getElementById('pin-addr-display');
+
+  if (window.google && google.maps) {
+    const gc = new google.maps.Geocoder();
+    gc.geocode({ location: { lat, lng } }, (res, status) => {
+      if (status === 'OK' && res[0]) {
+        if (display) display.textContent = '📍 ' + res[0].formatted_address;
+      } else {
+        if (display) display.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      }
+    });
+  } else {
+    if (display) display.textContent = `📍 ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  }
+}
+
+function confirmPinLocation() {
+  if (!pinPickerMap) return;
+  const center = pinPickerMap.getCenter();
+  const lat = center.lat(), lng = center.lng();
+  const addrEl = document.getElementById('pin-addr-display');
+  const addr = addrEl ? addrEl.textContent.replace('📍 ','') : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+  if (pinPickerMode === 'request') {
+    if (S._reqForm) {
+      S._reqForm.lat = lat;
+      S._reqForm.lng = lng;
+      S._reqForm.location = addr;
+      const inp = document.getElementById('req-location');
+      if (inp) inp.value = addr;
+    }
+  } else {
+    S.form.lat = lat;
+    S.form.lng = lng;
+    S.form.location = addr;
+    const inp = document.getElementById('f-location');
+    if (inp) inp.value = addr;
+    updateLocDisplay(lat, lng);
+  }
+
+  closePinPicker();
+  showToast('📍 Pin location set!', 'success');
+}
+
+function closePinPicker() {
+  pinPickerMap = null;
+  const root = document.getElementById('modal-root');
+  if (root) root.innerHTML = '';
+}
+
+// ── METHOD 3: TYPE ADDRESS ────────────────────────────────────────
+function typeAddress() {
+  const inp = document.getElementById('f-location');
+  if (inp) {
+    inp.focus();
+    inp.select();
+    inp.style.borderColor = 'var(--gold)';
+    inp.style.boxShadow = '0 0 0 3px rgba(205,149,12,0.15)';
+    setTimeout(() => {
+      inp.style.borderColor = '';
+      inp.style.boxShadow = '';
+    }, 2000);
+  }
+  showToast('✏️ Type your address or landmark below');
+}
+
+// ── LOCATION DISPLAY HELPER ───────────────────────────────────────
+function updateLocDisplay(lat, lng) {
+  const display = document.getElementById('loc-set-display');
+  const text = document.getElementById('loc-set-text');
+  if (!display) return;
+  if (lat && lng) {
+    display.classList.add('visible');
+    if (text) text.textContent = `Pin set · ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  } else {
+    display.classList.remove('visible');
+  }
+}
+
+function clearPinLocation() {
+  S.form.lat = null;
+  S.form.lng = null;
+  updateLocDisplay(null, null);
+  const inp = document.getElementById('f-location');
+  if (inp) inp.value = '';
+}
+
+// ── ADD LABEL TOGGLE TO MAP TOPBAR ────────────────────────────────
+// Add a label mode toggle button to the radius wrap
+S.labelMode = 'title'; // 'title' | 'price' | 'none'
+
+function cycleLabelMode() {
+  const modes = ['title','price','none'];
+  const labels = { title:'Labels: Title', price:'Labels: Price', none:'Labels: Off' };
+  const idx = modes.indexOf(S.labelMode);
+  S.labelMode = modes[(idx+1) % modes.length];
+  const btn = document.getElementById('label-mode-btn');
+  if (btn) btn.textContent = '🏷️ ' + labels[S.labelMode];
+  buildMarkers();
+  showToast('🏷️ ' + labels[S.labelMode]);
+}
+
+// ── PATCH submitPost to use pin location ─────────────────────────
+const _origSubmitPost = window.submitPost;
+window.submitPost = function() {
+  // Use pinned lat/lng if set, otherwise use USER location
+  if (!S.form.lat || !S.form.lng) {
+    S.form.lat = USER.lat + (Math.random()-.5)*0.01;
+    S.form.lng = USER.lng + (Math.random()-.5)*0.01;
+  }
+  if (typeof _origSubmitPost === 'function') _origSubmitPost();
+};
+
+// Same for submitPostRequest
+const _origSubmitPostReq = window.submitPostRequest;
+window.submitPostRequest = function() {
+  if (S._reqForm && (!S._reqForm.lat || !S._reqForm.lng)) {
+    S._reqForm.lat = USER.lat + (Math.random()-.5)*0.01;
+    S._reqForm.lng = USER.lng + (Math.random()-.5)*0.01;
+  }
+  if (typeof _origSubmitPostReq === 'function') _origSubmitPostReq();
+};
+
 </script>
 
 <!-- ═══════════════════════════════════════════
@@ -5937,6 +7231,181 @@ window.openPostRequest = function(type) {
   </button>
 </div>
 
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  SUPABASE DATA + AUTH LAYER
+// ════════════════════════════════════════════════════════════════
+
+// ---- AUTH STATE ----
+let SB_USER = null;      // the logged-in Supabase user
+let SB_PROFILE = null;   // their row from the profiles table
+
+// Check if someone is already logged in (on page load)
+async function sbInitAuth() {
+  if (!sb) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    SB_USER = session.user;
+    await sbLoadProfile();
+    onSignedIn();
+  }
+  // React to future login/logout
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (session) { SB_USER = session.user; await sbLoadProfile(); onSignedIn(); }
+    else         { SB_USER = null; SB_PROFILE = null; }
+  });
+}
+
+// Load (or create) the user's profile row
+async function sbLoadProfile() {
+  if (!sb || !SB_USER) return;
+  let { data, error } = await sb.from('profiles').select('*').eq('id', SB_USER.id).single();
+  if (data) SB_PROFILE = data;
+}
+
+// Called whenever a user becomes signed-in
+function onSignedIn() {
+  if (!SB_PROFILE) return;
+  // Fill the app's user object from the real profile
+  if (typeof AW_USER === 'object') {
+    AW_USER.firstName = SB_PROFILE.first_name || '';
+    AW_USER.lastName  = SB_PROFILE.last_name || '';
+    AW_USER.nickname  = SB_PROFILE.nickname || '';
+    AW_USER.email     = SB_USER.email || '';
+    AW_USER.roles     = SB_PROFILE.roles || ['buyer'];
+  }
+  console.log('[BringMe] Signed in as', SB_PROFILE.nickname || SB_USER.email);
+}
+
+// ---- EMAIL / PASSWORD AUTH (works right now, no OAuth setup needed) ----
+async function sbSignUp(email, password, firstName, nickname) {
+  if (!sb) { showToast('Not connected to database'); return {error:'no-connection'}; }
+  const { data, error } = await sb.auth.signUp({
+    email, password,
+    options: { data: { full_name: firstName, nickname } }
+  });
+  if (error) { showToast('Sign up failed: ' + error.message); return {error}; }
+  // The profile row is auto-created by our database trigger + 5 welcome points
+  showToast('✅ Account created! Check your email to confirm.', 'success');
+  return { data };
+}
+
+async function sbSignIn(email, password) {
+  if (!sb) { showToast('Not connected to database'); return {error:'no-connection'}; }
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) { showToast('Sign in failed: ' + error.message); return {error}; }
+  SB_USER = data.user;
+  await sbLoadProfile();
+  showToast('✅ Welcome back!', 'success');
+  return { data };
+}
+
+// ---- SOCIAL AUTH (works once Google/Facebook are configured in Supabase) ----
+async function sbSocialSignIn(provider) {
+  if (!sb) { showToast('Not connected to database'); return; }
+  const p = provider.toLowerCase();
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: p,
+    options: { redirectTo: window.location.href }
+  });
+  if (error) showToast(provider + ' sign-in needs setup: ' + error.message);
+}
+
+async function sbSignOut() {
+  if (!sb) return;
+  await sb.auth.signOut();
+  SB_USER = null; SB_PROFILE = null;
+  showToast('Signed out');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  DATA: read + write listings / stores / requests
+// ════════════════════════════════════════════════════════════════
+
+// READ — load everything from the database to show on the map
+async function sbLoadListings() {
+  if (!sb) return [];
+  const { data, error } = await sb.from('listings').select('*').eq('status','active').order('created_at',{ascending:false});
+  if (error) { console.warn('load listings', error); return []; }
+  return data || [];
+}
+async function sbLoadStores() {
+  if (!sb) return [];
+  const { data } = await sb.from('stores').select('*').order('featured',{ascending:false});
+  return data || [];
+}
+async function sbLoadRequests() {
+  if (!sb) return [];
+  const { data } = await sb.from('help_requests').select('*').eq('status','open').order('created_at',{ascending:false});
+  return data || [];
+}
+async function sbLoadCategories() {
+  if (!sb) return [];
+  const { data } = await sb.from('categories').select('*').order('id');
+  return data || [];
+}
+
+// WRITE — create a new listing
+async function sbCreateListing(listing) {
+  if (!sb || !SB_USER) { showToast('Please sign in first'); return {error:'not-signed-in'}; }
+  const row = {
+    user_id: SB_USER.id,
+    type: listing.type || 'sell',
+    title: listing.title,
+    description: listing.desc || '',
+    price: listing.price || 0,
+    category_id: listing.category_id || null,
+    emoji: listing.emoji || '📦',
+    lat: listing.lat, lng: listing.lng,
+    location_label: listing.loc || '',
+    contact: listing.contact || '',
+    status: 'active'
+  };
+  const { data, error } = await sb.from('listings').insert(row).select().single();
+  if (error) { showToast('Could not save: ' + error.message); return {error}; }
+  showToast('✅ Listing posted!', 'success');
+  return { data };
+}
+
+// WRITE — create a store
+async function sbCreateStore(store) {
+  if (!sb || !SB_USER) { showToast('Please sign in first'); return {error:'not-signed-in'}; }
+  const row = {
+    owner_id: SB_USER.id,
+    name: store.name, emoji: store.emoji || '🏪',
+    description: store.desc || '',
+    address: store.addr || '', hours: store.hrs || '', contact: store.contact || '',
+    lat: store.lat, lng: store.lng,
+    featured: store.plan && store.plan !== 'free'
+  };
+  const { data, error } = await sb.from('stores').insert(row).select().single();
+  if (error) { showToast('Could not save store: ' + error.message); return {error}; }
+  showToast('✅ Store registered!', 'success');
+  return { data };
+}
+
+// WRITE — create a help request (Bring Me / Find Me)
+async function sbCreateRequest(req) {
+  if (!sb || !SB_USER) { showToast('Please sign in first'); return {error:'not-signed-in'}; }
+  const row = {
+    user_id: SB_USER.id,
+    type: req.type === 'find' ? 'find' : 'urgent',
+    item: req.item, note: req.note || '',
+    offer_type: req.offerType || 'pts',
+    offer_cash: req.cash || 0, offer_trust: req.pts || 0,
+    delivery: req.delivery || (req.type==='find'?'info':'doorstep'),
+    lat: req.lat, lng: req.lng, status: 'open'
+  };
+  const { data, error } = await sb.from('help_requests').insert(row).select().single();
+  if (error) { showToast('Could not save request: ' + error.message); return {error}; }
+  showToast('✅ Request posted!', 'success');
+  return { data };
+}
+
+// Boot auth on load
+document.addEventListener('DOMContentLoaded', () => { setTimeout(sbInitAuth, 300); });
+</script>
 </body>
 </html>        <div class="aw-form" id="aw-step-1">
           <div class="aw-title">Join BringMe.Store</div>
