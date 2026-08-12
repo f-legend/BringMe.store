@@ -7228,6 +7228,33 @@ window.submitPostRequest = function() {
           Continue with Facebook
         </button>
 
+        <!-- OR divider -->
+        <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+          <div style="font-size:12px;color:var(--muted);font-weight:600;">or sign in with email</div>
+          <div style="flex:1;height:1px;background:var(--border);"></div>
+        </div>
+
+        <!-- EMAIL SIGN-IN -->
+        <input id="aw-login-id" type="email" placeholder="Email address" autocomplete="email" style="
+          width:100%;padding:14px;margin-bottom:10px;
+          border:2px solid var(--border);border-radius:12px;
+          font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text-dark);outline:none;box-sizing:border-box;"
+          onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+        <input id="aw-login-pw" type="password" placeholder="Password" autocomplete="current-password" style="
+          width:100%;padding:14px;margin-bottom:12px;
+          border:2px solid var(--border);border-radius:12px;
+          font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text-dark);outline:none;box-sizing:border-box;"
+          onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
+        <button class="aw-submit" onclick="awSubmitLogin()" style="
+          width:100%;padding:15px;margin-bottom:14px;
+          background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));
+          border:none;border-radius:14px;
+          font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;
+          color:#000033;cursor:pointer;transition:all .2s;">
+          Sign In
+        </button>
+
         <div style="text-align:center;font-size:12px;color:var(--muted);">
           Don't have an account? <span onclick="awShowTab('signup')" style="color:var(--gold);font-weight:700;cursor:pointer;">Join free →</span>
         </div>
