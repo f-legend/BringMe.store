@@ -8057,5 +8057,77 @@ function pcTab(name, btn){
   if(btn) btn.classList.add('active');
 }
 </script>
+
+<style>
+/* ===== ROBUST MAP-FIRST PANEL SYSTEM (≤1100px) ===== */
+@media(max-width:1100px){
+  .app-body{ display:flex !important; }
+  .map-wrap{ flex:1 !important; width:100% !important; min-width:0 !important; }
+  .left-panel, .sidebar{
+    position:fixed !important; top:0 !important; bottom:0 !important;
+    width:300px !important; max-width:86vw !important; z-index:1200 !important;
+    transition:transform .32s cubic-bezier(.4,0,.2,1) !important;
+  }
+  .left-panel{ left:0 !important; right:auto !important; transform:translateX(-100%) !important; }
+  .sidebar{ right:0 !important; left:auto !important; transform:translateX(100%) !important; }
+  .left-panel.bm-open{ transform:translateX(0) !important; box-shadow:8px 0 36px rgba(0,0,40,.4); }
+  .sidebar.bm-open{ transform:translateX(0) !important; box-shadow:-8px 0 36px rgba(0,0,40,.4); }
+  /* edge tabs always visible as openers */
+  .panel-edge-handle{
+    display:flex !important; z-index:1150 !important;
+    width:32px !important; height:78px !important;
+    background:linear-gradient(135deg,#000033,#0C1B6B) !important;
+    border:1px solid rgba(205,149,12,.4) !important; color:#EEAD0E !important;
+    align-items:center; justify-content:center; font-size:17px;
+    box-shadow:0 4px 16px rgba(0,0,40,.4) !important; cursor:pointer;
+  }
+  .panel-edge-handle.left-handle{ left:0 !important; border-radius:0 13px 13px 0 !important; border-left:none !important; }
+  .panel-edge-handle.right-handle{ right:0 !important; left:auto !important; border-radius:13px 0 0 13px !important; border-right:none !important; }
+  /* corner FABs show in this range too */
+  .nm-fab-wrap{ display:flex !important; }
+  /* backdrop */
+  .bm-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,40,.5); z-index:1180; }
+  .bm-backdrop.show{ display:block; }
+  /* retract arrow inside an open panel */
+  .bm-retract{ position:absolute; top:50%; transform:translateY(-50%); z-index:1210;
+    width:30px; height:72px; background:linear-gradient(135deg,#000033,#0C1B6B);
+    border:1px solid rgba(205,149,12,.4); color:#EEAD0E; font-size:22px; font-weight:700;
+    cursor:pointer; display:none; align-items:center; justify-content:center; }
+  .left-panel.bm-open .bm-retract{ display:flex; right:-30px; border-radius:0 13px 13px 0; border-left:none; }
+  .sidebar.bm-open .bm-retract{ display:flex; left:-30px; border-radius:13px 0 0 13px; border-right:none; }
+}
+@media(min-width:1101px){ .bm-backdrop, .bm-retract, .panel-edge-handle{ display:none !important; } }
+</style>
+<div class="bm-backdrop" id="bm-backdrop"></div>
+<script>
+(function(){
+  function L(){return document.getElementById('left-panel');}
+  function R(){return document.getElementById('sidebar');}
+  function B(){return document.getElementById('bm-backdrop');}
+  window.bmClose=function(){ var l=L(),r=R(),b=B(); if(l)l.classList.remove('bm-open'); if(r)r.classList.remove('bm-open'); if(b)b.classList.remove('show'); };
+  window.bmOpen=function(side){ var l=L(),r=R(),b=B();
+    if(side==='left'){ if(l)l.classList.add('bm-open'); if(r)r.classList.remove('bm-open'); }
+    else { if(r)r.classList.add('bm-open'); if(l)l.classList.remove('bm-open'); }
+    if(b)b.classList.add('show'); };
+  window.bmToggle=function(side){ var el=side==='left'?L():R(); if(el&&el.classList.contains('bm-open'))bmClose(); else bmOpen(side); };
+  function wire(){
+    var lh=document.getElementById('left-handle'), rh=document.getElementById('right-handle'), b=B();
+    if(lh){ lh.onclick=function(e){e.stopPropagation();bmToggle('left');}; }
+    if(rh){ rh.onclick=function(e){e.stopPropagation();bmToggle('right');}; }
+    if(b){ b.onclick=bmClose; }
+    [['left-panel','‹'],['sidebar','›']].forEach(function(p){
+      var pnl=document.getElementById(p[0]);
+      if(pnl && !pnl.querySelector('.bm-retract')){
+        var btn=document.createElement('button');
+        btn.className='bm-retract'; btn.type='button'; btn.innerHTML=p[1];
+        btn.onclick=function(e){e.stopPropagation();bmClose();};
+        pnl.appendChild(btn);
+      }
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
+  window.addEventListener('load',wire);
+})();
+</script>
 </body>
 </html>
