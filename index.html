@@ -550,7 +550,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .fab button:hover{background:var(--gold);color:var(--navy);}
 
 /* locating banner */
-.locating-banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,51,.88);color:#fff;padding:8px 18px;border-radius:100px;font-size:12px;font-weight:600;z-index:600;backdrop-filter:blur(6px);white-space:nowrap;}
+.locating-banner{position:absolute;top:58px;left:50%;transform:translateX(-50%);background:rgba(0,0,51,.88);color:#fff;padding:8px 18px;border-radius:100px;font-size:12px;font-weight:600;z-index:600;backdrop-filter:blur(6px);white-space:nowrap;}
 
 /* ── FEATURED / PROMOTED ── */
 .featured-banner{
@@ -2386,6 +2386,36 @@ try {
   cursor:pointer;transition:transform .15s, box-shadow .2s;box-shadow:0 8px 30px rgba(205,149,12,.4);}
 .onb-next:active{transform:scale(.97);}
 </style>
+
+<style>
+/* ===== NEW MAP-FIRST LAYOUT (chunk 1) ===== */
+.topbar{display:none !important}
+.app-body{height:100vh !important}
+.left-panel, .sidebar{ top:0 !important; }
+
+/* Blue header over the map */
+.nm-header{position:absolute;top:0;left:0;right:0;height:46px;z-index:30;background:linear-gradient(135deg,#000033,#0C1B6B);border-bottom:1px solid rgba(205,149,12,.28);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,40,.2);pointer-events:none}
+.nm-logo{font-family:'Cinzel',serif;font-size:17px;font-weight:700;letter-spacing:1.5px;background:linear-gradient(95deg,#8B6508,#CD950C,#FBF0C0,#FFF8DC,#FBF0C0,#CD950C,#8B6508);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+
+/* Centered location dot + search over the map */
+.nm-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:25;display:flex;flex-direction:column;align-items:center;width:min(440px,74%);pointer-events:none}
+.nm-dot{width:18px;height:18px;border-radius:50%;background:#CD950C;border:3px solid #fff;box-shadow:0 0 0 5px rgba(205,149,12,.28),0 3px 10px rgba(0,0,40,.4);margin-bottom:16px}
+.nm-search{width:100%;display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--border);border-radius:13px;padding:11px 15px;box-shadow:0 8px 24px rgba(0,0,51,.18);pointer-events:auto}
+.nm-search .nm-ic{font-size:14px;opacity:.6}
+.nm-search input{flex:1;border:none;outline:none;background:transparent;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text)}
+
+/* Corner action buttons (FABs) */
+.nm-fab-wrap{position:absolute;z-index:28;display:none;flex-direction:column;align-items:center;gap:5px}
+@media(max-width:1000px){ .nm-fab-wrap{display:flex} }
+.nm-fab{width:54px;height:54px;border-radius:50%;border:2px solid rgba(255,255,255,.85);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:23px;box-shadow:0 6px 20px rgba(0,0,40,.35);transition:transform .15s;color:#fff}
+.nm-fab:hover{transform:scale(1.09)}
+.nm-fab:active{transform:scale(.96)}
+.nm-fab-lbl{font-size:10px;font-weight:800;color:#fff;background:rgba(0,0,40,.72);padding:3px 9px;border-radius:100px;white-space:nowrap}
+.nm-ul{top:56px;left:16px}
+.nm-ur{top:56px;right:16px}
+.nm-ll{bottom:96px;left:16px}
+.nm-lr{bottom:96px;right:16px}
+</style>
 </head>
 <body>
 <!-- ONBOARDING / WELCOME FLOW -->
@@ -2549,6 +2579,17 @@ try {
 </div>
 
 <div class="map-wrap">
+  <!-- NEW: blue header + centered search + corner action buttons -->
+  <div class="nm-header"><span class="nm-logo">BringMe.Store</span></div>
+  <div class="nm-center">
+    <div class="nm-dot"></div>
+    <div class="nm-search"><span class="nm-ic">🔍</span><input type="text" id="nm-search-inp" placeholder="Search listings, stores, items..." oninput="onSearch(this.value)"></div>
+  </div>
+  <div class="nm-fab-wrap nm-ul"><button class="nm-fab" style="background:linear-gradient(135deg,#9B2D1F,#6B1E14)" onclick="openPostRequest('urgent')">⚡</button><span class="nm-fab-lbl">Urgent</span></div>
+  <div class="nm-fab-wrap nm-ll"><button class="nm-fab" style="background:linear-gradient(135deg,#CD950C,#8B6508)" onclick="openPostRequest('find')">🔍</button><span class="nm-fab-lbl">Find Me</span></div>
+  <div class="nm-fab-wrap nm-ur"><button class="nm-fab" style="background:linear-gradient(135deg,#1A2FA0,#0C1B6B)" onclick="openModal('post')">🏷️</button><span class="nm-fab-lbl">Sell Item</span></div>
+  <div class="nm-fab-wrap nm-lr"><button class="nm-fab" style="background:linear-gradient(135deg,#1A6B3A,#0d4423)" onclick="openModal('store-register')">🏪</button><span class="nm-fab-lbl">Register Store</span></div>
+
     <div id="map"></div>
 
     <!-- ══ BUILT-IN NAVIGATION OVERLAY ══ -->
