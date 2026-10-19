@@ -211,9 +211,118 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 /* SIDEBAR */
 .sidebar{
   width:360px;flex-shrink:0;display:flex;flex-direction:column;
-  background:var(--cream);border-right:1px solid var(--border);
-  overflow:hidden;z-index:100;
+  background:var(--cream);border-left:1px solid var(--border);
+  overflow:hidden;z-index:100;height:100%;min-height:0;
 }
+
+/* ══ RIGHT PANEL — TWO SCROLLABLE HALVES ══ */
+.stores-section, .listings-section{
+  flex:1 1 50%; min-height:0; display:flex; flex-direction:column;
+  background:var(--cream);
+}
+.listings-section{ border-top:3px solid var(--border); box-shadow:inset 0 6px 10px -8px rgba(0,0,51,.25); }
+
+/* section header (sticky top of each half) */
+.rp-section-hdr{
+  flex-shrink:0; display:flex; align-items:center; gap:7px;
+  padding:11px 14px 9px; background:var(--offwhite);
+  border-bottom:1px solid var(--border);
+}
+.rp-section-title{ font-family:'Cinzel',serif; font-size:13px; font-weight:700; letter-spacing:.5px; flex:1; }
+.rp-section-count{
+  font-family:'DM Sans',sans-serif; font-size:11px; font-weight:800;
+  min-width:20px; text-align:center; padding:1px 7px; border-radius:100px;
+}
+
+/* search (stores) */
+.stores-search{ flex-shrink:0; padding:9px 12px; }
+.stores-search-inner{
+  display:flex; align-items:center; gap:7px;
+  background:#fff; border:1px solid var(--border); border-radius:11px; padding:8px 11px;
+  transition:border-color .15s;
+}
+.stores-search-inner:focus-within{ border-color:var(--gold); }
+.stores-search-inner .si{ font-size:13px; opacity:.6; }
+.stores-search-inner input{
+  flex:1; border:none; outline:none; background:transparent;
+  font-family:'DM Sans',sans-serif; font-size:13px; color:var(--text);
+}
+
+/* filter pills (listings) */
+.listings-filter{ flex-shrink:0; display:flex; gap:6px; padding:9px 12px; }
+.lf-pill{
+  flex:1; padding:7px 4px; border:1px solid var(--border); border-radius:10px;
+  background:#fff; color:var(--muted); cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700;
+  transition:all .15s; white-space:nowrap;
+}
+.lf-pill:hover{ border-color:var(--gold); color:var(--text); }
+.lf-pill.active{ background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk)); color:#000033; border-color:var(--gold-dk); }
+
+/* the two SCROLL areas */
+.stores-list, .listings-list{
+  flex:1; min-height:0; overflow-y:auto; overflow-x:hidden;
+  padding:8px 12px 12px; display:flex; flex-direction:column; gap:8px;
+}
+.stores-list::-webkit-scrollbar, .listings-list::-webkit-scrollbar{ width:7px; }
+.stores-list::-webkit-scrollbar-thumb, .listings-list::-webkit-scrollbar-thumb{ background:var(--border); border-radius:10px; }
+
+.feat-strip{ flex-shrink:0; }
+
+/* ══ STORE CARDS ══ */
+.store-card-sm, .listing-card-sm{
+  background:#fff; border:1px solid var(--border); border-radius:13px;
+  padding:11px; cursor:pointer; transition:transform .12s, box-shadow .15s, border-color .15s;
+}
+.store-card-sm:hover, .listing-card-sm:hover{
+  transform:translateY(-1px); box-shadow:0 6px 16px rgba(0,0,51,.1); border-color:var(--gold);
+}
+.store-card-sm.featured-s{ border-color:var(--gold); background:linear-gradient(180deg,#fffdf5,#fff); }
+.listing-card-sm.promoted-l{ border-color:var(--gold-lt); }
+.sc-row, .lc-row{ display:flex; gap:11px; align-items:flex-start; }
+.sc-emoji, .lc-emoji{
+  width:46px; height:46px; border-radius:11px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:23px;
+  background:var(--cream); border:1px solid var(--border);
+}
+.lc-emoji.lc-sell{ background:#E6F5EE; border-color:#bfe6d0; }
+.lc-emoji.lc-buy{ background:#F7E6E2; border-color:#eccabf; }
+.sc-body, .lc-body{ flex:1; min-width:0; }
+.sc-name, .lc-title{
+  font-family:'DM Sans',sans-serif; font-weight:700; font-size:14px; color:var(--text);
+  line-height:1.25; margin-bottom:2px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.lc-price{ font-family:'Cormorant Garamond',serif; font-weight:700; font-size:18px; color:var(--gold-dk); line-height:1; margin-bottom:3px; }
+.sc-meta, .lc-meta{ display:flex; align-items:center; gap:8px; justify-content:space-between; }
+.sc-loc, .lc-loc{
+  font-size:11px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;
+}
+.sc-dist{ font-size:11px; font-weight:700; color:var(--royal); flex-shrink:0; }
+.sc-badge, .lc-type{
+  font-size:10px; font-weight:700; padding:2px 7px; border-radius:100px; flex-shrink:0;
+}
+.sc-open{ background:#E6F5EE; color:#1A6B3A; }
+.sc-feat{ background:var(--gold-pale); color:var(--gold-dk); }
+.lc-type.lc-sell-b{ background:#E6F5EE; color:#1A6B3A; }
+.lc-type.lc-buy-b{ background:#F7E6E2; color:#9B2D1F; }
+
+/* ══ ACTION BUTTONS (bottom, fixed) ══ */
+.rp-actions{
+  flex-shrink:0; display:flex; gap:8px; padding:10px 12px;
+  background:var(--offwhite); border-top:1px solid var(--border);
+}
+.rp-action-btn{
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:1px;
+  padding:9px 6px; border:none; border-radius:12px; cursor:pointer;
+  font-family:'DM Sans',sans-serif; transition:transform .12s, box-shadow .15s;
+}
+.rp-action-btn:active{ transform:scale(.97); }
+.reg-store-btn{ background:linear-gradient(135deg,#9B2D1F,#6B1E14); color:#fff; box-shadow:0 4px 12px rgba(155,45,31,.3); }
+.post-item-btn{ background:linear-gradient(135deg,var(--royal),var(--navy)); color:#fff; box-shadow:0 4px 12px rgba(12,27,107,.3); }
+.ra-icon{ font-size:18px; }
+.ra-label{ font-size:13px; font-weight:800; }
+.ra-sub{ font-size:9.5px; opacity:.8; }
 .sb-head{
   padding:14px 14px 10px;background:var(--white);
   border-bottom:1px solid var(--border);flex-shrink:0;
