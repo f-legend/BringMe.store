@@ -2416,7 +2416,104 @@ try {
 .nm-ll{bottom:96px;left:16px}
 .nm-lr{bottom:96px;right:16px}
 </style>
-</head>
+
+<style>
+/* ===== CREDENTIALS BAR (override old float bar) ===== */
+.float-profile-bar{
+  position:fixed !important; bottom:16px !important; left:50% !important; transform:translateX(-50%) !important;
+  z-index:400 !important; display:flex !important; align-items:center !important; gap:14px !important;
+  background:linear-gradient(135deg,#000033,#0C1B6B) !important; border:1px solid rgba(205,149,12,.35) !important;
+  border-radius:18px !important; padding:8px 16px !important; box-shadow:0 12px 40px rgba(0,0,40,.45) !important;
+  white-space:nowrap !important; backdrop-filter:none !important; cursor:pointer;
+}
+.fp-identity{display:flex;align-items:center;gap:11px;background:transparent;border:none;cursor:pointer;padding:3px 4px;border-radius:12px;transition:background .15s}
+.fp-identity:hover{background:rgba(255,255,255,.08)}
+.fp-avatar-wrap{position:relative;flex-shrink:0}
+.fp-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#000033;border:2px solid rgba(255,255,255,.25)}
+.fp-level{position:absolute;bottom:-3px;right:-4px;min-width:19px;height:19px;padding:0 4px;border-radius:100px;background:linear-gradient(135deg,#1A2FA0,#0C1B6B);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #000033}
+.fp-id-text{text-align:left}
+.fp-name{color:#fff;font-weight:700;font-size:13px;line-height:1.2}
+.fp-rank{color:#EEAD0E;font-size:11px;font-weight:700;margin-top:1px}
+.fp-divider{width:1px;height:36px;background:rgba(255,255,255,.15)}
+.fp-stats{display:flex;gap:4px}
+.fp-stat{display:flex;flex-direction:column;align-items:center;padding:3px 13px;border-radius:11px}
+.fp-stat-num{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:#EEAD0E;line-height:1}
+.fp-stat-lbl{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.65);margin-top:2px}
+@media(max-width:600px){ .float-profile-bar{gap:9px !important;padding:7px 11px !important;max-width:96vw} .fp-rank{display:none} .fp-stat{padding:3px 9px} .fp-stat-num{font-size:18px} }
+
+/* ===== PROFILE PAGE ===== */
+.profile-overlay{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,30,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
+.profile-overlay.open{display:flex;animation:pcFade .2s ease}
+@keyframes pcFade{from{opacity:0}to{opacity:1}}
+.profile-card{background:#fff;border-radius:22px;max-width:420px;width:94%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,40,.55);position:relative;animation:pcRise .28s cubic-bezier(.32,1.3,.5,1)}
+@keyframes pcRise{from{transform:translateY(30px) scale(.96);opacity:.6}to{transform:none;opacity:1}}
+.pc-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:15px;cursor:pointer;z-index:2}
+.pc-close:hover{background:rgba(255,255,255,.3)}
+.pc-header{background:linear-gradient(135deg,#000033,#1A2FA0);padding:26px 20px 20px;text-align:center;border-radius:22px 22px 0 0}
+.pc-avatar{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto;border:3px solid rgba(255,255,255,.3);position:relative}
+.pc-lvl{position:absolute;bottom:0;right:2px;min-width:24px;height:24px;padding:0 5px;border-radius:100px;background:linear-gradient(135deg,#1A2FA0,#0C1B6B);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2.5px solid #000033}
+.pc-name{color:#fff;font-family:'Cinzel',serif;font-size:21px;font-weight:700;margin-top:12px}
+.pc-handle{color:rgba(255,255,255,.6);font-size:12px;margin-top:3px}
+.pc-rank{display:inline-block;margin-top:10px;background:rgba(205,149,12,.2);color:#EEAD0E;padding:4px 15px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid rgba(205,149,12,.45)}
+.pc-body{padding:18px 20px 22px}
+.pc-tabs{display:flex;gap:4px;background:var(--cream);border-radius:12px;padding:4px;margin-bottom:16px}
+.pc-tab{flex:1;position:relative;padding:8px 4px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s}
+.pc-tab.active{background:#fff;color:var(--royal);box-shadow:0 2px 6px rgba(0,0,40,.1)}
+.pc-tab-badge{display:inline-flex;align-items:center;justify-content:center;background:#C62A1B;color:#fff;font-size:8px;font-weight:800;min-width:14px;height:14px;border-radius:100px;padding:0 3px;margin-left:3px;vertical-align:top}
+.pc-pane{min-height:120px}
+.pc-prog-row{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.pc-prog-pct{color:var(--gold-dk)}
+.pc-prog{height:9px;background:var(--cream);border-radius:100px;overflow:hidden;margin-bottom:18px}
+.pc-prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-lt),var(--gold-dk));border-radius:100px}
+.pc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px}
+.pc-stat{background:var(--offwhite);border:1px solid var(--border);border-radius:13px;padding:11px 6px;text-align:center}
+.pc-stat-n{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--gold-dk);line-height:1}
+.pc-stat-l{font-size:10px;font-weight:700;color:var(--muted);margin-top:4px}
+.pc-section-ttl{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:4px 0 8px}
+.pc-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.pc-chip{font-size:12px;font-weight:700;padding:5px 12px;border-radius:100px}
+.pc-verified{background:#E6F5EE;color:#1A6B3A;border:1px solid #bfe6d0}
+.pc-unverified{background:var(--cream);color:var(--muted);border:1px solid var(--border)}
+.pc-role{background:rgba(26,47,160,.08);color:var(--royal);border:1px solid rgba(26,47,160,.2)}
+.mp-card{display:flex;align-items:center;gap:11px;padding:11px;border:1px solid var(--border);border-radius:13px;margin-bottom:9px}
+.mp-emoji{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:var(--cream)}
+.mp-body{flex:1;min-width:0}
+.mp-title{font-weight:700;font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.mp-status{font-size:10px;font-weight:800;padding:3px 9px;border-radius:100px;flex-shrink:0}
+.mp-active{background:#E6F5EE;color:#1A6B3A}
+.mp-open{background:#F7E6E2;color:#9B2D1F}
+.mp-sold{background:var(--cream);color:var(--muted)}
+.al-item{display:flex;gap:11px;padding:11px;border-radius:12px;margin-bottom:5px;position:relative}
+.al-item.unread{background:rgba(26,47,160,.05)}
+.al-ic{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.al-body{flex:1;min-width:0}
+.al-text{font-size:12.5px;color:var(--text);line-height:1.4}
+.al-time{font-size:10px;color:var(--muted);margin-top:2px}
+.al-dot{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:var(--royal)}
+.pc-footer{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.pc-foot-btn{flex:1;padding:10px;border:1px solid var(--border);border-radius:11px;background:#fff;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer}
+.pc-foot-out{color:#9B2D1F;border-color:rgba(155,45,31,.3)}
+</style>
+
+<style>
+/* ===== PANEL DEMO MATCH ===== */
+.lp-section-hdr, .rp-section-hdr{ background:linear-gradient(135deg,#000033,#0C1B6B) !important; border-bottom:1px solid rgba(205,149,12,.28) !important; padding:11px 14px 9px !important; display:flex; align-items:center; gap:7px; }
+.lp-section-title, .rp-section-title{ color:#EEAD0E !important; font-family:'Cinzel',serif; font-size:13px; font-weight:700; letter-spacing:.5px; flex:1; }
+.lp-section-count, .rp-section-count{ background:rgba(255,255,255,.14) !important; color:#fff !important; border:1px solid rgba(205,149,12,.3) !important; }
+
+/* in-panel posting buttons */
+.sec-action{display:flex;align-items:center;justify-content:center;gap:7px;margin:9px 12px 2px;padding:11px;border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:800;color:#fff;cursor:pointer;transition:transform .12s;width:calc(100% - 24px)}
+.sec-action:hover{transform:translateY(-1px)}
+.sa-urgent{background:linear-gradient(135deg,#9B2D1F,#6B1E14);box-shadow:0 4px 12px rgba(155,45,31,.28)}
+.sa-find{background:linear-gradient(135deg,#CD950C,#8B6508);box-shadow:0 4px 12px rgba(205,149,12,.28);color:#000033}
+.sa-store{background:linear-gradient(135deg,#1A6B3A,#0d4423);box-shadow:0 4px 12px rgba(26,107,58,.28)}
+.sa-sell{background:linear-gradient(135deg,#1A2FA0,#0C1B6B);box-shadow:0 4px 12px rgba(26,47,160,.28)}
+
+/* hide old clutter (replaced by new design) */
+.lp-actions, .rp-actions, .map-legend, .map-nav-bar, .fab{ display:none !important; }
+</style>
+<style>.lp-head{display:none !important}</style></head>
 <body>
 <!-- ONBOARDING / WELCOME FLOW -->
 <div class="onb-overlay" id="onb-overlay">
@@ -2547,9 +2644,10 @@ try {
   <div class="lp-urgent-section">
     <div class="lp-section-hdr">
       <span class="lp-section-icon">🚨</span>
-      <span class="lp-section-title">Help Me — Urgent</span>
+      <span class="lp-section-title">Ask for Help</span>
       <span class="lp-section-count" id="urgent-count" style="background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)">0</span>
     </div>
+    <button class="sec-action sa-urgent" onclick="openPostRequest('urgent')">⚡ Post Urgent Need</button>
     <div id="urgent-list"></div>
   </div>
 
@@ -2557,9 +2655,10 @@ try {
   <div class="lp-find-section">
     <div class="lp-section-hdr">
       <span class="lp-section-icon">🔍</span>
-      <span class="lp-section-title">Find Me — Where to Buy</span>
-      <span class="lp-section-count" id="find-count" style="background:rgba(74,63,181,0.07);color:var(--purple);border:1px solid rgba(74,63,181,0.13)">0</span>
+      <span class="lp-section-title">Looking For</span>
+      <span class="lp-section-count" id="find-count" style="background:rgba(74,63,181,0.07);color:#9B2D1F;border:1px solid rgba(155,45,31,0.2)">0</span>
     </div>
+    <button class="sec-action sa-find" onclick="openPostRequest('find')">🔍 Post a Find Me</button>
     <div id="find-list"></div>
   </div>
 
@@ -2704,128 +2803,32 @@ try {
       <button onclick="openModal('store-register')">🏪 Register My Store</button>
     </div>
     <!-- ── FLOATING PROFILE MENU BAR ── -->
-    <div class="float-profile-bar" id="float-profile-bar">
-
-      <!-- Profile Section -->
-      <div class="fpb-profile" id="fpb-profile-btn" aria-label="Open profile menu" aria-expanded="false" title="Tap for menu · Tap name to view profile">
-        <div class="fpb-avatar" id="fpb-avatar">
-          ME
-          <div class="fpb-online"></div>
+    <div class="float-profile-bar" id="float-profile-bar" onclick="openProfile()">
+      <button class="fp-identity" id="fpb-profile-btn">
+        <div class="fp-avatar-wrap">
+          <div class="fp-avatar" id="fpb-avatar">ME</div>
+          <div class="fp-level">5</div>
         </div>
-        <div class="fpb-user-info" onclick="window.location.href='profile.html'" style="cursor:pointer" title="View Profile">
-          <div class="fpb-name" id="fpb-name" style="text-decoration:underline;text-decoration-color:rgba(205,149,12,0.4);text-underline-offset:2px;">My Account</div>
-          <div class="fpb-nick" id="fpb-nick">@member &nbsp;›</div>
-          <div class="fpb-pts-row">
-            <span class="fpb-pts cash">⭐ <span id="fpb-cash-pts">47</span>pts</span>
-            <span class="fpb-pts-sep">·</span>
-            <span class="fpb-pts trust">🤝 <span id="fpb-trust-pts">120</span></span>
-          </div>
+        <div class="fp-id-text">
+          <div class="fp-name" id="fpb-name">My Account</div>
+          <div class="fp-rank">⭐ Trusted Helper</div>
         </div>
-
-        <!-- Profile Popup -->
-        <div class="fpb-popup" id="fpb-popup">
-          <div class="popup-user-header">
-            <div class="popup-avatar-lg" id="popup-avatar-lg">ME</div>
-            <div>
-              <div class="popup-user-name" id="popup-full-name">My Account</div>
-              <div class="popup-user-nick" id="popup-nick">@member · San Jose del Monte</div>
-              <div class="popup-user-roles">
-                <span class="popup-role-badge">Buyer</span>
-                <span class="popup-role-badge">Seller</span>
-                <span class="popup-role-badge">Helper</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Points row -->
-          <div class="popup-pts-row">
-            <div class="popup-pts-item" onclick="openModal('points');toggleProfilePopup()">
-              <div class="popup-pts-num" style="color:var(--gold)">47</div>
-              <div class="popup-pts-lbl">⭐ Cash Points</div>
-            </div>
-            <div class="popup-pts-item" onclick="openModal('trust-points');toggleProfilePopup()">
-              <div class="popup-pts-num" style="color:#8B7CF7">120</div>
-              <div class="popup-pts-lbl">🤝 Trust Points</div>
-            </div>
-          </div>
-
-          <!-- Menu items -->
-          <div class="popup-menu-item" onclick="window.location.href='profile.html'" style="background:rgba(205,149,12,0.08);margin-bottom:4px;">
-            <span class="pmi-icon">👤</span>
-            <span class="pmi-label" style="color:var(--gold);font-weight:700;">View My Profile</span>
-            <span class="pmi-arrow" style="color:var(--gold);">›</span>
-          </div>
-          <div class="popup-menu-divider"></div>
-          <div class="popup-menu-item" onclick="openModal('post');toggleProfilePopup()">
-            <span class="pmi-icon">➕</span>
-            <span class="pmi-label">Post a Listing</span>
-            <span class="pmi-arrow">›</span>
-          </div>
-          <div class="popup-menu-item" onclick="openPostRequest('urgent');toggleProfilePopup()">
-            <span class="pmi-icon">🆘</span>
-            <span class="pmi-label">Post Help Request</span>
-            <span class="pmi-arrow">›</span>
-          </div>
-          <div class="popup-menu-item" onclick="openModal('store-register');toggleProfilePopup()">
-            <span class="pmi-icon">🏪</span>
-            <span class="pmi-label">Register My Store</span>
-            <span class="pmi-arrow">›</span>
-          </div>
-          <div class="popup-menu-divider"></div>
-          <div class="popup-menu-item" onclick="openModal('points');toggleProfilePopup()">
-            <span class="pmi-icon">⭐</span>
-            <span class="pmi-label">My Points & Cash Out</span>
-            <span class="pmi-arrow">›</span>
-          </div>
-          <div class="popup-menu-item">
-            <span class="pmi-icon">🔔</span>
-            <span class="pmi-label">Notifications</span>
-            <div class="fpb-notif" style="position:relative;top:0;right:0;width:7px;height:7px;margin-left:auto;margin-right:8px"></div>
-            <span class="pmi-arrow">›</span>
-          </div>
-          <div class="popup-menu-item" onclick="window.location.href='profile.html#settings';toggleProfilePopup()">
-            <span class="pmi-icon">⚙️</span>
-            <span class="pmi-label">Profile Settings</span>
-            <span class="pmi-arrow">›</span>
-          </div>
-          <div class="popup-menu-divider"></div>
-          <div class="popup-menu-item pmi-danger" onclick="toggleProfilePopup()">
-            <span class="pmi-icon">🚪</span>
-            <span class="pmi-label">Sign Out</span>
-          </div>
-        </div>
+      </button>
+      <div class="fp-divider"></div>
+      <div class="fp-stats">
+        <div class="fp-stat"><div class="fp-stat-num" id="fpb-trust-pts">120</div><div class="fp-stat-lbl">🤝 Trust</div></div>
+        <div class="fp-stat"><div class="fp-stat-num">47</div><div class="fp-stat-lbl">🙌 Helped</div></div>
+        <div class="fp-stat"><div class="fp-stat-num">4.9</div><div class="fp-stat-lbl">⭐ Rating</div></div>
       </div>
-
-      <div class="fpb-divider"></div>
-
-      <!-- Action Buttons -->
-      <div class="fpb-actions">
-        <button class="fpb-btn active-fpb" id="fpb-map" onclick="fpbNav('map')" title="Map">
-          <span class="fpb-btn-icon">🗺️</span>
-          <span class="fpb-btn-label">Map</span>
-        </button>
-        <button class="fpb-btn" id="fpb-urgent" onclick="fpbNav('urgent')" title="Urgent Requests" style="position:relative">
-          <span class="fpb-btn-icon">🚨</span>
-          <span class="fpb-btn-label">Urgent</span>
-          <div class="fpb-notif"></div>
-        </button>
-        <button class="fpb-btn" id="fpb-nearby" onclick="fpbNav('nearby')" title="Nearby Stores">
-          <span class="fpb-btn-icon">📍</span>
-          <span class="fpb-btn-label">Nearby</span>
-        </button>
-        <button class="fpb-btn" id="fpb-saved" onclick="fpbNav('saved')" title="Saved Items">
-          <span class="fpb-btn-icon">🔖</span>
-          <span class="fpb-btn-label">Saved</span>
-        </button>
-        <button class="fpb-btn" id="fpb-points-btn" onclick="openModal('points')" title="Points">
-          <span class="fpb-btn-icon">⭐</span>
-          <span class="fpb-btn-label">Points</span>
-        </button>
-      </div>
+      <span id="fpb-nick" style="display:none"></span>
+      <span id="fpb-cash-pts" style="display:none"></span>
+      <span id="popup-full-name" style="display:none"></span>
+      <span id="popup-nick" style="display:none"></span>
+      <span id="popup-avatar-lg" style="display:none"></span>
     </div>
 
     <!-- Privacy footer strip -->
-    <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,51,0.8);padding:5px 14px;display:flex;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(6px);z-index:5;font-size:10px;">
+    <div style="display:none;position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,51,0.8);padding:5px 14px;display:flex;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(6px);z-index:5;font-size:10px;">
       <a href="privacy.html" target="_blank" style="color:rgba(205,149,12,0.5);text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#CD950C'" onmouseout="this.style.color='rgba(205,149,12,0.5)'">🔒 Privacy</a>
       <span style="color:#1a2a50">|</span>
       <a href="privacy.html#terms" target="_blank" style="color:rgba(205,149,12,0.5);text-decoration:none;font-weight:600;transition:color .15s" onmouseover="this.style.color='#CD950C'" onmouseout="this.style.color='rgba(205,149,12,0.5)'">📋 Terms</a>
@@ -2843,6 +2846,23 @@ try {
   <div class="sidebar-handle" id="sb-handle"></div>
 
   <!-- STORES SECTION (top) -->
+  <div class="listings-section" id="listings-section">
+    <div class="rp-section-hdr">
+      <span style="font-size:13px">🛍️</span>
+      <span class="rp-section-title" style="color:var(--gold-lt)">Items for Sale</span>
+      <span class="rp-section-count" id="listings-count" style="background:rgba(205,149,12,0.09);color:var(--gold);border:1px solid rgba(205,149,12,0.17)">0</span>
+    </div>
+    <div class="listings-filter">
+      <button class="lf-pill active" id="lf-all" onclick="setListingFilter('all')">🏠 All</button>
+      <button class="lf-pill" id="lf-sell" onclick="setListingFilter('sell')">🛍️ Sale</button>
+      <button class="lf-pill" id="lf-buy" onclick="setListingFilter('buy')">🔍 Wanted</button>
+    </div>
+    <button class="sec-action sa-sell" onclick="openModal('post')">🏷️ List an Item</button>
+    <div class="listings-list" id="sb-list"></div>
+    <div id="store-detail-panel"></div>
+  </div>
+
+  <!-- ACTIONS (bottom) -->
   <div class="stores-section" id="stores-section">
     <div class="rp-section-hdr">
       <span style="font-size:13px">🏪</span>
@@ -2856,26 +2876,11 @@ try {
         <input type="text" id="store-search" placeholder="Search stores..." oninput="renderRightPanel()">
       </div>
     </div>
+    <button class="sec-action sa-store" onclick="openModal('store-register')">🏪 Register Store</button>
     <div class="stores-list" id="stores-list"></div>
   </div>
 
   <!-- LISTINGS SECTION (middle) -->
-  <div class="listings-section" id="listings-section">
-    <div class="rp-section-hdr">
-      <span style="font-size:13px">🛍️</span>
-      <span class="rp-section-title" style="color:var(--gold-lt)">Listings</span>
-      <span class="rp-section-count" id="listings-count" style="background:rgba(205,149,12,0.09);color:var(--gold);border:1px solid rgba(205,149,12,0.17)">0</span>
-    </div>
-    <div class="listings-filter">
-      <button class="lf-pill active" id="lf-all" onclick="setListingFilter('all')">🏠 All</button>
-      <button class="lf-pill" id="lf-sell" onclick="setListingFilter('sell')">🛍️ Sale</button>
-      <button class="lf-pill" id="lf-buy" onclick="setListingFilter('buy')">🔍 Wanted</button>
-    </div>
-    <div class="listings-list" id="sb-list"></div>
-    <div id="store-detail-panel"></div>
-  </div>
-
-  <!-- ACTIONS (bottom) -->
   <div class="rp-actions">
     <button class="rp-action-btn reg-store-btn" onclick="openModal('store-register')" aria-label="Register your store">
       <span class="ra-icon">🏪</span>
@@ -7908,6 +7913,68 @@ function awDetectLocation() {
 }
 // Pre-fill location silently on load (map already requests GPS)
 window.addEventListener('load', () => { setTimeout(() => { if (document.querySelector('.aw-loc-field')) awDetectLocation(); }, 1500); });
+</script>
+
+<!-- FLOATING PROFILE PAGE -->
+<div class="profile-overlay" id="profile-overlay" onclick="if(event.target===this)closeProfile()">
+  <div class="profile-card">
+    <button class="pc-close" onclick="closeProfile()">✕</button>
+    <div class="pc-header">
+      <div class="pc-avatar">👤<span class="pc-lvl">5</span></div>
+      <div class="pc-name" id="pc-name">My Account</div>
+      <div class="pc-handle">@member · Your Location</div>
+      <div class="pc-rank">⭐ Trusted Helper</div>
+    </div>
+    <div class="pc-body">
+      <div class="pc-tabs">
+        <button class="pc-tab active" onclick="pcTab('profile',this)">Profile</button>
+        <button class="pc-tab" onclick="pcTab('posts',this)">My Posts</button>
+        <button class="pc-tab" onclick="pcTab('alerts',this)">Alerts<span class="pc-tab-badge">3</span></button>
+      </div>
+      <div class="pc-pane" id="pane-profile">
+        <div class="pc-prog-row"><span>Level 5</span><span class="pc-prog-pct">680 / 1000 XP</span><span>Level 6</span></div>
+        <div class="pc-prog"><div class="pc-prog-fill" style="width:68%"></div></div>
+        <div class="pc-stats">
+          <div class="pc-stat"><div class="pc-stat-n">120</div><div class="pc-stat-l">🤝 Trust</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">47</div><div class="pc-stat-l">🙌 Helped</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">4.9</div><div class="pc-stat-l">⭐ Rating</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">23</div><div class="pc-stat-l">🏷️ Sold</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">31</div><div class="pc-stat-l">🤝 Deals</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">'24</div><div class="pc-stat-l">📅 Member</div></div>
+        </div>
+        <div class="pc-section-ttl">Verified</div>
+        <div class="pc-chips"><span class="pc-chip pc-verified">✓ Phone</span><span class="pc-chip pc-verified">✓ Email</span><span class="pc-chip pc-unverified">○ ID</span></div>
+        <div class="pc-section-ttl">Roles</div>
+        <div class="pc-chips"><span class="pc-chip pc-role">🛍️ Buyer</span><span class="pc-chip pc-role">🏷️ Seller</span><span class="pc-chip pc-role">🙌 Helper</span></div>
+      </div>
+      <div class="pc-pane" id="pane-posts" style="display:none">
+        <div class="mp-card"><div class="mp-emoji">📱</div><div class="mp-body"><div class="mp-title">iPhone 13 Pro 128GB</div><div class="mp-meta">₱28,000 · 👁️ 142 · 💬 3</div></div><span class="mp-status mp-active">Active</span></div>
+        <div class="mp-card"><div class="mp-emoji">⚡</div><div class="mp-body"><div class="mp-title">Bring Me: USB-C Charger</div><div class="mp-meta">🤝 50 Trust reward · 2 replies</div></div><span class="mp-status mp-open">Open</span></div>
+        <div class="mp-card"><div class="mp-emoji">🪑</div><div class="mp-body"><div class="mp-title">Standing Desk</div><div class="mp-meta">₱6,500 · Sold</div></div><span class="mp-status mp-sold">Sold</span></div>
+      </div>
+      <div class="pc-pane" id="pane-alerts" style="display:none">
+        <div class="al-item unread"><div class="al-ic" style="background:#F7E6E2">🙌</div><div class="al-body"><div class="al-text"><b>Maria S.</b> replied to your Find Me request</div><div class="al-time">5 min ago</div></div><div class="al-dot"></div></div>
+        <div class="al-item unread"><div class="al-ic" style="background:#E6F5EE">🏷️</div><div class="al-body"><div class="al-text">Someone is interested in your <b>iPhone 13 Pro</b></div><div class="al-time">1 hour ago</div></div><div class="al-dot"></div></div>
+        <div class="al-item unread"><div class="al-ic" style="background:#FBF0C0">🤝</div><div class="al-body"><div class="al-text"><b>Ben A.</b> gave you <b>30 Trust Points</b></div><div class="al-time">3 hours ago</div></div><div class="al-dot"></div></div>
+        <div class="al-item"><div class="al-ic" style="background:#EEF1FF">⭐</div><div class="al-body"><div class="al-text">You reached <b>Level 5 — Trusted Helper!</b></div><div class="al-time">Yesterday</div></div></div>
+      </div>
+      <div class="pc-footer">
+        <button class="pc-foot-btn">🔖 Saved</button>
+        <button class="pc-foot-btn">⚙️ Settings</button>
+        <button class="pc-foot-btn pc-foot-out" onclick="if(typeof sbSignOut==='function'){sbSignOut();}closeProfile();">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openProfile(){ var o=document.getElementById('profile-overlay'); if(o) o.classList.add('open'); }
+function closeProfile(){ var o=document.getElementById('profile-overlay'); if(o) o.classList.remove('open'); }
+function pcTab(name, btn){
+  ['profile','posts','alerts'].forEach(function(p){ var el=document.getElementById('pane-'+p); if(el) el.style.display=(p===name)?'block':'none'; });
+  document.querySelectorAll('.pc-tab').forEach(function(t){ t.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+}
 </script>
 </body>
 </html>        <div class="aw-form" id="aw-step-1">
