@@ -2184,6 +2184,15 @@ html{scroll-behavior:smooth;}
 }
 :root{--live-red:#FF3B30;}
 
+
+/* premium icon container refinement */
+.onb-icon{border:1px solid rgba(238,173,14,.25);}
+.onb-icon-map{background:linear-gradient(145deg,#152583,#0C1B6B);}
+.onb-icon-sos{background:linear-gradient(145deg,#3a1510,#6B1E14);}
+.onb-icon-pts{background:linear-gradient(145deg,#1a1408,#3a2a10);}
+.onb-icon-go{background:linear-gradient(145deg,#0d2a1a,#0d4423);}
+.onb-icon svg{filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
+.onb-feat-ic{width:24px;display:flex;align-items:center;justify-content:center;}
 </style>
 
   <!-- Service Worker Registration -->
@@ -2211,8 +2220,130 @@ try {
   console.warn('[BringMe] Supabase init failed — running in demo mode', e);
 }
 </script>
+
+<!-- ═══ ONBOARDING / WELCOME FLOW ═══ -->
+<style>
+.onb-overlay{
+  position:fixed;inset:0;z-index:3000;
+  background:linear-gradient(160deg,#000033 0%,#0C1B6B 55%,#1A2FA0 100%);
+  display:none;flex-direction:column;
+  overflow:hidden;
+}
+.onb-overlay.show{display:flex;animation:onbFade .4s ease;}
+@keyframes onbFade{from{opacity:0}to{opacity:1}}
+
+/* subtle gold glow accents */
+.onb-glow{position:absolute;border-radius:50%;filter:blur(70px);opacity:.25;pointer-events:none;}
+.onb-glow-1{width:260px;height:260px;background:#CD950C;top:-60px;right:-60px;}
+.onb-glow-2{width:220px;height:220px;background:#9B2D1F;bottom:80px;left:-70px;opacity:.2;}
+
+/* skip button */
+.onb-skip{position:absolute;top:16px;right:18px;z-index:5;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;
+  padding:8px 16px;border-radius:100px;cursor:pointer;transition:all .2s;}
+.onb-skip:hover{background:rgba(255,255,255,.2);}
+
+/* slides track */
+.onb-track{flex:1;display:flex;transition:transform .4s cubic-bezier(.4,0,.2,1);}
+.onb-slide{min-width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px;text-align:center;box-sizing:border-box;}
+
+/* slide icon */
+.onb-icon{width:120px;height:120px;border-radius:32px;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:34px;position:relative;box-shadow:0 16px 50px rgba(0,0,0,.35);}
+.onb-icon-map{background:linear-gradient(135deg,#1A2FA0,#4169E1);}
+.onb-icon-sos{background:linear-gradient(135deg,#9B2D1F,#6B1E14);}
+.onb-icon-pts{background:linear-gradient(135deg,#CD950C,#8B6508);}
+.onb-icon-go{background:linear-gradient(135deg,#1A6B3A,#0d4423);}
+
+.onb-title{font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:14px;line-height:1.25;}
+.onb-title .g{color:#EEAD0E;}
+.onb-text{font-family:'DM Sans',sans-serif;font-size:16px;line-height:1.6;color:rgba(255,255,255,.8);max-width:340px;margin:0 auto;}
+.onb-text b{color:#fff;font-weight:700;}
+
+/* feature pills on last slide */
+.onb-feats{display:flex;flex-direction:column;gap:12px;margin-top:26px;width:100%;max-width:320px;}
+.onb-feat{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:13px 16px;text-align:left;}
+.onb-feat-ic{font-size:22px;flex-shrink:0;}
+.onb-feat-tx{font-family:'DM Sans',sans-serif;font-size:14px;color:#fff;font-weight:600;}
+
+/* bottom controls */
+.onb-controls{padding:24px 32px 34px;display:flex;flex-direction:column;gap:20px;align-items:center;}
+.onb-dots{display:flex;gap:8px;}
+.onb-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);transition:all .3s;}
+.onb-dot.active{width:26px;border-radius:100px;background:#EEAD0E;}
+.onb-next{width:100%;max-width:340px;padding:16px;border:none;border-radius:16px;
+  background:linear-gradient(135deg,#EEAD0E,#8B6508);
+  color:#000033;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:800;letter-spacing:.3px;
+  cursor:pointer;transition:transform .15s, box-shadow .2s;box-shadow:0 8px 30px rgba(205,149,12,.4);}
+.onb-next:active{transform:scale(.97);}
+</style>
 </head>
 <body>
+<!-- ONBOARDING / WELCOME FLOW -->
+<div class="onb-overlay" id="onb-overlay">
+  <div class="onb-glow onb-glow-1"></div>
+  <div class="onb-glow onb-glow-2"></div>
+  <button class="onb-skip" onclick="onbFinish()">Skip</button>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="onbGold" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#F5D060"/>
+    <stop offset="45%" stop-color="#EEAD0E"/>
+    <stop offset="100%" stop-color="#8B6508"/>
+  </linearGradient>
+</defs></svg>
+
+  <div class="onb-track" id="onb-track">
+
+    <!-- Slide 1: Welcome -->
+    <div class="onb-slide">
+      <div class="onb-icon onb-icon-map"><svg width="66" height="66" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 3 5.5v15L9 18l6 3 6-2.5v-15L15 6 9 3Z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg></div>
+      <div class="onb-title">Welcome to <span class="g">BringMe.Store</span></div>
+      <div class="onb-text">The marketplace built around <b>what's near you</b>. See stores, deals, and neighbors selling — right on the map.</div>
+    </div>
+
+    <!-- Slide 2: Map-first -->
+    <div class="onb-slide">
+      <div class="onb-icon onb-icon-map"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.4 7-11.5A7 7 0 0 0 5 9.5C5 14.6 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.6"/></svg></div>
+      <div class="onb-title">Everything <span class="g">Nearby</span></div>
+      <div class="onb-text">No endless scrolling. Just open the map and instantly see what's for sale <b>around your location</b> — as close as the next street.</div>
+    </div>
+
+    <!-- Slide 3: Bring Me / Find Me -->
+    <div class="onb-slide">
+      <div class="onb-icon onb-icon-sos"><svg width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 11V5.5a1.5 1.5 0 0 1 3 0V10"/><path d="M9 10V4.5a1.5 1.5 0 0 1 3 0V10"/><path d="M12 10V5.5a1.5 1.5 0 0 1 3 0V11"/><path d="M15 11V7.5a1.5 1.5 0 0 1 3 0v6a6 6 0 0 1-6 6h-1.6a6 6 0 0 1-4.4-2L3.5 14.5a1.6 1.6 0 0 1 2.4-2.1L7.5 14"/></svg></div>
+      <div class="onb-title">Need something <span class="g">right now?</span></div>
+      <div class="onb-text">Post a <b>Bring Me</b> or <b>Find Me</b> request and offer a reward. A neighbor nearby can help you out in minutes — something no other app does.</div>
+    </div>
+
+    <!-- Slide 4: Points -->
+    <div class="onb-slide">
+      <div class="onb-icon onb-icon-pts"><svg width="62" height="62" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.2l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5 1.5-3Z" fill="url(#onbGold)" stroke="none"/></svg></div>
+      <div class="onb-title">Earn <span class="g">Points</span> for helping</div>
+      <div class="onb-text"><b>Cash Points</b> you can cash out to GCash or Maya, and <b>Trust Points</b> that build your reputation. Help neighbors, get rewarded.</div>
+    </div>
+
+    <!-- Slide 5: Get started -->
+    <div class="onb-slide">
+      <div class="onb-icon onb-icon-go"><svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15c-1 2-1 5-1 5s3 0 5-1"/><path d="M14.5 4.5C11 6 8.5 9 7.5 12.5l4 4C15 15.5 18 13 19.5 9.5c.6-1.4.8-3.2.8-4.8 0-.3-.2-.5-.5-.5-1.6 0-3.4.2-4.8.8Z"/><circle cx="14.5" cy="9.5" r="1.6" fill="url(#onbGold)" stroke="none"/></svg></div>
+      <div class="onb-title">Ready to <span class="g">start?</span></div>
+      <div class="onb-feats">
+        <div class="onb-feat"><span class="onb-feat-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3 3 5.5v15L9 18l6 3 6-2.5v-15L15 6 9 3Z"/><path d="M9 3v15M15 6v15"/></svg></span><span class="onb-feat-tx">Browse what's near you on the map</span></div>
+        <div class="onb-feat"><span class="onb-feat-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11V6a1.4 1.4 0 0 1 2.8 0v4"/><path d="M9.8 10V5a1.4 1.4 0 0 1 2.8 0v5"/><path d="M12.6 10.5V6.5a1.4 1.4 0 0 1 2.8 0v6a5.5 5.5 0 0 1-5.5 5.5A5.5 5.5 0 0 1 5.6 16L4 14a1.5 1.5 0 0 1 2.2-2L7.5 13.5"/></svg></span><span class="onb-feat-tx">Request items & offer rewards</span></div>
+        <div class="onb-feat"><span class="onb-feat-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1-4H5L4 9Z"/><path d="M4 9v10h16V9"/><path d="M9 19v-5h6v5"/></svg></span><span class="onb-feat-tx">Sell or open your own store</span></div>
+        <div class="onb-feat"><span class="onb-feat-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="url(#onbGold)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v9H4z"/><path d="M4 7h16v4H4z"/><path d="M12 7v13"/><path d="M12 7S10.5 3 8.5 4 10 7 12 7Zm0 0s1.5-4 3.5-3-.5 3-3.5 3Z"/></svg></span><span class="onb-feat-tx">Get 5 free Cash Points to start</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="onb-controls">
+    <div class="onb-dots" id="onb-dots">
+      <div class="onb-dot active"></div><div class="onb-dot"></div><div class="onb-dot"></div><div class="onb-dot"></div><div class="onb-dot"></div>
+    </div>
+    <button class="onb-next" id="onb-next" onclick="onbNext()">Next</button>
+  </div>
+</div>
+
 <a href="#map" class="skip-link" style="position:absolute;top:-40px;left:0;background:var(--gold);color:var(--royal-deep);padding:8px 16px;border-radius:0 0 8px 0;font-weight:700;font-size:13px;z-index:9999;transition:top .2s" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to map</a>
 <div class="topbar">
   <div class="logo">BringMe.Store<small>Find It. Buy It. Nearby.</small></div>
@@ -7100,14 +7231,12 @@ window.submitPostRequest = function() {
         </div>
 
         <div class="aw-input-wrap">
-          <label class="aw-label">📍 Your Area</label>
-          <select class="aw-input" id="aw-location">
-            <option value="">Select barangay...</option>
-            <option>Tungkong Mangga</option><option>Sapang Palay</option>
-            <option>Minuyan</option><option>Poblacion</option>
-            <option>Citrus</option><option>Dulong Bayan</option>
-            <option>Francisco Homes</option><option>Other</option>
-          </select>
+          <label class="aw-label">📍 Your Location</label>
+          <div style="display:flex;gap:8px;align-items:stretch">
+            <input class="aw-input aw-loc-field" id="aw-location" type="text" readonly placeholder="Detecting your location…" style="flex:1;background:var(--cream);cursor:default">
+            <button type="button" class="aw-loc-btn" onclick="awDetectLocation()" style="flex-shrink:0;padding:0 14px;border:1px solid var(--border);border-radius:12px;background:var(--white);color:var(--royal);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">📍 Detect</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">Auto-detected from your device — the map always shows what's near you.</div>
         </div>
 
         <div class="aw-input-wrap">
@@ -7529,6 +7658,107 @@ async function awEmailSignup() {
   if (typeof awGoStep === 'function') awGoStep(3);
 }
 </script>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  ONBOARDING / WELCOME FLOW
+// ════════════════════════════════════════════════════════════════
+let ONB_SLIDE = 0;
+const ONB_TOTAL = 5;
+
+function onbShow() {
+  const ov = document.getElementById('onb-overlay');
+  if (ov) { ov.classList.add('show'); ONB_SLIDE = 0; onbRender(); }
+}
+
+function onbRender() {
+  const track = document.getElementById('onb-track');
+  if (track) track.style.transform = `translateX(-${ONB_SLIDE * 100}%)`;
+  // dots
+  document.querySelectorAll('#onb-dots .onb-dot').forEach((d,i) =>
+    d.classList.toggle('active', i === ONB_SLIDE));
+  // button label
+  const btn = document.getElementById('onb-next');
+  if (btn) btn.textContent = (ONB_SLIDE === ONB_TOTAL - 1) ? "Let's Go →" : 'Next';
+}
+
+function onbNext() {
+  if (ONB_SLIDE < ONB_TOTAL - 1) { ONB_SLIDE++; onbRender(); }
+  else onbFinish();
+}
+
+function onbFinish() {
+  const ov = document.getElementById('onb-overlay');
+  if (ov) ov.classList.remove('show');
+  try { localStorage.setItem('bm_onboarded', '1'); } catch(e){}
+}
+
+// Swipe support on the onboarding
+(function(){
+  let sx = 0;
+  const ov = () => document.getElementById('onb-overlay');
+  document.addEventListener('touchstart', e => {
+    if (!ov() || !ov().classList.contains('show')) return;
+    sx = e.touches[0].clientX;
+  }, {passive:true});
+  document.addEventListener('touchend', e => {
+    if (!ov() || !ov().classList.contains('show')) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    if (dx < -50 && ONB_SLIDE < ONB_TOTAL - 1) { ONB_SLIDE++; onbRender(); }
+    if (dx >  50 && ONB_SLIDE > 0) { ONB_SLIDE--; onbRender(); }
+  }, {passive:true});
+})();
+
+// Show onboarding on first visit only
+window.addEventListener('load', () => {
+  let seen = false;
+  try { seen = localStorage.getItem('bm_onboarded') === '1'; } catch(e){}
+  if (!seen) setTimeout(onbShow, 400);
+});
+</script>
+
+<script>
+// ── GPS LOCATION DETECTION (worldwide, replaces barangay dropdown) ──
+function awDetectLocation() {
+  const fields = Array.from(document.querySelectorAll('.aw-loc-field'));
+  const btns = Array.from(document.querySelectorAll('.aw-loc-btn'));
+  if (!fields.length) return;
+  if (!navigator.geolocation) { fields.forEach(f=>f.placeholder='Location not available on this device'); return; }
+  fields.forEach(f=>{ f.value=''; f.placeholder='Detecting…'; });
+  btns.forEach(b=>{ b.disabled=true; b.textContent='…'; });
+  const done = (txt) => { fields.forEach(f=>{ if(txt) f.value=txt; }); btns.forEach(b=>{ b.disabled=false; b.textContent='📍 Detect'; }); };
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const lat = pos.coords.latitude, lng = pos.coords.longitude;
+      if (typeof AW_USER === 'object') { AW_USER.lat = lat; AW_USER.lng = lng; }
+      if (window.google && google.maps && google.maps.Geocoder) {
+        const geo = new google.maps.Geocoder();
+        geo.geocode({ location:{lat,lng} }, (res, status) => {
+          let area = '';
+          if (status === 'OK' && res && res[0]) {
+            for (const c of res[0].address_components) {
+              if (c.types.includes('locality') || c.types.includes('sublocality') ||
+                  c.types.includes('administrative_area_level_3') || c.types.includes('administrative_area_level_2')) { area = c.long_name; break; }
+            }
+            if (!area) area = (res[0].formatted_address || '').split(',')[0];
+          }
+          done(area || (lat.toFixed(4) + ', ' + lng.toFixed(4)));
+        });
+      } else {
+        done(lat.toFixed(4) + ', ' + lng.toFixed(4));
+      }
+    },
+    err => {
+      const msg = (err && err.code === 1) ? 'Location blocked — enable it in your browser' : 'Could not detect — tap Detect to retry';
+      fields.forEach(f=>f.placeholder=msg);
+      btns.forEach(b=>{ b.disabled=false; b.textContent='📍 Detect'; });
+    },
+    { enableHighAccuracy:true, timeout:10000, maximumAge:60000 }
+  );
+}
+// Pre-fill location silently on load (map already requests GPS)
+window.addEventListener('load', () => { setTimeout(() => { if (document.querySelector('.aw-loc-field')) awDetectLocation(); }, 1500); });
+</script>
 </body>
 </html>        <div class="aw-form" id="aw-step-1">
           <div class="aw-title">Join BringMe.Store</div>
@@ -7624,14 +7854,12 @@ async function awEmailSignup() {
         </div>
 
         <div class="aw-input-wrap">
-          <label class="aw-label">📍 Your Area</label>
-          <select class="aw-input" id="aw-location">
-            <option value="">Select barangay...</option>
-            <option>Tungkong Mangga</option><option>Sapang Palay</option>
-            <option>Minuyan</option><option>Poblacion</option>
-            <option>Citrus</option><option>Dulong Bayan</option>
-            <option>Francisco Homes</option><option>Other</option>
-          </select>
+          <label class="aw-label">📍 Your Location</label>
+          <div style="display:flex;gap:8px;align-items:stretch">
+            <input class="aw-input aw-loc-field" id="aw-location-2" type="text" readonly placeholder="Detecting your location…" style="flex:1;background:var(--cream);cursor:default">
+            <button type="button" class="aw-loc-btn" onclick="awDetectLocation()" style="flex-shrink:0;padding:0 14px;border:1px solid var(--border);border-radius:12px;background:var(--white);color:var(--royal);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">📍 Detect</button>
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">Auto-detected from your device — the map always shows what's near you.</div>
         </div>
 
         <div class="aw-input-wrap">
