@@ -610,121 +610,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 /* ═══════════════════════════════════════════════════
    MOBILE RESPONSIVE  (≤768px)
    ═══════════════════════════════════════════════════ */
-@media(max-width:768px){
 
-  /* ── TOPBAR: collapse to 2 rows ── */
-  .topbar{
-    flex-wrap:wrap;
-    height:auto;
-    padding:10px 12px 8px;
-    gap:8px;
-  }
-  .logo{order:1;font-size:15px;}
-  .topbar-right{order:2;margin-left:auto;gap:6px;}
-  .search-bar{order:3;max-width:100%;width:100%;flex:none;}
-  .radius-wrap{order:4;flex:1;}
-  .nav-tabs{order:5;width:100%;justify-content:space-between;}
-  .n-tab{flex:1;text-align:center;padding:6px 4px;font-size:11px;}
-
-  /* ── LAYOUT: stack vertically ── */
-  .app-body{flex-direction:column;}
-
-  /* ── SIDEBAR: hidden by default, slides up from bottom ── */
-  .sidebar{
-    position:fixed;
-    bottom:0; left:0; right:0;
-    width:100%;
-    height:70vh;
-    border-radius:20px 20px 0 0;
-    border-right:none;
-    border-top:1px solid var(--border);
-    transform:translateY(100%);
-    transition:transform .35s cubic-bezier(.32,.72,0,1);
-    z-index:500;
-    box-shadow:0 -8px 40px rgba(0,0,0,.18);
-  }
-  .sidebar.open{transform:translateY(0);}
-  .sidebar-handle{
-    width:40px;height:4px;
-    background:#ddd;border-radius:2px;
-    margin:10px auto 4px;
-    flex-shrink:0;
-  }
-
-  /* ── MAP: full screen ── */
-  .map-wrap{
-    flex:1;
-    height:calc(100vh - 96px); /* topbar height */
-  }
-
-  /* ── BOTTOM NAV BAR ── */
-  .mobile-nav{
-    position:fixed;
-    bottom:0;left:0;right:0;
-    height:60px;
-    background:var(--white);
-    border-top:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:space-around;
-    z-index:600;
-    box-shadow:0 -4px 20px rgba(0,0,0,.1);
-    padding-bottom:env(safe-area-inset-bottom);
-  }
-  .mn-btn{
-    display:flex;flex-direction:column;align-items:center;
-    gap:2px;background:none;border:none;cursor:pointer;
-    padding:6px 12px;border-radius:10px;
-    transition:all .15s;flex:1;
-  }
-  .mn-btn.active .mn-icon{transform:scale(1.1);}
-  .mn-icon{font-size:20px;line-height:1;}
-  .mn-label{font-size:9px;font-weight:700;color:var(--muted);font-family:'DM Sans',sans-serif;}
-  .mn-btn.active .mn-label{color:var(--gold);}
-  .mn-btn.red-nav .mn-label{color:var(--red);}
-  .mn-btn.red-nav.active .mn-label{color:var(--red);}
-  .mn-post{
-    width:48px;height:48px;
-    border-radius:50%;
-    background:var(--gold);
-    border:none;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
-    font-size:22px;
-    box-shadow:0 4px 16px rgba(205,149,12,.5);
-    transition:transform .15s;
-    flex-shrink:0;
-  }
-  .mn-post:active{transform:scale(.93);}
-
-  /* ── MAP adjusts for bottom nav ── */
-  .map-wrap{padding-bottom:60px;}
-  .map-legend{bottom:76px;}
-  .fab{bottom:76px;}
-  .locating-banner{top:8px;}
-
-  /* ── MODAL: full screen on mobile ── */
-  .overlay{align-items:flex-end;}
-  .modal{
-    width:100% !important;
-    border-radius:20px 20px 0 0 !important;
-    max-height:92vh;
-    padding-bottom:env(safe-area-inset-bottom);
-  }
-  .form-grid{grid-template-columns:1fr;}
-
-  /* ── TOPBAR search full width ── */
-  .search-bar input{font-size:16px;} /* prevent iOS zoom */
-  .form-input{font-size:16px;}       /* prevent iOS zoom */
-
-  /* ── Featured banner full width ── */
-  #featured-banner{padding:6px 10px;}
-
-  /* ── FAB register store: smaller on mobile ── */
-  .fab button{font-size:11px;padding:8px 12px;}
-
-  /* ── Radius: hide label, show only slider + value ── */
-  .radius-wrap label{display:none;}
-}
 
 /* ── Very small phones ── */
 @media(max-width:380px){
@@ -1063,17 +949,8 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
 /* ── THREE-PANEL EXTRAS ── */
 /* Panel collapse on mobile */
-@media(max-width:1100px){
-  .app-body{grid-template-columns:260px 1fr 260px;}
-}
-@media(max-width:900px){
-  .app-body{grid-template-columns:0 1fr 0;}
-  .left-panel,.sidebar{position:fixed;top:62px;bottom:0;z-index:200;width:300px;transition:transform .35s cubic-bezier(.32,.72,0,1);}
-  .left-panel{left:0;transform:translateX(-100%);}
-  .sidebar{right:0;transform:translateX(100%);}
-  .left-panel.open{transform:translateX(0);}
-  .sidebar.open{transform:translateX(0);}
-}
+
+
 /* Right tab active states */
 #rp-all.active,#rp-sell.active{background:var(--grad-royal);color:var(--gold);}
 #rp-stores.active{background:var(--red);color:#fff;}
@@ -1088,7 +965,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 }
 .panel-toggle.left-toggle{left:10px;}
 .panel-toggle.right-toggle{right:10px;}
-@media(max-width:900px){.panel-toggle{display:flex;align-items:center;gap:6px;}}
+
 /* Divider line between panels */
 .left-panel{border-right:1px solid var(--border);}
 /* Panel section labels */
@@ -1516,77 +1393,10 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 }
 
 /* Narrow screen: panels slide off-screen */
-@media(max-width:1000px){
-  .app-body{
-    grid-template-columns:0 1fr 0 !important;
-    position:relative;
-  }
 
-  /* Left panel — slides from left */
-  .left-panel{
-    position:fixed !important;
-    left:0;top:62px;bottom:0;
-    width:280px !important;
-    z-index:300;
-    transform:translateX(-100%);
-    transition:transform .35s cubic-bezier(.32,.72,0,1),
-               box-shadow .35s ease;
-    box-shadow:none;
-  }
-  .left-panel.panel-open{
-    transform:translateX(0) !important;
-    box-shadow:4px 0 40px rgba(0,0,51,0.4);
-  }
-
-  /* Right panel — slides from right */
-  .sidebar{
-    position:fixed !important;
-    right:0;top:62px;bottom:0;
-    width:280px !important;
-    z-index:300;
-    transform:translateX(100%);
-    transition:transform .35s cubic-bezier(.32,.72,0,1),
-               box-shadow .35s ease;
-    box-shadow:none;
-  }
-  .sidebar.panel-open{
-    transform:translateX(0) !important;
-    box-shadow:-4px 0 40px rgba(0,0,51,0.4);
-  }
-
-  /* Show edge handles */
-  .panel-edge-handle{display:flex;}
-  .left-handle{left:0;}
-  .right-handle{right:0;}
-
-  /* Left handle arrow flips when panel is open */
-  .left-panel.panel-open ~ * .left-handle .peh-arrow,
-  .left-handle.open .peh-arrow{content:'‹';}
-
-  /* Dim overlay behind open panels */
-  .panel-dim{
-    position:fixed;inset:0;
-    background:rgba(8,18,50,0.55);
-    z-index:290;
-    display:none;
-    backdrop-filter:blur(2px);
-  }
-  .panel-dim.visible{display:block;}
-
-  /* Float profile bar moves up on mobile */
-  .float-profile-bar{
-    bottom:16px !important;
-  }
-
-  /* Adjust map search bar on narrow */
-  .map-search-bar{width:min(320px,80%) !important;}
-}
 
 /* Very narrow — shrink panels slightly */
-@media(max-width:600px){
-  .left-panel,.sidebar{width:260px !important;}
-  .float-profile-bar .fpb-user-info{display:none;}
-}
+
 
 /* Swipe indicator animation */
 @keyframes swipe-hint-left{
@@ -2516,54 +2326,7 @@ try {
 <style>.lp-head{display:none !important}</style>
 <style>
 /* ===== MOBILE FIX: match demo on narrow screens ===== */
-@media(max-width:1000px){
-  /* hide the old mobile tab bar — FABs + edge tabs + credentials bar replace it */
-  #mobile-nav{ display:none !important; }
 
-  /* map fills the screen underneath the panels */
-  .map-wrap{ width:100% !important; }
-
-  /* Both panels become fixed overlays that slide in from their own edge.
-     Full height but stopping ABOVE the credentials bar so it stays on top. */
-  .left-panel, .sidebar{
-    position:fixed !important;
-    top:0 !important;
-    bottom:76px !important;
-    height:auto !important;
-    width:min(86vw,330px) !important;
-    z-index:440 !important;
-    transition:transform .32s cubic-bezier(.32,.72,0,1) !important;
-  }
-
-  /* LEFT panel: anchored to the LEFT edge, hidden off-screen left by default */
-  .left-panel{
-    left:0 !important; right:auto !important;
-    transform:translateX(-100%) !important;
-    box-shadow:none !important;
-  }
-  .left-panel.open, .left-panel.panel-open{
-    transform:translateX(0) !important;
-    box-shadow:6px 0 40px rgba(0,0,51,.38) !important;
-  }
-
-  /* RIGHT panel (.sidebar): anchored to the RIGHT edge, hidden off-screen right.
-     Forcing right:0 + left:auto is the key fix — otherwise left:0 wins and the
-     slide-out lands the panel in the middle of the screen. */
-  .sidebar{
-    right:0 !important; left:auto !important;
-    transform:translateX(100%) !important;
-    border-left:1px solid var(--border) !important;
-    border-radius:0 !important;
-    box-shadow:none !important;
-  }
-  .sidebar.open, .sidebar.panel-open{
-    transform:translateX(0) !important;
-    box-shadow:-6px 0 40px rgba(0,0,51,.38) !important;
-  }
-
-  /* credentials bar sits at the very bottom now (no tab bar below it) */
-  .float-profile-bar{ bottom:12px !important; }
-}
 </style>
 
 <style>
@@ -2572,20 +2335,7 @@ try {
 .panel-toggle{ display:none !important; }
 
 /* Clearer edge tabs on narrow screens (demo style) */
-@media(max-width:1000px){
-  .panel-edge-handle{
-    width:30px !important; height:74px !important;
-    background:linear-gradient(135deg,#000033,#0C1B6B) !important;
-    border:1px solid rgba(205,149,12,.35) !important;
-    color:#EEAD0E !important;
-    box-shadow:0 4px 16px rgba(0,0,40,.35) !important;
-    display:flex !important; align-items:center; justify-content:center;
-  }
-  .panel-edge-handle.left-handle{ border-radius:0 13px 13px 0 !important; border-left:none !important; }
-  .panel-edge-handle.right-handle{ border-radius:13px 0 0 13px !important; border-right:none !important; }
-  /* keep credentials bar clear of the bottom */
-  .float-profile-bar{ bottom:14px !important; }
-}
+
 </style>
 
 <style>
@@ -2593,6 +2343,30 @@ try {
 #mobile-nav, .mobile-nav{ display:none !important; }
 /* Old bottom toggle pills — hidden everywhere too */
 .panel-toggle{ display:none !important; }
+</style>
+
+<style>
+/* ===== DEMO-FAITHFUL EDGE TABS ===== */
+/* retire the old thin handles + any leftover togglers */
+.panel-edge-handle, .panel-toggle{ display:none !important; }
+
+.dedge{ display:none; position:fixed; top:50%; transform:translateY(-50%); z-index:1150;
+  width:34px; height:84px; background:linear-gradient(135deg,#000033,#0C1B6B);
+  border:1px solid rgba(205,149,12,.4); color:#EEAD0E; cursor:pointer;
+  flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  box-shadow:0 4px 16px rgba(0,0,40,.4); }
+.dedge .de-ic{ font-size:16px } .dedge .de-ar{ font-size:15px; opacity:.7 }
+.dedge-left{ left:0; border-left:none; border-radius:0 14px 14px 0 }
+.dedge-right{ right:0; border-right:none; border-radius:14px 0 0 14px }
+@media(max-width:1100px){ .dedge{ display:flex } }
+@media(min-width:1101px){ .dedge{ display:none !important } }
+</style>
+
+<style>
+@media(min-width:1101px){
+  .dedge, .bm-retract, .panel-edge-handle, .panel-collapse, .bm-backdrop{ display:none !important; }
+  #left-panel, #sidebar{ position:relative !important; transform:none !important; top:auto !important; bottom:auto !important; z-index:5 !important; box-shadow:none !important; }
+}
 </style>
 </head>
 <body>
@@ -8096,8 +7870,10 @@ function pcTab(name, btn){
   .left-panel.bm-open .bm-retract{ display:flex; right:-30px; border-radius:0 13px 13px 0; border-left:none; }
   .sidebar.bm-open .bm-retract{ display:flex; left:-30px; border-radius:13px 0 0 13px; border-right:none; }
 }
-@media(min-width:1101px){ .bm-backdrop, .bm-retract, .panel-edge-handle{ display:none !important; } }
+
 </style>
+<button class="dedge dedge-left" onclick="bmToggle('left')"><span class="de-ic">🙋</span><span class="de-ar">›</span></button>
+<button class="dedge dedge-right" onclick="bmToggle('right')"><span class="de-ic">🏪</span><span class="de-ar">‹</span></button>
 <div class="bm-backdrop" id="bm-backdrop"></div>
 <script>
 (function(){
