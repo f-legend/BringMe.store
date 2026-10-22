@@ -7949,72 +7949,71 @@ function pcTab(name, btn){
 </script>
 
 <style>
-/* ===== ALWAYS-AVAILABLE COLLAPSE HANDLES (all widths) ===== */
-/* force panels in-flow & collapsible; kill all previous overlay/tab bits */
-#left-panel, #sidebar{
-  position:relative !important; transform:none !important; left:auto !important; right:auto !important;
-  top:auto !important; bottom:auto !important; z-index:5 !important;
-  transition:width .3s ease, min-width .3s ease !important; box-shadow:none !important;
-  overflow:hidden !important;
-}
-#left-panel.collapsed, #sidebar.collapsed{ width:0 !important; min-width:0 !important; border:none !important; }
-.dedge, .bm-backdrop, .bm-retract, .panel-edge-handle, .panel-toggle, #mobile-nav, .mobile-nav{ display:none !important; }
+/* ================= AUTHORITATIVE PANEL SYSTEM (final, conflict-proof) ================= */
+/* kill every earlier/old panel control so only THIS governs */
+.dedge,.bm-backdrop,.bm-retract,.col-handle,.panel-edge-handle,.panel-toggle,#mobile-nav,.mobile-nav{display:none !important;}
 
-/* the collapse handle tabs — always visible, slide with the panel */
-.col-handle{
-  position:fixed; top:50%; transform:translateY(-50%); z-index:2060;
-  width:22px; height:82px; background:linear-gradient(135deg,#000033,#0C1B6B);
-  border:1px solid rgba(205,149,12,.45); color:#EEAD0E; cursor:pointer;
-  display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700;
-  box-shadow:0 4px 16px rgba(0,0,40,.35); transition:left .3s ease, right .3s ease;
-  touch-action:none; user-select:none;
+/* DESKTOP (>1100): panels docked in-flow */
+@media(min-width:1101px){
+  #left-panel,#sidebar{position:relative !important;transform:none !important;left:auto !important;right:auto !important;top:auto !important;bottom:auto !important;z-index:5 !important;box-shadow:none !important;}
+  .xtab,.xback{display:none !important;}
 }
-.col-left{ border-radius:0 12px 12px 0; border-left:none; }
-.col-right{ border-radius:12px 0 0 12px; border-right:none; }
-@media(max-width:600px){ .col-handle{ height:66px; width:20px; } }
+/* NARROW (<=1100): panels become sliding overlays, map full width */
+@media(max-width:1100px){
+  .app-body{display:flex !important;}
+  .map-wrap{flex:1 !important;width:100% !important;min-width:0 !important;}
+  #left-panel,#sidebar{position:fixed !important;top:0 !important;bottom:0 !important;width:320px !important;max-width:86vw !important;z-index:1200 !important;transition:transform .32s cubic-bezier(.4,0,.2,1) !important;}
+  #left-panel{left:0 !important;right:auto !important;transform:translateX(-100%) !important;}
+  #sidebar{right:0 !important;left:auto !important;transform:translateX(100%) !important;}
+  #left-panel.xopen{transform:translateX(0) !important;box-shadow:8px 0 36px rgba(0,0,40,.4) !important;}
+  #sidebar.xopen{transform:translateX(0) !important;box-shadow:-8px 0 36px rgba(0,0,40,.4) !important;}
+  .xtab{display:flex !important;}
+}
+/* edge tabs */
+.xtab{position:fixed;top:50%;transform:translateY(-50%);z-index:1150;width:36px;height:88px;background:linear-gradient(135deg,#000033,#0C1B6B);border:1px solid rgba(205,149,12,.5);color:#EEAD0E;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 18px rgba(0,0,40,.45);display:none;font-size:17px;}
+.xtab-left{left:0;border-radius:0 14px 14px 0;border-left:none;}
+.xtab-right{right:0;border-radius:14px 0 0 14px;border-right:none;}
+.xtab .xar{font-size:14px;opacity:.75;}
+.xback{display:none;position:fixed;inset:0;background:rgba(0,0,40,.5);z-index:1180;}
+.xback.show{display:block;}
+@media(min-width:1101px){.xback{display:none !important;}}
 </style>
-<div class="col-handle col-left" id="col-left" title="Toggle requests panel">‹</div>
-<div class="col-handle col-right" id="col-right" title="Toggle stores panel">›</div>
+<button class="xtab xtab-left" id="xtab-left" aria-label="Show requests"><span>🙋</span><span class="xar">›</span></button>
+<button class="xtab xtab-right" id="xtab-right" aria-label="Show stores"><span>🏪</span><span class="xar">‹</span></button>
+<div class="xback" id="xback"></div>
 <script>
 (function(){
-  function LP(){return document.getElementById('left-panel');}
-  function RP(){return document.getElementById('sidebar');}
-  function chL(){return document.getElementById('col-left');}
-  function chR(){return document.getElementById('col-right');}
-  function place(){
-    var lp=LP(),rp=RP(),cl=chL(),cr=chR();
-    if(lp&&cl){ cl.style.left = (lp.classList.contains('collapsed')?0:Math.round(lp.getBoundingClientRect().width))+'px'; cl.textContent = lp.classList.contains('collapsed')?'\u203A':'\u2039'; }
-    if(rp&&cr){ cr.style.right = (rp.classList.contains('collapsed')?0:Math.round(rp.getBoundingClientRect().width))+'px'; cr.textContent = rp.classList.contains('collapsed')?'\u2039':'\u203A'; }
+  function L(){return document.getElementById('left-panel');}
+  function R(){return document.getElementById('sidebar');}
+  function BK(){return document.getElementById('xback');}
+  function closeP(){var l=L(),r=R(),b=BK();if(l)l.classList.remove('xopen');if(r)r.classList.remove('xopen');if(b)b.classList.remove('show');}
+  function openP(s){var l=L(),r=R(),b=BK();if(s==='left'){if(l)l.classList.add('xopen');if(r)r.classList.remove('xopen');}else{if(r)r.classList.add('xopen');if(l)l.classList.remove('xopen');}if(b)b.classList.add('show');}
+  function toggleP(s){var el=s==='left'?L():R();if(el&&el.classList.contains('xopen'))closeP();else openP(s);}
+  /* expose + NEUTRALIZE the app's competing panel functions so they can't fight this */
+  try{ window.closeAllPanels=closeP; window.closePanel=function(){closeP();}; window.togglePanel=function(s){toggleP(s);}; window.toggleLeftPanel=function(){toggleP('left');}; window.toggleRightPanel=function(){toggleP('right');}; window.applyPanelState=function(){}; }catch(_){}
+  function wire(){
+    var lt=document.getElementById('xtab-left'),rt=document.getElementById('xtab-right'),b=BK();
+    if(lt)lt.onclick=function(e){e.stopPropagation();toggleP('left');};
+    if(rt)rt.onclick=function(e){e.stopPropagation();toggleP('right');};
+    if(b)b.onclick=closeP;
   }
-  window.toggleSidePanel=function(side){
-    var el = side==='left'?LP():RP();
-    if(!el) return;
-    el.classList.toggle('collapsed');
-    place(); setTimeout(place,160); setTimeout(place,340);
-  };
-  function bindHandle(el, side){
-    if(!el) return;
-    var sx=0, down=false, dragged=false;
-    el.addEventListener('pointerdown', function(e){ down=true; dragged=false; sx=e.clientX; });
-    el.addEventListener('pointermove', function(e){
-      if(!down) return; var dx=e.clientX-sx;
-      var isCol=(side==='left'?LP():RP()).classList.contains('collapsed');
-      var fire=(side==='left')?((dx>26&&isCol)||(dx<-26&&!isCol)):((dx<-26&&isCol)||(dx>26&&!isCol));
-      if(fire){ dragged=true; down=false; toggleSidePanel(side); }
-    });
-    el.addEventListener('pointerup', function(){ if(down&&!dragged) toggleSidePanel(side); down=false; });
-    el.addEventListener('pointercancel', function(){ down=false; });
-    el.addEventListener('click', function(){ /* fallback for environments firing click only */ });
-  }
-  function init(){
-    bindHandle(chL(),'left'); bindHandle(chR(),'right');
-    // start collapsed on narrow screens so the map leads
-    if(window.innerWidth<=1100){ var lp=LP(),rp=RP(); if(lp)lp.classList.add('collapsed'); if(rp)rp.classList.add('collapsed'); }
-    place();
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
-  window.addEventListener('load', place);
-  window.addEventListener('resize', place);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire();
+  window.addEventListener('load',wire);
+  /* drag/swipe in from the very edge (mouse + touch) */
+  var sx=null,sd=null;
+  document.addEventListener('pointerdown',function(e){
+    if(window.innerWidth>1100)return;
+    var l=L(),r=R();
+    if((l&&l.classList.contains('xopen'))||(r&&r.classList.contains('xopen')))return;
+    if(e.clientX<=30){sx=e.clientX;sd='left';}
+    else if(e.clientX>=window.innerWidth-30){sx=e.clientX;sd='right';}
+    else{sx=null;sd=null;}
+  },{passive:true});
+  document.addEventListener('pointermove',function(e){
+    if(sx===null)return;var dx=e.clientX-sx;
+    if((sd==='left'&&dx>42)||(sd==='right'&&dx<-42)){openP(sd);sx=null;sd=null;}
+  },{passive:true});
+  document.addEventListener('pointerup',function(){sx=null;sd=null;},{passive:true});
 })();
 </script>
 </body>
