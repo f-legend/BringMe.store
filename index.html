@@ -7947,5 +7947,75 @@ function pcTab(name, btn){
   document.addEventListener('pointerup', function(){ esx=null; eside=null; });
 })();
 </script>
+
+<style>
+/* ===== ALWAYS-AVAILABLE COLLAPSE HANDLES (all widths) ===== */
+/* force panels in-flow & collapsible; kill all previous overlay/tab bits */
+#left-panel, #sidebar{
+  position:relative !important; transform:none !important; left:auto !important; right:auto !important;
+  top:auto !important; bottom:auto !important; z-index:5 !important;
+  transition:width .3s ease, min-width .3s ease !important; box-shadow:none !important;
+  overflow:hidden !important;
+}
+#left-panel.collapsed, #sidebar.collapsed{ width:0 !important; min-width:0 !important; border:none !important; }
+.dedge, .bm-backdrop, .bm-retract, .panel-edge-handle, .panel-toggle, #mobile-nav, .mobile-nav{ display:none !important; }
+
+/* the collapse handle tabs — always visible, slide with the panel */
+.col-handle{
+  position:fixed; top:50%; transform:translateY(-50%); z-index:2060;
+  width:22px; height:82px; background:linear-gradient(135deg,#000033,#0C1B6B);
+  border:1px solid rgba(205,149,12,.45); color:#EEAD0E; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700;
+  box-shadow:0 4px 16px rgba(0,0,40,.35); transition:left .3s ease, right .3s ease;
+  touch-action:none; user-select:none;
+}
+.col-left{ border-radius:0 12px 12px 0; border-left:none; }
+.col-right{ border-radius:12px 0 0 12px; border-right:none; }
+@media(max-width:600px){ .col-handle{ height:66px; width:20px; } }
+</style>
+<div class="col-handle col-left" id="col-left" title="Toggle requests panel">‹</div>
+<div class="col-handle col-right" id="col-right" title="Toggle stores panel">›</div>
+<script>
+(function(){
+  function LP(){return document.getElementById('left-panel');}
+  function RP(){return document.getElementById('sidebar');}
+  function chL(){return document.getElementById('col-left');}
+  function chR(){return document.getElementById('col-right');}
+  function place(){
+    var lp=LP(),rp=RP(),cl=chL(),cr=chR();
+    if(lp&&cl){ cl.style.left = (lp.classList.contains('collapsed')?0:Math.round(lp.getBoundingClientRect().width))+'px'; cl.textContent = lp.classList.contains('collapsed')?'\u203A':'\u2039'; }
+    if(rp&&cr){ cr.style.right = (rp.classList.contains('collapsed')?0:Math.round(rp.getBoundingClientRect().width))+'px'; cr.textContent = rp.classList.contains('collapsed')?'\u2039':'\u203A'; }
+  }
+  window.toggleSidePanel=function(side){
+    var el = side==='left'?LP():RP();
+    if(!el) return;
+    el.classList.toggle('collapsed');
+    place(); setTimeout(place,160); setTimeout(place,340);
+  };
+  function bindHandle(el, side){
+    if(!el) return;
+    var sx=0, down=false, dragged=false;
+    el.addEventListener('pointerdown', function(e){ down=true; dragged=false; sx=e.clientX; });
+    el.addEventListener('pointermove', function(e){
+      if(!down) return; var dx=e.clientX-sx;
+      var isCol=(side==='left'?LP():RP()).classList.contains('collapsed');
+      var fire=(side==='left')?((dx>26&&isCol)||(dx<-26&&!isCol)):((dx<-26&&isCol)||(dx>26&&!isCol));
+      if(fire){ dragged=true; down=false; toggleSidePanel(side); }
+    });
+    el.addEventListener('pointerup', function(){ if(down&&!dragged) toggleSidePanel(side); down=false; });
+    el.addEventListener('pointercancel', function(){ down=false; });
+    el.addEventListener('click', function(){ /* fallback for environments firing click only */ });
+  }
+  function init(){
+    bindHandle(chL(),'left'); bindHandle(chR(),'right');
+    // start collapsed on narrow screens so the map leads
+    if(window.innerWidth<=1100){ var lp=LP(),rp=RP(); if(lp)lp.classList.add('collapsed'); if(rp)rp.classList.add('collapsed'); }
+    place();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+  window.addEventListener('load', place);
+  window.addEventListener('resize', place);
+})();
+</script>
 </body>
 </html>
