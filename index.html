@@ -7902,7 +7902,7 @@ function pcTab(name, btn){
     });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
-  window.addEventListener('load',wire);
+  window.addEventListener('load',function(){wire();syncTabs();}); window.addEventListener('resize',syncTabs); setTimeout(syncTabs,300);
 })();
 </script>
 
@@ -7962,7 +7962,7 @@ function pcTab(name, btn){
 @media(max-width:1100px){
   .app-body{display:flex !important;}
   .map-wrap{flex:1 !important;width:100% !important;min-width:0 !important;}
-  #left-panel,#sidebar{position:fixed !important;top:0 !important;bottom:0 !important;width:320px !important;max-width:86vw !important;z-index:1200 !important;transition:transform .32s cubic-bezier(.4,0,.2,1) !important;}
+  #left-panel,#sidebar{position:fixed !important;top:0 !important;bottom:0 !important;height:100vh !important;width:320px !important;max-width:86vw !important;z-index:1200 !important;transition:transform .32s cubic-bezier(.4,0,.2,1) !important;background:#f3f5fc !important;}
   #left-panel{left:0 !important;right:auto !important;transform:translateX(-100%) !important;}
   #sidebar{right:0 !important;left:auto !important;transform:translateX(100%) !important;}
   #left-panel.xopen{transform:translateX(0) !important;box-shadow:8px 0 36px rgba(0,0,40,.4) !important;}
@@ -7970,13 +7970,14 @@ function pcTab(name, btn){
   .xtab{display:flex !important;}
 }
 /* edge tabs */
-.xtab{position:fixed;top:50%;transform:translateY(-50%);z-index:1150;width:36px;height:88px;background:linear-gradient(135deg,#000033,#0C1B6B);border:1px solid rgba(205,149,12,.5);color:#EEAD0E;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 18px rgba(0,0,40,.45);display:none;font-size:17px;}
+.xtab{position:fixed;top:50%;transform:translateY(-50%);z-index:1250;width:36px;height:88px;background:linear-gradient(135deg,#000033,#0C1B6B);border:1px solid rgba(205,149,12,.5);color:#EEAD0E;cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 18px rgba(0,0,40,.45);display:none;font-size:17px;transition:left .32s cubic-bezier(.4,0,.2,1), right .32s cubic-bezier(.4,0,.2,1);}
 .xtab-left{left:0;border-radius:0 14px 14px 0;border-left:none;}
 .xtab-right{right:0;border-radius:14px 0 0 14px;border-right:none;}
 .xtab .xar{font-size:14px;opacity:.75;}
 .xback{display:none;position:fixed;inset:0;background:rgba(0,0,40,.5);z-index:1180;}
 .xback.show{display:block;}
 @media(min-width:1101px){.xback{display:none !important;}}
+.lp-urgent-section, .lp-find-section, #left-panel .lp-head, #left-panel > div{ background:#f3f5fc; }
 </style>
 <button class="xtab xtab-left" id="xtab-left" aria-label="Show requests"><span>🙋</span><span class="xar">›</span></button>
 <button class="xtab xtab-right" id="xtab-right" aria-label="Show stores"><span>🏪</span><span class="xar">‹</span></button>
@@ -7986,11 +7987,17 @@ function pcTab(name, btn){
   function L(){return document.getElementById('left-panel');}
   function R(){return document.getElementById('sidebar');}
   function BK(){return document.getElementById('xback');}
-  function closeP(){var l=L(),r=R(),b=BK();if(l)l.classList.remove('xopen');if(r)r.classList.remove('xopen');if(b)b.classList.remove('show');}
-  function openP(s){var l=L(),r=R(),b=BK();if(s==='left'){if(l)l.classList.add('xopen');if(r)r.classList.remove('xopen');}else{if(r)r.classList.add('xopen');if(l)l.classList.remove('xopen');}if(b)b.classList.add('show');}
+  function closeP(){var l=L(),r=R(),b=BK();if(l)l.classList.remove('xopen');if(r)r.classList.remove('xopen');if(b)b.classList.remove('show');if(window.syncTabs)window.syncTabs();}
+  function openP(s){var l=L(),r=R(),b=BK();if(s==='left'){if(l)l.classList.add('xopen');if(r)r.classList.remove('xopen');}else{if(r)r.classList.add('xopen');if(l)l.classList.remove('xopen');}if(b)b.classList.add('show');if(window.syncTabs)window.syncTabs();setTimeout(function(){if(window.syncTabs)window.syncTabs();},10);}
+  function syncTabs(){
+    if(window.innerWidth>1100) return;
+    var l=L(),r=R(),lt=document.getElementById('xtab-left'),rt=document.getElementById('xtab-right');
+    if(lt){ var lo=l&&l.classList.contains('xopen'); lt.style.left = lo ? Math.round(l.getBoundingClientRect().width)+'px' : '0px'; var la=lt.querySelector('.xar'); if(la) la.textContent = lo ? '\u2039' : '\u203A'; }
+    if(rt){ var ro=r&&r.classList.contains('xopen'); rt.style.right = ro ? Math.round(r.getBoundingClientRect().width)+'px' : '0px'; var ra=rt.querySelector('.xar'); if(ra) ra.textContent = ro ? '\u203A' : '\u2039'; }
+  }
   function toggleP(s){var el=s==='left'?L():R();if(el&&el.classList.contains('xopen'))closeP();else openP(s);}
   /* expose + NEUTRALIZE the app's competing panel functions so they can't fight this */
-  try{ window.closeAllPanels=closeP; window.closePanel=function(){closeP();}; window.togglePanel=function(s){toggleP(s);}; window.toggleLeftPanel=function(){toggleP('left');}; window.toggleRightPanel=function(){toggleP('right');}; window.applyPanelState=function(){}; }catch(_){}
+  window.syncTabs=syncTabs; try{ window.closeAllPanels=closeP; window.closePanel=function(){closeP();}; window.togglePanel=function(s){toggleP(s);}; window.toggleLeftPanel=function(){toggleP('left');}; window.toggleRightPanel=function(){toggleP('right');}; window.applyPanelState=function(){}; }catch(_){}
   function wire(){
     var lt=document.getElementById('xtab-left'),rt=document.getElementById('xtab-right'),b=BK();
     if(lt)lt.onclick=function(e){e.stopPropagation();toggleP('left');};
@@ -7998,7 +8005,7 @@ function pcTab(name, btn){
     if(b)b.onclick=closeP;
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire();
-  window.addEventListener('load',wire);
+  window.addEventListener('load',function(){wire();syncTabs();}); window.addEventListener('resize',syncTabs); setTimeout(syncTabs,300);
   /* drag/swipe in from the very edge (mouse + touch) */
   var sx=null,sd=null;
   document.addEventListener('pointerdown',function(e){
