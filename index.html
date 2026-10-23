@@ -7976,7 +7976,9 @@ function pcTab(name, btn){
 .xtab .xar{font-size:14px;opacity:.75;}
 .xback{display:none;position:fixed;inset:0;background:rgba(0,0,40,.5);z-index:1180;}
 .xback.show{display:block;}
-@media(min-width:1101px){.xback{display:none !important;}}
+.xclose{display:none;position:fixed;top:14px;right:14px;z-index:1300;padding:9px 15px;border-radius:100px;background:#000033;color:#EEAD0E;border:1px solid rgba(205,149,12,.6);font-size:13px;font-weight:700;cursor:pointer;align-items:center;gap:5px;box-shadow:0 4px 14px rgba(0,0,40,.45);}
+.xback.show ~ .xclose{display:flex;}
+@media(min-width:1101px){.xback{display:none !important;} .xclose{display:none !important;}}
 .lp-urgent-section, .lp-find-section, #left-panel .lp-head, #left-panel > div{ background:#f3f5fc; }
 </style>
 <button class="xtab xtab-left" id="xtab-left" aria-label="Show requests"><span>🙋</span><span class="xar">›</span></button>
