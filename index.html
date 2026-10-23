@@ -8016,9 +8016,7 @@ function pcTab(name, btn){
 .xtab .xar{font-size:14px;opacity:.75;}
 .xback{display:none;position:fixed;inset:0;background:rgba(0,0,40,.5);z-index:1180;}
 .xback.show{display:block;}
-.xclose{display:none;position:fixed;top:14px;right:14px;z-index:1300;padding:9px 15px;border-radius:100px;background:#000033;color:#EEAD0E;border:1px solid rgba(205,149,12,.6);font-size:13px;font-weight:700;cursor:pointer;align-items:center;gap:5px;box-shadow:0 4px 14px rgba(0,0,40,.45);touch-action:manipulation;-webkit-tap-highlight-color:rgba(238,173,14,.3);user-select:none;}
-.xback.show ~ .xclose{display:flex;}
-@media(min-width:1101px){.xback{display:none !important;} .xclose{display:none !important;}}
+@media(min-width:1101px){.xback{display:none !important;}}
 .lp-urgent-section, .lp-find-section, #left-panel .lp-head, #left-panel > div{ background:#f3f5fc; }
 /* ---- mobile: tidy the 4 corner action buttons so they don't overlap the credentials bar or map controls ---- */
 @media(max-width:900px){
@@ -8035,7 +8033,6 @@ function pcTab(name, btn){
 <button class="xtab xtab-left" id="xtab-left" aria-label="Show requests"><span>🙋</span><span class="xar">›</span></button>
 <button class="xtab xtab-right" id="xtab-right" aria-label="Show stores"><span>🏪</span><span class="xar">‹</span></button>
 <div class="xback" id="xback"></div>
-<button class="xclose" id="xclose" aria-label="Close panel">✕ Close</button>
 <script>
 (function(){
   function L(){return document.getElementById('left-panel');}
@@ -8065,9 +8062,8 @@ function pcTab(name, btn){
   function wire(){
     tapToggle(document.getElementById('xtab-left'),'left');
     tapToggle(document.getElementById('xtab-right'),'right');
-    var b=BK(),xc=document.getElementById('xclose');
+    var b=BK();
     if(b)b.onclick=closeP;
-    if(xc)xc.onclick=function(e){e.stopPropagation();closeP();};
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire();
   window.addEventListener('load',function(){wire();syncTabs();}); window.addEventListener('resize',syncTabs); setTimeout(syncTabs,300);
