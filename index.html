@@ -4360,6 +4360,9 @@ function toggleMinimize() {
   btn.textContent = AW_MINIMIZED ? '⌃' : '⌄';
   teaser.classList.toggle('hidden', !AW_MINIMIZED);
   if (prevLabel) prevLabel.classList.toggle('hidden', !AW_MINIMIZED);
+  // When minimized, let taps reach the map/buttons/panels behind; restore blocking when expanded
+  const gOv = document.getElementById('guest-overlay');
+  if (gOv) gOv.style.pointerEvents = AW_MINIMIZED ? 'none' : 'auto';
 }
 
 // ── DISMISS (browse as guest) ──────────────────────────────────
@@ -4373,6 +4376,7 @@ function dismissAuth() {
   if (prevLabel) prevLabel.classList.add('hidden');
   overlay.style.background = 'rgba(10,16,32,.15)';
   overlay.style.backdropFilter = 'blur(0px)';
+  overlay.style.pointerEvents = 'none';   // let guests actually use the map/buttons/panels
   // Show topbar join button
   const topbarRight = document.querySelector('.topbar-right');
   if (topbarRight) {
@@ -4384,6 +4388,7 @@ function dismissAuth() {
       win.classList.remove('minimized');
       overlay.style.background = 'rgba(10,16,32,.55)';
       overlay.style.backdropFilter = 'blur(3px)';
+      overlay.style.pointerEvents = 'auto';   // block map behind while signup is open again
       joinBtn.remove();
     };
     topbarRight.insertBefore(joinBtn, topbarRight.firstChild);
@@ -6147,6 +6152,8 @@ const PHONE_GATE_ACTIONS = {
   'post-request':   { icon:'🆘', title:'Post a Request',        reason:'Helpers need to contact you when they find the item.' },
 };
 
+// Auth bookkeeping (was referenced but never declared → crashed gated actions)
+var AUTH_STATE = { phone: '' };
 // ── GATE CHECK — call this before any gated action ───────────────
 function requirePhone(actionKey, callback) {
   // If already verified, just run the action
@@ -6155,7 +6162,7 @@ function requirePhone(actionKey, callback) {
     return;
   }
   // If not logged in at all, show auth first
-  if (!AUTH_STATE.loggedIn) {
+  if (typeof SB_USER === 'undefined' || !SB_USER) {
     openModal('auth');
     showToast('Please sign in first!');
     return;
@@ -7902,7 +7909,7 @@ function pcTab(name, btn){
     });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wire); else wire();
-  window.addEventListener('load',function(){wire();syncTabs();}); window.addEventListener('resize',syncTabs); setTimeout(syncTabs,300);
+  window.addEventListener('load',wire);
 })();
 </script>
 
