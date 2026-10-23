@@ -4870,6 +4870,8 @@ function renderOffer(req) {
 // Delivery badge helper
 function renderDelivery(delivery) {
   if (delivery === 'doorstep') return '<span class="delivery-badge delivery-doorstep">🏠 Doorstep Delivery</span>';
+  if (delivery === 'meetup') return '<span class="delivery-badge delivery-both">🤝 Meet Halfway</span>';
+  if (delivery === 'pickup') return '<span class="delivery-badge delivery-both">🚶 Pickup</span>';
   if (delivery === 'info') return '<span class="delivery-badge delivery-info">📍 Info Only</span>';
   return '<span class="delivery-badge delivery-both">🏠 Delivery or 📍 Info</span>';
 }
@@ -4917,6 +4919,7 @@ function renderLeftPanel() {
         ${renderOffer(r)}
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px">
           ${renderDelivery(r.delivery)}
+          ${r.when ? `<span class="delivery-badge" style="background:#F7E6E2;color:#9B2D1F">${r.when}</span>` : ''}
         </div>
         ${r.note ? `<div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:7px;line-height:1.4">"${r.note}"</div>` : ''}
         <div class="req-footer">
@@ -5035,6 +5038,7 @@ function buildTrustPointsModal() {
 // Post Request modal
 function buildPostRequestModal() {
   const type = S._postReqType || 'urgent';
+  if (type === 'urgent') return urfBuildForm();
   const f = S._reqForm || { item:'', category:'Electronics', cash:'', points:'', delivery:'doorstep', note:'', payType:'cash' };
   S._reqForm = f;
 
@@ -8158,6 +8162,213 @@ function pcTab(name, btn){
   },{passive:true});
   document.addEventListener('pointerup',function(){sx=null;sd=null;smode=null;},{passive:true});
 })();
+</script>
+
+<!-- ══════════ URGENT REQUEST FORM (urfm) — scoped, demo-mode ══════════ -->
+<style>
+.urfm{ --brick:#9B2D1F; --brick-dk:#6B1E14; --text:#000033; --offwhite:#F5F7FF; color:var(--text); }
+.urfm .urfm-head{display:flex;align-items:center;gap:9px;padding:14px 16px;background:linear-gradient(135deg,var(--brick),var(--brick-dk));color:#fff;border-radius:16px 16px 0 0;flex-shrink:0}
+.urfm .urfm-ttl{font-family:'Cinzel',serif;font-weight:700;font-size:15px;flex:1}
+.urfm .urfm-x{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);border:none;color:#fff;font-size:13px;cursor:pointer}
+.urfm .urfm-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:15px 16px 6px}
+.urfm .urfm-foot{flex-shrink:0;padding:11px 16px;background:#fff;border-top:1px solid var(--border)}
+.urfm .urfm-submit{width:100%;padding:13px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--brick),var(--brick-dk));color:#fff;font-size:14.5px;font-weight:800;font-family:inherit;cursor:pointer}
+.urfm .urfm-err{color:var(--brick);font-size:11px;font-weight:700;margin-top:6px;text-align:center;min-height:13px}
+.urfm .fsec{margin-bottom:16px}
+.urfm .fsec-t{font-family:'Cinzel',serif;font-size:11.5px;font-weight:700;color:var(--brick);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.urfm .fsec-t .num{width:19px;height:19px;border-radius:50%;background:var(--brick);color:#fff;font-size:10.5px;font-family:'DM Sans',sans-serif;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.urfm .req{color:var(--brick);font-weight:800}
+.urfm .opt{color:var(--muted);font-weight:600;font-size:10px}
+.urfm label.fl{display:block;font-size:11.5px;font-weight:700;margin:9px 0 5px}
+.urfm .inp{width:100%;border:1px solid var(--border);border-radius:11px;padding:10px 12px;font-size:13.5px;font-family:inherit;color:var(--text);background:#fff;outline:none}
+.urfm .inp:focus{border-color:var(--gold)}
+.urfm .row2{display:flex;gap:9px}.urfm .row2>*{flex:1}
+.urfm .prefix{position:relative}.urfm .prefix .pf{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted)}.urfm .prefix .inp{padding-left:27px}
+.urfm .chips{display:flex;gap:7px;flex-wrap:wrap}
+.urfm .chip{padding:8px 12px;border:1.5px solid var(--border);border-radius:11px;background:#fff;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;color:var(--text)}
+.urfm .chip:hover{border-color:var(--gold)}
+.urfm .chip.on{background:linear-gradient(135deg,var(--brick),var(--brick-dk));color:#fff;border-color:var(--brick-dk)}
+.urfm .chip.on.gold{background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));color:var(--navy);border-color:var(--gold-dk)}
+.urfm .chip.on.royal{background:linear-gradient(135deg,var(--royal2),var(--royal));color:#fff;border-color:var(--royal)}
+.urfm .urf-photo{display:flex;align-items:center;justify-content:center;gap:8px;border:1.5px dashed var(--border);border-radius:11px;padding:14px;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer;background:#fff;margin-top:5px}
+.urfm .cat-box{display:flex;align-items:center;gap:9px;border:1.5px solid var(--border);border-radius:11px;padding:10px 12px;background:#fff;cursor:pointer;font-size:13px;font-weight:700;color:var(--muted)}
+.urfm .cat-box.has{border-color:var(--brick);background:rgba(155,45,31,.05);color:var(--text)}
+.urfm .cat-picker{display:none;margin-top:8px;border:1px solid var(--border);border-radius:11px;padding:10px;background:var(--offwhite)}
+.urfm .cat-picker.open{display:block}
+.urfm .cat-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;max-height:150px;overflow-y:auto}
+.urfm .cat-opt{padding:7px 11px;border:1px solid var(--border);border-radius:10px;background:#fff;cursor:pointer;font-size:11.5px;font-weight:700;white-space:nowrap}
+.urfm .cat-opt.custom{border-style:dashed;color:var(--brick);border-color:rgba(155,45,31,.4)}
+.urfm .sug{color:var(--gold-dk);font-weight:800;font-size:10.5px}
+.urfm .radio{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border:1.5px solid var(--border);border-radius:11px;background:#fff;cursor:pointer;margin-top:7px}
+.urfm .radio.on{border-color:var(--brick);background:rgba(155,45,31,.04)}
+.urfm .radio .dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px}
+.urfm .radio.on .dot{border-color:var(--brick);box-shadow:inset 0 0 0 3px var(--brick)}
+.urfm .radio .rb{font-size:12px;font-weight:700}.urfm .radio .rs{font-size:10.5px;color:var(--muted)}
+</style>
+<script>
+/* ===== Urgent Request Form — namespaced (urf*), demo-mode ===== */
+let urfManual = false;
+let urfF = { cat:'', emoji:'🆘', when:'', reward:'', cover:'back', delivery:'' };
+const urfCATS = [
+ {e:'💊',n:'Medicine',k:['medicine','paracetamol','biogesic','tablet','capsule','drug','pharmacy','antibiotic','vitamin','bandage','alcohol','mask','thermometer','syrup','cough','fever','painkiller','betadine']},
+ {e:'🍔',n:'Food',k:['food','cake','meal','ulam','baon','rice','bread','snack','pizza','burger','chicken','lunch','dinner','pancit','dessert','fries']},
+ {e:'🛒',n:'Groceries',k:['grocery','milk','egg','sugar','salt','oil','flour','canned','noodles','sardines','coffee']},
+ {e:'🔌',n:'Electronics',k:['charger','cable','usb','phone','laptop','battery','adapter','earphone','mouse','keyboard','powerbank','hdmi','monitor','router','sim','type-c','type c']},
+ {e:'📄',n:'Documents',k:['document','papers','form','printout','print','photocopy','xerox','notarize','certificate','passport','permit','resume']},
+ {e:'🍼',n:'Baby and Kids',k:['baby','diaper','formula','wipes','pacifier','bottle','infant','nappy']},
+ {e:'👕',n:'Clothing',k:['clothes','shirt','pants','dress','shoes','jacket','uniform','socks']},
+ {e:'🔧',n:'Hardware and Tools',k:['tool','screwdriver','hammer','nail','screw','wrench','drill','tape','glue','bulb','hardware','paint','pliers']},
+ {e:'🐾',n:'Pet Supplies',k:['pet','dog','cat','dog food','cat food','leash','litter','kibble']},
+ {e:'🚗',n:'Auto and Moto',k:['car','motor','motorcycle','tire','brake','helmet','engine','fuel']},
+ {e:'💄',n:'Beauty and Care',k:['makeup','lipstick','perfume','lotion','sunscreen','skincare','shampoo','razor','deodorant','soap']},
+ {e:'📚',n:'School Supplies',k:['school','notebook','pen','pencil','bond paper','crayon','marker','ruler','calculator','project']},
+ {e:'🎁',n:'Gifts and Flowers',k:['gift','flower','bouquet','balloon','present','chocolate']},
+ {e:'💧',n:'Water and Gas',k:['water','gallon','gas','lpg','tank','refill','mineral']},
+ {e:'🧴',n:'Household',k:['detergent','tissue','toilet paper','cleaner','bleach','sponge','candle','matches','umbrella']},
+ {e:'📦',n:'Other',k:[]},
+];
+function urfGV(id){ const el=document.getElementById(id); return el ? (el.value||'').trim() : ''; }
+function urfBuildForm(){
+  urfManual = false;
+  urfF = { cat:'', emoji:'🆘', when:'', reward:'', cover:'back', delivery:'' };
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal urfm" style="width:480px;max-width:94vw;max-height:92vh;padding:0;overflow:hidden;display:flex;flex-direction:column;border-radius:16px" onclick="event.stopPropagation()">
+      <div class="urfm-head">
+        <span style="font-size:20px">⚡</span>
+        <span class="urfm-ttl">Post an Urgent Request</span>
+        <button class="urfm-x" onclick="closeModal()">✕</button>
+      </div>
+      <div class="urfm-body">
+        <div class="fsec">
+          <div class="fsec-t"><span class="num">1</span> What do you need? <span class="req">*</span></div>
+          <input class="inp" id="urf-title" placeholder="e.g. 65W USB-C charger, Paracetamol 500mg" oninput="urfAutoCat()">
+          <label class="fl">Category <span class="req">*</span> <span class="opt">— suggested as you type</span></label>
+          <div class="cat-box" id="urf-cat-box" onclick="urfToggleCat()"><span id="urf-cat-face" style="font-size:16px">✨</span><span id="urf-cat-label" style="flex:1">Start typing above…</span><span style="color:var(--muted);font-size:11px;font-weight:700">▾ change</span></div>
+          <div class="cat-picker" id="urf-cat-picker"><input class="inp" id="urf-cat-search" placeholder="Search or type your own…" oninput="urfRenderCats(this.value)"><div class="cat-grid" id="urf-cat-grid"></div></div>
+          <label class="fl">Quantity / details <span class="opt">(optional)</span></label>
+          <input class="inp" id="urf-qty" placeholder="e.g. 10 tablets · brand · size" oninput="urfAutoCat()">
+          <label class="fl">Photo <span class="opt">(optional)</span></label>
+          <div class="urf-photo" onclick="showToast('📷 Photo upload coming soon','info')">📷 Add a photo</div>
+        </div>
+        <div class="fsec">
+          <div class="fsec-t"><span class="num">2</span> How urgent? <span class="req">*</span></div>
+          <div class="chips" id="urf-urg">
+            <div class="chip" data-v="⚡ Right now" onclick="urfPick(this,'urf-urg','when')">⚡ Right now</div>
+            <div class="chip" data-v="⏱️ Within the hour" onclick="urfPick(this,'urf-urg','when')">⏱️ Within the hour</div>
+            <div class="chip" data-v="🕐 By a set time" onclick="urfPick(this,'urf-urg','when',true)">🕐 By a time</div>
+          </div>
+          <div id="urf-tw" style="display:none"><label class="fl">Needed by</label><input type="time" class="inp" id="urf-time"></div>
+        </div>
+        <div class="fsec">
+          <div class="fsec-t"><span class="num">3</span> Your reward <span class="req">*</span></div>
+          <div class="chips" id="urf-rt">
+            <div class="chip gold" onclick="urfPickR(this,'cash')">💵 Cash</div>
+            <div class="chip gold" onclick="urfPickR(this,'points')">🤝 Trust Points</div>
+            <div class="chip gold" onclick="urfPickR(this,'both')">💵+🤝 Both</div>
+          </div>
+          <div class="row2" style="margin-top:9px">
+            <div id="urf-cw" style="display:none"><label class="fl">Cash (₱)</label><div class="prefix"><span class="pf">₱</span><input class="inp" id="urf-cash" type="number" placeholder="150"></div></div>
+            <div id="urf-pw" style="display:none"><label class="fl">Trust points <span class="opt">(you have ${S_trustPoints})</span></label><input class="inp" id="urf-pts" type="number" placeholder="50"></div>
+          </div>
+          <label class="fl">Who covers the item's cost?</label>
+          <div class="radio on" id="urf-cb" onclick="urfPickCov('back')"><div class="dot"></div><div><div class="rb">I'll pay you back for the item too</div><div class="rs">Reward is for your time + delivery</div></div></div>
+          <div class="radio" id="urf-ci" onclick="urfPickCov('incl')"><div class="dot"></div><div><div class="rb">Reward already covers everything</div></div></div>
+        </div>
+        <div class="fsec">
+          <div class="fsec-t"><span class="num">4</span> Where & how <span class="req">*</span></div>
+          <div class="chips" id="urf-dl">
+            <div class="chip royal" data-v="doorstep" onclick="urfPick(this,'urf-dl','delivery')">🏠 Deliver to my door</div>
+            <div class="chip royal" data-v="meetup" onclick="urfPick(this,'urf-dl','delivery')">🤝 Meet halfway</div>
+            <div class="chip royal" data-v="pickup" onclick="urfPick(this,'urf-dl','delivery')">🚶 I'll pick it up</div>
+          </div>
+          <label class="fl">Drop-off location</label>
+          <input class="inp" id="urf-loc" value="📍 ${USER.name} (your GPS)">
+          <label class="fl">Landmark / instructions <span class="opt">(optional)</span></label>
+          <input class="inp" id="urf-note" placeholder="e.g. near the covered court, leave at gate">
+        </div>
+      </div>
+      <div class="urfm-foot">
+        <button class="urfm-submit" onclick="urfPost()">⚡ Post Urgent Request</button>
+        <div class="urfm-err" id="urf-err"></div>
+      </div>
+    </div>
+  </div>`;
+}
+function urfPick(el, grp, key, showTime){
+  document.querySelectorAll('#'+grp+' .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  urfF[key] = el.dataset.v;
+  if(grp==='urf-urg'){ const tw=document.getElementById('urf-tw'); if(tw) tw.style.display = showTime ? 'block' : 'none'; }
+}
+function urfPickR(el,t){
+  document.querySelectorAll('#urf-rt .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); urfF.reward=t;
+  document.getElementById('urf-cw').style.display=(t==='cash'||t==='both')?'block':'none';
+  document.getElementById('urf-pw').style.display=(t==='points'||t==='both')?'block':'none';
+}
+function urfPickCov(x){
+  urfF.cover=x;
+  document.getElementById('urf-cb').classList.toggle('on',x==='back');
+  document.getElementById('urf-ci').classList.toggle('on',x==='incl');
+}
+function urfAutoCat(){
+  if(urfManual) return;
+  const t=' '+(urfGV('urf-title')+' '+urfGV('urf-qty')).toLowerCase()+' ';
+  const face=document.getElementById('urf-cat-face'), lab=document.getElementById('urf-cat-label'), box=document.getElementById('urf-cat-box');
+  if(!face) return;
+  if(!t.trim()){ urfF.cat=''; urfF.emoji='🆘'; face.textContent='✨'; lab.textContent='Start typing above…'; box.classList.remove('has'); return; }
+  let b=null; for(const c of urfCATS){ if(c.k.some(k=>t.includes(k))){ b=c; break; } }
+  if(b){ urfF.cat=b.n; urfF.emoji=b.e; face.textContent=b.e; lab.innerHTML=b.n+' <span class="sug">✨ suggested</span>'; box.classList.add('has'); }
+  else { urfF.cat=''; urfF.emoji='🆘'; face.textContent='🤔'; lab.textContent='No match yet — tap to choose'; box.classList.remove('has'); }
+}
+function urfToggleCat(){
+  const p=document.getElementById('urf-cat-picker'); p.classList.toggle('open');
+  if(p.classList.contains('open')){ document.getElementById('urf-cat-search').value=''; urfRenderCats(''); }
+}
+function urfRenderCats(q){
+  q=(q||'').toLowerCase().trim();
+  const list=urfCATS.filter(c=>!q||c.n.toLowerCase().includes(q)||c.k.some(k=>k.includes(q)));
+  let h=list.map(c=>`<div class="cat-opt" onclick="urfChooseCat('${c.e}','${c.n.replace(/'/g,"\\'")}')">${c.e} ${c.n}</div>`).join('');
+  if(q && !urfCATS.some(c=>c.n.toLowerCase()===q)) h+=`<div class="cat-opt custom" onclick="urfChooseCat('🏷️','${q.replace(/['\\]/g,'')}')">➕ Use “${q}”</div>`;
+  document.getElementById('urf-cat-grid').innerHTML=h;
+}
+function urfChooseCat(e,n){
+  urfManual=true; urfF.cat=n; urfF.emoji=e;
+  document.getElementById('urf-cat-face').textContent=e;
+  document.getElementById('urf-cat-label').textContent=n;
+  document.getElementById('urf-cat-box').classList.add('has');
+  document.getElementById('urf-cat-picker').classList.remove('open');
+}
+function urfPost(){
+  const err=document.getElementById('urf-err');
+  const title=urfGV('urf-title');
+  if(!title){ err.textContent='Please say what you need.'; return; }
+  if(!urfF.cat){ err.textContent='Pick a category.'; return; }
+  if(!urfF.when){ err.textContent='Choose how urgent it is.'; return; }
+  const cash=urfGV('urf-cash'), pts=urfGV('urf-pts');
+  if(!urfF.reward || (!cash && !pts)){ err.textContent='Add a reward (cash or trust points).'; return; }
+  if(!urfF.delivery){ err.textContent='Choose a delivery option.'; return; }
+  err.textContent='';
+  const qty=urfGV('urf-qty'), note=urfGV('urf-note');
+  const newReq = {
+    id: Date.now(), reqType:'urgent',
+    item: qty ? title+' · '+qty : title,
+    category: urfF.cat,
+    user:'You', avatar:'ME', time:'Just now',
+    offer:{ type:urfF.reward, cash:Number(cash)||0, points:Number(pts)||0 },
+    delivery: urfF.delivery,
+    when: urfF.when,
+    cover: urfF.cover,
+    note: note,
+    lat: USER.lat,            // your own request sits at your GPS → tops the default "Nearest" sort
+    lng: USER.lng,
+    replies: []
+  };
+  helpRequests = [newReq, ...helpRequests];
+  closeModal();
+  renderAll();
+  showToast('🆘 Urgent request posted! Helpers nearby will see it.', 'success');
+}
 </script>
 </body>
 </html>
