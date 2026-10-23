@@ -3557,7 +3557,11 @@ function submitStore() {
 }
 
 // ── MODALS ────────────────────────────────────────────────────────────────────
-function openModal(name) { S.modal=name; renderModal(); }
+function openModal(name) {
+  // Guests may browse & search freely, but creating anything requires sign-in
+  if (typeof guestGate==='function' && (name==='post'||name==='store-register'||name==='post-request'||name==='help-request') && guestGate()) return;
+  S.modal=name; renderModal();
+}
 function closeModal() { S.modal=null; document.getElementById('modal-root').innerHTML=''; }
 
 function renderModal() {
@@ -4334,20 +4338,44 @@ let AW_EMOJIS = ['😊','😎','🙂','🤝','💪','🌟','🛍️','🏪','�
 let AW_EMOJI_IDX = 0;
 let AW_RESEND_TIMER;
 
-// ── INIT: show auth window when page loads ────────────────────
+// ── INIT: the app is open to everyone. Guests browse & search freely; only creating is gated ──
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    if (IS_GUEST) {
-      document.getElementById('auth-window').classList.remove('hidden');
-      awUpdateSteps();
-      // Restrict sidebar interactions for guests
-      document.getElementById('sb-list').classList.add('guest-restricted');
-      // Hide post button
-      const postBtn = document.querySelector('.btn-post');
-      if (postBtn) postBtn.style.opacity = '.5';
+  // Tear down the old "Preview Mode" signup wall so nothing blocks the map/buttons
+  const ov = document.getElementById('guest-overlay');
+  if (ov) { ov.style.pointerEvents = 'none'; ov.style.display = 'none'; ov.classList.add('hidden'); }
+  ['auth-window','preview-label','guest-teaser'].forEach(id => { const e = document.getElementById(id); if (e) e.classList.add('hidden'); });
+  const sbl = document.getElementById('sb-list'); if (sbl) sbl.classList.remove('guest-restricted');
+  const postBtn = document.querySelector('.btn-post'); if (postBtn) postBtn.style.opacity = '1';
+  // Give guests a clear, always-visible way to sign in when they want to
+  if (typeof SB_USER === 'undefined' || !SB_USER) {
+    const topbarRight = document.querySelector('.topbar-right');
+    if (topbarRight && !document.querySelector('.guest-join-btn')) {
+      const b = document.createElement('button');
+      b.className = 'guest-join-btn'; b.textContent = '👤 Join / Sign in';
+      b.onclick = openAuthGate;
+      topbarRight.insertBefore(b, topbarRight.firstChild);
     }
-  }, 1200);
+  }
 });
+
+// Open the sign-in / join window on demand
+function openAuthGate() {
+  const aw = document.getElementById('auth-window'); if (!aw) return;
+  aw.classList.remove('hidden'); aw.classList.remove('minimized'); AW_MINIMIZED = false;
+  const ov = document.getElementById('guest-overlay');
+  if (ov) { ov.style.display = ''; ov.classList.remove('hidden'); ov.style.background = 'rgba(10,16,32,.55)'; ov.style.pointerEvents = 'none'; }
+  if (typeof awUpdateSteps === 'function') awUpdateSteps();
+}
+
+// Gate the four creator actions for guests, nudging them to sign in
+function guestGate() {
+  if (typeof SB_USER === 'undefined' || !SB_USER) {
+    if (typeof showToast === 'function') showToast('Sign in to do that — free & takes a sec!');
+    openAuthGate();
+    return true;
+  }
+  return false;
+}
 
 // ── TOGGLE MINIMIZE ────────────────────────────────────────────
 function toggleMinimize() {
@@ -7492,6 +7520,11 @@ async function sbLoadProfile() {
 
 // Called whenever a user becomes signed-in
 function onSignedIn() {
+  // Signed in now — remove the guest sign-in prompt and any leftover gate
+  IS_GUEST = false;
+  document.querySelector('.guest-join-btn')?.remove();
+  const _aw = document.getElementById('auth-window'); if (_aw) _aw.classList.add('hidden');
+  const _ov = document.getElementById('guest-overlay'); if (_ov) { _ov.style.display = 'none'; _ov.style.pointerEvents = 'none'; }
   if (!SB_PROFILE) return;
   // Fill the app's user object from the real profile
   if (typeof AW_USER === 'object') {
