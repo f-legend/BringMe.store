@@ -2502,8 +2502,13 @@ try {
       <span class="lp-section-title">Ask for Help</span>
       <span class="lp-section-count" id="urgent-count" style="background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)">0</span>
     </div>
-    <button class="sec-action sa-urgent" onclick="openPostRequest('urgent')">⚡ Post Urgent Need</button>
+    <div class="bm-tools" data-group="urgent">
+      <button class="bm-chip active" onclick="setReqSort('urgent','near',this)">📍 Nearest</button>
+      <button class="bm-chip" onclick="setReqSort('urgent','pay',this)">💰 Top Pay</button>
+      <button class="bm-chip" onclick="setReqSort('urgent','new',this)">🕐 Newest</button>
+    </div>
     <div id="urgent-list"></div>
+    <button class="sec-action sa-urgent" onclick="openPostRequest('urgent')">⚡ Post Urgent Need</button>
   </div>
 
   <!-- FIND ME -->
@@ -2513,8 +2518,13 @@ try {
       <span class="lp-section-title">Looking For</span>
       <span class="lp-section-count" id="find-count" style="background:rgba(74,63,181,0.07);color:#9B2D1F;border:1px solid rgba(155,45,31,0.2)">0</span>
     </div>
-    <button class="sec-action sa-find" onclick="openPostRequest('find')">🔍 Post a Find Me</button>
+    <div class="bm-tools" data-group="find">
+      <button class="bm-chip active" onclick="setReqSort('find','near',this)">📍 Nearest</button>
+      <button class="bm-chip" onclick="setReqSort('find','new',this)">🕐 Newest</button>
+      <button class="bm-chip" onclick="setReqSort('find','reward',this)">🤝 Top Reward</button>
+    </div>
     <div id="find-list"></div>
+    <button class="sec-action sa-find" onclick="openPostRequest('find')">🔍 Post a Find Me</button>
   </div>
 
   <!-- ACTIONS -->
@@ -2711,10 +2721,16 @@ try {
       <button class="lf-pill active" id="lf-all" onclick="setListingFilter('all')">🏠 All</button>
       <button class="lf-pill" id="lf-sell" onclick="setListingFilter('sell')">🛍️ Sale</button>
       <button class="lf-pill" id="lf-buy" onclick="setListingFilter('buy')">🔍 Wanted</button>
+      <button class="lf-pill" id="lf-saved" onclick="setListingFilter('saved')">♥ Saved</button>
     </div>
-    <button class="sec-action sa-sell" onclick="openModal('post')">🏷️ List an Item</button>
+    <div class="bm-tools" data-group="items">
+      <button class="bm-chip active" onclick="setItemSort('near',this)">📍 Nearest</button>
+      <button class="bm-chip" onclick="setItemSort('price',this)">💸 Low Price</button>
+      <button class="bm-chip" onclick="setItemSort('rating',this)">⭐ Top Rated</button>
+    </div>
     <div class="listings-list" id="sb-list"></div>
     <div id="store-detail-panel"></div>
+    <button class="sec-action sa-sell" onclick="openModal('post')">🏷️ List an Item</button>
   </div>
 
   <!-- ACTIONS (bottom) -->
@@ -2724,6 +2740,11 @@ try {
       <span class="rp-section-title" style="color:var(--gold)">Nearby Stores</span>
       <span class="rp-section-count" id="stores-count" style="background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)">0</span>
     </div>
+    <div class="bm-tools" data-group="stores">
+      <button class="bm-chip active" onclick="setStoreSort('near',this)">📍 Nearest</button>
+      <button class="bm-chip" onclick="setStoreSort('rating',this)">⭐ Top Rated</button>
+      <button class="bm-chip" onclick="setStoreSort('open',this)">🟢 Open Now</button>
+    </div>
     <div class="feat-strip" id="featured-banner"></div>
     <div class="stores-search">
       <div class="stores-search-inner">
@@ -2731,8 +2752,8 @@ try {
         <input type="text" id="store-search" placeholder="Search stores..." oninput="renderRightPanel()">
       </div>
     </div>
-    <button class="sec-action sa-store" onclick="openModal('store-register')">🏪 Register Store</button>
     <div class="stores-list" id="stores-list"></div>
+    <button class="sec-action sa-store" onclick="openModal('store-register')">🏪 Register Store</button>
   </div>
 
   <!-- LISTINGS SECTION (middle) -->
@@ -4856,12 +4877,14 @@ function renderDelivery(delivery) {
 function renderLeftPanel() {
   const search = (document.getElementById('lf-search')?.value || '').toLowerCase();
 
-  const urgentReqs = helpRequests.filter(r =>
+  let urgentReqs = helpRequests.filter(r =>
     r.reqType === 'urgent' && (!search || r.item.toLowerCase().includes(search))
   );
-  const findReqs = helpRequests.filter(r =>
+  let findReqs = helpRequests.filter(r =>
     r.reqType === 'find' && (!search || r.item.toLowerCase().includes(search))
   );
+  urgentReqs = bmSortReqs(urgentReqs, BM_SORT.urgent);
+  findReqs = bmSortReqs(findReqs, BM_SORT.find);
   // Also include buy listings in find section
   const buyListings = listings.filter(l =>
     l.type === 'buy' && (!search || l.title.toLowerCase().includes(search))
@@ -6045,7 +6068,7 @@ let currentStoreSearch = '';
 
 function setListingFilter(f) {
   currentListingFilter = f;
-  ['all','sell','buy'].forEach(t => {
+  ['all','sell','buy','saved'].forEach(t => {
     const el = document.getElementById('lf-'+t);
     if (el) el.classList.toggle('active', t===f);
   });
@@ -6056,19 +6079,13 @@ function renderRightPanel() {
   const storeSearch = (document.getElementById('store-search')?.value||'').toLowerCase();
 
   // ── STORES ──
-  const filteredStores = stores.filter(s =>
+  let filteredStores = stores.filter(s =>
     !storeSearch || s.name.toLowerCase().includes(storeSearch) ||
     (s.categories||[]).some(c=>c.toLowerCase().includes(storeSearch)) ||
     (s.products||[]).some(p=>p.toLowerCase().includes(storeSearch))
-  ).sort((a,b) => {
-    // Featured first
-    if (a.featured && !b.featured) return -1;
-    if (!a.featured && b.featured) return 1;
-    // Then by distance
-    const da = Math.hypot(a.lat-USER.lat, a.lng-USER.lng);
-    const db = Math.hypot(b.lat-USER.lat, b.lng-USER.lng);
-    return da-db;
-  });
+  );
+  filteredStores = bmSortStores(filteredStores, BM_SORT.stores);
+  filteredStores.sort((a,b) => (b.featured?1:0)-(a.featured?1:0)); // featured stay on top (stable sort)
 
   const storesCountEl = document.getElementById('stores-count');
   if (storesCountEl) storesCountEl.textContent = filteredStores.length;
@@ -6110,11 +6127,14 @@ function renderRightPanel() {
   }
 
   // ── LISTINGS ──
-  const filteredListings = listings.filter(l => {
+  let filteredListings = listings.filter(l => {
     if (currentListingFilter==='sell' && l.type!=='sell') return false;
     if (currentListingFilter==='buy' && l.type!=='buy') return false;
+    if (currentListingFilter==='saved' && !BM_SAVED.has(String(l.id))) return false;
     return true;
-  }).sort((a,b) => (b.promoted?1:0)-(a.promoted?1:0));
+  });
+  filteredListings = bmSortItems(filteredListings, BM_SORT.items);
+  filteredListings.sort((a,b) => (b.promoted?1:0)-(a.promoted?1:0)); // promoted stay on top (stable sort)
 
   const listingsCountEl = document.getElementById('listings-count');
   if (listingsCountEl) listingsCountEl.textContent = filteredListings.length;
@@ -6128,6 +6148,7 @@ function renderRightPanel() {
         const distKm = haversine(USER.lat, USER.lng, l.lat, l.lng).toFixed(1);
         const isSell = l.type==='sell';
         return `<div class="listing-card-sm ${l.promoted?'promoted-l':''}" onclick="selectItem(${l.id},'listing')">
+          <button class="bm-heart ${BM_SAVED.has(String(l.id))?'on':''}" onclick="bmToggleSaved(event, ${l.id})" aria-label="Save item">${BM_SAVED.has(String(l.id))?'♥':'♡'}</button>
           <div class="lc-row">
             <div class="lc-emoji ${isSell?'lc-sell':'lc-buy'}">${l.image||'📦'}</div>
             <div class="lc-body">
@@ -6159,6 +6180,35 @@ window.initLocation = function(lat, lng, label) {
   if (_origInitLoc) _origInitLoc(lat, lng, label);
   setTimeout(() => { renderRightPanel(); renderLeftPanel(); }, 500);
 };
+
+// ═══════════ SECTION SORT / FILTER + SAVED (filters feature) ═══════════
+var BM_SORT = { urgent:'near', find:'near', items:'near', stores:'near' };
+var BM_SAVED = (function(){ try{ return new Set(JSON.parse(localStorage.getItem('bm_saved')||'[]')); }catch(e){ return new Set(); } })();
+function bmSavePersist(){ try{ localStorage.setItem('bm_saved', JSON.stringify([...BM_SAVED])); }catch(e){} }
+function bmToggleSaved(ev, id){ if(ev&&ev.stopPropagation) ev.stopPropagation(); id=String(id); if(BM_SAVED.has(id)) BM_SAVED.delete(id); else BM_SAVED.add(id); bmSavePersist(); if(window.renderRightPanel) renderRightPanel(); }
+function bmDist(lat,lng){ try{ if(lat==null||lng==null||typeof USER==='undefined'||USER.lat==null) return 1e9; return Math.hypot(lat-USER.lat, lng-USER.lng); }catch(e){ return 1e9; } }
+function bmAgoMin(t){ if(!t) return 1e9; var m=(''+t).match(/(\d+)\s*(min|hr|hour|day)/i); if(!m) return 1e9; var n=+m[1], u=m[2].toLowerCase(); return u.indexOf('min')===0?n:((u.indexOf('hr')===0||u.indexOf('hour')===0)?n*60:n*1440); }
+function bmReward(r){ var o=(r&&r.offer)||{}; return Math.max(o.cash||0, o.points||0); }
+function bmOpenNow(s){ try{ var h=(s.hours||'').match(/(\d+)\s*(AM|PM)[^\d]+(\d+)\s*(AM|PM)/i); if(!h) return 1; var now=new Date().getHours(); var o=(+h[1]%12)+(/pm/i.test(h[2])?12:0); var c=(+h[3]%12)+(/pm/i.test(h[4])?12:0); return (now>=o&&now<c)?1:0; }catch(e){ return 1; } }
+function bmSortReqs(arr, mode){ var a=arr.slice();
+  if(mode==='near') a.sort(function(x,y){return bmDist(x.lat,x.lng)-bmDist(y.lat,y.lng);});
+  else if(mode==='pay'||mode==='reward') a.sort(function(x,y){return bmReward(y)-bmReward(x);});
+  else if(mode==='new') a.sort(function(x,y){return bmAgoMin(x.time)-bmAgoMin(y.time);});
+  return a; }
+function bmSortItems(arr, mode){ var a=arr.slice();
+  if(mode==='price') a.sort(function(x,y){return (x.price||0)-(y.price||0);});
+  else if(mode==='rating') a.sort(function(x,y){return (y.rating||0)-(x.rating||0);});
+  else a.sort(function(x,y){return bmDist(x.lat,x.lng)-bmDist(y.lat,y.lng);});
+  return a; }
+function bmSortStores(arr, mode){ var a=arr.slice();
+  if(mode==='rating') a.sort(function(x,y){return (y.rating||0)-(x.rating||0);});
+  else if(mode==='open') a.sort(function(x,y){return bmOpenNow(y)-bmOpenNow(x) || bmDist(x.lat,x.lng)-bmDist(y.lat,y.lng);});
+  else a.sort(function(x,y){return bmDist(x.lat,x.lng)-bmDist(y.lat,y.lng);});
+  return a; }
+function bmChipActive(chip){ if(!chip) return; var row=chip.closest('.bm-tools'); if(!row) return; row.querySelectorAll('.bm-chip:not(.view)').forEach(function(c){c.classList.remove('active');}); chip.classList.add('active'); }
+function setReqSort(group, mode, chip){ BM_SORT[group]=mode; bmChipActive(chip); if(window.renderLeftPanel) renderLeftPanel(); }
+function setItemSort(mode, chip){ BM_SORT.items=mode; bmChipActive(chip); if(window.renderRightPanel) renderRightPanel(); }
+function setStoreSort(mode, chip){ BM_SORT.stores=mode; bmChipActive(chip); if(window.renderRightPanel) renderRightPanel(); }
 
 
 // ════════════════════════════════════════════════════════════════
@@ -8029,6 +8079,22 @@ function pcTab(name, btn){
   /* hide Google's recenter control on phones (it collides with the bottom-right button; pinch-to-zoom still works) */
   button[title="Map camera controls"]{display:none !important;}
 }
+/* ===== Section filters + button-at-bottom layout ===== */
+.bm-tools{flex-shrink:0;display:flex;gap:6px;padding:8px 10px 4px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.bm-tools::-webkit-scrollbar{display:none}
+.bm-chip{flex-shrink:0;display:inline-flex;align-items:center;gap:4px;padding:6px 11px;border:1px solid var(--border);border-radius:100px;background:#fff;color:var(--muted);cursor:pointer;font-size:11.5px;font-weight:700;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:all .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.bm-chip:hover{border-color:var(--gold)}
+.bm-chip.active{background:linear-gradient(135deg,#EEAD0E,#8B6508);color:#000033;border-color:#8B6508;box-shadow:0 2px 8px rgba(205,149,12,.3)}
+.bm-chip.view.active{background:linear-gradient(135deg,#1A2FA0,#0C1B6B);color:#fff;border-color:#0C1B6B}
+.bm-heart{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(238,241,255,.92);cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;color:#9aa6cf;z-index:2;touch-action:manipulation;}
+.bm-heart.on{color:#E0245E}
+.listing-card-sm{position:relative}
+/* split each panel into sections; list scrolls, create button pinned at bottom */
+#left-panel, #sidebar{display:flex !important;flex-direction:column !important;}
+.lp-urgent-section, .lp-find-section, #listings-section, #stores-section{flex:1 1 0 !important;min-height:0 !important;display:flex !important;flex-direction:column !important;}
+#urgent-list, #find-list, #sb-list, #stores-list{flex:1 1 auto !important;min-height:0 !important;overflow-y:auto !important;}
+.lp-urgent-section > .sec-action, .lp-find-section > .sec-action, #listings-section > .sec-action, #stores-section > .sec-action{flex-shrink:0;margin:6px 12px 10px !important;width:calc(100% - 24px);}
+.lp-actions, .rp-actions{display:none !important;}
 </style>
 <button class="xtab xtab-left" id="xtab-left" aria-label="Show requests"><span>🙋</span><span class="xar">›</span></button>
 <button class="xtab xtab-right" id="xtab-right" aria-label="Show stores"><span>🏪</span><span class="xar">‹</span></button>
