@@ -2250,6 +2250,16 @@ try {
 .fp-stat-num{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:#EEAD0E;line-height:1}
 .fp-stat-lbl{font-size:9.5px;font-weight:700;color:rgba(255,255,255,.65);margin-top:2px}
 @media(max-width:600px){ .float-profile-bar{gap:9px !important;padding:7px 11px !important;max-width:96vw} .fp-rank{display:none} .fp-stat{padding:3px 9px} .fp-stat-num{font-size:18px} }
+/* Guest vs member modes on the floating profile bar */
+.fp-guest{display:flex;align-items:center;gap:10px}
+.fp-member{display:flex;align-items:center;gap:14px}
+.fp-avatar-empty{background:linear-gradient(135deg,#2a3566,#161f45) !important;color:rgba(255,255,255,.75) !important;font-size:22px !important}
+.fp-auth-btn{font-family:'DM Sans',sans-serif;font-weight:800;font-size:14px;padding:11px 22px;border-radius:12px;cursor:pointer;transition:all .15s;white-space:nowrap;line-height:1}
+.fp-auth-login{background:transparent;color:#EEAD0E;border:1.5px solid rgba(205,149,12,.55)}
+.fp-auth-login:hover{background:rgba(205,149,12,.14)}
+.fp-auth-join{background:linear-gradient(135deg,var(--gold-lt),var(--gold-dk));color:#000033;border:none;box-shadow:0 4px 14px rgba(205,149,12,.35)}
+.fp-auth-join:hover{filter:brightness(1.06);transform:translateY(-1px)}
+@media(max-width:600px){ .fp-auth-btn{padding:11px 18px;font-size:13.5px} .fp-guest{gap:8px} }
 
 /* ===== PROFILE PAGE ===== */
 .profile-overlay{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,30,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
@@ -2668,22 +2678,31 @@ try {
       <button onclick="openModal('store-register')">🏪 Register My Store</button>
     </div>
     <!-- ── FLOATING PROFILE MENU BAR ── -->
-    <div class="float-profile-bar" id="float-profile-bar" onclick="openProfile()">
-      <button class="fp-identity" id="fpb-profile-btn">
-        <div class="fp-avatar-wrap">
-          <div class="fp-avatar" id="fpb-avatar">ME</div>
-          <div class="fp-level">5</div>
+    <div class="float-profile-bar" id="float-profile-bar">
+      <!-- GUEST view: empty avatar + Log in / Join -->
+      <div class="fp-guest" id="fp-guest">
+        <div class="fp-avatar-wrap"><div class="fp-avatar fp-avatar-empty">👤</div></div>
+        <button class="fp-auth-btn fp-auth-login" onclick="event.stopPropagation();fpOpenLogin()">Log in</button>
+        <button class="fp-auth-btn fp-auth-join" onclick="event.stopPropagation();fpOpenJoin()">Join</button>
+      </div>
+      <!-- MEMBER view: real identity + stats (shown after sign-in) -->
+      <div class="fp-member" id="fp-member" style="display:none">
+        <button class="fp-identity" id="fpb-profile-btn" onclick="event.stopPropagation();openProfile()">
+          <div class="fp-avatar-wrap">
+            <div class="fp-avatar" id="fpb-avatar">ME</div>
+            <div class="fp-level">5</div>
+          </div>
+          <div class="fp-id-text">
+            <div class="fp-name" id="fpb-name">My Account</div>
+            <div class="fp-rank">⭐ Trusted Helper</div>
+          </div>
+        </button>
+        <div class="fp-divider"></div>
+        <div class="fp-stats">
+          <div class="fp-stat"><div class="fp-stat-num" id="fpb-trust-pts">120</div><div class="fp-stat-lbl">🤝 Trust</div></div>
+          <div class="fp-stat"><div class="fp-stat-num">47</div><div class="fp-stat-lbl">🙌 Helped</div></div>
+          <div class="fp-stat"><div class="fp-stat-num">4.9</div><div class="fp-stat-lbl">⭐ Rating</div></div>
         </div>
-        <div class="fp-id-text">
-          <div class="fp-name" id="fpb-name">My Account</div>
-          <div class="fp-rank">⭐ Trusted Helper</div>
-        </div>
-      </button>
-      <div class="fp-divider"></div>
-      <div class="fp-stats">
-        <div class="fp-stat"><div class="fp-stat-num" id="fpb-trust-pts">120</div><div class="fp-stat-lbl">🤝 Trust</div></div>
-        <div class="fp-stat"><div class="fp-stat-num">47</div><div class="fp-stat-lbl">🙌 Helped</div></div>
-        <div class="fp-stat"><div class="fp-stat-num">4.9</div><div class="fp-stat-lbl">⭐ Rating</div></div>
       </div>
       <span id="fpb-nick" style="display:none"></span>
       <span id="fpb-cash-pts" style="display:none"></span>
@@ -4367,16 +4386,8 @@ window.addEventListener('load', () => {
   ['auth-window','preview-label','guest-teaser'].forEach(id => { const e = document.getElementById(id); if (e) e.classList.add('hidden'); });
   const sbl = document.getElementById('sb-list'); if (sbl) sbl.classList.remove('guest-restricted');
   const postBtn = document.querySelector('.btn-post'); if (postBtn) postBtn.style.opacity = '1';
-  // Give guests a clear, always-visible way to sign in when they want to
-  if (typeof SB_USER === 'undefined' || !SB_USER) {
-    const topbarRight = document.querySelector('.topbar-right');
-    if (topbarRight && !document.querySelector('.guest-join-btn')) {
-      const b = document.createElement('button');
-      b.className = 'guest-join-btn'; b.textContent = '👤 Join / Sign in';
-      b.onclick = openAuthGate;
-      topbarRight.insertBefore(b, topbarRight.firstChild);
-    }
-  }
+  // Auth entry now lives on the floating profile bar (Log in / Join) — visible on mobile + desktop
+  if (typeof setProfileBarMode === 'function') setProfileBarMode(!!(typeof SB_USER !== 'undefined' && SB_USER));
 });
 
 // Open the sign-in / join window on demand
@@ -4426,23 +4437,9 @@ function dismissAuth() {
   overlay.style.background = 'rgba(10,16,32,.15)';
   overlay.style.backdropFilter = 'blur(0px)';
   overlay.style.pointerEvents = 'none';   // let guests actually use the map/buttons/panels
-  // Show topbar join button
-  const topbarRight = document.querySelector('.topbar-right');
-  if (topbarRight) {
-    const joinBtn = document.createElement('button');
-    joinBtn.className = 'guest-join-btn';
-    joinBtn.textContent = '👤 Join Free';
-    joinBtn.onclick = () => {
-      win.classList.remove('hidden');
-      win.classList.remove('minimized');
-      overlay.style.background = 'rgba(10,16,32,.55)';
-      overlay.style.backdropFilter = 'blur(3px)';
-      overlay.style.pointerEvents = 'auto';   // block map behind while signup is open again
-      joinBtn.remove();
-    };
-    topbarRight.insertBefore(joinBtn, topbarRight.firstChild);
-  }
-  showToast('Browsing as guest — some features are limited');
+  // Auth entry lives on the floating profile bar (Log in / Join) — no extra topbar button needed
+  if (typeof setProfileBarMode === 'function') setProfileBarMode(false);
+  showToast('Browsing as guest — tap Log in or Join anytime');
 }
 
 // ── DISMISS AFTER LOGIN (full access) ─────────────────────────
@@ -6243,9 +6240,10 @@ function requirePhone(actionKey, callback) {
     callback();
     return;
   }
-  // If not logged in at all, show auth first
+  // If not logged in at all, show the sign-up / log-in screen first
   if (typeof SB_USER === 'undefined' || !SB_USER) {
-    openModal('auth');
+    if (typeof openAuthGate === 'function') openAuthGate();   // reveal the real auth window (Google / Facebook / email)
+    else openModal('auth');
     showToast('Please sign in first!');
     return;
   }
@@ -7170,7 +7168,7 @@ window.submitPostRequest = function() {
   </div>
 
   <!-- GOOGLE — Big prominent button -->
-  <button onclick="awSocialSignup('Google')" style="
+  <button onclick="awSocialLogin('Google')" style="
     width:100%;padding:16px;margin-bottom:12px;
     background:var(--white);
     border:2px solid var(--border);
@@ -7187,7 +7185,7 @@ window.submitPostRequest = function() {
   </button>
 
   <!-- FACEBOOK — Big prominent button -->
-  <button onclick="awSocialSignup('Facebook')" style="
+  <button onclick="awSocialLogin('Facebook')" style="
     width:100%;padding:16px;margin-bottom:20px;
     background:linear-gradient(135deg,#1877F2,#0C5DC7);
     border:none;border-radius:14px;
@@ -7579,6 +7577,14 @@ function onSignedIn() {
   document.querySelector('.guest-join-btn')?.remove();
   const _aw = document.getElementById('auth-window'); if (_aw) _aw.classList.add('hidden');
   const _ov = document.getElementById('guest-overlay'); if (_ov) { _ov.style.display = 'none'; _ov.style.pointerEvents = 'none'; }
+  // Switch the floating profile bar to the signed-in view and fill the identity
+  if (typeof setProfileBarMode==='function') setProfileBarMode(true);
+  (function(){
+    const nm = (SB_PROFILE && (SB_PROFILE.nickname || SB_PROFILE.first_name)) || (SB_USER && SB_USER.email) || 'Member';
+    const av = document.getElementById('fpb-avatar'); if (av) av.textContent = (String(nm)[0]||'M').toUpperCase();
+    const fn = document.getElementById('fpb-name');
+    if (fn) fn.textContent = (SB_PROFILE && SB_PROFILE.nickname) ? ('@'+SB_PROFILE.nickname) : ((SB_PROFILE && SB_PROFILE.first_name) || (SB_USER && SB_USER.email) || 'My Account');
+  })();
   if (!SB_PROFILE) return;
   // Fill the app's user object from the real profile
   if (typeof AW_USER === 'object') {
@@ -7629,6 +7635,8 @@ async function sbSignOut() {
   if (!sb) return;
   await sb.auth.signOut();
   SB_USER = null; SB_PROFILE = null;
+  IS_GUEST = true;
+  if (typeof setProfileBarMode==='function') setProfileBarMode(false);   // back to Log in / Join on the profile bar
   showToast('Signed out');
 }
 
@@ -7917,7 +7925,21 @@ window.addEventListener('load', () => { setTimeout(() => { if (document.querySel
 </div>
 
 <script>
-function openProfile(){ var o=document.getElementById('profile-overlay'); if(o) o.classList.add('open'); }
+function openProfile(){
+  // Guests have no profile yet — nudge them to join instead of opening an empty card
+  const g=document.getElementById('fp-guest');
+  if(g && g.style.display!=='none'){ fpOpenJoin(); return; }
+  var o=document.getElementById('profile-overlay'); if(o) o.classList.add('open');
+}
+// Profile-bar auth buttons
+function fpOpenLogin(){ if(typeof openAuthGate==='function') openAuthGate(); if(typeof awShowTab==='function') awShowTab('login'); }
+function fpOpenJoin(){ if(typeof openAuthGate==='function') openAuthGate(); if(typeof awShowTab==='function') awShowTab('signup'); }
+// Toggle the profile bar between guest (Log in / Join) and signed-in (identity + stats)
+function setProfileBarMode(signedIn){
+  const g=document.getElementById('fp-guest'), m=document.getElementById('fp-member');
+  if(g) g.style.display = signedIn ? 'none' : 'flex';
+  if(m) m.style.display = signedIn ? 'flex' : 'none';
+}
 function closeProfile(){ var o=document.getElementById('profile-overlay'); if(o) o.classList.remove('open'); }
 function pcTab(name, btn){
   ['profile','posts','alerts'].forEach(function(p){ var el=document.getElementById('pane-'+p); if(el) el.style.display=(p===name)?'block':'none'; });
