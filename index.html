@@ -2118,6 +2118,52 @@ html{scroll-behavior:smooth;}
 .onb-icon-go{background:linear-gradient(145deg,#0d2a1a,#0d4423);}
 .onb-icon svg{filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));}
 .onb-feat-ic{width:24px;display:flex;align-items:center;justify-content:center;}
+
+/* ===== SELL FORM (ported from approved demo) ===== */
+.sf-hint{font-size:12.5px;color:var(--muted);margin:0 0 16px;line-height:1.5}
+.sf-sec{margin-bottom:20px}
+.sf-sec-t{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--navy);margin-bottom:11px}
+.sf-sec-t .sf-n{width:20px;height:20px;border-radius:50%;background:var(--grad-gold);color:var(--navy);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sf-req{color:var(--red)}
+.sf-opt{color:var(--muted);font-weight:600;text-transform:none;letter-spacing:0;font-size:11px}
+label.sf-fl{display:block;font-size:12px;font-weight:700;color:var(--navy);margin:11px 0 5px;text-transform:none;letter-spacing:0}
+.sf-inp{width:100%;border:1.5px solid var(--border);border-radius:11px;padding:11px 13px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--navy);background:#fff;outline:none}
+.sf-inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(227,168,16,.12)}
+select.sf-inp{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7bb0' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
+.sf-row2{display:flex;gap:11px}.sf-row2>*{flex:1;min-width:0}
+.sf-chips{display:flex;gap:8px;flex-wrap:wrap}
+.sf-chip{padding:9px 14px;border:1.5px solid var(--border);border-radius:11px;background:#fff;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--navy);transition:all .15s}
+.sf-chip.on{background:rgba(227,168,16,.1);border-color:var(--gold);color:var(--gold-dk)}
+.sf-tog{display:inline-flex;align-items:center;gap:10px;margin-top:11px;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;user-select:none}
+.sf-sw{width:42px;height:24px;border-radius:100px;background:var(--border);position:relative;flex-shrink:0;transition:background .2s}
+.sf-sw.on{background:var(--gold)}
+.sf-sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
+.sf-sw.on::after{left:20px}
+.sf-loc-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.sf-loc-b{flex:1;min-width:108px;display:flex;align-items:center;justify-content:center;gap:6px;border:1.5px solid var(--border);border-radius:11px;padding:10px;font-size:12.5px;font-weight:700;background:#fff;cursor:pointer;color:var(--navy);transition:all .15s}
+.sf-loc-b.on{border-color:var(--navy);background:rgba(23,60,136,.06);color:var(--navy)}
+.sf-deal{display:flex;flex-direction:column;gap:9px}
+.sf-deal-row{display:flex;align-items:center;gap:11px;border:1.5px solid var(--border);border-radius:12px;padding:11px 13px;cursor:pointer;transition:all .15s}
+.sf-deal-row.on{border-color:var(--gold);background:rgba(227,168,16,.06)}
+.sf-deal-row .sf-ic{font-size:20px;line-height:1}
+.sf-deal-row .sf-d{flex:1}
+.sf-deal-row .sf-d b{font-size:13px;font-weight:700;color:var(--navy);display:block}
+.sf-deal-row .sf-d span{font-size:11.5px;color:var(--muted)}
+.sf-box{width:22px;height:22px;border-radius:7px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700}
+.sf-deal-row.on .sf-box{background:var(--gold);border-color:var(--gold)}
+.sf-range-wrap{margin:2px 0 4px;padding:9px 11px;background:var(--cream2);border-radius:11px}
+.sf-range-wrap input[type=range]{width:100%;accent-color:var(--gold);margin:0}
+.sf-range-lbl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:5px}
+.sf-range-val{color:var(--gold-dk);font-weight:800}
+.sf-prefix{position:relative}
+.sf-prefix .sf-pf{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted);pointer-events:none}
+.sf-prefix .sf-inp{padding-left:28px}
+.sf-cc{display:flex;gap:8px}.sf-cc select{flex:0 0 100px}
+.sf-postbtn{width:100%;line-height:1.3}
+.sf-postbtn small{display:block;font-weight:600;font-size:11px;color:#6a4e00;margin-top:2px}
+/* reuse the real photo uploader but hide its own header (we add a numbered one) */
+.sf-wrap .img-upload-label{display:none}
+.sf-wrap .img-upload-section{margin:0}
 </style>
 
   <!-- Service Worker Registration -->
@@ -2473,7 +2519,7 @@ try {
   </nav>
   <div class="topbar-right">
     <a href="live.html" style="display:inline-flex;align-items:center;gap:5px;background:var(--live-red);color:#fff;border-radius:9px;padding:7px 13px;font-size:12px;font-weight:700;text-decoration:none;letter-spacing:0.5px;box-shadow:0 2px 10px rgba(255,59,48,0.3);transition:all .2s;white-space:nowrap;flex-shrink:0" onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">🔴 Live</a>
-    <button class="btn-post" onclick="PS={suggestions:[],loading:false,source:'',timer:null};S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};openModal('post')">➕ Post Listing</button>
+    <button class="btn-post" onclick="resetPostForm();openModal('post')">➕ Sell an Item</button>
     <div class="trust-pts-badge" onclick="openModal('trust-points')" title="Trust Points"><span>🤝</span><span class="trust-pts-num" id="trust-pts">120</span><span class="trust-pts-lbl">Trust</span></div>
     <div class="pts-badge" onclick="openModal('points')" title="Your Points">
       <span>⭐</span><span class="pts-num" id="pts-display">47</span><span class="pts-lbl">pts = ₱<span id="pts-cash">47</span></span>
@@ -2569,7 +2615,7 @@ try {
   </div>
   <div class="nm-fab-wrap nm-ul"><button class="nm-fab" style="background:linear-gradient(135deg,#9B2D1F,#6B1E14)" onclick="openPostRequest('urgent')">⚡</button><span class="nm-fab-lbl">Urgent</span></div>
   <div class="nm-fab-wrap nm-ll"><button class="nm-fab" style="background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810)" onclick="openPostRequest('find')">🔍</button><span class="nm-fab-lbl">Find Me</span></div>
-  <div class="nm-fab-wrap nm-ur"><button class="nm-fab" style="background:linear-gradient(135deg,#2550b8,#173c88)" onclick="openModal('post')">🏷️</button><span class="nm-fab-lbl">Sell Item</span></div>
+  <div class="nm-fab-wrap nm-ur"><button class="nm-fab" style="background:linear-gradient(135deg,#2550b8,#173c88)" onclick="resetPostForm();openModal('post')">🏷️</button><span class="nm-fab-lbl">Sell Item</span></div>
   <div class="nm-fab-wrap nm-lr"><button class="nm-fab" style="background:linear-gradient(135deg,#1A6B3A,#0d4423)" onclick="openModal('store-register')">🏪</button><span class="nm-fab-lbl">Register Store</span></div>
 
     <div id="map"></div>
@@ -2757,7 +2803,7 @@ try {
     </div>
     <div class="listings-list" id="sb-list"></div>
     <div id="store-detail-panel"></div>
-    <button class="sec-action sa-sell" onclick="openModal('post')">🏷️ List an Item</button>
+    <button class="sec-action sa-sell" onclick="resetPostForm();openModal('post')">🏷️ List an Item</button>
   </div>
 
   <!-- ACTIONS (bottom) -->
@@ -2790,7 +2836,7 @@ try {
       <span class="ra-label">Register Store</span>
       <span class="ra-sub">Get on the map</span>
     </button>
-    <button class="rp-action-btn post-item-btn" onclick="openModal('post')">
+    <button class="rp-action-btn post-item-btn" onclick="resetPostForm();openModal('post')">
       <span class="ra-icon">➕</span>
       <span class="ra-label">List an Item</span>
       <span class="ra-sub">Sell or buy</span>
@@ -2896,7 +2942,7 @@ let S = {
   selectedId:null, selectedType:null,
   saved:[], points:47,
   postType:"sell",
-  form:{title:"",category:"Electronics",price:"",location:"",desc:"",contact:""},
+  form:{title:"",category:"Electronics",price:"",location:"",desc:"",contact:"",image:"",imageUrl:"",brand:"",images:[],condition:"",negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:"",cc:"+63",lat:null,lng:null},
   storeForm:{name:"",address:"",contact:"",hours:"",categories:"Electronics",products:""},
   helpForm:{item:"",category:"Electronics"},
   helpReplyForm:{store:"",address:"",msg:""},
@@ -3320,6 +3366,7 @@ function renderAll() {
   renderSidebarSkeleton();
   renderFeaturedBanner();
   renderLeftPanel();
+  if (typeof renderRightPanel === 'function') renderRightPanel(); // stores/listings panel
   requestAnimationFrame(() => {
     renderSidebar();
     buildMarkers();
@@ -3339,15 +3386,19 @@ function renderSidebarSkeleton() {
 }
 
 function renderSidebar() {
+  // NOTE: several elements below belong to the legacy desktop sidebar and may
+  // not exist in the current mobile-first layout. Every lookup is null-guarded
+  // so a missing element never throws and aborts renderAll()/buildMarkers().
+
   // Category pills
   const catEl = document.getElementById('cat-scroll');
-  catEl.innerHTML = CATS.map(c =>
+  if (catEl) catEl.innerHTML = CATS.map(c =>
     `<button class="cat-pill ${S.category===c?'active':''}" onclick="setCat('${c}')">${CAT_ICONS[c]} ${c}</button>`
   ).join('');
 
   // Type buttons
   const typeRow = document.getElementById('type-row');
-  typeRow.querySelectorAll('.type-btn').forEach((b,i) => {
+  if (typeRow) typeRow.querySelectorAll('.type-btn').forEach((b,i) => {
     const tabs = ['all','sell','buy','stores','help'];
     b.className = 'type-btn' + (S.tab===tabs[i]?' active':'') + (i===3?' red-t':'') + (i===4?' pur-t':'');
   });
@@ -3363,33 +3414,39 @@ function renderSidebar() {
   else if (S.tab==='help') { items = getHelpFiltered(); type='help'; }
   else items = getFiltered();
 
-  document.getElementById('result-count').textContent = `${items.length} result${items.length!==1?'s':''} within ${S.radius}km`;
+  const countEl = document.getElementById('result-count');
+  if (countEl) countEl.textContent = `${items.length} result${items.length!==1?'s':''} within ${S.radius}km`;
 
   const list = document.getElementById('sb-list');
-  if (items.length === 0) {
-    list.innerHTML = `<div style="text-align:center;padding:40px 16px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">🔎</div><div style="font-weight:700">Nothing found</div><div style="font-size:12px;margin-top:4px">Try adjusting search or radius</div></div>`;
-  } else {
-    list.innerHTML = items.map(item => {
-      if (type==='store') return buildStoreCard(item);
-      if (type==='help') return buildHelpCard(item);
-      return buildListingCard(item);
-    }).join('');
-    if (S.tab==='help') {
-      list.innerHTML += `<button class="btn-red-full" style="margin-top:4px;border-radius:10px" onclick="openModal('help-request')">🆘 Post a Help Request</button>`;
+  if (list) {
+    if (items.length === 0) {
+      list.innerHTML = `<div style="text-align:center;padding:40px 16px;color:var(--muted)"><div style="font-size:36px;margin-bottom:10px">🔎</div><div style="font-weight:700">Nothing found</div><div style="font-size:12px;margin-top:4px">Try adjusting search or radius</div></div>`;
+    } else {
+      list.innerHTML = items.map(item => {
+        if (type==='store') return buildStoreCard(item);
+        if (type==='help') return buildHelpCard(item);
+        return buildListingCard(item);
+      }).join('');
+      if (S.tab==='help') {
+        list.innerHTML += `<button class="btn-red-full" style="margin-top:4px;border-radius:10px" onclick="openModal('help-request')">🆘 Post a Help Request</button>`;
+      }
     }
   }
 
   // Store detail panel
   const sdp = document.getElementById('store-detail-panel');
-  if (S.selectedType==='store' && S.selectedId) {
-    const s = stores.find(x=>x.id===S.selectedId);
-    if (s) sdp.innerHTML = buildStoreDetailPanel(s);
-    else sdp.innerHTML = '';
-  } else sdp.innerHTML = '';
+  if (sdp) {
+    if (S.selectedType==='store' && S.selectedId) {
+      const s = stores.find(x=>x.id===S.selectedId);
+      sdp.innerHTML = s ? buildStoreDetailPanel(s) : '';
+    } else sdp.innerHTML = '';
+  }
 
   // Points display
-  document.getElementById('pts-display').textContent = S.points;
-  document.getElementById('pts-cash').textContent = S.points;
+  const ptsEl = document.getElementById('pts-display');
+  if (ptsEl) ptsEl.textContent = S.points;
+  const cashEl = document.getElementById('pts-cash');
+  if (cashEl) cashEl.textContent = S.points;
 }
 
 function buildListingCard(l) {
@@ -3538,24 +3595,38 @@ function cashOut() {
 
 function submitPost() {
   const f=S.form;
-  if (!f.title||!f.price||!f.contact) { showToast('⚠️ Fill in required fields.', 'error'); return; }
+  // Validate in form order so the toast points to the first gap.
+  if (!f.title) { showToast('⚠️ What are you selling? Add an item name.', 'error'); return; }
+  if (!(f.images && f.images.length)) { showToast('⚠️ Add at least one photo.', 'error'); return; }
+  if (!f.condition) { showToast('⚠️ Choose the item condition.', 'error'); return; }
+  if (!f.price) { showToast('⚠️ Set your price.', 'error'); return; }
+  if (!(f.meetup||f.deliver||f.pickup)) { showToast('⚠️ Choose how buyers can get it.', 'error'); return; }
+  if (!f.contact) { showToast('⚠️ Add your contact number.', 'error'); return; }
   // Final step: verify the contact number before the listing goes live.
   // (Runs straight through if already verified this session.)
   requirePhone('post', () => {
     const btn = document.querySelector('.post-submit-btn');
     if (btn) { btn.classList.add('btn-loading'); btn.innerHTML = '<div class="spinner spinner-sm"></div> Posting...'; }
     setTimeout(() => {
+    const condLabel={new:'Brand new',likenew:'Like new',good:'Used — good',fair:'Used — fair'}[f.condition]||'';
+    const deal=[f.meetup&&'Meet-up',f.deliver&&'Delivery',f.pickup&&'Pickup'].filter(Boolean).join(' · ');
     listings=[{
-      id:Date.now(),type:S.postType,...f,price:Number(f.price),
-      [S.postType==='sell'?'seller':'buyer']:'You',
-      avatar:'ME',
-      image: f.image||(S.postType==='sell'?'🛍️':'🔍'),
-      imageUrl: f.imageUrl||'',
+      id:Date.now(), type:'sell',
+      title:f.title, category:f.category, price:Number(f.price),
+      desc:f.desc, brand:f.brand,
+      location:f.location, contact:(f.cc?f.cc+' ':'')+f.contact,
+      condition:f.condition, conditionLabel:condLabel,
+      negotiable:f.negotiable, quantity:Number(f.quantity)||1,
+      meetup:f.meetup, deliver:f.deliver, pickup:f.pickup, sellRadius:f.sellRadius, dealLabel:deal,
+      reason:f.reason,
+      seller:'You', avatar:'ME',
+      image: f.image||'🛍️',
+      imageUrl: (f.images&&f.images[0]) || f.imageUrl || '',
       rating:5.0,
-      lat:USER.lat+(Math.random()-.5)*.015,lng:USER.lng+(Math.random()-.5)*.015
+      lat:(f.lat!=null?f.lat:USER.lat+(Math.random()-.5)*.015),
+      lng:(f.lng!=null?f.lng:USER.lng+(Math.random()-.5)*.015)
     },...listings];
-    PS.suggestions=[]; PS.loading=false;
-    S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};
+    resetPostForm();
     closeModal(); renderAll(); showToast('✅ Listing posted!', 'success');
     }, 800); // simulate network delay
   });
@@ -3618,8 +3689,18 @@ function closeModal() { S.modal=null; document.getElementById('modal-root').inne
 function renderModal() {
   const root=document.getElementById('modal-root');
   if (!S.modal) { root.innerHTML=''; return; }
+  // Preserve scroll position and the focused field across a full re-render,
+  // so typing in the search box and scrolling a long form don't jump to the top.
+  const prevModal=root.querySelector('.modal');
+  const prevScroll=prevModal?prevModal.scrollTop:0;
+  const ae=document.activeElement;
+  const focusId=(ae&&ae.id)?ae.id:null;
+  const caret=(ae&&typeof ae.selectionStart==='number')?ae.selectionStart:null;
   const builders={detail:buildDetailModal,post:buildPostModal,'help-request':buildHelpRequestModal,'help-detail':buildHelpDetailModal,points:buildPointsModal,'store-register':buildStoreRegisterModal,boost:buildBoostModal,'boost-info':buildBoostInfoModal,admin:buildAdminModal,'trust-points':buildTrustPointsModal,'post-request':buildPostRequestModal};
   root.innerHTML = (builders[S.modal]||(() => ''))();
+  const newModal=root.querySelector('.modal');
+  if (newModal) newModal.scrollTop=prevScroll;
+  if (focusId){ const el=document.getElementById(focusId); if(el){ el.focus(); if(caret!=null&&el.setSelectionRange){ try{ el.setSelectionRange(caret,caret); }catch(e){} } } }
 }
 
 function buildDetailModal() {
@@ -3655,122 +3736,149 @@ function buildDetailModal() {
 }
 
 function buildPostModal() {
-  const pt=S.postType, f=S.form;
-  const hasProduct = !!(f.title && f.image);
+  const f=S.form;
+  const cond=f.condition||'';
+  const condChip=(val,emoji,label)=>`<span class="sf-chip ${cond===val?'on':''}" onclick="sfSetCondition(this,'${val}')">${emoji} ${label}</span>`;
+  const dealRow=(key,emoji,title,sub)=>{const on=!!f[key];return `<div class="sf-deal-row ${on?'on':''}" onclick="sfToggleDeal(this,'${key}')"><span class="sf-ic">${emoji}</span><div class="sf-d"><b>${title}</b><span>${sub}</span></div><div class="sf-box">${on?'✓':''}</div></div>`;};
+  const ccOpts=['🇵🇭 +63','🇸🇬 +65','🇮🇩 +62','🇲🇾 +60','🇹🇭 +66','🇻🇳 +84','🇦🇺 +61','🇬🇧 +44','🇺🇸 +1'];
   return `<div class="overlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal" style="width:600px" onclick="event.stopPropagation()">
+    <div class="modal" style="width:600px;max-width:calc(100vw - 24px)" onclick="event.stopPropagation()">
       <button class="close-btn" onclick="closeModal()">✕</button>
       <div class="modal-head">
-        <div class="modal-title">Create a Listing</div>
-        <div class="modal-sub">Start typing a product name — we'll auto-fill the details for you.</div>
+        <div class="modal-title">🛍️ Sell an Item</div>
       </div>
       <div class="modal-body">
-        <div class="type-toggle">
-          <button class="t-btn ${pt==='sell'?'active':''}" onclick="S.postType='sell';renderModal()">🛍️ I'm Selling</button>
-          <button class="t-btn ${pt==='buy'?'active':''}" onclick="S.postType='buy';renderModal()">🔍 I'm Looking For</button>
-        </div>
+       <div class="sf-wrap">
+        <p class="sf-hint">Start typing the product name and we'll auto-fill the details. Just the <span style="color:var(--gold-dk);font-weight:700">⭐</span> fields are required.</p>
 
-        <!-- SMART SEARCH BOX -->
-        <div class="form-group full" style="position:relative">
-          <label class="form-label">🔍 Search Product Database *</label>
+        <!-- 1. WHAT ARE YOU SELLING -->
+        <div class="sf-sec">
+          <div class="sf-sec-t"><span class="sf-n">1</span> What are you selling? <span class="sf-req">⭐</span></div>
+          <label class="sf-fl">Item name <span class="sf-opt">— type to search &amp; auto-fill</span></label>
           <div style="position:relative">
-            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none">🔍</span>
-            <input class="form-input" id="product-search-inp" type="text"
-              value="${esc(f.title)}"
-              placeholder="e.g. iPhone, Milo, Airfryer, T-shirt..."
-              style="padding-left:38px;padding-right:${PS.loading?'38px':'12px'}"
-              oninput="onProductSearch(this.value)"
-              autocomplete="off">
+            <input class="sf-inp" id="product-search-inp" type="text" value="${esc(f.title)}" placeholder="e.g. iPhone, Milo, Airfryer, T-shirt..." oninput="onProductSearch(this.value)" autocomplete="off" style="padding-right:${PS.loading?'34px':'13px'}">
             ${PS.loading?`<span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px;animation:pulse 1s infinite">⏳</span>`:''}
-          </div>
-
-          <!-- SUGGESTIONS DROPDOWN -->
-          ${PS.suggestions.length>0?`
-          <div id="suggestions-box" style="position:absolute;top:100%;left:0;right:0;background:#fff;border:2px solid var(--gold);border-radius:12px;box-shadow:var(--shadow-lg);z-index:3000;max-height:280px;overflow-y:auto;margin-top:4px">
-            <div style="padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)">${PS.source==='food'?'🥫 Open Food Facts':'🛒 Product Database'} — ${PS.suggestions.length} results</div>
-            ${PS.suggestions.map((p,i)=>`
-              <div onclick="applyProduct(${i})" style="display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)" onmouseover="this.style.background='var(--cream2)'" onmouseout="this.style.background='#fff'">
-                <div style="width:44px;height:44px;border-radius:9px;background:var(--cream2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">
-                  ${p.image?`<img src="${esc(p.image)}" style="width:44px;height:44px;object-fit:contain;border-radius:9px" onerror="this.style.display='none';this.nextSibling.style.display='flex'" /><span style="display:none;font-size:22px">${p.emoji||'📦'}</span>`:`<span style="font-size:22px">${p.emoji||'📦'}</span>`}
-                </div>
-                <div style="flex:1;min-width:0">
-                  <div style="font-weight:700;font-size:13px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.title)}</div>
-                  <div style="display:flex;gap:6px;margin-top:3px;align-items:center">
-                    <span class="badge b-cat" style="font-size:9px">${esc(p.category)}</span>
-                    ${p.brand?`<span style="font-size:10px;color:var(--muted)">${esc(p.brand)}</span>`:''}
+            ${PS.suggestions.length>0?`
+            <div id="suggestions-box" style="position:absolute;top:100%;left:0;right:0;background:#fff;border:2px solid var(--gold);border-radius:12px;box-shadow:var(--shadow-lg);z-index:3000;max-height:260px;overflow-y:auto;margin-top:4px">
+              <div style="padding:8px 12px;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border)">${PS.source==='food'?'🥫 Open Food Facts':'🛒 Product Database'} — ${PS.suggestions.length} results</div>
+              ${PS.suggestions.map((p,i)=>`
+                <div onclick="applyProduct(${i})" style="display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border)" onmouseover="this.style.background='var(--cream2)'" onmouseout="this.style.background='#fff'">
+                  <div style="width:42px;height:42px;border-radius:9px;background:var(--cream2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">
+                    ${p.image?`<img src="${esc(p.image)}" style="width:42px;height:42px;object-fit:contain;border-radius:9px" onerror="this.style.display='none';this.nextSibling.style.display='flex'" /><span style="display:none;font-size:20px">${p.emoji||'📦'}</span>`:`<span style="font-size:20px">${p.emoji||'📦'}</span>`}
                   </div>
-                  <div style="font-size:11px;color:#888;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc((p.desc||'').slice(0,80))}${(p.desc||'').length>80?'...':''}</div>
-                </div>
-                ${p.suggestedPrice?`<div style="font-family:'Space Mono',monospace;font-size:12px;color:var(--gold);font-weight:700;white-space:nowrap">~₱${p.suggestedPrice.toLocaleString()}</div>`:''}
-              </div>
-            `).join('')}
-          </div>`:''}
-        </div>
-
-        <!-- AUTO-FILLED PREVIEW -->
-        ${hasProduct?`
-        <div style="background:linear-gradient(135deg,#fffdf5,#fff9ec);border:2px solid var(--gold);border-radius:14px;padding:14px;margin-bottom:16px;display:flex;gap:14px;align-items:flex-start">
-          <div style="width:60px;height:60px;border-radius:10px;background:var(--cream2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden">
-            ${f.imageUrl?`<img src="${esc(f.imageUrl)}" style="width:60px;height:60px;object-fit:contain;border-radius:10px" onerror="this.style.display='none'" />`:`<span style="font-size:30px">${f.image||'📦'}</span>`}
+                  <div style="flex:1;min-width:0">
+                    <div style="font-weight:700;font-size:13px;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.title)}</div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.category)}${p.brand?' · '+esc(p.brand):''}</div>
+                  </div>
+                  ${p.suggestedPrice?`<div style="font-size:12px;color:var(--gold-dk);font-weight:700;white-space:nowrap">~₱${p.suggestedPrice.toLocaleString()}</div>`:''}
+                </div>`).join('')}
+            </div>`:''}
           </div>
-          <div style="flex:1">
-            <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:3px">✅ AUTO-FILLED FROM DATABASE</div>
-            <div style="font-weight:700;font-size:14px;color:var(--navy)">${esc(f.title)}</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:2px">${esc(f.category)} ${f.brand?'· '+esc(f.brand):''}</div>
-          </div>
-          <button onclick="clearProduct()" style="background:none;border:none;cursor:pointer;font-size:18px;color:#aaa" title="Clear">✕</button>
-        </div>`:''}
-
-        <!-- REST OF FORM -->
-        \${buildImageUploadUI()}
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">${pt==='sell'?'Your Price (₱) *':'Your Budget (₱) *'}</label>
-            <input class="form-input" type="number" id="f-price" value="${esc(f.price)}" placeholder="e.g. 15000" oninput="S.form.price=this.value">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Category</label>
-            <select class="form-input" onchange="S.form.category=this.value">
-              ${CATS.filter(c=>c!=='All').map(c=>`<option ${f.category===c?'selected':''}>${c}</option>`).join('')}
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">📍 Location *</label>
-            <!-- Location set indicator -->
-            <div class="loc-set-display" id="loc-set-display">
-              <span>📍</span>
-              <span id="loc-set-text">Location set on map</span>
-              <span onclick="clearPinLocation()" style="margin-left:auto;cursor:pointer;color:var(--red);font-size:11px;font-weight:700">✕ Clear</span>
-            </div>
-            <!-- 3 method buttons -->
-            <div class="loc-methods">
-              <button type="button" class="loc-method-btn" onclick="useMyGPS()">
-                <span class="lmb-icon">📍</span> Use My Location
-              </button>
-              <button type="button" class="loc-method-btn" onclick="openPinPicker()">
-                <span class="lmb-icon">🗺️</span> Drop Pin on Map
-              </button>
-              <button type="button" class="loc-method-btn" onclick="typeAddress()">
-                <span class="lmb-icon">✏️</span> Type Address
-              </button>
-            </div>
-            <input class="form-input" type="text" id="f-location" value="${esc(f.location)}" placeholder="e.g. Near SM Clark, Angeles" oninput="S.form.location=this.value;S.form.lat=null;S.form.lng=null;updateLocDisplay()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Contact Number *</label>
-            <input class="form-input" type="text" value="${esc(f.contact)}" placeholder="e.g. 09171234567" oninput="S.form.contact=this.value">
-          </div>
-          <div class="form-group full">
-            <label class="form-label">Description <span style="font-weight:400;color:var(--muted)">(auto-filled, you can edit)</span></label>
-            <textarea class="form-input" rows="3" placeholder="Details about condition, specs, etc." oninput="S.form.desc=this.value" style="resize:vertical">${esc(f.desc)}</textarea>
+          <label class="sf-fl">Description <span class="sf-opt">(optional — auto-fills from search, edit freely)</span></label>
+          <textarea class="sf-inp" rows="3" placeholder="Condition details, specs, what's included..." oninput="S.form.desc=this.value" style="resize:vertical">${esc(f.desc)}</textarea>
+          <div class="sf-row2" style="margin-top:2px">
+            <div><label class="sf-fl">Category</label>
+              <select class="sf-inp" onchange="S.form.category=this.value">${CATS.filter(c=>c!=='All').map(c=>`<option ${f.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
+            <div><label class="sf-fl">Brand <span class="sf-opt">(optional)</span></label>
+              <input class="sf-inp" value="${esc(f.brand||'')}" placeholder="e.g. Sony" oninput="S.form.brand=this.value"></div>
           </div>
         </div>
-        <button class="btn-primary post-submit-btn" onclick="submitPost()">🚀 Post Listing</button>
+
+        <!-- 2. PHOTOS -->
+        <div class="sf-sec">
+          <div class="sf-sec-t"><span class="sf-n">2</span> Photos <span class="sf-req">⭐</span> <span class="sf-opt">— first one is the cover</span></div>
+          ${buildImageUploadUI()}
+        </div>
+
+        <!-- 3. CONDITION -->
+        <div class="sf-sec">
+          <div class="sf-sec-t"><span class="sf-n">3</span> Condition <span class="sf-req">⭐</span></div>
+          <div class="sf-chips">
+            ${condChip('new','✨','Brand new')}
+            ${condChip('likenew','👍','Like new')}
+            ${condChip('good','✅','Used — good')}
+            ${condChip('fair','🩹','Used — fair')}
+          </div>
+        </div>
+
+        <!-- 4. PRICE -->
+        <div class="sf-sec">
+          <div class="sf-sec-t"><span class="sf-n">4</span> Price <span class="sf-req">⭐</span></div>
+          <div class="sf-row2">
+            <div><label class="sf-fl">Your price (₱)</label><div class="sf-prefix"><span class="sf-pf">₱</span><input class="sf-inp" id="f-price" type="number" value="${esc(f.price)}" placeholder="0" oninput="S.form.price=this.value"></div></div>
+            <div><label class="sf-fl">Quantity</label><input class="sf-inp" type="number" min="1" value="${esc(f.quantity||1)}" oninput="S.form.quantity=this.value"></div>
+          </div>
+          <div class="sf-tog" onclick="sfToggleNeg(this)"><div class="sf-sw ${f.negotiable?'on':''}"></div> Price is negotiable</div>
+        </div>
+
+        <!-- 5. WHERE & HOW -->
+        <div class="sf-sec">
+          <div class="sf-sec-t"><span class="sf-n">5</span> Where &amp; how <span class="sf-req">⭐</span></div>
+          <label class="sf-fl">Your location / meet-up point</label>
+          <div class="sf-loc-btns">
+            <button type="button" class="sf-loc-b" onclick="useMyGPS()">📍 Use my location</button>
+            <button type="button" class="sf-loc-b" onclick="openPinPicker()">🗺️ Drop a pin</button>
+            <button type="button" class="sf-loc-b" onclick="typeAddress()">✏️ Type address</button>
+          </div>
+          <div class="loc-set-display" id="loc-set-display"><span>📍</span><span id="loc-set-text">Location set on map</span><span onclick="clearPinLocation()" style="margin-left:auto;cursor:pointer;color:var(--red);font-size:11px;font-weight:700">✕ Clear</span></div>
+          <input class="sf-inp" type="text" id="f-location" value="${esc(f.location)}" placeholder="Area or landmark near you" oninput="S.form.location=this.value;S.form.lat=null;S.form.lng=null;updateLocDisplay()" style="margin-top:4px">
+          <label class="sf-fl">How can buyers get it? <span class="sf-req">⭐</span></label>
+          <div class="sf-deal">
+            ${dealRow('meetup','🤝','Meet up','Meet buyers in person nearby')}
+            <div id="sf-radius-wrap" class="sf-range-wrap" style="${f.meetup?'':'display:none'}">
+              <div class="sf-range-lbl"><span>Willing to travel</span><span class="sf-range-val" id="sf-radius-val">within ${f.sellRadius||5} km</span></div>
+              <input type="range" min="1" max="30" value="${f.sellRadius||5}" oninput="sfSetRadius(this.value)">
+            </div>
+            ${dealRow('deliver','🚚','Can deliver / ship',"You'll bring it or courier it")}
+            ${dealRow('pickup','🚶','Pickup only','Buyer comes to you')}
+          </div>
+        </div>
+
+        <!-- 6. CONTACT -->
+        <div class="sf-sec">
+          <div class="sf-sec-t"><span class="sf-n">6</span> Contact <span class="sf-req">⭐</span></div>
+          <label class="sf-fl">Reason for selling <span class="sf-opt">(optional — builds trust)</span></label>
+          <input class="sf-inp" value="${esc(f.reason||'')}" placeholder="e.g. Upgraded to a newer one" oninput="S.form.reason=this.value">
+          <label class="sf-fl">Contact number</label>
+          <div class="sf-cc">
+            <select class="sf-inp" onchange="S.form.cc=this.value">${ccOpts.map(o=>{const code=o.split(' ')[1];return `<option value="${code}" ${f.cc===code?'selected':''}>${o}</option>`;}).join('')}</select>
+            <input class="sf-inp" type="tel" value="${esc(f.contact)}" placeholder="9XX XXX XXXX" oninput="S.form.contact=this.value">
+          </div>
+        </div>
+       </div>
+      </div>
+      <div style="padding:14px 24px 22px;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--white);border-radius:0 0 18px 18px">
+        <button class="btn-primary post-submit-btn sf-postbtn" onclick="submitPost()">🚀 Post Listing<small>You'll verify this number once, right before it goes live</small></button>
       </div>
     </div>
   </div>`;
 }
+
+// In-place toggles for the Sell form (no full re-render → keeps scroll position)
+function sfSetCondition(el,val){
+  S.form.condition=val;
+  const wrap=el.closest('.sf-chips'); if(wrap) wrap.querySelectorAll('.sf-chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+function sfToggleNeg(el){
+  S.form.negotiable=!S.form.negotiable;
+  const sw=el.querySelector('.sf-sw'); if(sw) sw.classList.toggle('on',S.form.negotiable);
+}
+function sfToggleDeal(el,key){
+  S.form[key]=!S.form[key];
+  el.classList.toggle('on',S.form[key]);
+  const box=el.querySelector('.sf-box'); if(box) box.textContent=S.form[key]?'✓':'';
+  if(key==='meetup'){const rw=document.getElementById('sf-radius-wrap'); if(rw) rw.style.display=S.form.meetup?'':'none';}
+}
+function sfSetRadius(val){
+  S.form.sellRadius=Number(val);
+  const lbl=document.getElementById('sf-radius-val'); if(lbl) lbl.textContent='within '+val+' km';
+}
+// Default shape of the Sell form — location seeds from the user's own detected area (global).
+function postFormDefaults(){
+  return {title:'',category:'Electronics',price:'',location:(typeof USER==='object'&&USER.name)?USER.name:'',desc:'',contact:'',image:'',imageUrl:'',brand:'',images:[],condition:'',negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:'',cc:'+63',lat:null,lng:null};
+}
+function resetPostForm(){ S.form=postFormDefaults(); PS={suggestions:[],loading:false,source:'',timer:null}; }
 
 // ── PRODUCT SEARCH ENGINE ──────────────────────────────────────────────────────
 let PS = { suggestions:[], loading:false, source:'', timer:null };
@@ -7564,7 +7672,7 @@ window.submitPostRequest = function() {
     <span class="mn-icon">🏠</span>
     <span class="mn-label">Browse</span>
   </button>
-  <button class="mn-post" onclick="PS={suggestions:[],loading:false,source:'',timer:null};S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};openModal('post')" title="Post Listing">
+  <button class="mn-post" onclick="resetPostForm();openModal('post')" title="Sell an Item">
     ➕
   </button>
   <button class="mn-btn red-nav" id="mn-urgent" onclick="mobileNav('urgent')">
