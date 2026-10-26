@@ -1739,20 +1739,22 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
   position:fixed;inset:0;
   background:rgba(0,0,51,0.75);
   z-index:3000;
-  display:flex;align-items:flex-end;justify-content:center;
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
   backdrop-filter:blur(4px);
   animation:fadeIn .2s ease;
 }
 .phone-gate{
   background:var(--white);
-  border-radius:24px 24px 0 0;
-  width:100%;max-width:480px;
-  padding:0 0 32px;
-  box-shadow:0 -12px 60px rgba(0,0,51,0.35);
-  border-top:1px solid rgba(255,200,60,0.2);
+  border-radius:20px;
+  width:calc(100% - 8px);max-width:440px;
+  padding:0 0 28px;
+  box-shadow:0 28px 80px rgba(0,0,51,0.45);
+  border:1px solid rgba(255,200,60,0.2);
+  max-height:90vh;overflow-y:auto;
   animation:slideUp .3s cubic-bezier(.32,.72,0,1);
 }
-.pg-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:14px auto 0;}
+.pg-handle{display:none;}
 .pg-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);}
 .pg-icon{font-size:40px;text-align:center;margin-bottom:12px;}
 .pg-title{font-family:'Cinzel',serif;font-size:18px;color:var(--text-dark);text-align:center;margin-bottom:6px;letter-spacing:0.5px;}
@@ -3537,23 +3539,26 @@ function cashOut() {
 function submitPost() {
   const f=S.form;
   if (!f.title||!f.price||!f.contact) { showToast('⚠️ Fill in required fields.', 'error'); return; }
-  // Show loading on button
-  const btn = document.querySelector('.post-submit-btn');
-  if (btn) { btn.classList.add('btn-loading'); btn.innerHTML = '<div class="spinner spinner-sm"></div> Posting...'; }
-  setTimeout(() => {
-  listings=[{
-    id:Date.now(),type:S.postType,...f,price:Number(f.price),
-    [S.postType==='sell'?'seller':'buyer']:'You',
-    avatar:'ME',
-    image: f.image||(S.postType==='sell'?'🛍️':'🔍'),
-    imageUrl: f.imageUrl||'',
-    rating:5.0,
-    lat:USER.lat+(Math.random()-.5)*.015,lng:USER.lng+(Math.random()-.5)*.015
-  },...listings];
-  PS.suggestions=[]; PS.loading=false;
-  S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};
-  closeModal(); renderAll(); showToast('✅ Listing posted!', 'success');
-  }, 800); // simulate network delay
+  // Final step: verify the contact number before the listing goes live.
+  // (Runs straight through if already verified this session.)
+  requirePhone('post', () => {
+    const btn = document.querySelector('.post-submit-btn');
+    if (btn) { btn.classList.add('btn-loading'); btn.innerHTML = '<div class="spinner spinner-sm"></div> Posting...'; }
+    setTimeout(() => {
+    listings=[{
+      id:Date.now(),type:S.postType,...f,price:Number(f.price),
+      [S.postType==='sell'?'seller':'buyer']:'You',
+      avatar:'ME',
+      image: f.image||(S.postType==='sell'?'🛍️':'🔍'),
+      imageUrl: f.imageUrl||'',
+      rating:5.0,
+      lat:USER.lat+(Math.random()-.5)*.015,lng:USER.lng+(Math.random()-.5)*.015
+    },...listings];
+    PS.suggestions=[]; PS.loading=false;
+    S.form={title:'',category:'Electronics',price:'',location:'',desc:'',contact:'',image:'',imageUrl:'',brand:''};
+    closeModal(); renderAll(); showToast('✅ Listing posted!', 'success');
+    }, 800); // simulate network delay
+  });
 }
 
 function submitHelpRequest() {
@@ -4480,7 +4485,7 @@ function awShowTab(tab) {
   document.getElementById('aw-tab-signup').classList.toggle('active', tab==='signup');
   document.getElementById('aw-tab-login').classList.toggle('active', tab==='login');
   document.getElementById('aw-steps-row').style.display = tab==='signup'?'flex':'none';
-  document.getElementById('aw-tagline').textContent = tab==='signup'?'Join the SJDM community — free!':'Welcome back!';
+  document.getElementById('aw-tagline').textContent = tab==='signup'?'Join your community — free!':'Welcome back!';
 }
 
 // ── STEP NAVIGATION ────────────────────────────────────────────
@@ -6457,7 +6462,7 @@ function closePhoneGate() {
 // Wrap openModal for gated actions
 const _origOpenModal = window.openModal;
 window.openModal = function(name) {
-  const gatedActions = ['post', 'store-register', 'help-request', 'post-request'];
+  const gatedActions = ['store-register', 'help-request', 'post-request'];
   if (gatedActions.includes(name) && !phoneVerified) {
     requirePhone(name, () => _origOpenModal(name));
     return;
@@ -7144,7 +7149,7 @@ window.submitPostRequest = function() {
     <div class="aw-handle"></div>
     <div style="display:flex;align-items:center;gap:10px;width:100%;margin-top:4px">
       <div class="aw-logo">BringMe.Store</div>
-      <div class="aw-tagline" id="aw-tagline">Join the SJDM community — free!</div>
+      <div class="aw-tagline" id="aw-tagline">Join your community — free!</div>
       <button class="aw-min-btn" id="aw-min-btn" onclick="event.stopPropagation();toggleMinimize()" title="Minimize">⌄</button>
       <button class="aw-close-btn" onclick="event.stopPropagation();dismissAuth()" title="Browse as guest">Browse as guest →</button>
     </div>
@@ -7360,7 +7365,7 @@ window.submitPostRequest = function() {
 
         <div class="aw-input-wrap">
           <label class="aw-label">Bio <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
-          <textarea class="aw-input" id="aw-bio" rows="2" placeholder="e.g. Tiangge seller sa Tungkong Mangga!" style="resize:none" maxlength="100" oninput="this.nextSibling.textContent=this.value.length+'/100'"></textarea>
+          <textarea class="aw-input" id="aw-bio" rows="2" placeholder="e.g. Local seller & helper in my area!" style="resize:none" maxlength="100" oninput="this.nextSibling.textContent=this.value.length+'/100'"></textarea>
           <div style="font-size:10px;color:var(--muted);text-align:right">0/100</div>
         </div>
 
