@@ -126,7 +126,8 @@
   /* Accents */
   --green:#1A6B3A;--green-bg:#E6F5EE;
   --red:#C0392B;--red-bg:#FDECEA;
-  --purple:#4A3FB5;--purple-bg:#ECEAFD;
+  /* "purple" tokens repurposed to gold for a uniform brand (Trust Points, Find/Help accents) */
+  --purple:#C8860B;--purple-bg:#FBEFC9;
   --orange:#B45309;--orange-bg:#FEF3E2;
 
   /* Shadows */
@@ -397,7 +398,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .b-buy{background:#FEF3E2;color:#92600A;border:1px solid rgba(146,96,10,0.15);}
 .b-cat{background:var(--cream2);color:var(--muted);border:1px solid var(--border);}
 .b-store{background:#FDECEA;color:var(--red);border:1px solid rgba(192,57,43,0.15);}
-.b-help{background:var(--purple-bg);color:var(--purple);border:1px solid rgba(74,63,181,0.15);}
+.b-help{background:var(--purple-bg);color:var(--purple);border:1px solid rgba(227,168,16,0.15);}
 .b-urgent{background:#FDECEA;color:var(--red);border:1px solid rgba(192,57,43,0.15);}
 .c-foot{display:flex;justify-content:space-between;align-items:center;}
 .c-price{font-family:'DM Serif Display',serif;font-size:15px;font-weight:400;color:var(--gold-dk);letter-spacing:0.3px;}
@@ -520,6 +521,18 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .help-reply-item.confirmed{border-color:var(--green);background:var(--green-bg);}
 .confirm-btn{background:var(--purple);color:#fff;border:none;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:7px;}
 .confirmed-badge{background:var(--green);color:#fff;border-radius:7px;padding:4px 10px;font-size:10px;font-weight:700;display:inline-block;margin-top:5px;}
+.reply-actions{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:7px}
+.rtip-btn{background:#fff;border:1.5px solid var(--gold);color:var(--gold-dk);border-radius:8px;padding:6px 11px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
+.rtip-done{margin-top:7px;background:var(--grad-gold);color:#5a3d00;border-radius:8px;padding:6px 11px;font-size:11.5px;font-weight:700;display:inline-block}
+.rtip-panel{margin-top:9px;background:#fffdf4;border:1.5px solid var(--gold);border-radius:10px;padding:10px}
+.rtip-ttl{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:7px}
+.rtip-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.rtip-chip{border:1.5px solid var(--border);background:#fff;border-radius:100px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--navy);cursor:pointer}
+.rtip-chip.on{border-color:var(--gold);background:rgba(227,168,16,.12);color:var(--gold-dk)}
+.rtip-row{display:flex;gap:6px;align-items:stretch}
+.rtip-row .form-input{flex:1;padding:8px 10px}
+.rtip-send{background:var(--grad-gold);color:var(--navy);border:none;border-radius:8px;padding:0 14px;font-weight:800;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.rtip-cancel{background:none;border:none;color:var(--muted);font-weight:700;font-size:12px;cursor:pointer;padding:0 6px}
 .pts-hero{background:var(--navy);border-radius:14px;padding:20px;text-align:center;margin-bottom:18px;}
 .pts-big{font-family:'Space Mono',monospace;font-size:48px;color:var(--gold);font-weight:700;line-height:1;}
 .pts-history{display:flex;flex-direction:column;gap:7px;max-height:240px;overflow-y:auto;}
@@ -1023,13 +1036,13 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
 /* FIND ME section — middle, purple */
 .lp-find-section{
-  border-bottom:2px solid rgba(74,63,181,0.12);
+  border-bottom:2px solid rgba(227,168,16,0.12);
 }
 .lp-find-section .lp-section-hdr{
-  background:linear-gradient(135deg,rgba(74,63,181,0.08),transparent);
+  background:linear-gradient(135deg,rgba(227,168,16,0.08),transparent);
 }
 .lp-find-section .lp-section-title{color:var(--purple);}
-.lp-find-section .lp-section-count{background:rgba(74,63,181,0.08);border-color:rgba(74,63,181,0.15);color:var(--purple);}
+.lp-find-section .lp-section-count{background:rgba(227,168,16,0.08);border-color:rgba(227,168,16,0.15);color:var(--purple);}
 
 /* Request cards */
 .req-card{
@@ -1041,7 +1054,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .req-card.urgent-card{border-left:3px solid #E05A4E;}
 .req-card.urgent-card:hover{border-color:#E05A4E;box-shadow:0 4px 20px rgba(176,58,46,0.15);}
 .req-card.find-card{border-left:3px solid var(--purple);}
-.req-card.find-card:hover{border-color:var(--purple);box-shadow:0 4px 20px rgba(74,63,181,0.12);}
+.req-card.find-card:hover{border-color:var(--purple);box-shadow:0 4px 20px rgba(227,168,16,0.12);}
 .req-card.active-req{background:var(--gold-xlt);border-color:var(--gold);}
 
 /* Card top row */
@@ -1052,7 +1065,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
   font-size:18px;flex-shrink:0;
 }
 .req-emoji.urgent-bg{background:rgba(176,58,46,0.08);}
-.req-emoji.find-bg{background:rgba(74,63,181,0.08);}
+.req-emoji.find-bg{background:rgba(227,168,16,0.08);}
 .req-info{flex:1;min-width:0;}
 .req-title{font-weight:700;font-size:13px;color:var(--text-dark);line-height:1.3;margin-bottom:3px;}
 .req-cat{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;}
@@ -1063,7 +1076,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
   padding:7px 10px;border-radius:9px;margin-bottom:7px;
 }
 .req-offer.cash-offer{background:rgba(26,107,58,0.07);border:1px solid rgba(26,107,58,0.15);}
-.req-offer.points-offer{background:rgba(74,63,181,0.06);border:1px solid rgba(74,63,181,0.12);}
+.req-offer.points-offer{background:rgba(227,168,16,0.06);border:1px solid rgba(227,168,16,0.12);}
 .req-offer.both-offer{background:rgba(255,200,60,0.06);border:1px solid rgba(255,200,60,0.15);}
 .offer-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.3px;}
 .offer-cash{
@@ -1072,7 +1085,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 }
 .offer-points{
   display:inline-flex;align-items:center;gap:4px;
-  background:rgba(74,63,181,0.1);border:1px solid rgba(74,63,181,0.2);
+  background:rgba(227,168,16,0.1);border:1px solid rgba(227,168,16,0.2);
   border-radius:100px;padding:2px 9px;
   font-size:11px;font-weight:700;color:var(--purple);
 }
@@ -1094,7 +1107,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 .req-time{font-size:10px;color:var(--muted);}
 .req-replies{
   font-size:10px;font-weight:700;color:var(--purple);
-  background:rgba(74,63,181,0.08);padding:2px 8px;border-radius:100px;
+  background:rgba(227,168,16,0.08);padding:2px 8px;border-radius:100px;
 }
 .urgent-live{
   display:inline-flex;align-items:center;gap:4px;
@@ -1131,12 +1144,12 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 
 /* Trust Points badge in topbar */
 .trust-pts-badge{
-  background:rgba(74,63,181,0.12);border:1px solid rgba(74,63,181,0.25);
+  background:rgba(227,168,16,0.12);border:1px solid rgba(227,168,16,0.25);
   border-radius:9px;padding:6px 12px;display:flex;align-items:center;gap:6px;
   cursor:pointer;transition:all .2s;
 }
-.trust-pts-badge:hover{background:rgba(74,63,181,0.2);}
-.trust-pts-num{font-family:'Cormorant Garamond',serif;font-size:14px;color:#8B7CF7;font-weight:600;}
+.trust-pts-badge:hover{background:rgba(227,168,16,0.2);}
+.trust-pts-num{font-family:'Cormorant Garamond',serif;font-size:14px;color:#E3A810;font-weight:600;}
 .trust-pts-lbl{font-size:9px;color:rgba(139,124,247,0.7);letter-spacing:0.5px;text-transform:uppercase;}
 
 /* Post request modal — premium */
@@ -1147,7 +1160,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 }
 .req-type-card:hover{border-color:var(--gold);}
 .req-type-card.selected-urgent{border-color:#E05A4E;background:rgba(176,58,46,0.04);}
-.req-type-card.selected-find{border-color:var(--purple);background:rgba(74,63,181,0.04);}
+.req-type-card.selected-find{border-color:var(--purple);background:rgba(227,168,16,0.04);}
 .req-type-icon{font-size:28px;margin-bottom:8px;}
 .req-type-name{font-weight:700;font-size:14px;color:var(--text-dark);margin-bottom:4px;}
 .req-type-desc{font-size:11px;color:var(--muted);line-height:1.5;}
@@ -1160,7 +1173,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
 }
 .pay-option:hover{border-color:var(--gold);}
 .pay-option.selected{border-color:var(--gold);background:var(--gold-xlt);}
-.pay-option.selected.trust{border-color:var(--purple);background:rgba(74,63,181,0.05);}
+.pay-option.selected.trust{border-color:var(--purple);background:rgba(227,168,16,0.05);}
 .pay-icon{font-size:22px;margin-bottom:5px;}
 .pay-label{font-size:12px;font-weight:700;color:var(--text-dark);}
 .pay-sub{font-size:10px;color:var(--muted);margin-top:2px;}
@@ -1242,7 +1255,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
   font-size:10px;font-weight:700;
 }
 .fpb-pts.cash{color:var(--gold);}
-.fpb-pts.trust{color:#8B7CF7;}
+.fpb-pts.trust{color:#E3A810;}
 .fpb-pts-sep{color:rgba(255,255,255,0.2);font-size:10px;}
 
 /* Action buttons (right side of bar) */
@@ -1986,7 +1999,7 @@ html{scroll-behavior:smooth;}
 .map-pin-label.buy   { border-color: rgba(146,96,10,0.5);  color: #F5C842; }
 .map-pin-label.store { border-color: rgba(192,57,43,0.5);  color: #FF8070; }
 .map-pin-label.urgent{ border-color: rgba(224,90,78,0.6);  color: #FF8070; }
-.map-pin-label.find  { border-color: rgba(74,63,181,0.5);  color: #A5B4FC; }
+.map-pin-label.find  { border-color: rgba(227,168,16,0.5);  color: #D9B45A; }
 
 /* Pin placement UI — map picker modal */
 .pin-picker-overlay {
@@ -2164,6 +2177,40 @@ select.sf-inp{appearance:none;-webkit-appearance:none;background-image:url("data
 /* reuse the real photo uploader but hide its own header (we add a numbered one) */
 .sf-wrap .img-upload-label{display:none}
 .sf-wrap .img-upload-section{margin:0}
+/* ===== AI CATEGORY PICKER (gold) ===== */
+.cat-wrap{margin-top:2px}
+.cat-confirmed{display:flex;align-items:center;gap:10px;background:#fdf4d8;border:1.5px solid var(--gold);border-radius:12px;padding:10px 13px}
+.cat-confirmed .cc-em{font-size:22px}
+.cat-confirmed .cc-tx{flex:1;font-size:14px;font-weight:700;color:var(--navy);min-width:0}
+.cat-confirmed .cc-tx small{display:block;font-weight:600;color:var(--gold-dk);font-size:11px;margin-top:1px}
+.cat-confirmed .cc-ch{background:#fff;border:1.5px solid var(--gold);color:var(--gold-dk);border-radius:100px;padding:6px 13px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0}
+.cat-ai{border:1.5px solid #ecdca6;background:linear-gradient(135deg,#fffdf4,#fdf6e0);border-radius:13px;padding:13px}
+.cat-ai-lbl{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--gold-dk);margin-bottom:9px}
+.cat-ai-pick{display:flex;align-items:center;gap:11px}
+.cat-ai-em{font-size:27px;flex-shrink:0}
+.cat-ai-top{font-size:11px;color:var(--muted);font-weight:600}
+.cat-ai-sub{font-size:16px;font-weight:800;color:var(--navy);line-height:1.2}
+.cat-ai-act{display:flex;gap:8px;margin-top:11px}
+.cat-ai-act .cat-use{flex:1;padding:10px;width:auto}
+.cat-change{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:10px 15px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif}
+.cat-ph{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cat-back{width:32px;height:32px;border-radius:9px;border:1.5px solid var(--border);background:#fff;font-size:15px;cursor:pointer;flex-shrink:0}
+.cat-pt{font-weight:800;font-size:14px;color:var(--navy)}
+.cat-pt small{display:block;font-size:11px;color:var(--muted);font-weight:600}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat-tile{display:flex;align-items:center;gap:9px;border:1.5px solid var(--border);border-radius:12px;padding:11px;background:#fff;cursor:pointer;text-align:left}
+.cat-tile:hover{border-color:var(--gold);background:#fffdf4}
+.cat-tile .em{font-size:19px;flex-shrink:0}
+.cat-tile .nm{font-size:12px;font-weight:700;color:var(--navy);line-height:1.2;display:block}
+.cat-tile .ct{font-size:10px;color:var(--muted)}
+.cat-subs{display:flex;flex-direction:column;gap:7px}
+.cat-sub{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1.5px solid var(--border);border-radius:11px;padding:11px 13px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--navy)}
+.cat-sub:hover{border-color:var(--gold);background:#fffdf4}
+.cat-sub .go{color:var(--gold-dk);font-weight:800;flex-shrink:0}
+.cat-sub.any{color:var(--muted);font-style:italic}
+.cat-sub.custom{border-color:var(--gold);background:#fffdf4;color:var(--gold-dk)}
+.cat-hint,.cat-unsure{font-size:12px;color:var(--muted);background:var(--cream2);border-radius:10px;padding:10px 12px;line-height:1.5}
+.cat-link{background:none;border:none;color:var(--gold-dk);font-weight:700;cursor:pointer;padding:0;font-size:12px;text-decoration:underline}
 </style>
 
   <!-- Service Worker Registration -->
@@ -2580,7 +2627,7 @@ try {
     <div class="lp-section-hdr">
       <span class="lp-section-icon">🔍</span>
       <span class="lp-section-title">Looking For</span>
-      <span class="lp-section-count" id="find-count" style="background:rgba(74,63,181,0.07);color:#9B2D1F;border:1px solid rgba(155,45,31,0.2)">0</span>
+      <span class="lp-section-count" id="find-count" style="background:rgba(227,168,16,0.07);color:#9B2D1F;border:1px solid rgba(155,45,31,0.2)">0</span>
     </div>
     <div class="bm-tools" data-group="find">
       <button class="bm-chip active" onclick="setReqSort('find','near',this)">📍 Nearest</button>
@@ -2942,8 +2989,8 @@ let S = {
   selectedId:null, selectedType:null,
   saved:[], points:47,
   postType:"sell",
-  form:{title:"",category:"Electronics",price:"",location:"",desc:"",contact:"",image:"",imageUrl:"",brand:"",images:[],condition:"",negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:"",cc:"+63",lat:null,lng:null},
-  storeForm:{name:"",address:"",contact:"",hours:"",categories:"Electronics",products:""},
+  form:{title:"",cat:null,catUI:null,price:"",location:"",desc:"",contact:"",image:"",imageUrl:"",brand:"",images:[],condition:"",negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:"",cc:"+63",lat:null,lng:null},
+  storeForm:{name:"",address:"",contact:"",hours:"",cat:null,catUI:null,products:""},
   helpForm:{item:"",category:"Electronics"},
   helpReplyForm:{store:"",address:"",msg:""},
   pointsHistory:[
@@ -3128,7 +3175,7 @@ function drawRadiusCircle() {
 
 // ── MARKERS ────────────────────────────────────────────────────────────────────
 function makeIcon(type, urgent) {
-  const colors = { sell:'#CD950C', buy:'#b45309', store:'#d93025', help:'#5b4fcf' };
+  const colors = { sell:'#CD950C', buy:'#b45309', store:'#d93025', help:'#C8860B' };
   const emojis = { sell:'₱', buy:'?', store:'🏪', help:'🆘' };
   const sizes  = { sell:32, buy:32, store:36, help:32 };
   const c = colors[type], sz = sizes[type], em = emojis[type];
@@ -3327,7 +3374,7 @@ function buildMarkers() {
         icon: isUrgent ? '🆘' : '🔍',
         label,
         labelClass: isUrgent ? 'urgent' : 'find',
-        color: isUrgent ? '#E05A4E' : '#4A3FB5',
+        color: isUrgent ? '#E05A4E' : '#C8860B',
         color1: isUrgent ? '#FF6B5B' : '#6B5ED4',
         color2: isUrgent ? '#C0392B' : '#2A1A80',
         animate: isUrgent,
@@ -3584,6 +3631,19 @@ function confirmHelp(helpId, replyId, event) {
   showToast(`✅ Confirmed! ⭐ +1 pt awarded to ${r.name}`);
 }
 
+// ── Cash tip: say thanks to a helper (optional, post-hoc) ──────────
+function openReplyTip(id){ S.tipReplyId=id; S.tipAmt=50; renderModal(); }
+function pickReplyTip(a){ S.tipAmt=a; renderModal(); }
+function cancelReplyTip(){ S.tipReplyId=null; S.tipAmt=0; renderModal(); }
+function sendReplyTip(hId,rId){
+  const h=helpRequests.find(x=>x.id===hId); if(!h) return;
+  const r=(h.replies||[]).find(x=>x.id===rId); if(!r) return;
+  const amt=S.tipAmt||0;
+  if(amt<1){ showToast('⚠️ Enter a tip amount.','error'); return; }
+  r.tip=amt; S.tipReplyId=null; S.tipAmt=0; renderModal();
+  showToast(`💵 ₱${amt} tip sent to ${r.name} — thank you!`, 'success');
+}
+
 function cashOut() {
   if (S.points<=0) { showToast('⚠️ No points to cash out.'); return; }
   const amt=S.points;
@@ -3597,14 +3657,14 @@ function submitPost() {
   const f=S.form;
   // Validate in form order so the toast points to the first gap.
   if (!f.title) { showToast('⚠️ What are you selling? Add an item name.', 'error'); return; }
+  if (!f.cat) { showToast('⚠️ Pick a category (AI can suggest one).', 'error'); return; }
   if (!(f.images && f.images.length)) { showToast('⚠️ Add at least one photo.', 'error'); return; }
   if (!f.condition) { showToast('⚠️ Choose the item condition.', 'error'); return; }
   if (!f.price) { showToast('⚠️ Set your price.', 'error'); return; }
   if (!(f.meetup||f.deliver||f.pickup)) { showToast('⚠️ Choose how buyers can get it.', 'error'); return; }
   if (!f.contact) { showToast('⚠️ Add your contact number.', 'error'); return; }
-  // Final step: verify the contact number before the listing goes live.
-  // (Runs straight through if already verified this session.)
-  requirePhone('post', () => {
+  // Contact number was already confirmed at sign-up — post straight away.
+  (() => {
     const btn = document.querySelector('.post-submit-btn');
     if (btn) { btn.classList.add('btn-loading'); btn.innerHTML = '<div class="spinner spinner-sm"></div> Posting...'; }
     setTimeout(() => {
@@ -3612,7 +3672,7 @@ function submitPost() {
     const deal=[f.meetup&&'Meet-up',f.deliver&&'Delivery',f.pickup&&'Pickup'].filter(Boolean).join(' · ');
     listings=[{
       id:Date.now(), type:'sell',
-      title:f.title, category:f.category, price:Number(f.price),
+      title:f.title, category:catLabel(f)||'Other', catTop:(f.cat&&f.cat.top)||'', catSub:(f.cat&&f.cat.sub)||'', catEmoji:(f.cat&&f.cat.em)||'📦', price:Number(f.price),
       desc:f.desc, brand:f.brand,
       location:f.location, contact:(f.cc?f.cc+' ':'')+f.contact,
       condition:f.condition, conditionLabel:condLabel,
@@ -3629,7 +3689,7 @@ function submitPost() {
     resetPostForm();
     closeModal(); renderAll(); showToast('✅ Listing posted!', 'success');
     }, 800); // simulate network delay
-  });
+  })();
 }
 
 function submitHelpRequest() {
@@ -3667,12 +3727,12 @@ function submitStore() {
   if (!f.name||!f.address||!f.contact) { showToast('⚠️ Fill in required fields.'); return; }
   stores=[{
     id:Date.now(),...f,
-    categories:[f.categories],
+    categories:[catLabel(f)||'Other'], catEmoji:(f.cat&&f.cat.em)||'🏪',
     products:f.products.split(',').map(p=>p.trim()).filter(Boolean),
     rating:5.0,
     lat:USER.lat+(Math.random()-.5)*.015,lng:USER.lng+(Math.random()-.5)*.015
   },...stores];
-  S.storeForm={name:'',address:'',contact:'',hours:'',categories:'Electronics',products:''};
+  S.storeForm={name:'',address:'',contact:'',hours:'',cat:null,catUI:null,products:''};
   const regBtn = document.querySelector('.store-reg-btn');
   if (regBtn) { regBtn.classList.add('btn-loading'); regBtn.innerHTML = '<div class="spinner spinner-sm"></div> Registering...'; }
   setTimeout(() => { closeModal(); S.tab='stores'; renderAll(); showToast('🏪 Store registered on the map!', 'success'); }, 900);
@@ -3775,13 +3835,11 @@ function buildPostModal() {
             </div>`:''}
           </div>
           <label class="sf-fl">Description <span class="sf-opt">(optional — auto-fills from search, edit freely)</span></label>
-          <textarea class="sf-inp" rows="3" placeholder="Condition details, specs, what's included..." oninput="S.form.desc=this.value" style="resize:vertical">${esc(f.desc)}</textarea>
-          <div class="sf-row2" style="margin-top:2px">
-            <div><label class="sf-fl">Category</label>
-              <select class="sf-inp" onchange="S.form.category=this.value">${CATS.filter(c=>c!=='All').map(c=>`<option ${f.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
-            <div><label class="sf-fl">Brand <span class="sf-opt">(optional)</span></label>
-              <input class="sf-inp" value="${esc(f.brand||'')}" placeholder="e.g. Sony" oninput="S.form.brand=this.value"></div>
-          </div>
+          <textarea class="sf-inp" rows="3" placeholder="Condition details, specs, what's included..." oninput="S.form.desc=this.value" onblur="renderModal()" style="resize:vertical">${esc(f.desc)}</textarea>
+          <label class="sf-fl">Brand <span class="sf-opt">(optional)</span></label>
+          <input class="sf-inp" value="${esc(f.brand||'')}" placeholder="e.g. Sony" oninput="S.form.brand=this.value">
+          <label class="sf-fl">Category <span class="sf-opt">— AI picks it from your title &amp; details</span></label>
+          ${catSection('sell')}
         </div>
 
         <!-- 2. PHOTOS -->
@@ -3839,7 +3897,7 @@ function buildPostModal() {
           <div class="sf-sec-t"><span class="sf-n">6</span> Contact <span class="sf-req">⭐</span></div>
           <label class="sf-fl">Reason for selling <span class="sf-opt">(optional — builds trust)</span></label>
           <input class="sf-inp" value="${esc(f.reason||'')}" placeholder="e.g. Upgraded to a newer one" oninput="S.form.reason=this.value">
-          <label class="sf-fl">Contact number</label>
+          <label class="sf-fl">Contact number <span class="sf-opt">— from your account, edit if needed</span></label>
           <div class="sf-cc">
             <select class="sf-inp" onchange="S.form.cc=this.value">${ccOpts.map(o=>{const code=o.split(' ')[1];return `<option value="${code}" ${f.cc===code?'selected':''}>${o}</option>`;}).join('')}</select>
             <input class="sf-inp" type="tel" value="${esc(f.contact)}" placeholder="9XX XXX XXXX" oninput="S.form.contact=this.value">
@@ -3848,7 +3906,7 @@ function buildPostModal() {
        </div>
       </div>
       <div style="padding:14px 24px 22px;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--white);border-radius:0 0 18px 18px">
-        <button class="btn-primary post-submit-btn sf-postbtn" onclick="submitPost()">🚀 Post Listing<small>You'll verify this number once, right before it goes live</small></button>
+        <button class="btn-primary post-submit-btn sf-postbtn" onclick="submitPost()">🚀 Post Listing<small>Goes live right away — buyers reach you on your saved number</small></button>
       </div>
     </div>
   </div>`;
@@ -3874,11 +3932,120 @@ function sfSetRadius(val){
   S.form.sellRadius=Number(val);
   const lbl=document.getElementById('sf-radius-val'); if(lbl) lbl.textContent='within '+val+' km';
 }
-// Default shape of the Sell form — location seeds from the user's own detected area (global).
+// Default shape of the Sell form — location seeds from the user's own detected
+// area, and the contact number from the one they confirmed at sign-up (both global).
 function postFormDefaults(){
-  return {title:'',category:'Electronics',price:'',location:(typeof USER==='object'&&USER.name)?USER.name:'',desc:'',contact:'',image:'',imageUrl:'',brand:'',images:[],condition:'',negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:'',cc:'+63',lat:null,lng:null};
+  const u=(typeof AW_USER==='object')?AW_USER:{};
+  return {title:'',cat:null,catUI:null,price:'',location:(typeof USER==='object'&&USER.name)?USER.name:'',desc:'',contact:u.phone||'',image:'',imageUrl:'',brand:'',images:[],condition:'',negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:'',cc:u.cc||'+63',lat:null,lng:null};
 }
 function resetPostForm(){ S.form=postFormDefaults(); PS={suggestions:[],loading:false,source:'',timer:null}; }
+
+// ═══════════════ AI CATEGORY SYSTEM (shared: Sell, Find Me, Store) ═══════════════
+const CAT_TAX = [
+  { em:'📱', name:'Electronics & Gadgets', subs:['Phones & Tablets','Computers & Laptops','TV, Audio & Cameras','Gaming','Chargers & Accessories','Parts & Repair'] },
+  { em:'👗', name:'Fashion & Accessories', subs:["Women's","Men's","Kids'",'Shoes','Bags & Wallets','Watches & Jewelry'] },
+  { em:'🏠', name:'Home & Furniture', subs:['Furniture','Appliances','Kitchen & Dining','Decor','Bedding & Bath','Storage & Organization'] },
+  { em:'🛒', name:'Food & Groceries', subs:['Fresh & Produce','Pantry & Dry Goods','Snacks & Sweets','Drinks','Home-cooked & Baked'] },
+  { em:'💄', name:'Health & Beauty', subs:['Skincare','Makeup','Hair & Body','Supplements & Vitamins','Medical & First Aid'] },
+  { em:'👶', name:'Baby & Kids', subs:['Diapers & Wipes','Toys','Baby Clothes','Strollers & Gear','Feeding','School & Study'] },
+  { em:'⚽', name:'Sports & Outdoors', subs:['Fitness & Gym','Bikes & Cycling','Team Sports','Camping & Hiking','Fishing'] },
+  { em:'🎸', name:'Hobbies & Leisure', subs:['Collectibles','Board & Card Games','Musical Instruments','Arts & Crafts','Books & Comics'] },
+  { em:'🔧', name:'Tools & Hardware', subs:['Power Tools','Hand Tools','Building Materials','Electrical','Plumbing','Garden & Outdoor'] },
+  { em:'🏍️', name:'Vehicles & Parts', subs:['Cars','Motorcycles','Bicycles','Parts & Accessories'] },
+  { em:'🐾', name:'Pets & Animals', subs:['Pet Food','Accessories','For Adoption / Sale','Grooming & Care'] },
+  { em:'🧰', name:'Services & Help', subs:['Repairs & Fix','Cleaning','Tutoring & Lessons','Events','Errands & Delivery','Professional'] },
+  { em:'📦', name:'Everything Else', subs:['Freebies','Tickets & Vouchers','Lost & Found','Other'] },
+];
+// Instant on-device classifier. (In production this is the fast layer; an LLM via a
+// Supabase Edge Function — reading title + details + photo — backs it up when keywords miss.)
+const CAT_RULES = [
+  [['headphone','earphone','earbuds','airpods','speaker','soundbar','camera','television',' tv '], '📱','Electronics & Gadgets','TV, Audio & Cameras'],
+  [['charger','cable',' usb','adapter','power bank','powerbank'], '📱','Electronics & Gadgets','Chargers & Accessories'],
+  [['iphone','samsung','phone','tablet','ipad','android'], '📱','Electronics & Gadgets','Phones & Tablets'],
+  [['laptop','macbook','computer',' pc ','monitor','keyboard','mouse'], '📱','Electronics & Gadgets','Computers & Laptops'],
+  [['playstation','ps5','xbox','nintendo','gaming chair','console'], '📱','Electronics & Gadgets','Gaming'],
+  [['milo','coffee','juice','soda','water','drink','tea'], '🛒','Food & Groceries','Drinks'],
+  [['rice','flour','sugar','canned','noodle','pasta','pantry','cooking oil'], '🛒','Food & Groceries','Pantry & Dry Goods'],
+  [['cake','bread','pastry','ube','halaya','kakanin','homemade'], '🛒','Food & Groceries','Home-cooked & Baked'],
+  [['shoes','sneakers','sandals','heels','boots','rubber shoes','running'], '👗','Fashion & Accessories','Shoes'],
+  [['shirt','dress','jeans','jacket','clothes','uniform','tshirt'], '👗','Fashion & Accessories',"Women's"],
+  [['bag','wallet','backpack','purse'], '👗','Fashion & Accessories','Bags & Wallets'],
+  [['watch','jewelry','ring','necklace'], '👗','Fashion & Accessories','Watches & Jewelry'],
+  [['sofa','table','chair','bed','furniture','cabinet','shelf','desk'], '🏠','Home & Furniture','Furniture'],
+  [['airfryer','air fryer','fridge','refrigerator','aircon','appliance','microwave','washing machine','blender'], '🏠','Home & Furniture','Appliances'],
+  [['knife','kitchen','cookware','frying pan','utensil','plates','dinnerware','chef','spatula','casserole'], '🏠','Home & Furniture','Kitchen & Dining'],
+  [['diaper','stroller','baby clothes','onesie'], '👶','Baby & Kids','Baby Clothes'],
+  [['toy','lego','doll','figure'], '👶','Baby & Kids','Toys'],
+  [['bike','bicycle','mtb','mountain bike'], '⚽','Sports & Outdoors','Bikes & Cycling'],
+  [['dumbbell','gym','treadmill','yoga','weights'], '⚽','Sports & Outdoors','Fitness & Gym'],
+  [['guitar','piano','violin','ukulele'], '🎸','Hobbies & Leisure','Musical Instruments'],
+  [['book','comic','novel','manga'], '🎸','Hobbies & Leisure','Books & Comics'],
+  [['drill','hammer','wrench','tool','screwdriver','grinder'], '🔧','Tools & Hardware','Power Tools'],
+  [['car','sedan','suv','toyota','civic','vios'], '🏍️','Vehicles & Parts','Cars'],
+  [['motor','motorcycle','scooter','honda beat','click'], '🏍️','Vehicles & Parts','Motorcycles'],
+  [['dog','cat ','pet','kitten','puppy','aquarium'], '🐾','Pets & Animals','Accessories'],
+  [['repair','fix','cleaning','tutor','service','massage','plumber','electrician'], '🧰','Services & Help','Repairs & Fix'],
+  [['skincare','lotion','makeup','lipstick','shampoo','vitamin','perfume'], '💄','Health & Beauty','Skincare'],
+];
+function catClassify(text){ const t=' '+String(text||'').toLowerCase()+' '; for(const r of CAT_RULES){ if(r[0].some(k=>t.includes(k))) return {em:r[1],top:r[2],sub:r[3]}; } return null; }
+function catCtx(scope){
+  if(scope==='find'){ const f=S._reqForm||{}; return {f, text:((f.item||'')+' '+(f.details||'')).trim()}; }
+  if(scope==='store'){ const f=S.storeForm||{}; return {f, text:((f.name||'')+' '+(f.products||'')).trim()}; }
+  const f=S.form||{}; return {f, text:((f.title||'')+' '+(f.desc||'')).trim()};
+}
+function catUI(scope){ const {f}=catCtx(scope); if(!f.catUI) f.catUI={picking:false,openIdx:null,search:''}; return f.catUI; }
+function catOpenPicker(scope){ const u=catUI(scope); u.picking=true; u.openIdx=null; u.search=''; renderModal(); }
+function catClosePicker(scope){ const u=catUI(scope); u.picking=false; renderModal(); }
+function catOpenCat(scope,i){ const u=catUI(scope); u.openIdx=i; renderModal(); }
+function catBack(scope){ const u=catUI(scope); u.openIdx=null; renderModal(); }
+function catChooseIdx(scope,ci,si){ const {f}=catCtx(scope); const c=CAT_TAX[ci]; f.cat={em:c.em,top:c.name,sub: si>=0?c.subs[si]:''}; f.catUI={picking:false,openIdx:null,search:''}; renderModal(); }
+function catUseSug(scope){ const {f}=catCtx(scope); if(f._sug) f.cat=Object.assign({},f._sug); f.catUI={picking:false,openIdx:null,search:''}; renderModal(); }
+function catSearch(scope,v){ const u=catUI(scope); u.search=v; renderModal(); }
+function catCustom(scope){ const {f}=catCtx(scope); const el=document.getElementById('cat-srch'); const t=(el?el.value:((f.catUI&&f.catUI.search)||'')).trim(); if(!t) return; f.cat={em:'🏷️',top:t,sub:'',custom:true}; f.catUI={picking:false,openIdx:null,search:''}; renderModal(); }
+function catLabel(f){ return f && f.cat ? (f.cat.sub || f.cat.top) : ''; }
+function catSection(scope){
+  const {f, text} = catCtx(scope);
+  if(!f.catUI) f.catUI={picking:false,openIdx:null,search:''};
+  const u=f.catUI;
+  let h='<div class="cat-wrap">';
+  if(f.cat){
+    const c=f.cat, main=c.sub?c.sub:c.top, sub=c.custom?'🏷️ your own category':(c.sub?c.top:'category set');
+    h+=`<div class="cat-confirmed"><span class="cc-em">${c.em}</span><span class="cc-tx">${esc(main)}<small>${esc(sub)}</small></span><button type="button" class="cc-ch" onclick="catOpenPicker('${scope}')">Change</button></div>`;
+  } else if(u.picking){
+    if(u.openIdx===null){
+      const q=(u.search||'').trim().toLowerCase();
+      h+=`<div class="cat-ph"><button type="button" class="cat-back" onclick="catClosePicker('${scope}')">←</button><div class="cat-pt">Pick or type a category<small>Browse, search, or type your own</small></div></div>`;
+      h+=`<input class="form-input" id="cat-srch" placeholder="🔍 Search or type your own category…" value="${esc(u.search||'')}" oninput="catSearch('${scope}',this.value)" autocomplete="off" style="margin-bottom:10px">`;
+      if(q){
+        const safe=esc(u.search.trim());
+        const matches=[]; CAT_TAX.forEach((c,ci)=>c.subs.forEach((s,si)=>{ if((c.name+' '+s).toLowerCase().includes(q)) matches.push([ci,si,c.em,s,c.name]); }));
+        h+=`<div class="cat-subs"><div class="cat-sub custom" onclick="catCustom('${scope}')"><span>➕ Use "<b>${safe}</b>" as your category</span> <span class="go">✓</span></div>`;
+        matches.slice(0,8).forEach(m=>{ h+=`<div class="cat-sub" onclick="catChooseIdx('${scope}',${m[0]},${m[1]})"><span>${m[2]} ${esc(m[3])} <span style="color:var(--muted);font-weight:500;font-size:11px">· ${esc(m[4])}</span></span> <span class="go">›</span></div>`; });
+        if(!matches.length) h+=`<div style="font-size:11.5px;color:var(--muted);padding:8px 2px;line-height:1.5">No match — tap above to use your own.</div>`;
+        h+=`</div>`;
+      } else {
+        h+=`<div class="cat-grid">`+CAT_TAX.map((c,i)=>`<button type="button" class="cat-tile" onclick="catOpenCat('${scope}',${i})"><span class="em">${c.em}</span><span><span class="nm">${esc(c.name)}</span><span class="ct">${c.subs.length} types</span></span></button>`).join('')+`</div>`;
+      }
+    } else {
+      const c=CAT_TAX[u.openIdx], ci=u.openIdx;
+      h+=`<div class="cat-ph"><button type="button" class="cat-back" onclick="catBack('${scope}')">←</button><div class="cat-pt">${c.em} ${esc(c.name)}<small>Choose the closest type</small></div></div>`;
+      h+=`<div class="cat-subs"><div class="cat-sub any" onclick="catChooseIdx('${scope}',${ci},-1)"><span>All of ${esc(c.name)}</span> <span class="go">✓</span></div>`+
+        c.subs.map((s,si)=>`<div class="cat-sub" onclick="catChooseIdx('${scope}',${ci},${si})"><span>${esc(s)}</span> <span class="go">›</span></div>`).join('')+`</div>`;
+    }
+  } else {
+    const sug = text.length>=2 ? catClassify(text) : null;
+    f._sug = sug;
+    if(sug){
+      h+=`<div class="cat-ai"><div class="cat-ai-lbl">🤖 AI suggests</div><div class="cat-ai-pick"><span class="cat-ai-em">${sug.em}</span><div><div class="cat-ai-top">${esc(sug.top)}</div><div class="cat-ai-sub">${esc(sug.sub)}</div></div></div><div class="cat-ai-act"><button type="button" class="btn-primary cat-use" onclick="catUseSug('${scope}')">✓ Use this</button><button type="button" class="cat-change" onclick="catOpenPicker('${scope}')">Change</button></div></div>`;
+    } else if(text.length>=2){
+      h+=`<div class="cat-unsure">🤔 AI isn't sure yet — <button type="button" class="cat-link" onclick="catOpenPicker('${scope}')">pick or type a category</button>.</div>`;
+    } else {
+      h+=`<div class="cat-hint">⌨️ Type a title and AI suggests a category — or <button type="button" class="cat-link" onclick="catOpenPicker('${scope}')">pick one</button>.</div>`;
+    }
+  }
+  h+='</div>';
+  return h;
+}
 
 // ── PRODUCT SEARCH ENGINE ──────────────────────────────────────────────────────
 let PS = { suggestions:[], loading:false, source:'', timer:null };
@@ -4095,9 +4262,19 @@ function buildHelpDetailModal() {
                     <div style="font-weight:700;font-size:13px">${esc(r.name)}</div>
                     <div style="font-size:12px;color:#555;margin-top:2px">🏪 ${esc(r.store)} · 📍 ${esc(r.address)}</div>
                     <div style="font-size:12px;color:#444;margin-top:3px;font-style:italic">"${esc(r.msg)}"</div>
+                    <div class="reply-actions">
                     ${r.confirmed
                       ?`<div class="confirmed-badge">✅ Confirmed helpful — ${esc(r.name)} earned ⭐1pt</div>`
                       :`<button class="confirm-btn" onclick="confirmHelp(${h.id},${r.id},event)">✅ This helped me! (+⭐1 to ${esc(r.name)})</button>`}
+                    ${!r.tip && S.tipReplyId!==r.id ? `<button class="rtip-btn" onclick="openReplyTip(${r.id})">💵 Tip cash to say thanks</button>` : ''}
+                    </div>
+                    ${r.tip ? `<div class="rtip-done">💵 You tipped ₱${r.tip} — thank-you sent to ${esc(r.name)} 🙏</div>` : ''}
+                    ${S.tipReplyId===r.id ? `
+                      <div class="rtip-panel">
+                        <div class="rtip-ttl">💵 Tip ${esc(r.name)} a cash thank-you</div>
+                        <div class="rtip-chips">${[20,50,100].map(a=>`<span class="rtip-chip ${S.tipAmt===a?'on':''}" onclick="pickReplyTip(${a})">₱${a}</span>`).join('')}<span class="rtip-chip ${![20,50,100].includes(S.tipAmt)?'on':''}" onclick="pickReplyTip(0)">Custom</span></div>
+                        <div class="rtip-row"><input class="form-input" id="rtip-amt" type="number" min="1" placeholder="₱ amount" value="${S.tipAmt||''}" oninput="S.tipAmt=Number(this.value)||0"><button class="rtip-send" onclick="sendReplyTip(${h.id},${r.id})">Send</button><button class="rtip-cancel" onclick="cancelReplyTip()">Cancel</button></div>
+                      </div>` : ''}
                   </div>
                 </div>
               </div>
@@ -4181,7 +4358,7 @@ function buildStoreRegisterModal() {
         <div class="form-grid">
           <div class="form-group full">
             <label class="form-label">Store Name *</label>
-            <input class="form-input" type="text" value="${esc(f.name)}" placeholder="e.g. TechZone SJDM" oninput="S.storeForm.name=this.value">
+            <input class="form-input" type="text" value="${esc(f.name)}" placeholder="e.g. TechZone SJDM" oninput="S.storeForm.name=this.value" onblur="renderModal()">
           </div>
           <div class="form-group full">
             <label class="form-label">Address *</label>
@@ -4195,15 +4372,13 @@ function buildStoreRegisterModal() {
             <label class="form-label">Business Hours</label>
             <input class="form-input" type="text" value="${esc(f.hours)}" placeholder="e.g. 9AM–7PM" oninput="S.storeForm.hours=this.value">
           </div>
-          <div class="form-group">
-            <label class="form-label">Category</label>
-            <select class="form-input" onchange="S.storeForm.categories=this.value">
-              ${CATS.filter(c=>c!=='All').map(c=>`<option ${f.categories===c?'selected':''}>${c}</option>`).join('')}
-            </select>
+          <div class="form-group full">
+            <label class="form-label">Category <span style="font-weight:400;color:var(--muted);text-transform:none">— AI suggests from your store name &amp; products</span></label>
+            ${catSection('store')}
           </div>
           <div class="form-group">
             <label class="form-label">Products (comma-separated)</label>
-            <input class="form-input" type="text" value="${esc(f.products)}" placeholder="e.g. Laptop, Charger, Earphones" oninput="S.storeForm.products=this.value">
+            <input class="form-input" type="text" value="${esc(f.products)}" placeholder="e.g. Laptop, Charger, Earphones" oninput="S.storeForm.products=this.value" onblur="renderModal()">
           </div>
         </div>
         <button class="btn-primary store-reg-btn" onclick="submitStore()">🚀 Register Store on Map</button>
@@ -4492,7 +4667,7 @@ let AW_CUR_STEP = 1;
 const AW_TOTAL_STEPS = 5;
 const AW_TAKEN_NICKS = ['mark','ana','jose','clara','renz','danny','nena','liza','admin','bringme'];
 let AW_ROLES = new Set();
-let AW_USER = { phone:'',email:'',method:'phone',firstName:'',lastName:'',nickname:'',location:'',bio:'',photo:'🙂',roles:[] };
+let AW_USER = { phone:'',cc:'+63',contact:'',email:'',method:'phone',firstName:'',lastName:'',nickname:'',location:'',bio:'',photo:'🙂',roles:[] };
 let AW_EMOJIS = ['😊','😎','🙂','🤝','💪','🌟','🛍️','🏪','🧑','👩'];
 let AW_EMOJI_IDX = 0;
 let AW_RESEND_TIMER;
@@ -4566,6 +4741,11 @@ function awDismissAndEnter() {
   // Remember the area they chose at signup — used as location fallback
   if (typeof USER === 'object' && typeof AW_USER === 'object' && AW_USER.location) {
     USER.signupArea = AW_USER.location;
+  }
+  // Contact number confirmed at sign-up → no per-listing phone gate afterwards.
+  phoneVerified = true;
+  if (typeof USER === 'object' && typeof AW_USER === 'object' && AW_USER.contact) {
+    USER.contact = AW_USER.contact;
   }
   IS_GUEST = false;
   const win = document.getElementById('auth-window');
@@ -4703,17 +4883,22 @@ function awCheckProfile() {
   const fn=document.getElementById('aw-fname').value.trim();
   const ln=document.getElementById('aw-lname').value.trim();
   const nk=document.getElementById('aw-nick').value.trim();
+  const ph=(document.getElementById('aw-phone-num')?.value||'').replace(/\D/g,'');
   const taken=AW_TAKEN_NICKS.includes(nk.toLowerCase());
   const btn=document.getElementById('aw-profile-btn');
-  if(btn) btn.disabled=!(fn&&ln&&nk&&!taken);
+  if(btn) btn.disabled=!(fn&&ln&&nk&&ph.length>=7&&!taken);
 }
 function awValidateProfile() {
   const fn=document.getElementById('aw-fname').value.trim();
   const ln=document.getElementById('aw-lname').value.trim();
   const nk=document.getElementById('aw-nick').value.trim();
+  const cc=document.getElementById('aw-cc')?.value||'+63';
+  const ph=(document.getElementById('aw-phone-num')?.value||'').trim();
   if(!fn||!ln||!nk){showToast('Please fill in your name and nickname');return false;}
   if(AW_TAKEN_NICKS.includes(nk.toLowerCase())){showToast('Username already taken');return false;}
+  if(ph.replace(/\D/g,'').length<7){showToast('Please enter a valid contact number');return false;}
   AW_USER.firstName=fn; AW_USER.lastName=ln; AW_USER.nickname=nk;
+  AW_USER.cc=cc; AW_USER.phone=ph; AW_USER.contact=cc+' '+ph;
   AW_USER.location=document.getElementById('aw-location').value;
   AW_USER.bio=document.getElementById('aw-bio').value;
   return true;
@@ -4768,7 +4953,7 @@ async function awSubmitSignup() {
   if (pwEl && pwEl.value)       AW_USER.password = pwEl.value;
   // Real Supabase account creation (needs email + password)
   if (sb && typeof sbSignUp === 'function' && AW_USER.email && AW_USER.password) {
-    const { error } = await sbSignUp(AW_USER.email, AW_USER.password, AW_USER.firstName, AW_USER.nickname);
+    const { error } = await sbSignUp(AW_USER.email, AW_USER.password, AW_USER.firstName, AW_USER.nickname, AW_USER.contact);
     if (error) {
       if(btn){btn.disabled=false;btn.innerHTML='🎉 Create Account';}
       return; // stop — don't show success if the account wasn't created
@@ -4782,8 +4967,8 @@ async function awSubmitSignup() {
     }
     document.getElementById('aw-steps-row').innerHTML='';
     // Build profile preview
-    const roleColors={buyer:'#fff3e0',seller:'#e8f5ed',store:'#ffeaea',helper:'#ede9ff'};
-    const roleText={buyer:'#b45309',seller:'#1b6e3a',store:'#d93025',helper:'#5b4fcf'};
+    const roleColors={buyer:'#fff3e0',seller:'#e8f5ed',store:'#ffeaea',helper:'#FBEFC9'};
+    const roleText={buyer:'#b45309',seller:'#1b6e3a',store:'#d93025',helper:'#C8860B'};
     const roleLabel={buyer:'Buyer',seller:'Seller',store:'Store Owner',helper:'Helper'};
     const rolesHTML=AW_USER.roles.map(r=>
       `<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;background:${roleColors[r]||'#eee'};color:${roleText[r]||'#555'}">${roleLabel[r]||r}</span>`
@@ -5072,7 +5257,7 @@ function renderLeftPanel() {
 
     // Buy listings in find section
     if (buyListings.length) {
-      html += `<div style="font-size:9px;font-weight:700;color:rgba(74,63,181,0.5);letter-spacing:2px;text-transform:uppercase;padding:4px 10px 2px">Looking to Buy</div>`;
+      html += `<div style="font-size:9px;font-weight:700;color:rgba(227,168,16,0.5);letter-spacing:2px;text-transform:uppercase;padding:4px 10px 2px">Looking to Buy</div>`;
       html += buyListings.map(l => `
         <div class="req-card find-card ${selectedLF===String(l.id)+'-buy'?'active-req':''}"
              onclick="selectRequest(${l.id},'buy')">
@@ -5126,9 +5311,9 @@ function buildTrustPointsModal() {
         <div class="modal-sub">Earned by helping. Spent to get help. Separate from cash.</div>
       </div>
       <div class="modal-body">
-        <div style="background:var(--grad-royal);border-radius:16px;padding:24px;text-align:center;margin-bottom:20px;border:1px solid rgba(74,63,181,0.3)">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:52px;color:#8B7CF7;font-weight:600;line-height:1">${S_trustPoints}</div>
-          <div style="font-size:16px;color:#8B7CF7;margin-top:4px">🤝 Trust Points</div>
+        <div style="background:var(--grad-royal);border-radius:16px;padding:24px;text-align:center;margin-bottom:20px;border:1px solid rgba(227,168,16,0.3)">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:52px;color:#E3A810;font-weight:600;line-height:1">${S_trustPoints}</div>
+          <div style="font-size:16px;color:#E3A810;margin-top:4px">🤝 Trust Points</div>
           <div style="font-size:13px;color:rgba(139,124,247,0.6);margin-top:6px">Not convertible to cash — used to pay for community help</div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
@@ -5137,7 +5322,7 @@ function buildTrustPointsModal() {
             <div style="font-weight:700;font-size:13px;color:var(--green)">How to Earn</div>
             <div style="font-size:12px;color:#555;margin-top:4px;line-height:1.5">Help someone find a store or item → they confirm → +1 Trust Point</div>
           </div>
-          <div style="background:rgba(74,63,181,0.06);border-radius:12px;padding:14px;text-align:center;border:1px solid rgba(74,63,181,0.12)">
+          <div style="background:rgba(227,168,16,0.06);border-radius:12px;padding:14px;text-align:center;border:1px solid rgba(227,168,16,0.12)">
             <div style="font-size:22px;margin-bottom:6px">🛍️</div>
             <div style="font-weight:700;font-size:13px;color:var(--purple)">How to Spend</div>
             <div style="font-size:12px;color:#555;margin-top:4px;line-height:1.5">Post a "Find Me" request and offer Trust Points as reward</div>
@@ -5155,105 +5340,53 @@ function buildTrustPointsModal() {
 function buildPostRequestModal() {
   const type = S._postReqType || 'urgent';
   if (type === 'urgent') return urfBuildForm();
-  const f = S._reqForm || { item:'', category:'Electronics', cash:'', points:'', delivery:'doorstep', note:'', payType:'cash' };
+  const f = S._reqForm || { item:'', details:'', cat:null, catUI:null, points:'', location:'', images:[] };
   S._reqForm = f;
+  if (!f.images) f.images = [];
 
   return `<div class="overlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal" style="width:520px" onclick="event.stopPropagation()">
+    <div class="modal" style="width:520px;max-width:calc(100vw - 24px)" onclick="event.stopPropagation()">
       <button class="close-btn" onclick="closeModal()">✕</button>
       <div class="modal-head">
-        <div class="modal-title" style="color:${type==='urgent'?'#C0392B':'var(--purple)'}">
-          ${type==='urgent'?'🆘 Help Me — Urgent Request':'🔍 Find Me — Where to Buy'}
-        </div>
-        <div class="modal-sub">${type==='urgent'
-          ? 'Offer cash or Trust Points. Helper finds & delivers the item to you.'
-          : 'Offer Trust Points. Helper tells you where to find the item nearby.'}</div>
+        <div class="modal-title" style="color:var(--gold-dk)">🔍 Find Me — Where to Buy</div>
+        <div class="modal-sub">Ask the community where to buy something nearby. Reward helpers with Trust Points — tip cash later to say thanks.</div>
       </div>
       <div class="modal-body">
         <div class="form-group">
           <label class="form-label">What do you need? *</label>
           <input class="form-input" type="text" placeholder="e.g. 65W USB-C charger, Paracetamol 500mg..."
-            value="${f.item}" oninput="S._reqForm.item=this.value">
+            value="${esc(f.item)}" oninput="S._reqForm.item=this.value" onblur="renderModal()">
         </div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label class="form-label">Category</label>
-            <select class="form-input" onchange="S._reqForm.category=this.value">
-              ${['Electronics','Food','Fashion','Home','Services','Vehicles','Others'].map(c=>`<option ${f.category===c?'selected':''}>${c}</option>`).join('')}
-            </select>
+        <div class="form-group">
+          <label class="form-label">Details <span style="font-weight:400;color:var(--muted);text-transform:none">(optional — describe exactly what you need)</span></label>
+          <textarea class="form-input" rows="2" placeholder="Brand, color, size, specs, how urgent…"
+            style="resize:vertical" oninput="S._reqForm.details=this.value" onblur="renderModal()">${esc(f.details||'')}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reference photos <span style="font-weight:400;color:var(--muted);text-transform:none">(optional — show what it looks like)</span></label>
+          ${buildReqPhotoUI()}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category <span style="font-weight:400;color:var(--muted);text-transform:none">— AI picks it from your title, details &amp; photos</span></label>
+          ${catSection('find')}
+        </div>
+        <div class="form-group">
+          <label class="form-label">📍 Your Location</label>
+          <div class="loc-methods">
+            <button type="button" class="loc-method-btn" onclick="useMyGPSForReq()"><span class="lmb-icon">📍</span> Use My Location</button>
+            <button type="button" class="loc-method-btn" onclick="openPinPickerForReq()"><span class="lmb-icon">🗺️</span> Drop Pin on Map</button>
           </div>
-          ${type==='urgent' ? `
-          <div class="form-group">
-            <label class="form-label">Delivery Preference</label>
-            <select class="form-input" onchange="S._reqForm.delivery=this.value">
-              <option value="doorstep" ${f.delivery==='doorstep'?'selected':''}>🏠 Deliver to my door</option>
-              <option value="info" ${f.delivery==='info'?'selected':''}>📍 Just tell me where</option>
-              <option value="both" ${f.delivery==='both'?'selected':''}>Either is fine</option>
-            </select>
-          </div>` : `
-          <div class="form-group">
-            <label class="form-label">📍 Your Location</label>
-            <div class="loc-methods">
-              <button type="button" class="loc-method-btn" onclick="useMyGPSForReq()">
-                <span class="lmb-icon">📍</span> Use My Location
-              </button>
-              <button type="button" class="loc-method-btn" onclick="openPinPickerForReq()">
-                <span class="lmb-icon">🗺️</span> Drop Pin on Map
-              </button>
-            </div>
-            <input class="form-input" type="text" id="req-location" placeholder="e.g. Near SM Clark, Angeles"
-              value="${f.location||''}" oninput="S._reqForm.location=this.value;S._reqForm.lat=null;S._reqForm.lng=null">
-          </div>`}
+          <input class="form-input" type="text" id="req-location" placeholder="Area or landmark near you"
+            value="${esc(f.location||'')}" oninput="S._reqForm.location=this.value;S._reqForm.lat=null;S._reqForm.lng=null" style="margin-top:8px">
         </div>
-
-        <!-- Payment section -->
         <div class="form-group">
-          <label class="form-label">${type==='urgent'?'What will you offer the helper?':'Reward for helper'}</label>
-          <div class="payment-selector">
-            <div class="pay-option ${f.payType==='cash'?'selected':''}" onclick="S._reqForm.payType='cash';renderModal()">
-              <div class="pay-icon">💵</div>
-              <div class="pay-label">Cash</div>
-              <div class="pay-sub">GCash / Cash on delivery</div>
-            </div>
-            <div class="pay-option ${f.payType==='points'?'selected trust':''}" onclick="S._reqForm.payType='points';renderModal()">
-              <div class="pay-icon">🤝</div>
-              <div class="pay-label">Trust Points</div>
-              <div class="pay-sub">You have ${S_trustPoints} pts</div>
-            </div>
-            ${type==='urgent'?`
-            <div class="pay-option ${f.payType==='both'?'selected':''}" onclick="S._reqForm.payType='both';renderModal()" style="grid-column:1/-1">
-              <div class="pay-icon">💵 + 🤝</div>
-              <div class="pay-label">Both — helper chooses</div>
-              <div class="pay-sub">Offer cash AND trust points</div>
-            </div>`:''}
-          </div>
-        </div>
-
-        ${f.payType==='cash'||f.payType==='both' ? `
-        <div class="form-group">
-          <label class="form-label">Cash Amount (₱) *</label>
-          <input class="form-input" type="number" placeholder="e.g. 150"
-            value="${f.cash}" oninput="S._reqForm.cash=this.value">
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">This goes to the helper who successfully helps you</div>
-        </div>` : ''}
-
-        ${f.payType==='points'||f.payType==='both' ? `
-        <div class="form-group">
-          <label class="form-label">Trust Points to Offer *</label>
-          <input class="form-input" type="number" placeholder="e.g. 20" min="1" max="${S_trustPoints}"
+          <label class="form-label">🤝 Reward — Trust Points <span style="font-weight:400;color:var(--muted);text-transform:none">(optional)</span></label>
+          <input class="form-input" type="number" placeholder="e.g. 20" min="0" max="${S_trustPoints}"
             value="${f.points}" oninput="S._reqForm.points=this.value">
-          <div style="font-size:11px;color:var(--muted);margin-top:4px">You have <strong style="color:var(--purple)">${S_trustPoints} Trust Points</strong> available</div>
-        </div>` : ''}
-
-        <div class="form-group">
-          <label class="form-label">Additional Notes</label>
-          <textarea class="form-input" rows="2" placeholder="Brand preference, color, size, urgency details..."
-            style="resize:none" oninput="S._reqForm.note=this.value">${f.note}</textarea>
+          <div style="background:var(--cream2);border-radius:10px;padding:11px 13px;margin-top:8px;font-size:11.5px;color:#555;line-height:1.6">🤝 Find Me rewards helpers with <strong style="color:var(--gold-dk)">Trust Points</strong> — you have ${S_trustPoints}. No cash bounty here. Once someone points you to the item, you can <strong>💵 tip them cash to say thanks</strong>.</div>
         </div>
 
-        <button class="${type==='urgent'?'btn-red-full':'btn-primary'}" onclick="submitPostRequest()" style="margin-top:4px">
-          ${type==='urgent'?'🆘 Post Urgent Request':'🔍 Post Find Request'}
-        </button>
+        <button class="btn-primary" onclick="submitPostRequest()" style="margin-top:4px">🔍 Post Find Request</button>
       </div>
     </div>
   </div>`;
@@ -5262,23 +5395,27 @@ function buildPostRequestModal() {
 function submitPostRequest() {
   const f = S._reqForm || {};
   if (!f.item) { showToast('⚠️ Please describe what you need.', 'error'); return; }
-  const type = S._postReqType || 'urgent';
+  if (!f.cat) { showToast('⚠️ Pick a category (AI can suggest one).', 'error'); return; }
+  // Find Me: Trust Points reward only (no cash bounty). Cash is an optional thank-you tip later.
   const newReq = {
-    id: Date.now(), reqType: type,
-    item: f.item, category: f.category || 'Others',
+    id: Date.now(), reqType: 'find',
+    item: f.item, details: f.details || '',
+    category: catLabel(f) || 'Other', catTop:(f.cat&&f.cat.top)||'', catSub:(f.cat&&f.cat.sub)||'', catEmoji:(f.cat&&f.cat.em)||'🔍',
+    images: (f.images||[]).slice(),
     user: 'You', avatar: 'ME', time: 'Just now',
-    offer: { type: f.payType||'cash', cash: Number(f.cash)||0, points: Number(f.points)||0 },
-    delivery: f.delivery || 'info',
-    note: f.note || '',
-    lat: USER.lat + (Math.random()-.5)*.01,
-    lng: USER.lng + (Math.random()-.5)*.01,
+    offer: { type: 'points', cash: 0, points: Number(f.points)||0 },
+    delivery: 'info',
+    note: f.details || '',
+    contact: (typeof AW_USER==='object' && AW_USER.contact) || (typeof USER==='object' && USER.contact) || '',
+    lat: (f.lat!=null?f.lat:USER.lat + (Math.random()-.5)*.01),
+    lng: (f.lng!=null?f.lng:USER.lng + (Math.random()-.5)*.01),
     replies: []
   };
   helpRequests = [newReq, ...helpRequests];
-  S._reqForm = { item:'', category:'Electronics', cash:'', points:'', delivery:'doorstep', note:'', payType:'cash' };
+  S._reqForm = { item:'', details:'', cat:null, catUI:null, points:'', location:'', images:[] };
   closeModal();
   renderAll();
-  showToast(type==='urgent'?'🆘 Urgent request posted! Helpers nearby will see it.':'🔍 Find request posted!', 'success');
+  showToast('🔍 Find request posted! Neighbors nearby can point you to it.', 'success');
 }
 
 function openLFPost() { openPostRequest('urgent'); }
@@ -6566,23 +6703,19 @@ function closePhoneGate() {
   pendingAction = null;
 }
 
-// ── PATCH GATED ACTIONS ──────────────────────────────────────────
-// Wrap openModal for gated actions
+// ── GATED ACTIONS ────────────────────────────────────────────────
+// Contact numbers are now collected & confirmed ONCE at sign-up, so listing
+// (sell / find me / urgent / store) no longer shows a per-listing phone gate.
+// Sign-in is still required — enforced by guestGate() inside openModal().
 const _origOpenModal = window.openModal;
-window.openModal = function(name) {
-  const gatedActions = ['store-register', 'help-request', 'post-request'];
-  if (gatedActions.includes(name) && !phoneVerified) {
-    requirePhone(name, () => _origOpenModal(name));
-    return;
-  }
-  _origOpenModal(name);
-};
+window.openModal = function(name) { _origOpenModal(name); };
 
-// Wrap openPostRequest for help me / find me
 const _origOpenPostRequest = window.openPostRequest;
 window.openPostRequest = function(type) {
-  if (!phoneVerified) {
-    requirePhone('post-request', () => _origOpenPostRequest(type));
+  // Require sign-in only (no phone confirmation).
+  if (typeof SB_USER === 'undefined' || !SB_USER) {
+    if (typeof openAuthGate === 'function') openAuthGate(); else _origOpenModal('post-request');
+    if (typeof showToast === 'function') showToast('Sign in to do that — free & takes a sec!');
     return;
   }
   _origOpenPostRequest(type);
@@ -6986,6 +7119,23 @@ window.openModal = function(name) {
   }
   _origOpenModalForPost(name);
 };
+
+// ── FIND-ME reference photos (separate photo set from listings) ──────────
+function buildReqPhotoUI(){
+  const imgs = (S._reqForm && S._reqForm.images) || [];
+  let slots = imgs.map((src,i)=>`<div class="img-slot filled"><img src="${src}" alt="Reference ${i+1}" loading="lazy"><button class="remove-img" onclick="reqRemoveImg(event,${i})" title="Remove">✕</button></div>`).join('');
+  const remaining = MAX_IMAGES - imgs.length;
+  for(let i=0;i<remaining;i++) slots += `<div class="img-slot empty" onclick="document.getElementById('req-img-input').click()"><span class="slot-icon">📷</span></div>`;
+  return `<div class="img-upload-section"><div class="img-grid">${slots}</div><input type="file" id="req-img-input" accept="image/*" multiple style="display:none" onchange="reqImgSelect(this)"></div>`;
+}
+function reqImgSelect(input){
+  const files = Array.from(input.files); if(!files.length) return;
+  if(!S._reqForm.images) S._reqForm.images=[];
+  const remaining = MAX_IMAGES - S._reqForm.images.length;
+  files.slice(0,remaining).forEach(file => compressImage(file, (c)=>{ S._reqForm.images.push(c); renderModal(); }));
+  input.value='';
+}
+function reqRemoveImg(e,i){ if(e&&e.stopPropagation) e.stopPropagation(); if(!S._reqForm.images) return; S._reqForm.images.splice(i,1); renderModal(); }
 
 
 // ════════════════════════════════════════════════════════════════
@@ -7463,6 +7613,25 @@ window.submitPostRequest = function() {
         </div>
 
         <div class="aw-input-wrap">
+          <label class="aw-label">📱 Contact Number *</label>
+          <div style="display:flex;gap:8px">
+            <select class="aw-input" id="aw-cc" style="flex:0 0 106px" onchange="awCheckProfile()">
+              <option value="+63">🇵🇭 +63</option>
+              <option value="+65">🇸🇬 +65</option>
+              <option value="+62">🇮🇩 +62</option>
+              <option value="+60">🇲🇾 +60</option>
+              <option value="+66">🇹🇭 +66</option>
+              <option value="+84">🇻🇳 +84</option>
+              <option value="+61">🇦🇺 +61</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+1">🇺🇸 +1</option>
+            </select>
+            <input class="aw-input" id="aw-phone-num" type="tel" placeholder="9XX XXX XXXX" style="flex:1" oninput="awCheckProfile()">
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px">🔒 Confirmed once here — buyers &amp; helpers use this to reach you. You won't be asked again.</div>
+        </div>
+
+        <div class="aw-input-wrap">
           <label class="aw-label">📍 Your Location</label>
           <div style="display:flex;gap:8px;align-items:stretch">
             <input class="aw-input aw-loc-field" id="aw-location" type="text" readonly placeholder="Detecting your location…" style="flex:1;background:var(--cream);cursor:default">
@@ -7718,10 +7887,70 @@ async function sbLoadProfile() {
   if (data) SB_PROFILE = data;
 }
 
+// Split a stored "+63 9XX XXX XXXX" into country code + number and fan it out to the app.
+function applyContact(full){
+  if(!full) return;
+  const m = String(full).trim().match(/^(\+\d{1,4})\s*(.*)$/);
+  if (typeof AW_USER === 'object') {
+    AW_USER.cc = m ? m[1] : '+63';
+    AW_USER.phone = m ? m[2] : String(full).trim();
+    AW_USER.contact = String(full).trim();
+  }
+  if (typeof USER === 'object') USER.contact = String(full).trim();
+}
+
+// Persist the contact number to the user's profile row.
+async function sbSaveContact(contact){
+  if (!sb || !SB_USER) return;
+  try {
+    await sb.from('profiles').update({ contact }).eq('id', SB_USER.id);
+    if (SB_PROFILE) SB_PROFILE.contact = contact;
+  } catch(e){ console.log('[BringMe] save contact failed', e); }
+}
+
+// One-time number collection for users who signed up without one (e.g. Google/FB/Discord).
+function showContactCapture(){
+  if (!SB_USER) return;
+  if (typeof AW_USER==='object' && AW_USER.contact) return;   // already provided this session
+  const root = document.getElementById('phone-gate-root') || document.getElementById('modal-root');
+  if (!root) return;
+  if (root.querySelector('.cc-capture')) return;              // already showing — don't stack
+  const cc = (typeof AW_USER==='object' && AW_USER.cc) || '+63';
+  const opts = ['🇵🇭 +63','🇸🇬 +65','🇮🇩 +62','🇲🇾 +60','🇹🇭 +66','🇻🇳 +84','🇦🇺 +61','🇬🇧 +44','🇺🇸 +1'];
+  root.innerHTML = `
+  <div class="overlay" style="z-index:4000">
+    <div class="modal cc-capture" style="width:420px;max-width:calc(100vw - 24px)" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <div class="modal-title">📱 One last thing</div>
+        <div class="modal-sub">Add a contact number so buyers and helpers can reach you. You'll only do this once.</div>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex;gap:8px">
+          <select class="sf-inp" id="cc-sel" style="flex:0 0 106px">${opts.map(o=>{const code=o.split(' ')[1];return `<option value="${code}" ${cc===code?'selected':''}>${o}</option>`;}).join('')}</select>
+          <input class="sf-inp" id="cc-num" type="tel" placeholder="9XX XXX XXXX" style="flex:1" autofocus>
+        </div>
+        <button class="btn-primary" style="margin-top:14px" onclick="saveContactNumber()">Save number</button>
+      </div>
+    </div>
+  </div>`;
+}
+async function saveContactNumber(){
+  const cc = document.getElementById('cc-sel').value;
+  const ph = (document.getElementById('cc-num').value||'').trim();
+  if (ph.replace(/\D/g,'').length < 7){ showToast('Please enter a valid contact number','error'); return; }
+  const full = cc + ' ' + ph;
+  applyContact(full);
+  const r = document.getElementById('phone-gate-root'); if (r) r.innerHTML = '';
+  showToast('✅ Number saved!','success');
+  await sbSaveContact(full);
+}
+
 // Called whenever a user becomes signed-in
 function onSignedIn() {
   // Signed in now — remove the guest sign-in prompt and any leftover gate
   IS_GUEST = false;
+  // Number is confirmed once at sign-up, so listings never re-prompt for it.
+  phoneVerified = true;
   document.querySelector('.guest-join-btn')?.remove();
   const _aw = document.getElementById('auth-window'); if (_aw) _aw.classList.add('hidden');
   const _ov = document.getElementById('guest-overlay'); if (_ov) { _ov.style.display = 'none'; _ov.style.pointerEvents = 'none'; }
@@ -7742,15 +7971,23 @@ function onSignedIn() {
     AW_USER.email     = SB_USER.email || '';
     AW_USER.roles     = SB_PROFILE.roles || ['buyer'];
   }
+  // Load the saved contact number — or collect it once if this account has none yet
+  // (e.g. a Google / Facebook / Discord sign-up that skipped the email form).
+  if (SB_PROFILE.contact) {
+    applyContact(SB_PROFILE.contact);
+  } else if (!(typeof AW_USER==='object' && AW_USER.contact)) {
+    // No number saved yet (older account / social sign-up) — ask once this session only.
+    setTimeout(showContactCapture, 500);
+  }
   console.log('[BringMe] Signed in as', SB_PROFILE.nickname || SB_USER.email);
 }
 
 // ---- EMAIL / PASSWORD AUTH (works right now, no OAuth setup needed) ----
-async function sbSignUp(email, password, firstName, nickname) {
+async function sbSignUp(email, password, firstName, nickname, contact) {
   if (!sb) { showToast('Not connected to database'); return {error:'no-connection'}; }
   const { data, error } = await sb.auth.signUp({
     email, password,
-    options: { data: { full_name: firstName, nickname } }
+    options: { data: { full_name: firstName, nickname, contact: contact || '' } }
   });
   if (error) { showToast('Sign up failed: ' + error.message); return {error}; }
   // The profile row is auto-created by our database trigger + 5 welcome points
