@@ -2801,18 +2801,18 @@ try {
         <button class="fp-identity" id="fpb-profile-btn" onclick="event.stopPropagation();openProfile()">
           <div class="fp-avatar-wrap">
             <div class="fp-avatar" id="fpb-avatar">ME</div>
-            <div class="fp-level">5</div>
+            <div class="fp-level">1</div>
           </div>
           <div class="fp-id-text">
             <div class="fp-name" id="fpb-name">My Account</div>
-            <div class="fp-rank">⭐ Trusted Helper</div>
+            <div class="fp-rank">🌱 Newcomer</div>
           </div>
         </button>
         <div class="fp-divider"></div>
         <div class="fp-stats">
-          <div class="fp-stat"><div class="fp-stat-num" id="fpb-trust-pts">120</div><div class="fp-stat-lbl">🤝 Trust</div></div>
-          <div class="fp-stat"><div class="fp-stat-num">47</div><div class="fp-stat-lbl">🙌 Helped</div></div>
-          <div class="fp-stat"><div class="fp-stat-num">4.9</div><div class="fp-stat-lbl">⭐ Rating</div></div>
+          <div class="fp-stat"><div class="fp-stat-num" id="fpb-trust-pts">0</div><div class="fp-stat-lbl">🤝 Trust</div></div>
+          <div class="fp-stat"><div class="fp-stat-num">0</div><div class="fp-stat-lbl">🙌 Helped</div></div>
+          <div class="fp-stat"><div class="fp-stat-num">New</div><div class="fp-stat-lbl">⭐ Rating</div></div>
         </div>
       </div>
       <span id="fpb-nick" style="display:none"></span>
@@ -2916,102 +2916,26 @@ let USER = { lat: 14.8144, lng: 121.0456, name: "Your Area" };
 const CATS = ["All","Electronics","Fashion","Home","Food","Services","Vehicles","Others"];
 const CAT_ICONS = {All:"🏠",Electronics:"📱",Fashion:"👗",Home:"🏡",Food:"🍱",Services:"🛠️",Vehicles:"🏍️",Others:"📦"};
 
-let listings = [
-  {id:1,type:"sell",promoted:true,title:"iPhone 13 Pro 128GB",category:"Electronics",price:28000,location:"Market Area",seller:"Mark R.",avatar:"MR",image:"📱",desc:"Good condition, complete accessories, battery health 89%. Original box included.",contact:"09171234567",rating:4.8,lat:14.8160,lng:121.0420},
-  {id:2,type:"sell",title:"Vintage Leather Bag",category:"Fashion",price:1200,location:"Town Center",seller:"Ana L.",avatar:"AL",image:"👜",desc:"Genuine leather, light wear. Fits A4 documents plus essentials.",contact:"09281234567",rating:4.5,lat:14.8180,lng:121.0480},
-  {id:3,type:"buy",title:"Looking for 2nd Hand Laptop",category:"Electronics",price:15000,location:"Riverside",buyer:"Jose M.",avatar:"JM",image:"💻",desc:"Need a working laptop for school. Budget flexible for good specs.",contact:"09391234567",rating:4.2,lat:14.8220,lng:121.0510},
-  {id:4,type:"sell",title:"Airfryer Cosori 5.5L",category:"Home",price:3500,location:"Hillcrest",seller:"Clara V.",avatar:"CV",image:"🍳",desc:"Used only a few times. Comes with box and recipe book.",contact:"09451234567",rating:4.9,lat:14.8100,lng:121.0430},
-  {id:5,type:"buy",title:"WTB: Mountain Bike",category:"Others",price:8000,location:"City Center",buyer:"Renz B.",avatar:"RB",image:"🚲",desc:"Looking for MTB in good condition. Hardtail preferred.",contact:"09561234567",rating:4.0,lat:14.8155,lng:121.0500},
-  {id:6,type:"sell",title:"Honda Beat 2021",category:"Vehicles",price:55000,location:"Market Area",seller:"Danny O.",avatar:"DO",image:"🏍️",desc:"Low mileage, casa maintained, no issues. Papers complete.",contact:"09671234567",rating:4.7,lat:14.8195,lng:121.0440},
-  {id:7,type:"sell",title:"Homemade Ube Halaya",category:"Food",price:180,location:"Hillcrest",seller:"Nena S.",avatar:"NS",image:"🍠",desc:"Per jar 350g. Made fresh every weekend.",contact:"09781234567",rating:5.0,lat:14.8090,lng:121.0465},
-  {id:8,type:"buy",title:"Need Graphic Design Services",category:"Services",price:500,location:"Town Center",buyer:"Liza P.",avatar:"LP",image:"🎨",desc:"Looking for someone to design a logo for my small business.",contact:"09891234567",rating:4.3,lat:14.8135,lng:121.0395},
-];
+let listings = [];
 
-let stores = [
-  {id:101,official:true,featured:true,featuredPlan:"Pro",name:"TechZone",categories:["Electronics"],address:"Market Area",contact:"09171110001",hours:"9AM–7PM",rating:4.6,lat:14.8155,lng:121.0450,products:["Laptop","Smartphone","Tablet","Charger","Earphones"]},
-  {id:102,official:true,name:"Mega Electronics",categories:["Electronics"],address:"Town Center",contact:"09281110002",hours:"8AM–8PM",rating:4.4,lat:14.8190,lng:121.0490,products:["Laptop","Desktop","Monitor","Printer","USB Hub"]},
-  {id:103,official:false,name:"Fashion Hub",categories:["Fashion"],address:"City Mall",contact:"09391110003",hours:"10AM–9PM",rating:4.3,lat:14.8115,lng:121.0430,products:["Bag","Shoes","Clothing","Accessories"]},
-  {id:104,official:true,name:"Home & More",categories:["Home"],address:"Riverside",contact:"09451110004",hours:"8AM–6PM",rating:4.7,lat:14.8230,lng:121.0520,products:["Appliances","Cookware","Furniture","Decor"]},
-  {id:105,official:false,name:"AutoParts Center",categories:["Vehicles"],address:"National Highway",contact:"09561110005",hours:"7AM–5PM",rating:4.5,lat:14.8075,lng:121.0400,products:["Motorcycle Parts","Car Parts","Batteries","Tires"]},
-  {id:106,official:true,featured:true,featuredPlan:"Basic",name:"Kakanin ni Aling Rosa",categories:["Food"],address:"Hillcrest",contact:"09671110006",hours:"6AM–2PM",rating:5.0,lat:14.8100,lng:121.0455,products:["Ube Halaya","Kalamay","Biko","Puto"]},
-  {id:107,official:false,name:"AllShop General Store",categories:["Electronics","Home","Others"],address:"Grand Central Mall",contact:"09781110007",hours:"9AM–9PM",rating:4.2,lat:14.8210,lng:121.0505,products:["Laptop","Appliances","Tools","School Supplies"]},
-];
+let stores = [];
 
-let helpRequests = [
-  // URGENT — Help Me (cash or trust points, delivery options)
-  {id:201, reqType:'urgent',
-   item:"65W USB-C Laptop Charger", category:"Electronics",
-   user:"Carlo M.", avatar:"CM", time:"5 min ago",
-   offer:{ type:'both', cash:150, points:50 },
-   delivery:'doorstep',
-   note:"Need it delivered ASAP for WFH",
-   lat:14.8165, lng:121.0445,
-   replies:[{id:1,name:"Mark R.",avatar:"MR",store:"TechZone",address:"Market Area",msg:"Available! ₱350 lang.",confirmed:false}]},
-  {id:202, reqType:'urgent',
-   item:"Paracetamol 500mg (10 tablets)", category:"Food",
-   user:"Rica S.", avatar:"RS", time:"12 min ago",
-   offer:{ type:'cash', cash:80, points:0 },
-   delivery:'doorstep',
-   note:"Sick at home, need medicine delivered NOW",
-   lat:14.8130, lng:121.0480,
-   replies:[
-     {id:1,name:"Tina A.",avatar:"TA",store:"MedPlus Pharmacy",address:"Town Center",msg:"In stock, ₱8/tablet.",confirmed:false},
-     {id:2,name:"Bong C.",avatar:"BC",store:"Mercury Drug",address:"City Center",msg:"24hrs open, meron kami.",confirmed:true}
-   ]},
-  {id:204, reqType:'urgent',
-   item:"Birthday Cake (chocolate)", category:"Food",
-   user:"Jenny L.", avatar:"JL", time:"2 min ago",
-   offer:{ type:'both', cash:200, points:80 },
-   delivery:'both',
-   note:"Party tonight at 6PM, need delivered by 5PM",
-   lat:14.8170, lng:121.0470,
-   replies:[]},
-  // FIND ME — Not urgent (trust points only)
-  {id:203, reqType:'find',
-   item:"HDMI Cable 2m", category:"Electronics",
-   user:"Ben A.", avatar:"BA", time:"22 min ago",
-   offer:{ type:'points', cash:0, points:20 },
-   delivery:'info',
-   note:"Just need to know which store nearby sells this",
-   lat:14.8205, lng:121.0420,
-   replies:[]},
-  {id:205, reqType:'find',
-   item:"Baon containers (3-layer)", category:"Home",
-   user:"Mama Cita", avatar:"MC", time:"1 hr ago",
-   offer:{ type:'points', cash:0, points:15 },
-   delivery:'info',
-   note:"Where to buy near me?",
-   lat:14.8140, lng:121.0440,
-   replies:[]},
-  {id:206, reqType:'find',
-   item:"2nd Hand Gaming Chair", category:"Others",
-   user:"Gab R.", avatar:"GR", time:"3 hrs ago",
-   offer:{ type:'points', cash:0, points:30 },
-   delivery:'info',
-   note:"Looking for affordable gaming chair, blue color preferred",
-   lat:14.8190, lng:121.0430,
-   replies:[]},
-];
+let helpRequests = [];
 
 // ── STATE ──────────────────────────────────────────────────────────────────────
 let S = {
   tab:"all", category:"All", search:"", radius:3,
   selectedId:null, selectedType:null,
-  saved:[], points:47,
+  saved:[], points:0,
   postType:"sell",
   form:{title:"",cat:null,catUI:null,price:"",location:"",desc:"",contact:"",image:"",imageUrl:"",brand:"",images:[],condition:"",negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:"",cc:"+63",lat:null,lng:null},
   storeForm:{name:"",address:"",contact:"",hours:"",cat:null,catUI:null,products:"",poster:"community",docs:[],items:[],draft:"",openCatFor:null,catSearch:"",drillTop:null,importOpen:false,importText:"",importRows:[],importDupes:0,photos:[],lat:null,lng:null,located:false},
   helpForm:{item:"",category:"Electronics"},
   helpReplyForm:{store:"",address:"",msg:""},
-  pointsHistory:[
-    {id:1,icon:"🏪",title:"Helped locate TechZone",time:"Yesterday",val:1,type:"earn"},
-    {id:2,icon:"🏪",title:"Helped locate Aling Rosa's store",time:"2 days ago",val:1,type:"earn"},
-    {id:3,icon:"💸",title:"Cashed out to GCash",time:"Last week",val:-20,type:"spend"},
-    {id:4,icon:"🏪",title:"Helped locate Mercury Drug",time:"Last week",val:1,type:"earn"},
-  ],
+  pointsHistory:[],
   modal:null,
   boostTarget:null, boostTargetType:null, selectedPlan:null,
-  adminStats:{revenue:4850, activeBoosts:3, impressions:12400, clicks:890},
+  adminStats:{revenue:0, activeBoosts:0, impressions:0, clicks:0},
 };
 
 
@@ -4480,7 +4404,7 @@ function buildHelpDetailModal() {
           <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:10px">📤 Know where to find this? Reply & earn ⭐</div>
           <div class="form-group">
             <label class="form-label">Store Name *</label>
-            <input class="form-input" type="text" placeholder="e.g. TechZone" value="${esc(f.store)}" oninput="S.helpReplyForm.store=this.value">
+            <input class="form-input" type="text" placeholder="e.g. your store's name" value="${esc(f.store)}" oninput="S.helpReplyForm.store=this.value">
           </div>
           <div class="form-group">
             <label class="form-label">Address</label>
@@ -4513,7 +4437,7 @@ function buildPointsModal() {
         </div>
         <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">History</div>
         <div class="pts-history">
-          ${S.pointsHistory.map(p=>`
+          ${S.pointsHistory.length ? S.pointsHistory.map(p=>`
             <div class="pts-row">
               <div style="font-size:18px;width:32px;text-align:center">${p.icon}</div>
               <div style="flex:1">
@@ -4522,7 +4446,7 @@ function buildPointsModal() {
               </div>
               <div class="pts-row-val ${p.type==='earn'?'earn':'spend'}">${p.val>0?'+':''}${p.val}</div>
             </div>
-          `).join('')}
+          `).join('') : `<div style="text-align:center;padding:18px;color:var(--muted);font-size:12.5px">No activity yet — reply to a Help Request to earn your first point.</div>`}
         </div>
         ${S.points>0?`
           <div class="cash-out-box">
@@ -5592,7 +5516,7 @@ document.addEventListener('keydown', e => {
 
 // ── LEFT PANEL: Urgent + Find Me Requests ───────────────────────────────────
 let selectedLF = null;
-let S_trustPoints = 120;
+let S_trustPoints = 0;
 
 // Offer display helper
 function renderOffer(req) {
@@ -6800,7 +6724,11 @@ function renderRightPanel() {
   const storesList = document.getElementById('stores-list');
   if (storesList) {
     if (!filteredStores.length) {
-      storesList.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px">No stores found</div>';
+      storesList.innerHTML = `<div style="text-align:center;padding:24px 16px;color:var(--muted)">
+        <div style="font-size:30px;margin-bottom:8px">🏪</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">No shops or services yet</div>
+        <div style="font-size:11.5px;line-height:1.5">Be the first to put a place on the map.</div>
+      </div>`;
     } else {
       storesList.innerHTML = filteredStores.map(s => {
         const distKm = haversine(USER.lat, USER.lng, s.lat, s.lng).toFixed(1);
@@ -6853,7 +6781,11 @@ function renderRightPanel() {
   const listingsList = document.getElementById('sb-list');
   if (listingsList) {
     if (!filteredListings.length) {
-      listingsList.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:12px">No listings found</div>';
+      listingsList.innerHTML = `<div style="text-align:center;padding:24px 16px;color:var(--muted)">
+        <div style="font-size:30px;margin-bottom:8px">🏷️</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">No items yet</div>
+        <div style="font-size:11.5px;line-height:1.5">Be the first to list something for sale.</div>
+      </div>`;
     } else {
       listingsList.innerHTML = filteredListings.map(l => {
         const distKm = haversine(USER.lat, USER.lng, l.lat, l.lng).toFixed(1);
@@ -8742,27 +8674,27 @@ window.addEventListener('load', () => { setTimeout(() => { if (document.querySel
   <div class="profile-card">
     <button class="pc-close" onclick="closeProfile()">✕</button>
     <div class="pc-header">
-      <div class="pc-avatar">👤<span class="pc-lvl">5</span></div>
+      <div class="pc-avatar">👤<span class="pc-lvl">1</span></div>
       <div class="pc-name" id="pc-name">My Account</div>
       <div class="pc-handle">@member · Your Location</div>
-      <div class="pc-rank">⭐ Trusted Helper</div>
+      <div class="pc-rank">🌱 Newcomer</div>
     </div>
     <div class="pc-body">
       <div class="pc-tabs">
         <button class="pc-tab active" onclick="pcTab('profile',this)">Profile</button>
         <button class="pc-tab" onclick="pcTab('posts',this)">My Posts</button>
-        <button class="pc-tab" onclick="pcTab('alerts',this)">Alerts<span class="pc-tab-badge">3</span></button>
+        <button class="pc-tab" onclick="pcTab('alerts',this)">Alerts</button>
       </div>
       <div class="pc-pane" id="pane-profile">
-        <div class="pc-prog-row"><span>Level 5</span><span class="pc-prog-pct">680 / 1000 XP</span><span>Level 6</span></div>
-        <div class="pc-prog"><div class="pc-prog-fill" style="width:68%"></div></div>
+        <div class="pc-prog-row"><span>Level 1</span><span class="pc-prog-pct">0 / 100 XP</span><span>Level 2</span></div>
+        <div class="pc-prog"><div class="pc-prog-fill" style="width:0%"></div></div>
         <div class="pc-stats">
-          <div class="pc-stat"><div class="pc-stat-n">120</div><div class="pc-stat-l">🤝 Trust</div></div>
-          <div class="pc-stat"><div class="pc-stat-n">47</div><div class="pc-stat-l">🙌 Helped</div></div>
-          <div class="pc-stat"><div class="pc-stat-n">4.9</div><div class="pc-stat-l">⭐ Rating</div></div>
-          <div class="pc-stat"><div class="pc-stat-n">23</div><div class="pc-stat-l">🏷️ Sold</div></div>
-          <div class="pc-stat"><div class="pc-stat-n">31</div><div class="pc-stat-l">🤝 Deals</div></div>
-          <div class="pc-stat"><div class="pc-stat-n">'24</div><div class="pc-stat-l">📅 Member</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">0</div><div class="pc-stat-l">🤝 Trust</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">0</div><div class="pc-stat-l">🙌 Helped</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">New</div><div class="pc-stat-l">⭐ Rating</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">0</div><div class="pc-stat-l">🏷️ Sold</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">0</div><div class="pc-stat-l">🤝 Deals</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">'26</div><div class="pc-stat-l">📅 Member</div></div>
         </div>
         <div class="pc-section-ttl">Verified</div>
         <div class="pc-chips"><span class="pc-chip pc-verified">✓ Phone</span><span class="pc-chip pc-verified">✓ Email</span><span class="pc-chip pc-unverified">○ ID</span></div>
@@ -8770,15 +8702,18 @@ window.addEventListener('load', () => { setTimeout(() => { if (document.querySel
         <div class="pc-chips"><span class="pc-chip pc-role">🛍️ Buyer</span><span class="pc-chip pc-role">🏷️ Seller</span><span class="pc-chip pc-role">🙌 Helper</span></div>
       </div>
       <div class="pc-pane" id="pane-posts" style="display:none">
-        <div class="mp-card"><div class="mp-emoji">📱</div><div class="mp-body"><div class="mp-title">iPhone 13 Pro 128GB</div><div class="mp-meta">₱28,000 · 👁️ 142 · 💬 3</div></div><span class="mp-status mp-active">Active</span></div>
-        <div class="mp-card"><div class="mp-emoji">⚡</div><div class="mp-body"><div class="mp-title">Bring Me: USB-C Charger</div><div class="mp-meta">🤝 50 Trust reward · 2 replies</div></div><span class="mp-status mp-open">Open</span></div>
-        <div class="mp-card"><div class="mp-emoji">🪑</div><div class="mp-body"><div class="mp-title">Standing Desk</div><div class="mp-meta">₱6,500 · Sold</div></div><span class="mp-status mp-sold">Sold</span></div>
+        <div style="text-align:center;padding:30px 16px;color:var(--muted)">
+          <div style="font-size:30px;margin-bottom:8px">🏷️</div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:3px">No posts yet</div>
+          <div style="font-size:11.5px;line-height:1.5">Sell an item, post a shop, or ask the community — your posts show up here.</div>
+        </div>
       </div>
       <div class="pc-pane" id="pane-alerts" style="display:none">
-        <div class="al-item unread"><div class="al-ic" style="background:#F7E6E2">🙌</div><div class="al-body"><div class="al-text"><b>Maria S.</b> replied to your Find Me request</div><div class="al-time">5 min ago</div></div><div class="al-dot"></div></div>
-        <div class="al-item unread"><div class="al-ic" style="background:#E6F5EE">🏷️</div><div class="al-body"><div class="al-text">Someone is interested in your <b>iPhone 13 Pro</b></div><div class="al-time">1 hour ago</div></div><div class="al-dot"></div></div>
-        <div class="al-item unread"><div class="al-ic" style="background:#FBF0C0">🤝</div><div class="al-body"><div class="al-text"><b>Ben A.</b> gave you <b>30 Trust Points</b></div><div class="al-time">3 hours ago</div></div><div class="al-dot"></div></div>
-        <div class="al-item"><div class="al-ic" style="background:#EEF1FF">⭐</div><div class="al-body"><div class="al-text">You reached <b>Level 5 — Trusted Helper!</b></div><div class="al-time">Yesterday</div></div></div>
+        <div style="text-align:center;padding:30px 16px;color:var(--muted)">
+          <div style="font-size:30px;margin-bottom:8px">🔔</div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:3px">No notifications yet</div>
+          <div style="font-size:11.5px;line-height:1.5">Replies, interest in your items, and Trust Points will appear here.</div>
+        </div>
       </div>
       <div class="pc-footer">
         <button class="pc-foot-btn">🔖 Saved</button>
