@@ -455,6 +455,9 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;backgroun
   position:relative;max-height:88vh;overflow-y:auto;
 }
 @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+/* A re-render of an already-open modal (e.g. typing in a form) must not replay
+   the fade/slide entrance, or the overlay flashes transparent every keystroke. */
+.overlay.no-anim,.modal.no-anim{animation:none!important}
 .modal-head{padding:24px 24px 0;}
 .modal-title{font-family:'DM Serif Display',serif;font-size:24px;color:var(--navy);margin-bottom:3px;}
 .modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px;}
@@ -3814,7 +3817,7 @@ function closeModal() { S.modal=null; document.getElementById('modal-root').inne
 
 function renderModal() {
   const root=document.getElementById('modal-root');
-  if (!S.modal) { root.innerHTML=''; return; }
+  if (!S.modal) { root.innerHTML=''; renderModal._last=null; return; }
   // Preserve scroll position and the focused field across a full re-render,
   // so typing in the search box and scrolling a long form don't jump to the top.
   const prevModal=root.querySelector('.modal');
@@ -3822,11 +3825,17 @@ function renderModal() {
   const ae=document.activeElement;
   const focusId=(ae&&ae.id)?ae.id:null;
   const caret=(ae&&typeof ae.selectionStart==='number')?ae.selectionStart:null;
+  // Only play the entrance animation on a fresh open — a re-render of the SAME
+  // modal (typing in a field) must not replay it, or the overlay flashes.
+  const reRender = !!prevModal && renderModal._last===S.modal;
   const builders={detail:buildDetailModal,post:buildPostModal,'help-request':buildHelpRequestModal,'help-detail':buildHelpDetailModal,points:buildPointsModal,'store-register':buildStoreRegisterModal,boost:buildBoostModal,'boost-info':buildBoostInfoModal,admin:buildAdminModal,'trust-points':buildTrustPointsModal,'post-request':buildPostRequestModal};
   root.innerHTML = (builders[S.modal]||(() => ''))();
+  const newOverlay=root.querySelector('.overlay');
   const newModal=root.querySelector('.modal');
+  if (reRender){ if(newOverlay) newOverlay.classList.add('no-anim'); if(newModal) newModal.classList.add('no-anim'); }
   if (newModal) newModal.scrollTop=prevScroll;
   if (focusId){ const el=document.getElementById(focusId); if(el){ el.focus(); if(caret!=null&&el.setSelectionRange){ try{ el.setSelectionRange(caret,caret); }catch(e){} } } }
+  renderModal._last=S.modal;
 }
 
 function buildDetailModal() {
