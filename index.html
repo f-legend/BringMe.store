@@ -3000,7 +3000,7 @@ let S = {
   saved:[], points:47,
   postType:"sell",
   form:{title:"",cat:null,catUI:null,price:"",location:"",desc:"",contact:"",image:"",imageUrl:"",brand:"",images:[],condition:"",negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:"",cc:"+63",lat:null,lng:null},
-  storeForm:{name:"",address:"",contact:"",hours:"",cat:null,catUI:null,products:"",poster:"community",docs:[]},
+  storeForm:{name:"",address:"",contact:"",hours:"",cat:null,catUI:null,products:"",poster:"community",docs:[],items:[],draft:"",openCatFor:null,catSearch:"",drillTop:null,importOpen:false,importText:"",importRows:[],importDupes:0,photos:[],lat:null,lng:null,located:false},
   helpForm:{item:"",category:"Electronics"},
   helpReplyForm:{store:"",address:"",msg:""},
   pointsHistory:[
@@ -3721,23 +3721,164 @@ function storeDocSelect(e){
 function submitStore() {
   const f=S.storeForm;
   const owner=f.poster==='owner';
-  if (!f.name||!f.address) { showToast('⚠️ Fill in name & location.'); return; }
+  if (!f.name) { showToast('⚠️ Add a name.'); return; }
+  if (!f.cat) { showToast('⚠️ Pick a type for your place.'); return; }
+  if (!f.located && !f.address) { showToast('⚠️ Set your location — use your location, drop a pin, or type the address.'); return; }
   if (owner && !f.contact) { showToast('⚠️ Owners: add a contact number.'); return; }
   if (owner && !(f.docs&&f.docs.length)) { showToast('⚠️ Upload proof of ownership to post as the owner.'); return; }
+  const products = (f.items&&f.items.length) ? f.items.map(it=>it.name) : f.products.split(',').map(p=>p.trim()).filter(Boolean);
+  const lat = (f.lat!=null)? f.lat : USER.lat+(Math.random()-.5)*.015;
+  const lng = (f.lng!=null)? f.lng : USER.lng+(Math.random()-.5)*.015;
   stores=[{
-    id:Date.now(),...f,
+    id:Date.now(),
+    name:f.name, address:f.address||'Nearby', contact:f.contact, hours:f.hours,
     official:false, pending:owner, unofficial:!owner,
     categories:[catLabel(f)||'Other'], catEmoji:(f.cat&&f.cat.em)||'🏪',
-    products:f.products.split(',').map(p=>p.trim()).filter(Boolean),
-    rating:5.0,
-    lat:USER.lat+(Math.random()-.5)*.015,lng:USER.lng+(Math.random()-.5)*.015
+    products,
+    items:(f.items||[]).map(it=>({name:it.name,price:it.price||'',category:it.cat?(it.cat.sub||it.cat.top):'',em:it.cat?it.cat.em:'🏷️',service:!!it.service})),
+    photos:(f.photos||[]).slice(), cover:(f.photos&&f.photos[0])||null,
+    docs:(f.docs||[]).slice(),
+    rating:5.0, lat, lng
   },...stores];
   if (typeof S.points==='number') S.points += owner?25:10;
-  S.storeForm={name:'',address:'',contact:'',hours:'',cat:null,catUI:null,products:'',poster:'community',docs:[]};
+  S.storeForm={name:'',address:'',contact:'',hours:'',cat:null,catUI:null,products:'',poster:'community',docs:[],items:[],draft:'',openCatFor:null,catSearch:'',drillTop:null,importOpen:false,importText:'',importRows:[],importDupes:0,photos:[],lat:null,lng:null,located:false};
   const regBtn = document.querySelector('.store-reg-btn');
   if (regBtn) { regBtn.classList.add('btn-loading'); regBtn.innerHTML = '<div class="spinner spinner-sm"></div> '+(owner?'Submitting...':'Posting...'); }
   setTimeout(() => { closeModal(); S.tab='stores'; renderAll(); showToast(owner?'✅ Submitted for verification — +25 Trust Points':'👥 Posted (unofficial) — +10 Trust Points', 'success'); }, 900);
 }
+
+// ── POST A SHOP/SERVICE: item catalog · photos · location (ported from approved demo) ──
+const ITEM_SUGGEST = {
+  'Pharmacy':['Paracetamol','Vitamins','Alcohol','Face Mask','Bandage','Cough Syrup','Antibiotics','Thermometer'],
+  'Clinic / Hospital':['Checkup','Vaccine','Lab Test','Dental Cleaning','X-ray','Blood Pressure'],
+  'Food / Eatery':['Rice Meals','Silog','Milk Tea','Coffee','Snacks','Lumpia'],
+  'Salon / Beauty':['Haircut','Hair Color','Manicure','Pedicure','Rebond','Facial'],
+  'Shop / Store':['Load','Snacks','Drinks','Rice','Canned Goods','Toiletries'],
+  'Backyard / Home-based':['Home-cooked Meals','Baked Goods','Ube Halaya','Leche Flan','Lumpia'],
+  'Repair / Services':['Aircon Cleaning','Cellphone Repair','Vulcanizing','Laundry','Printing','Tailoring'],
+  'Professional / Office':['Legal Consult','Accounting','Notary','Insurance','Real Estate'],
+  'School / Tutor':['Math Tutoring','English Lessons','Review Classes','Daycare'],
+  'Water / Gas / Utilities':['Water Refill','LPG Refill','Gasoline'],
+  'Government':['Barangay Clearance','Business Permit','Cedula']
+};
+const SERVICE_HINTS=['checkup','check-up','vaccine','consult','repair','fix','cleaning','haircut','color','manicure','pedicure','rebond','facial','massage','tutoring','tutor','lesson','laundry','printing','tailoring','welding','vulcanizing','car wash','grooming','lab test','x-ray','dental','notary','review class','install','service'];
+function stIsService(name){ const t=String(name||'').toLowerCase(); return SERVICE_HINTS.some(h=>t.includes(h)); }
+const STORE_GOAL=10;
+let stUid=1;
+const ST_EG=["Jollibee","Mercury Drug","SM Supermarket","7-Eleven","Mang Inasal","Puregold","Watsons","National Bookstore","Andok's","Goldilocks","Aling Nena's Carinderia","Red Ribbon"];
+let ST_EG_NAME = ST_EG[Math.floor(Math.random()*ST_EG.length)];
+
+// live AI tag line for the item draft (no full re-render → smooth typing)
+function stLiveTag(){
+  const el=document.getElementById('st-liveai'); const btn=document.getElementById('st-addbtn');
+  const v=(S.storeForm.draft||'').trim();
+  if(btn) btn.disabled=!v;
+  if(!el) return;
+  if(!v){ el.innerHTML=''; return; }
+  const c=catClassify(v,'');
+  el.innerHTML = c?`AI will tag this <b>${c.em} ${esc(c.sub||c.top)}</b>`:`AI couldn't auto-tag — you can set it after adding`;
+}
+function stAddItem(){
+  const el=document.getElementById('st-additem');
+  const name=((el?el.value:S.storeForm.draft)||'').trim(); if(!name) return;
+  const c=catClassify(name,'');
+  S.storeForm.items.unshift({id:stUid++, name, price:'', cat:c, service:stIsService(name)});
+  S.storeForm.draft=''; renderModal();
+  const i=document.getElementById('st-additem'); if(i) i.focus();
+}
+function stQuickAdd(k){
+  const name=S.storeForm._itemSug&&S.storeForm._itemSug[k]; if(!name) return;
+  if(S.storeForm.items.some(it=>it.name.toLowerCase()===name.toLowerCase())) return;
+  const c=catClassify(name,'');
+  S.storeForm.items.unshift({id:stUid++, name, price:'', cat:c, service:stIsService(name)});
+  renderModal();
+}
+function stRemoveItem(id){ S.storeForm.items=S.storeForm.items.filter(it=>it.id!==id); if(S.storeForm.openCatFor===id)S.storeForm.openCatFor=null; renderModal(); }
+function stOpenItemCat(id){ S.storeForm.openCatFor=id; S.storeForm.catSearch=''; S.storeForm.drillTop=null; renderModal(); }
+function stCloseItemCat(){ S.storeForm.openCatFor=null; S.storeForm.catSearch=''; S.storeForm.drillTop=null; renderModal(); }
+function stItemCatSearch(v){ S.storeForm.catSearch=v; renderModal(); }
+function stApplyMatch(id,k){ const m=S.storeForm._itemMatches&&S.storeForm._itemMatches[k]; const it=S.storeForm.items.find(x=>x.id===id); if(!m||!it)return; it.cat={em:m.em,top:m.top,sub:m.sub}; stCloseItemCat(); }
+function stApplyCustom(id){ const it=S.storeForm.items.find(x=>x.id===id); if(!it)return; const name=(S.storeForm.catSearch||'').trim(); if(!name)return; it.cat={em:'🏷️',top:name,sub:''}; stCloseItemCat(); }
+function stDrillItemCat(id,ci){ S.storeForm.drillTop={itemId:id,ci}; renderModal(); }
+function stApplyDrillSub(id,ci,si){ const it=S.storeForm.items.find(x=>x.id===id); if(!it)return; const c=CAT_TAX[ci]; it.cat={em:c.em,top:c.name,sub: si<0?'':c.subs[si]}; S.storeForm.drillTop=null; stCloseItemCat(); }
+
+// ---------- bulk import ----------
+function stToggleImport(){ S.storeForm.importOpen=!S.storeForm.importOpen; renderModal(); const t=document.getElementById('st-imp-ta'); if(t&&S.storeForm.importOpen) t.focus(); }
+function stParseRows(text){
+  const lines=String(text||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  if(!lines.length) return [];
+  let start=0;
+  if(/\b(item|name|product|price|category|qty|stock)\b/i.test(lines[0]) && lines.length>1) start=1;
+  const rows=[];
+  for(let i=start;i<lines.length;i++){
+    const parts=lines[i].split(/\t|,|;/).map(s=>s.trim());
+    const name=parts[0]; if(!name) continue;
+    let price='', catHint='';
+    for(let j=1;j<parts.length;j++){
+      const p=parts[j]; if(!p) continue;
+      if(!price && /^[₱$]?\s*\d[\d,]*(\.\d+)?$/.test(p)) price=p.replace(/[^\d.]/g,'');
+      else if(!catHint && p.length>1) catHint=p;
+    }
+    rows.push({name, price, catHint});
+  }
+  return rows;
+}
+function stBuildImport(raw){
+  const seen=new Set(S.storeForm.items.map(it=>it.name.toLowerCase()));
+  const out=[]; let dupes=0;
+  raw.forEach(r=>{
+    const key=r.name.toLowerCase();
+    if(seen.has(key)){ dupes++; return; }
+    seen.add(key);
+    const cat = r.catHint ? (catClassify(r.catHint,'')||{em:'🏷️',top:r.catHint,sub:''}) : catClassify(r.name,'');
+    out.push({name:r.name, price:r.price||'', cat, service:stIsService(r.name)});
+  });
+  S.storeForm.importRows=out; S.storeForm.importDupes=dupes;
+}
+function stParsePaste(){ const t=document.getElementById('st-imp-ta'); if(t) S.storeForm.importText=t.value; stBuildImport(stParseRows(S.storeForm.importText||'')); renderModal(); if(!(S.storeForm.importRows&&S.storeForm.importRows.length)) showToast('Nothing to preview — paste some rows first'); }
+function stImportFile(e){
+  const fl=e.target.files&&e.target.files[0]; if(!fl) return;
+  const nm=fl.name.toLowerCase(); const r=new FileReader();
+  if(nm.endsWith('.xlsx')||nm.endsWith('.xls')){
+    if(typeof XLSX==='undefined'){ showToast('For .xlsx, paste the rows or upload a CSV'); return; }
+    r.onload=ev=>{ try{ const wb=XLSX.read(ev.target.result,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]]; const csv=XLSX.utils.sheet_to_csv(ws); S.storeForm.importText=csv; stBuildImport(stParseRows(csv)); renderModal(); showToast('📄 '+fl.name+' read'); }catch(err){ showToast('Could not read that file'); } };
+    r.readAsArrayBuffer(fl);
+  } else {
+    r.onload=ev=>{ S.storeForm.importText=ev.target.result; stBuildImport(stParseRows(ev.target.result)); renderModal(); showToast('📄 '+fl.name+' read'); };
+    r.readAsText(fl);
+  }
+}
+function stImportRemove(i){ if(S.storeForm.importRows&&S.storeForm.importRows[i]){ S.storeForm.importRows.splice(i,1); renderModal(); } }
+function stCommitImport(){
+  const rows=(S.storeForm.importRows||[]);
+  if(!rows.length){ showToast('Nothing to add yet'); return; }
+  rows.forEach(r=>{ S.storeForm.items.push({id:stUid++, name:r.name, price:r.price, cat:r.cat, service:r.service}); });
+  const n=rows.length;
+  S.storeForm.importOpen=false; S.storeForm.importText=''; S.storeForm.importRows=[]; S.storeForm.importDupes=0;
+  renderModal(); showToast(`✅ Added ${n} item${n===1?'':'s'} from your list`, 'success');
+}
+
+// ---------- storefront photos ----------
+function storePhotoSelect(e){
+  const files=[...(e.target.files||[])]; const room=4-(S.storeForm.photos||[]).length;
+  files.slice(0,Math.max(0,room)).forEach(fl=>{ if(fl.type && fl.type.indexOf('image/')===0) compressImage(fl, durl=>{ if(durl){ S.storeForm.photos.push(durl); renderModal(); } }); });
+  e.target.value='';
+}
+function storePhotoRemove(i){ if(S.storeForm.photos[i]!=null){ S.storeForm.photos.splice(i,1); renderModal(); } }
+
+// ---------- location ----------
+function storeUseCurrentLoc(){
+  const done=(lat,lng,label)=>{ S.storeForm.lat=+lat.toFixed(5); S.storeForm.lng=+lng.toFixed(5); S.storeForm.located=true; renderModal(); showToast(label,'success'); };
+  if(navigator.geolocation){
+    showToast('📍 Locating…');
+    navigator.geolocation.getCurrentPosition(
+      p=>done(p.coords.latitude,p.coords.longitude,'📍 Location set — fine-tune with Drop a pin'),
+      ()=>done(USER.lat,USER.lng,'📍 Using your area — drop a pin to adjust'),
+      {enableHighAccuracy:true,timeout:5000,maximumAge:60000}
+    );
+  } else { done(USER.lat,USER.lng,'📍 Using your area — drop a pin to adjust'); }
+}
+function storeDropPin(){ openPinPicker('store'); }
 
 // ── MODALS ────────────────────────────────────────────────────────────────────
 function openModal(name) {
@@ -3962,13 +4103,13 @@ const CAT_TAX = [
 const CAT_RULES = [
   [['headphone','earphone','earbuds','airpods','speaker','soundbar','camera','television',' tv '], '📱','Electronics & Gadgets','TV, Audio & Cameras'],
   [['charger','cable',' usb','adapter','power bank','powerbank'], '📱','Electronics & Gadgets','Chargers & Accessories'],
-  [['paracetamol','biogesic','medicine','pharmacy','antibiotic','capsule','syrup','ointment','bandage','first aid','betadine','thermometer','painkiller','tablets'], '💄','Health & Beauty','Medical & First Aid'],
+  [['paracetamol','biogesic','medicine','pharmacy','antibiotic','capsule','syrup','ointment','bandage','first aid','betadine','thermometer','painkiller','tablets','vaccine','alcohol','face mask','checkup','check-up','lab test','x-ray','dental','blood pressure'], '💄','Health & Beauty','Medical & First Aid'],
   [['iphone','samsung','phone','tablet','ipad','android'], '📱','Electronics & Gadgets','Phones & Tablets'],
   [['laptop','macbook','computer',' pc ','monitor','keyboard','mouse'], '📱','Electronics & Gadgets','Computers & Laptops'],
   [['playstation','ps5','xbox','nintendo','gaming chair','console'], '📱','Electronics & Gadgets','Gaming'],
-  [['milo','coffee','juice','soda','water','drink','tea'], '🛒','Food & Groceries','Drinks'],
+  [['milo','milktea','milk tea','coffee','juice','soda','water','drink','tea'], '🛒','Food & Groceries','Drinks'],
   [['rice','flour','sugar','canned','noodle','pasta','pantry','cooking oil'], '🛒','Food & Groceries','Pantry & Dry Goods'],
-  [['cake','bread','pastry','ube','halaya','kakanin','homemade'], '🛒','Food & Groceries','Home-cooked & Baked'],
+  [['cake','bread','pastry','ube','halaya','kakanin','homemade','home-cooked','silog','rice meal','lumpia','leche flan','lechon'], '🛒','Food & Groceries','Home-cooked & Baked'],
   [['shoes','sneakers','sandals','heels','boots','rubber shoes','running'], '👗','Fashion & Accessories','Shoes'],
   [['shirt','dress','jeans','jacket','clothes','uniform','tshirt'], '👗','Fashion & Accessories',"Women's"],
   [['bag','wallet','backpack','purse'], '👗','Fashion & Accessories','Bags & Wallets'],
@@ -3986,7 +4127,10 @@ const CAT_RULES = [
   [['car','sedan','suv','toyota','civic','vios'], '🏍️','Vehicles & Parts','Cars'],
   [['motor','motorcycle','scooter','honda beat','click'], '🏍️','Vehicles & Parts','Motorcycles'],
   [['dog','cat ','pet','kitten','puppy','aquarium'], '🐾','Pets & Animals','Accessories'],
-  [['repair','fix','cleaning','tutor','service','massage','plumber','electrician'], '🧰','Services & Help','Repairs & Fix'],
+  [['haircut','hair color','rebond','manicure','pedicure','facial','salon','spa'], '💄','Health & Beauty','Hair & Body'],
+  [['tutor','tutoring','lesson','review class','review center','daycare'], '🧰','Services & Help','Tutoring & Lessons'],
+  [['legal','attorney','notary','accounting','insurance','consult','permit','clearance','cedula','real estate'], '🧰','Services & Help','Professional'],
+  [['repair','fix','cleaning','aircon cleaning','vulcanizing','laundry','printing','tailor','tailoring','welding','car wash','service','massage','plumber','electrician'], '🧰','Services & Help','Repairs & Fix'],
   [['skincare','lotion','makeup','lipstick','shampoo','vitamin','perfume'], '💄','Health & Beauty','Skincare'],
 ];
 // Place types for the "Shops & Services" directory (flat types — from backyard shops to hospitals).
@@ -4396,58 +4540,296 @@ function buildPointsModal() {
   </div>`;
 }
 
+function stPhotosHTML(){
+  const ph=S.storeForm.photos||[];
+  return `<div class="sreg-photogrid">
+    ${ph.map((src,i)=>`<div class="sreg-thumb" style="background-image:url('${src}')">${i===0?'<span class="sreg-cover">COVER</span>':''}<button class="sreg-prm" onclick="storePhotoRemove(${i})">✕</button></div>`).join('')}
+    ${ph.length<4?`<label class="sreg-padd"><span class="pa-ic">📷</span><span class="pa-tx">Add photo</span><input type="file" accept="image/*" multiple style="display:none" onchange="storePhotoSelect(event)"></label>`:''}
+  </div>
+  <div class="sreg-pnote">${ph.length?`${ph.length}/4 added · first one is the cover`:'Tip: shoot from across the street so the sign and whole front are visible.'}</div>`;
+}
+function stLocationHTML(){
+  const f=S.storeForm;
+  const set=f.located&&f.lat!=null;
+  return `<div class="sreg-locbtns">
+      <button type="button" class="sreg-locbtn" onclick="storeUseCurrentLoc()">📍 Use my current location</button>
+      <button type="button" class="sreg-locbtn alt" onclick="storeDropPin()">📌 Drop a pin</button>
+    </div>
+    <div class="sreg-locstatus ${set?'':'none'}">${set?`📍 Location pinned <span style="color:var(--muted);font-weight:600">· ${f.lat}, ${f.lng}</span>`:'⚠️ No location set yet — use your location, drop a pin, or type the address'}</div>
+    <input class="sreg-inp" id="st-addr" style="margin-top:10px" placeholder="✏️ or type address — Street / Area / Landmark" value="${esc(f.address)}" oninput="S.storeForm.address=this.value">`;
+}
+function stItemCatPickerHTML(it){
+  const q=(S.storeForm.catSearch||'').trim().toLowerCase();
+  let inner;
+  if(q){
+    const matches=[];
+    CAT_TAX.forEach(c=>{
+      if(c.name.toLowerCase().includes(q)) matches.push({em:c.em,top:c.name,sub:''});
+      c.subs.forEach(s=>{ if(s.toLowerCase().includes(q)) matches.push({em:c.em,top:c.name,sub:s}); });
+    });
+    S.storeForm._itemMatches=matches;
+    inner = matches.length
+      ? `<div class="sreg-subchips">${matches.slice(0,10).map((m,k)=>`<button class="sreg-subchip" onclick="stApplyMatch(${it.id},${k})">${m.em} ${esc(m.sub||m.top)}</button>`).join('')}</div>`
+      : `<div style="font-size:12.5px;color:var(--muted);padding:4px 0">No match — use your own below.</div>`;
+    inner += `<div class="sreg-typeown" onclick="stApplyCustom(${it.id})">🏷️ Use "<b>${esc(S.storeForm.catSearch)}</b>" as the category</div>`;
+  } else {
+    inner = `<div class="sreg-ptgrid">${CAT_TAX.map((c,i)=>`<button class="sreg-pttile" onclick="stDrillItemCat(${it.id},${i})"><span class="em">${c.em}</span><span><span class="nm">${esc(c.name)}</span><span class="meta">${c.subs.length} types</span></span></button>`).join('')}</div>`;
+  }
+  return `<div class="sreg-ipick">
+    <input class="sreg-inp" id="st-catsrch" placeholder="🔍 Search or type your own category…" value="${esc(S.storeForm.catSearch)}" oninput="stItemCatSearch(this.value)" autocomplete="off">
+    ${inner}
+    <div style="margin-top:10px"><button class="sreg-ghost" style="width:100%" onclick="stCloseItemCat()">Close</button></div>
+  </div>`;
+}
+function stDrillSubsHTML(){
+  const d=S.storeForm.drillTop; const c=CAT_TAX[d.ci]; const it=S.storeForm.items.find(x=>x.id===d.itemId);
+  if(!it){ S.storeForm.drillTop=null; return ''; }
+  return `<div class="sreg-ipick">
+    <div class="sreg-pickhead"><button class="sreg-pickback" onclick="S.storeForm.drillTop=null;renderModal()">←</button>
+      <div class="sreg-pickttl">${c.em} ${esc(c.name)}<small>Pick a type, or just the category</small></div></div>
+    <div class="sreg-subchips">
+      <button class="sreg-subchip" onclick="stApplyDrillSub(${it.id},${d.ci},-1)">${c.em} Just "${esc(c.name)}"</button>
+      ${c.subs.map((s,si)=>`<button class="sreg-subchip" onclick="stApplyDrillSub(${it.id},${d.ci},${si})">${esc(s)}</button>`).join('')}
+    </div>
+    <div style="margin-top:10px"><button class="sreg-ghost" style="width:100%" onclick="stCloseItemCat()">Cancel</button></div>
+  </div>`;
+}
+function stItemRowHTML(it){
+  const svc = it.service ? `<span class="sreg-svc">service</span>` : '';
+  const price = it.price ? `<span class="sreg-iprice">₱${esc(it.price)}</span>` : '';
+  const cat = it.cat
+    ? `<span class="sreg-catchip" onclick="stOpenItemCat(${it.id})">${it.cat.em} ${esc(it.cat.sub||it.cat.top)} ✎</span>`
+    : `<span class="sreg-catchip none" onclick="stOpenItemCat(${it.id})">+ set category</span>`;
+  let picker='';
+  if(S.storeForm.openCatFor===it.id){
+    picker = (S.storeForm.drillTop && S.storeForm.drillTop.itemId===it.id) ? stDrillSubsHTML() : stItemCatPickerHTML(it);
+  }
+  return `<div class="sreg-irow">
+      <span class="em">${it.cat?it.cat.em:'🏷️'}</span>
+      <div class="mid"><div class="nm">${esc(it.name)} ${svc}</div><div class="catline">${cat} ${price}</div></div>
+      <button class="rm" onclick="stRemoveItem(${it.id})" title="Remove">✕</button>
+    </div>${picker}`;
+}
+function stImportHTML(){
+  const rows=S.storeForm.importRows||[];
+  const n=rows.length;
+  return `<div class="sreg-imppanel">
+    <div class="sreg-imphead"><div class="sreg-impttl">📄 Bulk add items</div>
+      <button class="sreg-impx" onclick="S.storeForm.importOpen=false;renderModal()">✕</button></div>
+    <div class="sreg-imphint">Paste rows from Excel/Sheets (one item per line), or upload a CSV/XLSX. First column = item name; a number is read as price. AI tags each category — review before adding.</div>
+    <textarea class="sreg-impta" id="st-imp-ta" placeholder="Paste one item per line — e.g.&#10;Paracetamol, 5&#10;Vitamins, 150&#10;Alcohol 500ml, 85" oninput="S.storeForm.importText=this.value">${esc(S.storeForm.importText||'')}</textarea>
+    <div class="sreg-impactions">
+      <button class="sreg-ghost" onclick="stParsePaste()">🔍 Preview list</button>
+      <label class="sreg-impfile">📂 Upload CSV/XLSX<input type="file" accept=".csv,.tsv,.txt,.xlsx" style="display:none" onchange="stImportFile(event)"></label>
+    </div>
+    ${n?`<div class="sreg-impsum">Found <b>${n}</b> item${n===1?'':'s'}${S.storeForm.importDupes?` · ${S.storeForm.importDupes} duplicate${S.storeForm.importDupes===1?'':'s'} skipped`:''} — AI-tagged below. Remove any you don't want.</div>
+      <div class="sreg-imppreview">${rows.map((r,i)=>`<div class="sreg-improw">
+        <span class="sreg-impem">${r.cat?r.cat.em:'🏷️'}</span>
+        <div class="sreg-impmid"><div class="sreg-impname">${esc(r.name)}${r.service?'<span class="sreg-svc">service</span>':''}</div>
+          <div class="sreg-impcat">${r.cat?(r.cat.em+' '+esc(r.cat.sub||r.cat.top)):'set after adding'}${r.price?' · ₱'+esc(r.price):''}</div></div>
+        <button class="sreg-imprm" onclick="stImportRemove(${i})">✕</button></div>`).join('')}</div>
+      <button class="sreg-primary" style="margin-top:14px" onclick="stCommitImport()">✅ Add ${n} item${n===1?'':'s'} to catalog</button>`:''}
+  </div>`;
+}
+function stItemsHTML(){
+  const f=S.storeForm;
+  const n=f.items.length;
+  const place=f.cat;
+  const sugList = place ? (ITEM_SUGGEST[place.top]||[]) : [];
+  const freshSug = sugList.filter(s=>!f.items.some(it=>it.name.toLowerCase()===s.toLowerCase()));
+  f._itemSug=freshSug;
+  const draft=(f.draft||'').trim();
+  const live = draft ? (()=>{ const c=catClassify(draft,''); return c?`AI will tag this <b>${c.em} ${esc(c.sub||c.top)}</b>`:`AI couldn't auto-tag — you can set it after adding`; })() : '';
+  const pct=Math.min(100, Math.round(n/STORE_GOAL*100));
+  let nudge;
+  if(n===0) nudge=`<b>List everything you offer.</b> Every item becomes searchable — the more you add, the more neighbors land on your shop.`;
+  else if(n<5) nudge=`Good start! Most shops list <b>10+ items</b>. Keep adding so no search misses you.`;
+  else if(n<STORE_GOAL) nudge=`Nice — ${n} listed. A few more and your shop is <b>highly discoverable</b>. 💪`;
+  else nudge=`🌟 <b>Excellent — ${n} items!</b> Your shop will show up for all these searches.`;
+  return `<div class="sreg-cat">
+    <div class="sreg-cattop">
+      <div class="t">📋 What you sell or offer</div>
+      <div class="d">Add each product or service — AI tags it with the right category automatically, so searches for it point to your shop.</div>
+    </div>
+    <div class="sreg-addrow">
+      <input class="sreg-inp" id="st-additem" placeholder="e.g. Paracetamol · Haircut · Laptop repair" value="${esc(f.draft)}" oninput="S.storeForm.draft=this.value;stLiveTag()" onkeydown="if(event.key==='Enter'){event.preventDefault();stAddItem()}">
+      <button class="sreg-addbtn" id="st-addbtn" onclick="stAddItem()" ${draft?'':'disabled'}>+</button>
+    </div>
+    <div class="sreg-liveai" id="st-liveai">${live}</div>
+    <button class="sreg-bulkbtn" onclick="stToggleImport()">${f.importOpen?'✕ Close bulk add':'📄 Bulk add — upload a file or paste a list'}</button>
+    ${f.importOpen?stImportHTML():''}
+    ${freshSug.length?`<div class="sreg-sugg">
+      <div class="sreg-sugglbl">Tap to quick-add — common for ${esc(place.top)}:</div>
+      <div class="sreg-suggchips">${freshSug.map((s,k)=>`<button class="sreg-suggchip" onclick="stQuickAdd(${k})"><span class="p">＋</span>${esc(s)}</button>`).join('')}</div>
+    </div>`:''}
+    <div class="sreg-ilist">${n? f.items.map(stItemRowHTML).join('') : `<div class="sreg-empty">No items yet — add your first above 👆</div>`}</div>
+    <div class="sreg-counter">
+      <div class="sreg-meter"><div class="sreg-meterfill" style="width:${pct}%"></div></div>
+      <div class="sreg-cn">${n} item${n===1?'':'s'}</div>
+    </div>
+    <div class="sreg-nudge">${nudge}</div>
+  </div>`;
+}
 function buildStoreRegisterModal() {
   const f=S.storeForm;
+  const owner=f.poster==='owner';
   return `<div class="overlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal" style="width:500px" onclick="event.stopPropagation()">
+    <div class="modal sreg" style="width:520px" onclick="event.stopPropagation()">
+      <style>
+      .sreg .sreg-inp{width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14.5px;color:var(--text);background:#fff;outline:none}
+      .sreg .sreg-inp:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,107,58,.14)}
+      .sreg .sreg-lbl{display:block;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#555;margin:0 0 7px}
+      .sreg .sreg-lbl .hint{font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0}
+      .sreg .sreg-fg{margin-bottom:16px}
+      .sreg .sreg-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+      .sreg .sreg-ghost{border:1.5px solid var(--border);background:#fff;border-radius:11px;padding:11px 14px;font-family:inherit;font-weight:700;font-size:13px;color:var(--green);cursor:pointer}
+      .sreg .sreg-primary{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-weight:800;font-size:15px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);box-shadow:0 6px 16px rgba(26,107,58,.28)}
+      .sreg .sreg-posters{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+      .sreg .sreg-pcard{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:2px solid var(--border);border-radius:14px;padding:12px 13px;background:#fff;cursor:pointer;font-family:inherit}
+      .sreg .sreg-pcard .pc-ic{font-size:22px}
+      .sreg .sreg-pcard .pc-tt{font-weight:800;font-size:13.5px;color:var(--text);margin-top:3px}
+      .sreg .sreg-pcard .pc-sub{font-size:10.5px;color:var(--muted);font-weight:600;line-height:1.3}
+      .sreg .sreg-pcard.on{border-color:var(--green);background:#F0FBF4;box-shadow:0 3px 12px rgba(26,107,58,.14)}
+      .sreg .sreg-pcard.on .pc-tt{color:var(--green)}
+      .sreg .sreg-docbox{border:1.5px solid rgba(26,107,58,.3);border-radius:14px;padding:13px;background:#F7FDF9;margin-bottom:16px}
+      .sreg .sreg-doch{font-weight:800;font-size:13.5px;color:var(--green)}
+      .sreg .sreg-docsub{font-size:11.5px;color:#5a6b60;line-height:1.5;margin:4px 0 10px}
+      .sreg .sreg-docchip{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 11px;font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:7px}
+      .sreg .sreg-docchip .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .sreg .sreg-docchip .rm{border:none;background:none;color:#c3bca8;font-size:14px;cursor:pointer}
+      .sreg .sreg-docadd{display:flex;align-items:center;justify-content:center;gap:7px;border:1.5px dashed rgba(26,107,58,.45);border-radius:11px;padding:11px;background:#F0FBF4;color:var(--green);font-weight:800;font-size:12.5px;cursor:pointer}
+      .sreg .sreg-locbtns{display:flex;gap:8px;margin-bottom:10px}
+      .sreg .sreg-locbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;border:none;border-radius:12px;padding:12px 8px;font-family:inherit;font-weight:800;font-size:12.5px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);box-shadow:0 4px 12px rgba(26,107,58,.26)}
+      .sreg .sreg-locbtn.alt{background:#fff;color:var(--green);border:1.5px solid rgba(26,107,58,.4);box-shadow:none}
+      .sreg .sreg-locstatus{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--green)}
+      .sreg .sreg-locstatus.none{color:#a6916f;font-weight:600}
+      .sreg .sreg-photogrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+      .sreg .sreg-thumb{position:relative;aspect-ratio:1;border-radius:11px;background-size:cover;background-position:center;border:1.5px solid var(--border)}
+      .sreg .sreg-cover{position:absolute;left:4px;bottom:4px;background:rgba(13,68,35,.85);color:#fff;font-size:8.5px;font-weight:800;padding:2px 6px;border-radius:5px;letter-spacing:.3px}
+      .sreg .sreg-prm{position:absolute;right:3px;top:3px;width:21px;height:21px;border:none;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:11px;cursor:pointer;line-height:1}
+      .sreg .sreg-padd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;aspect-ratio:1;border:1.5px dashed rgba(26,107,58,.5);border-radius:11px;background:#F0FBF4;cursor:pointer;color:var(--green)}
+      .sreg .sreg-padd .pa-ic{font-size:20px}
+      .sreg .sreg-padd .pa-tx{font-size:10px;font-weight:800;text-align:center;line-height:1.1}
+      .sreg .sreg-pnote{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.4}
+      .sreg .sreg-cat{border:1.5px solid var(--border);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#F4FBF7,#fff)}
+      .sreg .sreg-cattop{padding:14px 15px 13px;background:linear-gradient(135deg,#F0FBF4,#E3F5EA);border-bottom:1px solid var(--border)}
+      .sreg .sreg-cattop .t{font-weight:800;font-size:14.5px;color:var(--green);display:flex;align-items:center;gap:8px}
+      .sreg .sreg-cattop .d{font-size:12px;color:#5a6b60;margin-top:4px;line-height:1.5}
+      .sreg .sreg-addrow{display:flex;gap:8px;padding:13px 15px 6px}
+      .sreg .sreg-addrow .sreg-inp{flex:1}
+      .sreg .sreg-addbtn{border:none;border-radius:12px;padding:0 16px;font-size:22px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);box-shadow:0 4px 12px rgba(26,107,58,.26);line-height:1}
+      .sreg .sreg-addbtn:disabled{opacity:.45;cursor:default;box-shadow:none}
+      .sreg .sreg-liveai{padding:1px 15px 2px;min-height:19px;font-size:11.5px;color:var(--muted)}
+      .sreg .sreg-liveai b{color:var(--green)}
+      .sreg .sreg-bulkbtn{width:calc(100% - 30px);margin:6px 15px 2px;border:1.5px dashed rgba(26,107,58,.4);background:#F0FBF4;color:var(--green);border-radius:12px;padding:11px;font-family:inherit;font-weight:800;font-size:12.5px;cursor:pointer}
+      .sreg .sreg-sugg{padding:4px 15px 12px}
+      .sreg .sreg-sugglbl{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px}
+      .sreg .sreg-suggchips{display:flex;flex-wrap:wrap;gap:7px}
+      .sreg .sreg-suggchip{border:1.5px dashed rgba(26,107,58,.38);background:#F0FBF4;color:var(--green);border-radius:100px;padding:6px 12px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+      .sreg .sreg-suggchip .p{font-size:15px;margin-right:3px}
+      .sreg .sreg-ilist{padding:4px 15px 2px}
+      .sreg .sreg-irow{display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid #E6F0E9}
+      .sreg .sreg-irow:first-child{border-top:none}
+      .sreg .sreg-irow .em{font-size:20px;width:26px;text-align:center;flex-shrink:0}
+      .sreg .sreg-irow .mid{flex:1;min-width:0}
+      .sreg .sreg-irow .nm{font-weight:700;font-size:14px;color:var(--text);display:flex;align-items:center;gap:7px}
+      .sreg .sreg-irow .catline{display:flex;align-items:center;gap:6px;margin-top:3px}
+      .sreg .sreg-irow .rm{border:none;background:none;color:#c3bca8;font-size:17px;cursor:pointer;padding:4px}
+      .sreg .sreg-svc{font-size:9.5px;font-weight:800;letter-spacing:.4px;color:var(--green);background:rgba(26,107,58,.1);border-radius:5px;padding:1px 6px;text-transform:uppercase}
+      .sreg .sreg-catchip{font-size:11.5px;color:var(--green);font-weight:700;cursor:pointer;background:rgba(46,158,91,.1);border:1px solid rgba(46,158,91,.28);border-radius:7px;padding:2px 8px}
+      .sreg .sreg-catchip.none{color:var(--muted);background:#F3F1E9;border-color:var(--border)}
+      .sreg .sreg-iprice{font-size:12.5px;color:var(--muted);font-weight:700}
+      .sreg .sreg-counter{display:flex;align-items:center;gap:11px;padding:13px 15px;border-top:1px solid #E6F0E9;background:#F4FBF7}
+      .sreg .sreg-meter{flex:1;height:8px;border-radius:100px;background:#DCEEE2;overflow:hidden}
+      .sreg .sreg-meterfill{height:100%;border-radius:100px;background:linear-gradient(90deg,#86E0AC,#2E9E5B);transition:width .3s}
+      .sreg .sreg-cn{font-size:12.5px;font-weight:800;color:var(--green);white-space:nowrap}
+      .sreg .sreg-nudge{padding:10px 15px 14px;font-size:12px;line-height:1.5;color:#6a6a57}
+      .sreg .sreg-nudge b{color:var(--green)}
+      .sreg .sreg-empty{padding:18px 15px;text-align:center;color:var(--muted);font-size:13px}
+      .sreg .sreg-ipick{padding:12px 2px 4px}
+      .sreg .sreg-pickhead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+      .sreg .sreg-pickback{border:1.5px solid var(--border);background:#fff;border-radius:10px;width:34px;height:34px;font-size:15px;cursor:pointer;color:var(--green);flex-shrink:0}
+      .sreg .sreg-pickttl{font-weight:800;font-size:14px;color:var(--green);line-height:1.15}
+      .sreg .sreg-pickttl small{display:block;font-weight:600;font-size:11px;color:var(--muted)}
+      .sreg .sreg-ptgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+      .sreg .sreg-pttile{display:flex;align-items:center;gap:9px;border:1.5px solid var(--border);border-radius:12px;padding:10px;background:#fff;cursor:pointer;text-align:left;font-family:inherit}
+      .sreg .sreg-pttile .em{font-size:19px}
+      .sreg .sreg-pttile .nm{font-weight:700;font-size:12.5px;color:var(--text);line-height:1.2}
+      .sreg .sreg-pttile .meta{font-size:10px;color:var(--muted)}
+      .sreg .sreg-subchips{display:flex;flex-wrap:wrap;gap:7px}
+      .sreg .sreg-subchip{border:1.5px solid var(--border);background:#fff;border-radius:100px;padding:7px 12px;font-size:12.5px;font-weight:700;color:var(--text);cursor:pointer;font-family:inherit}
+      .sreg .sreg-typeown{margin-top:9px;border:1.5px dashed rgba(26,107,58,.38);border-radius:11px;padding:10px 12px;background:#F0FBF4;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--green)}
+      .sreg .sreg-imppanel{margin:8px 15px 4px;border:1.5px solid rgba(26,107,58,.3);border-radius:14px;padding:13px;background:#F7FDF9}
+      .sreg .sreg-imphead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+      .sreg .sreg-impttl{font-weight:800;font-size:14px;color:var(--green)}
+      .sreg .sreg-impx{border:none;background:none;font-size:16px;color:var(--muted);cursor:pointer}
+      .sreg .sreg-imphint{font-size:11.5px;color:#5a6b60;line-height:1.5;margin-bottom:9px}
+      .sreg .sreg-impta{width:100%;min-height:84px;border:1.5px solid var(--border);border-radius:11px;padding:11px;font-family:inherit;font-size:13px;resize:vertical;outline:none;background:#fff;color:var(--text)}
+      .sreg .sreg-impactions{display:flex;gap:8px;margin-top:9px}
+      .sreg .sreg-impactions .sreg-ghost{flex:1;text-align:center}
+      .sreg .sreg-impfile{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:1.5px solid var(--border);background:#fff;border-radius:11px;padding:11px;font-weight:700;font-size:13px;color:var(--green);cursor:pointer}
+      .sreg .sreg-impsum{margin-top:12px;font-size:12px;color:#5a6b60;line-height:1.5}
+      .sreg .sreg-impsum b{color:var(--green)}
+      .sreg .sreg-imppreview{margin-top:8px;max-height:210px;overflow:auto;border:1px solid #E6F0E9;border-radius:10px;background:#fff}
+      .sreg .sreg-improw{display:flex;align-items:center;gap:10px;padding:9px 11px;border-top:1px solid #EEF5F0}
+      .sreg .sreg-improw:first-child{border-top:none}
+      .sreg .sreg-impem{font-size:18px;width:22px;text-align:center}
+      .sreg .sreg-impmid{flex:1;min-width:0}
+      .sreg .sreg-impname{font-weight:700;font-size:13px;color:var(--text)}
+      .sreg .sreg-impcat{font-size:11px;color:var(--green);font-weight:600;margin-top:1px}
+      .sreg .sreg-imprm{border:none;background:none;color:#c3bca8;font-size:15px;cursor:pointer}
+      .sreg .sreg-statusline{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11.5px;color:#5a6b60;line-height:1.5;margin:18px 0 4px}
+      .sreg .sreg-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;border-radius:100px;padding:3px 10px}
+      .sreg .sreg-badge.official{background:rgba(26,107,58,.14);color:#1A6B3A;border:1px solid rgba(26,107,58,.35)}
+      .sreg .sreg-badge.unofficial{background:rgba(176,122,20,.12);color:#9a6b12;border:1px solid rgba(176,122,20,.3)}
+      </style>
       <button class="close-btn" onclick="closeModal()">✕</button>
       <div class="modal-head">
         <div class="modal-title">🏪 Post a Shop/Service</div>
-        <div class="modal-sub">Put your place on the map — a shop, a backyard business, a clinic, an office, a service. Nearby neighbors will find you.</div>
+        <div class="modal-sub">Put any shop on the map so neighbors find it. <b>Know a shop?</b> Post it as unofficial. <b>Own it?</b> Claim it official with proof.</div>
       </div>
       <div class="modal-body">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px">
-          <button type="button" onclick="S.storeForm.poster='community';renderModal()" style="text-align:left;border:2px solid ${(f.poster||'community')!=='owner'?'var(--gold)':'var(--border)'};background:${(f.poster||'community')!=='owner'?'#FFFBEF':'#fff'};border-radius:13px;padding:11px;cursor:pointer;font-family:inherit">
-            <div style="font-size:20px">👥</div><div style="font-weight:800;font-size:12.5px;margin-top:2px;color:${(f.poster||'community')!=='owner'?'var(--gold-dk)':'var(--text)'}">I know this shop</div><div style="font-size:10px;color:var(--muted)">Post it · unofficial</div>
+        <div class="sreg-posters">
+          <button type="button" class="sreg-pcard ${!owner?'on':''}" onclick="S.storeForm.poster='community';renderModal()">
+            <span class="pc-ic">👥</span><span class="pc-tt">I know this shop</span><span class="pc-sub">Post it for everyone · unofficial</span>
           </button>
-          <button type="button" onclick="S.storeForm.poster='owner';renderModal()" style="text-align:left;border:2px solid ${f.poster==='owner'?'var(--gold)':'var(--border)'};background:${f.poster==='owner'?'#FFFBEF':'#fff'};border-radius:13px;padding:11px;cursor:pointer;font-family:inherit">
-            <div style="font-size:20px">🏪</div><div style="font-weight:800;font-size:12.5px;margin-top:2px;color:${f.poster==='owner'?'var(--gold-dk)':'var(--text)'}">I own this shop</div><div style="font-size:10px;color:var(--muted)">Official · needs proof</div>
+          <button type="button" class="sreg-pcard ${owner?'on':''}" onclick="S.storeForm.poster='owner';renderModal()">
+            <span class="pc-ic">🏪</span><span class="pc-tt">I own this shop</span><span class="pc-sub">Claim it official · needs proof</span>
           </button>
         </div>
-        ${f.poster==='owner'?`<div style="border:1.5px solid rgba(26,107,58,.3);border-radius:13px;padding:12px;background:#F6FBF2;margin-bottom:15px">
-          <div style="font-weight:800;font-size:12.5px;color:var(--green)">📄 Proof of ownership *</div>
-          <div style="font-size:11px;color:#5a6b60;margin:4px 0 9px;line-height:1.5">Business permit / DTI / BIR (image or PDF). Verified → ✅ badge. Not the owner? Switch to "I know this shop".</div>
-          ${(f.docs||[]).map((d,i)=>`<div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;margin-bottom:7px">📄 <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d)}</span><button onclick="S.storeForm.docs.splice(${i},1);renderModal()" style="border:none;background:none;color:#c3bca8;font-size:14px;cursor:pointer">✕</button></div>`).join('')}
-          <label style="display:flex;align-items:center;justify-content:center;gap:7px;border:1.5px dashed rgba(26,107,58,.4);border-radius:11px;padding:10px;background:#fff;color:var(--green);font-weight:800;font-size:12px;cursor:pointer">⬆️ Upload document<input type="file" accept="image/*,.pdf" multiple style="display:none" onchange="storeDocSelect(event)"></label>
+        ${owner?`<div class="sreg-docbox">
+          <div class="sreg-doch">📄 Proof of ownership *</div>
+          <div class="sreg-docsub">Business permit / DTI / BIR / Mayor's permit (image or PDF). We verify it, then your shop shows the ✅ Verified badge. Not the owner? Switch to "I know this shop".</div>
+          ${(f.docs||[]).map((d,i)=>`<div class="sreg-docchip">📄 <span class="nm">${esc(d)}</span><button class="rm" onclick="S.storeForm.docs.splice(${i},1);renderModal()">✕</button></div>`).join('')}
+          <label class="sreg-docadd">⬆️ Upload document<input type="file" accept="image/*,.pdf" multiple style="display:none" onchange="storeDocSelect(event)"></label>
         </div>`:''}
-        <div class="form-grid">
-          <div class="form-group full">
-            <label class="form-label">Name *</label>
-            <input class="form-input" type="text" value="${esc(f.name)}" placeholder="e.g. Aling Rosa's Home Bakery · TechZone · City Clinic" oninput="S.storeForm.name=this.value" onblur="renderModal()">
-          </div>
-          <div class="form-group full">
-            <label class="form-label">Type <span style="font-weight:400;color:var(--muted);text-transform:none">— AI suggests from your name &amp; what you offer</span></label>
-            ${catSection('place')}
-          </div>
-          <div class="form-group full">
-            <label class="form-label">Address *</label>
-            <input class="form-input" type="text" value="${esc(f.address)}" placeholder="e.g. Market Area, Main St" oninput="S.storeForm.address=this.value">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Contact Number ${f.poster==='owner'?'*':'<span style="font-weight:400;color:var(--muted);text-transform:none">(optional)</span>'}</label>
-            <input class="form-input" type="text" value="${esc(f.contact)}" placeholder="e.g. 09171234567" oninput="S.storeForm.contact=this.value">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Hours <span style="font-weight:400;color:var(--muted);text-transform:none">(optional)</span></label>
-            <input class="form-input" type="text" value="${esc(f.hours)}" placeholder="e.g. 9AM–7PM" oninput="S.storeForm.hours=this.value">
-          </div>
-          <div class="form-group full">
-            <label class="form-label">What you offer <span style="font-weight:400;color:var(--muted);text-transform:none">(comma-separated)</span></label>
-            <input class="form-input" type="text" value="${esc(f.products)}" placeholder="e.g. Cakes, Milk Tea · or Laptop, Charger · or Checkup, Vaccine" oninput="S.storeForm.products=this.value" onblur="renderModal()">
-          </div>
+        <div class="sreg-fg">
+          <label class="sreg-lbl">Name *</label>
+          <input class="sreg-inp" id="st-name" value="${esc(f.name)}" placeholder="e.g. ${esc(ST_EG_NAME)}" oninput="S.storeForm.name=this.value" onblur="renderModal()">
         </div>
-        <div style="font-size:11.5px;color:#5a6b60;margin:2px 0 10px;line-height:1.5">Will appear as ${f.poster==='owner'?'<b style="color:var(--green)">✅ Verified Owner</b> after review.':'<b style="color:#9a6b12">👥 Community-added · unofficial</b> — the owner can claim it, and anyone can report it.'}</div>
-        <button class="btn-primary store-reg-btn" onclick="submitStore()">${f.poster==='owner'?'✅ Submit for verification':'📍 Post to the map'}</button>
+        <div class="sreg-fg">
+          <label class="sreg-lbl">Type <span class="hint">— AI suggests from your name</span></label>
+          ${catSection('place')}
+        </div>
+        <div class="sreg-fg">
+          <label class="sreg-lbl">Location * <span class="hint">— pin it so neighbors find you</span></label>
+          ${stLocationHTML()}
+        </div>
+        <div class="sreg-fg">
+          <label class="sreg-lbl">Storefront photos <span class="hint">— a clear shot of your shopfront builds trust</span></label>
+          ${stPhotosHTML()}
+        </div>
+        <div class="sreg-fg sreg-row2">
+          <div><label class="sreg-lbl">Contact ${owner?'*':'<span class="hint">(optional)</span>'}</label>
+            <input class="sreg-inp" id="st-contact" placeholder="09171234567" value="${esc(f.contact)}" oninput="S.storeForm.contact=this.value"></div>
+          <div><label class="sreg-lbl">Hours <span class="hint">(optional)</span></label>
+            <input class="sreg-inp" id="st-hours" placeholder="9AM–7PM" value="${esc(f.hours)}" oninput="S.storeForm.hours=this.value"></div>
+        </div>
+        <div class="sreg-fg">${stItemsHTML()}</div>
+        <div class="sreg-statusline">This will appear as ${owner
+          ? `<span class="sreg-badge official">✅ Verified Owner</span> once your documents are reviewed.`
+          : `<span class="sreg-badge unofficial">👥 Community-added · unofficial</span> — the owner can claim it, and anyone can report it if it's wrong.`}</div>
+        <button class="sreg-primary store-reg-btn" onclick="submitStore()">${owner?'✅ Submit for verification':'📍 Post shop/service'}</button>
       </div>
     </div>
   </div>`;
@@ -6424,7 +6806,7 @@ function renderRightPanel() {
         const distKm = haversine(USER.lat, USER.lng, s.lat, s.lng).toFixed(1);
         return `<div class="store-card-sm ${s.featured?'featured-s':''}" onclick="map&&map.panTo({lat:${s.lat},lng:${s.lng}});selectItem(${s.id},'store')">
           <div class="sc-row">
-            <div class="sc-emoji">${s.catEmoji||'🏪'}</div>
+            ${s.cover?`<div class="sc-emoji" style="background-image:url('${s.cover}');background-size:cover;background-position:center;font-size:0">${s.catEmoji||'🏪'}</div>`:`<div class="sc-emoji">${s.catEmoji||'🏪'}</div>`}
             <div class="sc-body">
               <div class="sc-name">${esc(s.name)}</div>
               <div class="sc-meta">
@@ -6434,6 +6816,7 @@ function renderRightPanel() {
               <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">
                 ${s.official?'<span class="sc-badge" style="background:rgba(26,107,58,.14);color:#1A6B3A;border:1px solid rgba(26,107,58,.3)">✅ Official</span>':'<span class="sc-badge" style="background:rgba(176,122,20,.12);color:#9a6b12;border:1px solid rgba(176,122,20,.3)">👥 Unofficial</span>'}
                 <span class="sc-badge sc-open">Open</span>
+                ${s.items&&s.items.length?`<span class="sc-badge" style="background:#eef6f0;color:#1A6B3A;border:1px solid rgba(26,107,58,.2)">📋 ${s.items.length} items</span>`:''}
                 ${s.featured?'<span class="sc-badge sc-feat">⭐ Featured</span>':''}
               </div>
             </div>
@@ -7287,9 +7670,10 @@ function useMyGPSForReq() {
 
 // ── METHOD 2: DROP PIN ON MAP ────────────────────────────────────
 function openPinPicker(forReq) {
-  pinPickerMode = forReq ? 'request' : 'listing';
-  const startLat = S.form.lat || USER.lat;
-  const startLng = S.form.lng || USER.lng;
+  pinPickerMode = (forReq===true||forReq==='request') ? 'request' : (forReq==='store' ? 'store' : 'listing');
+  const _src = pinPickerMode==='store' ? S.storeForm : S.form;
+  const startLat = (_src && _src.lat) || USER.lat;
+  const startLng = (_src && _src.lng) || USER.lng;
 
   // Build full-screen pin picker
   const root = document.getElementById('modal-root');
@@ -7368,6 +7752,13 @@ function confirmPinLocation() {
   const addrEl = document.getElementById('pin-addr-display');
   const addr = addrEl ? addrEl.textContent.replace('📍 ','') : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
+  if (pinPickerMode === 'store') {
+    S.storeForm.lat = +lat.toFixed(5); S.storeForm.lng = +lng.toFixed(5); S.storeForm.located = true;
+    S.storeForm.address = addr;
+    pinPickerMap = null; renderModal();
+    showToast('📍 Pin location set!', 'success');
+    return;
+  }
   if (pinPickerMode === 'request') {
     if (S._reqForm) {
       S._reqForm.lat = lat;
@@ -7391,6 +7782,7 @@ function confirmPinLocation() {
 
 function closePinPicker() {
   pinPickerMap = null;
+  if (pinPickerMode === 'store') { renderModal(); return; }
   const root = document.getElementById('modal-root');
   if (root) root.innerHTML = '';
 }
