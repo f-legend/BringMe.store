@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
   <!-- ══ SEO META TAGS ══ -->
-  <meta name="description" content="BringMe.Store — San Jose del Monte's community marketplace. Find nearby stores, buy and sell items, get urgent help from neighbors, and earn real cash points. 🇵🇭">
-  <meta name="keywords" content="BringMe Store, SJDM marketplace, San Jose del Monte, buy sell near me, community marketplace, Bulacan online shop, help me find item, barangay marketplace">
+  <meta name="description" content="BringMe.Store — your neighborhood community marketplace. Find nearby stores, buy and sell items, get urgent help from neighbors, and earn Trust Points. 🛒">
+  <meta name="keywords" content="BringMe Store, community marketplace, buy sell near me, nearby stores, help me find item, local marketplace, map marketplace">
   <meta name="author" content="BringMe.Store">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://bringme.store/">
@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://bringme.store/">
   <meta property="og:title" content="BringMe.Store — Find It. Buy It. Nearby.">
-  <meta property="og:description" content="San Jose del Monte's community marketplace. Buy & sell nearby, find stores on the map, earn cash points by helping neighbors. Join free!">
+  <meta property="og:description" content="Your neighborhood community marketplace. Buy & sell nearby, find stores on the map, earn Trust Points by helping neighbors. Join free!">
   <meta property="og:image" content="https://bringme.store/icon-512.png">
   <meta property="og:image:width" content="512">
   <meta property="og:image:height" content="512">
@@ -24,7 +24,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://bringme.store/">
   <meta name="twitter:title" content="BringMe.Store — Find It. Buy It. Nearby.">
-  <meta name="twitter:description" content="San Jose del Monte's community marketplace. Buy & sell nearby, find stores on the map, earn cash points by helping neighbors.">
+  <meta name="twitter:description" content="Your neighborhood community marketplace. Buy & sell nearby, find stores on the map, earn Trust Points by helping neighbors.">
   <meta name="twitter:image" content="https://bringme.store/icon-512.png">
 
   <!-- ══ STRUCTURED DATA (Google rich results) ══ -->
@@ -34,7 +34,7 @@
     "@type": "WebApplication",
     "name": "BringMe.Store",
     "url": "https://bringme.store",
-    "description": "San Jose del Monte's community marketplace. Find nearby stores, buy and sell items, get urgent help from neighbors, and earn real cash points.",
+    "description": "Your neighborhood community marketplace. Find nearby stores, buy and sell items, get urgent help from neighbors, and earn Trust Points.",
     "applicationCategory": "ShoppingApplication",
     "operatingSystem": "Web, iOS, Android",
     "offers": {
@@ -49,17 +49,17 @@
       "email": "hello@bringme.store",
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": "San Jose del Monte",
-        "addressRegion": "Bulacan",
+        "addressLocality": "Your City",
+        "addressRegion": "SEA",
         "addressCountry": "PH"
       }
     },
     "areaServed": {
       "@type": "City",
-      "name": "San Jose del Monte",
+      "name": "Southeast Asia",
       "containedInPlace": {
         "@type": "State",
-        "name": "Bulacan"
+        "name": "Southeast Asia"
       }
     }
   }
@@ -2422,6 +2422,10 @@ try {
 .lp-section-hdr, .rp-section-hdr{ background:linear-gradient(135deg,#0a1f63,#173c88) !important; border-bottom:1px solid rgba(255,200,60,.28) !important; padding:11px 14px 9px !important; display:flex; align-items:center; gap:7px; }
 .lp-section-title, .rp-section-title{ color:#FFD24A !important; font-family:'Cinzel',serif; font-size:13px; font-weight:700; letter-spacing:.5px; flex:1; }
 .lp-section-count, .rp-section-count{ background:rgba(255,255,255,.14) !important; color:#fff !important; border:1px solid rgba(255,200,60,.3) !important; }
+/* section header: title + subtitle stack */
+.lp-section-titlewrap{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1px; line-height:1.15; }
+.lp-section-titlewrap .lp-section-title{ flex:none !important; }
+.lp-section-sub{ font-family:'DM Sans',sans-serif; font-size:9.5px; font-weight:600; letter-spacing:.2px; text-transform:none; color:rgba(255,236,190,.72); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
 /* in-panel posting buttons */
 .sec-action{display:flex;align-items:center;justify-content:center;gap:7px;margin:9px 12px 2px;padding:11px;border:none;border-radius:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:800;color:#fff;cursor:pointer;transition:transform .12s;width:calc(100% - 24px)}
@@ -2561,7 +2565,7 @@ try {
   </div>
   <nav class="nav-tabs">
     <button class="n-tab active" id="tab-all" onclick="setTab('all')">🏠 All</button>
-    <button class="n-tab" id="tab-stores" onclick="setTab('stores')">🏪 Stores</button>
+    <button class="n-tab" id="tab-stores" onclick="setTab('stores')">🏪 Establishments</button>
     <button class="n-tab red" id="tab-help" onclick="setTab('help')">🆘 Ask Help</button>
   </nav>
   <div class="topbar-right">
@@ -2609,8 +2613,11 @@ try {
   <!-- URGENT -->
   <div class="lp-urgent-section">
     <div class="lp-section-hdr">
-      <span class="lp-section-icon">🚨</span>
-      <span class="lp-section-title">Ask for Help</span>
+      <span class="lp-section-icon">⚡</span>
+      <div class="lp-section-titlewrap">
+        <span class="lp-section-title">Urgent Needs</span>
+        <span class="lp-section-sub">Needed now · reward offered</span>
+      </div>
       <span class="lp-section-count" id="urgent-count" style="background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)">0</span>
     </div>
     <div class="bm-tools" data-group="urgent">
@@ -2626,7 +2633,10 @@ try {
   <div class="lp-find-section">
     <div class="lp-section-hdr">
       <span class="lp-section-icon">🔍</span>
-      <span class="lp-section-title">Looking For</span>
+      <div class="lp-section-titlewrap">
+        <span class="lp-section-title">Find Requests</span>
+        <span class="lp-section-sub">Help a neighbor · earn Trust Points</span>
+      </div>
       <span class="lp-section-count" id="find-count" style="background:rgba(227,168,16,0.07);color:#9B2D1F;border:1px solid rgba(155,45,31,0.2)">0</span>
     </div>
     <div class="bm-tools" data-group="find">
@@ -2776,7 +2786,7 @@ try {
       <div class="legend-row"><div class="leg-dot" style="background:var(--navy);border:2px solid var(--gold)"></div>You</div>
     </div>
     <div class="fab">
-      <button onclick="openModal('store-register')">🏪 Register My Store</button>
+      <button onclick="openModal('store-register')">🏪 Post a Shop/Service</button>
     </div>
     <!-- ── FLOATING PROFILE MENU BAR ── -->
     <div class="float-profile-bar" id="float-profile-bar">
@@ -2857,7 +2867,7 @@ try {
   <div class="stores-section" id="stores-section">
     <div class="rp-section-hdr">
       <span style="font-size:13px">🏪</span>
-      <span class="rp-section-title" style="color:var(--gold)">Nearby Stores</span>
+      <span class="rp-section-title" style="color:var(--gold)">Nearby Establishments</span>
       <span class="rp-section-count" id="stores-count" style="background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)">0</span>
     </div>
     <div class="bm-tools" data-group="stores">
@@ -2869,18 +2879,18 @@ try {
     <div class="stores-search">
       <div class="stores-search-inner">
         <span class="si">🔍</span>
-        <input type="text" id="store-search" placeholder="Search stores..." oninput="renderRightPanel()">
+        <input type="text" id="store-search" placeholder="Search shops & services..." oninput="renderRightPanel()">
       </div>
     </div>
     <div class="stores-list" id="stores-list"></div>
-    <button class="sec-action sa-store" onclick="openModal('store-register')">🏪 Register Store</button>
+    <button class="sec-action sa-store" onclick="openModal('store-register')">🏪 Post a Shop/Service</button>
   </div>
 
   <!-- LISTINGS SECTION (middle) -->
   <div class="rp-actions">
     <button class="rp-action-btn reg-store-btn" onclick="openModal('store-register')" aria-label="Register your store">
       <span class="ra-icon">🏪</span>
-      <span class="ra-label">Register Store</span>
+      <span class="ra-label">Register Shop/Service</span>
       <span class="ra-sub">Get on the map</span>
     </button>
     <button class="rp-action-btn post-item-btn" onclick="resetPostForm();openModal('post')">
@@ -2899,32 +2909,32 @@ try {
 <div class="offline-banner" id="offline-banner">📡 No internet connection — some features may not work</div>
 
 <script>
-// ── USER LOCATION (San Jose del Monte, Bulacan, PH) ──────────────────────────
-let USER = { lat: 14.8144, lng: 121.0456, name: "San Jose del Monte, Bulacan" };
+// ── USER LOCATION (default; replaced by real GPS) ──────────────────────────
+let USER = { lat: 14.8144, lng: 121.0456, name: "Your Area" };
 
-// ── DATA (seeded around SJDM) ─────────────────────────────────────────────────
+// ── DATA (sample) ─────────────────────────────────────────────────
 const CATS = ["All","Electronics","Fashion","Home","Food","Services","Vehicles","Others"];
 const CAT_ICONS = {All:"🏠",Electronics:"📱",Fashion:"👗",Home:"🏡",Food:"🍱",Services:"🛠️",Vehicles:"🏍️",Others:"📦"};
 
 let listings = [
-  {id:1,type:"sell",promoted:true,title:"iPhone 13 Pro 128GB",category:"Electronics",price:28000,location:"Tungkong Mangga",seller:"Mark R.",avatar:"MR",image:"📱",desc:"Good condition, complete accessories, battery health 89%. Original box included.",contact:"09171234567",rating:4.8,lat:14.8160,lng:121.0420},
-  {id:2,type:"sell",title:"Vintage Leather Bag",category:"Fashion",price:1200,location:"Poblacion SJDM",seller:"Ana L.",avatar:"AL",image:"👜",desc:"Genuine leather, light wear. Fits A4 documents plus essentials.",contact:"09281234567",rating:4.5,lat:14.8180,lng:121.0480},
-  {id:3,type:"buy",title:"Looking for 2nd Hand Laptop",category:"Electronics",price:15000,location:"Sapang Palay",buyer:"Jose M.",avatar:"JM",image:"💻",desc:"Need a working laptop for school. Budget flexible for good specs.",contact:"09391234567",rating:4.2,lat:14.8220,lng:121.0510},
-  {id:4,type:"sell",title:"Airfryer Cosori 5.5L",category:"Home",price:3500,location:"Minuyan",seller:"Clara V.",avatar:"CV",image:"🍳",desc:"Used only a few times. Comes with box and recipe book.",contact:"09451234567",rating:4.9,lat:14.8100,lng:121.0430},
-  {id:5,type:"buy",title:"WTB: Mountain Bike",category:"Others",price:8000,location:"City Center SJDM",buyer:"Renz B.",avatar:"RB",image:"🚲",desc:"Looking for MTB in good condition. Hardtail preferred.",contact:"09561234567",rating:4.0,lat:14.8155,lng:121.0500},
-  {id:6,type:"sell",title:"Honda Beat 2021",category:"Vehicles",price:55000,location:"Tungkong Mangga",seller:"Danny O.",avatar:"DO",image:"🏍️",desc:"Low mileage, casa maintained, no issues. Papers complete.",contact:"09671234567",rating:4.7,lat:14.8195,lng:121.0440},
-  {id:7,type:"sell",title:"Homemade Ube Halaya",category:"Food",price:180,location:"Minuyan",seller:"Nena S.",avatar:"NS",image:"🍠",desc:"Per jar 350g. Made fresh every weekend.",contact:"09781234567",rating:5.0,lat:14.8090,lng:121.0465},
-  {id:8,type:"buy",title:"Need Graphic Design Services",category:"Services",price:500,location:"Poblacion",buyer:"Liza P.",avatar:"LP",image:"🎨",desc:"Looking for someone to design a logo for my small business.",contact:"09891234567",rating:4.3,lat:14.8135,lng:121.0395},
+  {id:1,type:"sell",promoted:true,title:"iPhone 13 Pro 128GB",category:"Electronics",price:28000,location:"Market Area",seller:"Mark R.",avatar:"MR",image:"📱",desc:"Good condition, complete accessories, battery health 89%. Original box included.",contact:"09171234567",rating:4.8,lat:14.8160,lng:121.0420},
+  {id:2,type:"sell",title:"Vintage Leather Bag",category:"Fashion",price:1200,location:"Town Center",seller:"Ana L.",avatar:"AL",image:"👜",desc:"Genuine leather, light wear. Fits A4 documents plus essentials.",contact:"09281234567",rating:4.5,lat:14.8180,lng:121.0480},
+  {id:3,type:"buy",title:"Looking for 2nd Hand Laptop",category:"Electronics",price:15000,location:"Riverside",buyer:"Jose M.",avatar:"JM",image:"💻",desc:"Need a working laptop for school. Budget flexible for good specs.",contact:"09391234567",rating:4.2,lat:14.8220,lng:121.0510},
+  {id:4,type:"sell",title:"Airfryer Cosori 5.5L",category:"Home",price:3500,location:"Hillcrest",seller:"Clara V.",avatar:"CV",image:"🍳",desc:"Used only a few times. Comes with box and recipe book.",contact:"09451234567",rating:4.9,lat:14.8100,lng:121.0430},
+  {id:5,type:"buy",title:"WTB: Mountain Bike",category:"Others",price:8000,location:"City Center",buyer:"Renz B.",avatar:"RB",image:"🚲",desc:"Looking for MTB in good condition. Hardtail preferred.",contact:"09561234567",rating:4.0,lat:14.8155,lng:121.0500},
+  {id:6,type:"sell",title:"Honda Beat 2021",category:"Vehicles",price:55000,location:"Market Area",seller:"Danny O.",avatar:"DO",image:"🏍️",desc:"Low mileage, casa maintained, no issues. Papers complete.",contact:"09671234567",rating:4.7,lat:14.8195,lng:121.0440},
+  {id:7,type:"sell",title:"Homemade Ube Halaya",category:"Food",price:180,location:"Hillcrest",seller:"Nena S.",avatar:"NS",image:"🍠",desc:"Per jar 350g. Made fresh every weekend.",contact:"09781234567",rating:5.0,lat:14.8090,lng:121.0465},
+  {id:8,type:"buy",title:"Need Graphic Design Services",category:"Services",price:500,location:"Town Center",buyer:"Liza P.",avatar:"LP",image:"🎨",desc:"Looking for someone to design a logo for my small business.",contact:"09891234567",rating:4.3,lat:14.8135,lng:121.0395},
 ];
 
 let stores = [
-  {id:101,featured:true,featuredPlan:"Pro",name:"TechZone SJDM",categories:["Electronics"],address:"Tungkong Mangga, SJDM",contact:"09171110001",hours:"9AM–7PM",rating:4.6,lat:14.8155,lng:121.0450,products:["Laptop","Smartphone","Tablet","Charger","Earphones"]},
-  {id:102,name:"Mega Electronics",categories:["Electronics"],address:"Poblacion, SJDM",contact:"09281110002",hours:"8AM–8PM",rating:4.4,lat:14.8190,lng:121.0490,products:["Laptop","Desktop","Monitor","Printer","USB Hub"]},
-  {id:103,name:"Fashion Hub Bulacan",categories:["Fashion"],address:"City Mall, SJDM",contact:"09391110003",hours:"10AM–9PM",rating:4.3,lat:14.8115,lng:121.0430,products:["Bag","Shoes","Clothing","Accessories"]},
-  {id:104,name:"Home & More",categories:["Home"],address:"Sapang Palay, SJDM",contact:"09451110004",hours:"8AM–6PM",rating:4.7,lat:14.8230,lng:121.0520,products:["Appliances","Cookware","Furniture","Decor"]},
-  {id:105,name:"AutoParts SJDM",categories:["Vehicles"],address:"National Highway, SJDM",contact:"09561110005",hours:"7AM–5PM",rating:4.5,lat:14.8075,lng:121.0400,products:["Motorcycle Parts","Car Parts","Batteries","Tires"]},
-  {id:106,featured:true,featuredPlan:"Basic",name:"Kakanin ni Aling Rosa",categories:["Food"],address:"Minuyan, SJDM",contact:"09671110006",hours:"6AM–2PM",rating:5.0,lat:14.8100,lng:121.0455,products:["Ube Halaya","Kalamay","Biko","Puto"]},
-  {id:107,name:"AllShop General Store",categories:["Electronics","Home","Others"],address:"Grand Central Mall, SJDM",contact:"09781110007",hours:"9AM–9PM",rating:4.2,lat:14.8210,lng:121.0505,products:["Laptop","Appliances","Tools","School Supplies"]},
+  {id:101,official:true,featured:true,featuredPlan:"Pro",name:"TechZone",categories:["Electronics"],address:"Market Area",contact:"09171110001",hours:"9AM–7PM",rating:4.6,lat:14.8155,lng:121.0450,products:["Laptop","Smartphone","Tablet","Charger","Earphones"]},
+  {id:102,official:true,name:"Mega Electronics",categories:["Electronics"],address:"Town Center",contact:"09281110002",hours:"8AM–8PM",rating:4.4,lat:14.8190,lng:121.0490,products:["Laptop","Desktop","Monitor","Printer","USB Hub"]},
+  {id:103,official:false,name:"Fashion Hub",categories:["Fashion"],address:"City Mall",contact:"09391110003",hours:"10AM–9PM",rating:4.3,lat:14.8115,lng:121.0430,products:["Bag","Shoes","Clothing","Accessories"]},
+  {id:104,official:true,name:"Home & More",categories:["Home"],address:"Riverside",contact:"09451110004",hours:"8AM–6PM",rating:4.7,lat:14.8230,lng:121.0520,products:["Appliances","Cookware","Furniture","Decor"]},
+  {id:105,official:false,name:"AutoParts Center",categories:["Vehicles"],address:"National Highway",contact:"09561110005",hours:"7AM–5PM",rating:4.5,lat:14.8075,lng:121.0400,products:["Motorcycle Parts","Car Parts","Batteries","Tires"]},
+  {id:106,official:true,featured:true,featuredPlan:"Basic",name:"Kakanin ni Aling Rosa",categories:["Food"],address:"Hillcrest",contact:"09671110006",hours:"6AM–2PM",rating:5.0,lat:14.8100,lng:121.0455,products:["Ube Halaya","Kalamay","Biko","Puto"]},
+  {id:107,official:false,name:"AllShop General Store",categories:["Electronics","Home","Others"],address:"Grand Central Mall",contact:"09781110007",hours:"9AM–9PM",rating:4.2,lat:14.8210,lng:121.0505,products:["Laptop","Appliances","Tools","School Supplies"]},
 ];
 
 let helpRequests = [
@@ -2934,9 +2944,9 @@ let helpRequests = [
    user:"Carlo M.", avatar:"CM", time:"5 min ago",
    offer:{ type:'both', cash:150, points:50 },
    delivery:'doorstep',
-   note:"Need it delivered to Tungkong Mangga ASAP for WFH",
+   note:"Need it delivered ASAP for WFH",
    lat:14.8165, lng:121.0445,
-   replies:[{id:1,name:"Mark R.",avatar:"MR",store:"TechZone SJDM",address:"Tungkong Mangga",msg:"Available! ₱350 lang.",confirmed:false}]},
+   replies:[{id:1,name:"Mark R.",avatar:"MR",store:"TechZone",address:"Market Area",msg:"Available! ₱350 lang.",confirmed:false}]},
   {id:202, reqType:'urgent',
    item:"Paracetamol 500mg (10 tablets)", category:"Food",
    user:"Rica S.", avatar:"RS", time:"12 min ago",
@@ -2945,8 +2955,8 @@ let helpRequests = [
    note:"Sick at home, need medicine delivered NOW",
    lat:14.8130, lng:121.0480,
    replies:[
-     {id:1,name:"Tina A.",avatar:"TA",store:"MedPlus Pharmacy",address:"Poblacion SJDM",msg:"In stock, ₱8/tablet.",confirmed:false},
-     {id:2,name:"Bong C.",avatar:"BC",store:"Mercury Drug SJDM",address:"City Center",msg:"24hrs open, meron kami.",confirmed:true}
+     {id:1,name:"Tina A.",avatar:"TA",store:"MedPlus Pharmacy",address:"Town Center",msg:"In stock, ₱8/tablet.",confirmed:false},
+     {id:2,name:"Bong C.",avatar:"BC",store:"Mercury Drug",address:"City Center",msg:"24hrs open, meron kami.",confirmed:true}
    ]},
   {id:204, reqType:'urgent',
    item:"Birthday Cake (chocolate)", category:"Food",
@@ -2962,7 +2972,7 @@ let helpRequests = [
    user:"Ben A.", avatar:"BA", time:"22 min ago",
    offer:{ type:'points', cash:0, points:20 },
    delivery:'info',
-   note:"Just need to know which store near SJDM sells this",
+   note:"Just need to know which store nearby sells this",
    lat:14.8205, lng:121.0420,
    replies:[]},
   {id:205, reqType:'find',
@@ -2970,7 +2980,7 @@ let helpRequests = [
    user:"Mama Cita", avatar:"MC", time:"1 hr ago",
    offer:{ type:'points', cash:0, points:15 },
    delivery:'info',
-   note:"Where to buy sa SJDM area?",
+   note:"Where to buy near me?",
    lat:14.8140, lng:121.0440,
    replies:[]},
   {id:206, reqType:'find',
@@ -2990,11 +3000,11 @@ let S = {
   saved:[], points:47,
   postType:"sell",
   form:{title:"",cat:null,catUI:null,price:"",location:"",desc:"",contact:"",image:"",imageUrl:"",brand:"",images:[],condition:"",negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:"",cc:"+63",lat:null,lng:null},
-  storeForm:{name:"",address:"",contact:"",hours:"",cat:null,catUI:null,products:""},
+  storeForm:{name:"",address:"",contact:"",hours:"",cat:null,catUI:null,products:"",poster:"community",docs:[]},
   helpForm:{item:"",category:"Electronics"},
   helpReplyForm:{store:"",address:"",msg:""},
   pointsHistory:[
-    {id:1,icon:"🏪",title:"Helped locate TechZone SJDM",time:"Yesterday",val:1,type:"earn"},
+    {id:1,icon:"🏪",title:"Helped locate TechZone",time:"Yesterday",val:1,type:"earn"},
     {id:2,icon:"🏪",title:"Helped locate Aling Rosa's store",time:"2 days ago",val:1,type:"earn"},
     {id:3,icon:"💸",title:"Cashed out to GCash",time:"Last week",val:-20,type:"spend"},
     {id:4,icon:"🏪",title:"Helped locate Mercury Drug",time:"Last week",val:1,type:"earn"},
@@ -3042,7 +3052,7 @@ function stars(n){ return '★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(
 
 // Turn the user's GPS coords into a readable area name (e.g. their barangay/city)
 
-// ── Signup-area fallback coordinates (SJDM barangays, approximate centers) ──
+// ── Signup-area fallback coordinates (approximate area centers) ──
 const AREA_COORDS = {
   'Tungkong Mangga': { lat: 14.8144, lng: 121.0456 },
   'Sapang Palay':    { lat: 14.8370, lng: 121.0790 },
@@ -3122,40 +3132,19 @@ function initLocation(lat, lng, label) {
   renderLeftPanel();
 }
 
-// Center the map on the user's REAL current location.
-// Falls back to a default only if they deny permission or GPS fails.
+// Seed a nearby location so content always shows (deferred so all helpers exist),
+// then refine with the user's real GPS location if it's available.
+var _locSeeded = false;
+function _seedDefaultLoc(){ if(_locSeeded) return; _locSeeded=true; initLocation(14.8144, 121.0456, "Your Area"); }
 if (navigator.geolocation) {
-  if (mapOverlayTxt) mapOverlayTxt.textContent = '📍 Finding your location...';
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      // Success — center on the user wherever they are
-      initLocation(pos.coords.latitude, pos.coords.longitude, "Your Location");
-      if (typeof reverseGeocodeUser === 'function') reverseGeocodeUser(pos.coords.latitude, pos.coords.longitude);
-    },
-    err => {
-      // GPS denied/failed — fall back to the AREA THEY PICKED at signup
-      const area = (typeof AW_USER === 'object' && AW_USER.location) ? AW_USER.location
-                 : (typeof USER === 'object' && USER.signupArea) ? USER.signupArea : '';
-      if (area) {
-        if (mapOverlayTxt) mapOverlayTxt.textContent = '📍 Using your area: ' + area;
-        locateFromSignupArea(area, (coords, name) => {
-          if (coords) { initLocation(coords.lat, coords.lng, name || area); }
-          else {
-            // couldn't resolve their area either — ask them to enable location
-            if (mapOverlayTxt) mapOverlayTxt.textContent = 'Turn on location to see what\'s near you.';
-            showToast('📍 Enable location to see nearby items');
-          }
-        });
-      } else {
-        // no signup area on file (guest) — prompt to enable location
-        if (mapOverlayTxt) mapOverlayTxt.textContent = 'Turn on location to see what\'s near you.';
-        showToast('📍 Please enable location to see nearby items');
-      }
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    function(pos){ _locSeeded=true; initLocation(pos.coords.latitude, pos.coords.longitude, "Your Location"); if (typeof reverseGeocodeUser === 'function') reverseGeocodeUser(pos.coords.latitude, pos.coords.longitude); },
+    function(err){ _seedDefaultLoc(); },
+    { enableHighAccuracy: true, timeout: 6000, maximumAge: 60000 }
   );
+  setTimeout(_seedDefaultLoc, 1500);
 } else {
-  initLocation(14.8144, 121.0456, "San Jose del Monte, Bulacan");
+  setTimeout(_seedDefaultLoc, 0);
 }
 
 // ── RADIUS CIRCLE ──────────────────────────────────────────────────────────────
@@ -3210,6 +3199,7 @@ function addMarker(lat, lng, icon, popupHtml) {
 
 function buildMarkers() {
   clearMarkers();
+  hookMapIdle();  // refresh markers/lists when the map is panned or zoomed
 
   // ── helper: create a rich labeled marker ──
   function makeMarker(lat, lng, opts) {
@@ -3244,7 +3234,7 @@ function buildMarkers() {
         labelOrigin: new google.maps.Point(20, -8),
       },
       label: S.showLabels !== false && opts.label ? {
-        text: opts.label.length > 18 ? opts.label.slice(0,18)+'…' : opts.label,
+        text: opts.label.length > 26 ? opts.label.slice(0,26)+'…' : opts.label,
         className: 'map-pin-label ' + (opts.labelClass||''),
         fontSize: '11px',
         fontFamily: "'DM Sans', sans-serif",
@@ -3263,9 +3253,9 @@ function buildMarkers() {
     return marker;
   }
 
-  // ── LISTINGS ──
-  if (S.tab !== 'stores' && S.tab !== 'help') {
-    getFiltered().forEach(l => {
+  // ── LISTINGS (plotted when in the map's current view, nearest first, capped) ──
+  {
+    capNearest(listings, FEED_CAP).forEach(l => {
       const isSell = l.type === 'sell';
       const pinImg = l.images?.[0]
         ? `<img src="${l.images[0]}" style="width:100%;height:80px;object-fit:cover;border-radius:10px 10px 0 0">`
@@ -3306,13 +3296,13 @@ function buildMarkers() {
     });
   }
 
-  // ── STORES ──
-  if (S.tab === 'all' || S.tab === 'stores') {
-    stores.forEach(s => {
+  // ── STORES / PLACES ──
+  {
+    capNearest(stores, FEED_CAP).forEach(s => {
       const popupHtml = `<div class="popup-box">
         <div style="padding:10px">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-            <span style="font-size:28px">🏪</span>
+            <span style="font-size:28px">${s.catEmoji||'🏪'}</span>
             <div>
               <div class="popup-title">${esc(s.name)}</div>
               ${s.featured ? '<span class="badge b-sell" style="font-size:9px">⭐ Featured</span>' : ''}
@@ -3322,7 +3312,7 @@ function buildMarkers() {
           <div class="popup-sub">⏰ ${esc(s.hours||'Open')}</div>
           <div class="popup-sub">📂 ${(s.categories||[]).join(', ')}</div>
           <div style="display:flex;gap:6px;margin-top:8px">
-            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${s.id},'store');infoWindow.close()">View Store →</button>
+            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${s.id},'store');infoWindow.close()">View →</button>
             <button class="popup-btn" style="flex:1;margin-top:0;background:linear-gradient(135deg,var(--royal),var(--royal2));color:var(--gold)" onclick="navigateTo(${s.lat},${s.lng},'${esc(s.name)}','${esc(s.address)}');infoWindow.close()">🗺️ Navigate</button>
           </div>
         </div>
@@ -3330,7 +3320,7 @@ function buildMarkers() {
 
       const label = S.labelMode === 'none' ? null : s.name;
       const m = makeMarker(s.lat, s.lng, {
-        icon: '🏪',
+        icon: s.catEmoji || '🏪',
         label,
         labelClass: 'store',
         color: '#C0392B',
@@ -3343,8 +3333,8 @@ function buildMarkers() {
   }
 
   // ── HELP REQUESTS ──
-  if (S.tab === 'all' || S.tab === 'help') {
-    helpRequests.forEach(r => {
+  {
+    capNearest(helpRequests, FEED_CAP).forEach(r => {
       const isUrgent = r.reqType === 'urgent';
       const offerTxt = r.offer?.type==='cash' ? `₱${r.offer.cash}`
                      : r.offer?.type==='points' ? `🤝${r.offer.points}pts`
@@ -3375,8 +3365,8 @@ function buildMarkers() {
         label,
         labelClass: isUrgent ? 'urgent' : 'find',
         color: isUrgent ? '#E05A4E' : '#C8860B',
-        color1: isUrgent ? '#FF6B5B' : '#6B5ED4',
-        color2: isUrgent ? '#C0392B' : '#2A1A80',
+        color1: isUrgent ? '#FF6B5B' : '#E3A810',
+        color2: isUrgent ? '#C0392B' : '#8B6508',
         animate: isUrgent,
         popupHtml,
       });
@@ -3715,27 +3705,38 @@ function submitHelpReply(helpId) {
   const replyBtn = document.querySelector('.reply-submit-btn');
   if (replyBtn) { replyBtn.classList.add('btn-loading'); replyBtn.innerHTML = '<div class="spinner spinner-sm"></div> Sending...'; }
   setTimeout(() => {
-    h.replies.push({id:Date.now(),name:'You',avatar:'ME',store:f.store,address:f.address||'SJDM',msg:f.msg,confirmed:false});
+    h.replies.push({id:Date.now(),name:'You',avatar:'ME',store:f.store,address:f.address||'Nearby',msg:f.msg,confirmed:false});
     S.helpReplyForm={store:'',address:'',msg:''};
     openModal('help-detail');
     showToast("📤 Reply sent! Earn ⭐ when confirmed.", 'success');
   }, 700);
 }
 
+function storeDocSelect(e){
+  const files=[...(e.target.files||[])];
+  if(!S.storeForm.docs) S.storeForm.docs=[];
+  files.forEach(fl=>S.storeForm.docs.push(fl.name));
+  e.target.value=''; renderModal();
+}
 function submitStore() {
   const f=S.storeForm;
-  if (!f.name||!f.address||!f.contact) { showToast('⚠️ Fill in required fields.'); return; }
+  const owner=f.poster==='owner';
+  if (!f.name||!f.address) { showToast('⚠️ Fill in name & location.'); return; }
+  if (owner && !f.contact) { showToast('⚠️ Owners: add a contact number.'); return; }
+  if (owner && !(f.docs&&f.docs.length)) { showToast('⚠️ Upload proof of ownership to post as the owner.'); return; }
   stores=[{
     id:Date.now(),...f,
+    official:false, pending:owner, unofficial:!owner,
     categories:[catLabel(f)||'Other'], catEmoji:(f.cat&&f.cat.em)||'🏪',
     products:f.products.split(',').map(p=>p.trim()).filter(Boolean),
     rating:5.0,
     lat:USER.lat+(Math.random()-.5)*.015,lng:USER.lng+(Math.random()-.5)*.015
   },...stores];
-  S.storeForm={name:'',address:'',contact:'',hours:'',cat:null,catUI:null,products:''};
+  if (typeof S.points==='number') S.points += owner?25:10;
+  S.storeForm={name:'',address:'',contact:'',hours:'',cat:null,catUI:null,products:'',poster:'community',docs:[]};
   const regBtn = document.querySelector('.store-reg-btn');
-  if (regBtn) { regBtn.classList.add('btn-loading'); regBtn.innerHTML = '<div class="spinner spinner-sm"></div> Registering...'; }
-  setTimeout(() => { closeModal(); S.tab='stores'; renderAll(); showToast('🏪 Store registered on the map!', 'success'); }, 900);
+  if (regBtn) { regBtn.classList.add('btn-loading'); regBtn.innerHTML = '<div class="spinner spinner-sm"></div> '+(owner?'Submitting...':'Posting...'); }
+  setTimeout(() => { closeModal(); S.tab='stores'; renderAll(); showToast(owner?'✅ Submitted for verification — +25 Trust Points':'👥 Posted (unofficial) — +10 Trust Points', 'success'); }, 900);
 }
 
 // ── MODALS ────────────────────────────────────────────────────────────────────
@@ -3961,6 +3962,7 @@ const CAT_TAX = [
 const CAT_RULES = [
   [['headphone','earphone','earbuds','airpods','speaker','soundbar','camera','television',' tv '], '📱','Electronics & Gadgets','TV, Audio & Cameras'],
   [['charger','cable',' usb','adapter','power bank','powerbank'], '📱','Electronics & Gadgets','Chargers & Accessories'],
+  [['paracetamol','biogesic','medicine','pharmacy','antibiotic','capsule','syrup','ointment','bandage','first aid','betadine','thermometer','painkiller','tablets'], '💄','Health & Beauty','Medical & First Aid'],
   [['iphone','samsung','phone','tablet','ipad','android'], '📱','Electronics & Gadgets','Phones & Tablets'],
   [['laptop','macbook','computer',' pc ','monitor','keyboard','mouse'], '📱','Electronics & Gadgets','Computers & Laptops'],
   [['playstation','ps5','xbox','nintendo','gaming chair','console'], '📱','Electronics & Gadgets','Gaming'],
@@ -3987,64 +3989,113 @@ const CAT_RULES = [
   [['repair','fix','cleaning','tutor','service','massage','plumber','electrician'], '🧰','Services & Help','Repairs & Fix'],
   [['skincare','lotion','makeup','lipstick','shampoo','vitamin','perfume'], '💄','Health & Beauty','Skincare'],
 ];
-function catClassify(text){ const t=' '+String(text||'').toLowerCase()+' '; for(const r of CAT_RULES){ if(r[0].some(k=>t.includes(k))) return {em:r[1],top:r[2],sub:r[3]}; } return null; }
+// Place types for the "Shops & Services" directory (flat types — from backyard shops to hospitals).
+const PLACE_TAX = [
+  { em:'🛍️', name:'Shop / Store', subs:[] },
+  { em:'🏡', name:'Backyard / Home-based', subs:[] },
+  { em:'🍳', name:'Food / Eatery', subs:[] },
+  { em:'💊', name:'Pharmacy', subs:[] },
+  { em:'🏥', name:'Clinic / Hospital', subs:[] },
+  { em:'💅', name:'Salon / Beauty', subs:[] },
+  { em:'🔧', name:'Repair / Services', subs:[] },
+  { em:'⚖️', name:'Professional / Office', subs:[] },
+  { em:'🏫', name:'School / Tutor', subs:[] },
+  { em:'🏛️', name:'Government', subs:[] },
+  { em:'💧', name:'Water / Gas / Utilities', subs:[] },
+  { em:'📦', name:'Other', subs:[] },
+];
+const PLACE_RULES = [
+  [['pharmacy','botika','drugstore','mercury drug'], '💊','Pharmacy',''],
+  [['clinic','hospital','medical','dental','dentist','doctor','health center','laboratory','diagnostic'], '🏥','Clinic / Hospital',''],
+  [['salon','parlor','barber','spa','nails','beauty','aesthetic'], '💅','Salon / Beauty',''],
+  [['law','attorney','lawyer','accounting','bookkeep','notary','consult','insurance','real estate','firm'], '⚖️','Professional / Office',''],
+  [['school','tutor','review center','academy','learning','daycare','montessori'], '🏫','School / Tutor',''],
+  [['barangay','city hall','municipal','government','sss','pag-ibig','pagibig','lto','post office','philhealth'], '🏛️','Government',''],
+  [['water refill','water station','gas station','lpg','refilling','petron','shell','utility'], '💧','Water / Gas / Utilities',''],
+  [['eatery','carinderia','restaurant','cafe','bakery','bakeshop','grill','canteen','milktea','milk tea','coffee','food'], '🍳','Food / Eatery',''],
+  [['backyard','home-based','home based','homemade','online shop','online seller','small business','startup'], '🏡','Backyard / Home-based',''],
+  [['repair','fix','vulcanizing','welding','aircon cleaning','laundry','printing','tailor','car wash'], '🔧','Repair / Services',''],
+  [['store','shop','mart','sari-sari','sarisari','grocery','hardware','boutique','retail','tindahan'], '🛍️','Shop / Store',''],
+];
+function catTax(scope){ return scope==='place' ? PLACE_TAX : CAT_TAX; }
+function catRules(scope){ return scope==='place' ? PLACE_RULES : CAT_RULES; }
+function catClassify(text, scope){ const t=' '+String(text||'').toLowerCase()+' '; for(const r of catRules(scope)){ if(r[0].some(k=>t.includes(k))) return {em:r[1],top:r[2],sub:r[3]}; } return null; }
 function catCtx(scope){
   if(scope==='find'){ const f=S._reqForm||{}; return {f, text:((f.item||'')+' '+(f.details||'')).trim()}; }
-  if(scope==='store'){ const f=S.storeForm||{}; return {f, text:((f.name||'')+' '+(f.products||'')).trim()}; }
+  if(scope==='place'||scope==='store'){ const f=S.storeForm||{}; return {f, text:((f.name||'')+' '+(f.products||'')).trim()}; }
+  if(scope==='urgent'){ const f=(typeof urfF==='object'&&urfF)?urfF:{}; return {f, text:urfCatText()}; }
   const f=S.form||{}; return {f, text:((f.title||'')+' '+(f.desc||'')).trim()};
 }
+// Urgent form is DOM-based (no full re-render) → update only its category block in place.
+function catRerender(scope){ if(scope==='urgent'){ urfCatRender(); } else { renderModal(); } }
 function catUI(scope){ const {f}=catCtx(scope); if(!f.catUI) f.catUI={picking:false,openIdx:null,search:''}; return f.catUI; }
-function catOpenPicker(scope){ const u=catUI(scope); u.picking=true; u.openIdx=null; u.search=''; renderModal(); }
-function catClosePicker(scope){ const u=catUI(scope); u.picking=false; renderModal(); }
-function catOpenCat(scope,i){ const u=catUI(scope); u.openIdx=i; renderModal(); }
-function catBack(scope){ const u=catUI(scope); u.openIdx=null; renderModal(); }
-function catChooseIdx(scope,ci,si){ const {f}=catCtx(scope); const c=CAT_TAX[ci]; f.cat={em:c.em,top:c.name,sub: si>=0?c.subs[si]:''}; f.catUI={picking:false,openIdx:null,search:''}; renderModal(); }
-function catUseSug(scope){ const {f}=catCtx(scope); if(f._sug) f.cat=Object.assign({},f._sug); f.catUI={picking:false,openIdx:null,search:''}; renderModal(); }
-function catSearch(scope,v){ const u=catUI(scope); u.search=v; renderModal(); }
-function catCustom(scope){ const {f}=catCtx(scope); const el=document.getElementById('cat-srch'); const t=(el?el.value:((f.catUI&&f.catUI.search)||'')).trim(); if(!t) return; f.cat={em:'🏷️',top:t,sub:'',custom:true}; f.catUI={picking:false,openIdx:null,search:''}; renderModal(); }
+function catOpenPicker(scope){ const u=catUI(scope); u.picking=true; u.openIdx=null; u.search=''; catRerender(scope); }
+function catClosePicker(scope){ const u=catUI(scope); u.picking=false; catRerender(scope); }
+function catOpenCat(scope,i){ const u=catUI(scope); u.openIdx=i; catRerender(scope); }
+function catBack(scope){ const u=catUI(scope); u.openIdx=null; catRerender(scope); }
+function catChooseIdx(scope,ci,si){ const {f}=catCtx(scope); const c=catTax(scope)[ci]; f.cat={em:c.em,top:c.name,sub: si>=0?c.subs[si]:''}; f.catUI={picking:false,openIdx:null,search:''}; catRerender(scope); }
+function catUseSug(scope){ const {f}=catCtx(scope); if(f._sug) f.cat=Object.assign({},f._sug); f.catUI={picking:false,openIdx:null,search:''}; catRerender(scope); }
+function catSearch(scope,v){ const u=catUI(scope); u.search=v; catRerender(scope); }
+function catCustom(scope){ const {f}=catCtx(scope); const el=document.getElementById('cat-srch'); const t=(el?el.value:((f.catUI&&f.catUI.search)||'')).trim(); if(!t) return; f.cat={em:'🏷️',top:t,sub:'',custom:true}; f.catUI={picking:false,openIdx:null,search:''}; catRerender(scope); }
 function catLabel(f){ return f && f.cat ? (f.cat.sub || f.cat.top) : ''; }
 function catSection(scope){
   const {f, text} = catCtx(scope);
+  return `<div class="cat-wrap" id="cat-sec-${scope}">${catBody(scope,f,text)}</div>`;
+}
+function catBody(scope,f,text){
   if(!f.catUI) f.catUI={picking:false,openIdx:null,search:''};
-  const u=f.catUI;
-  let h='<div class="cat-wrap">';
+  const u=f.catUI; const T=catTax(scope);
+  const noun = scope==='place' ? 'type' : 'category';
+  let h='';
   if(f.cat){
-    const c=f.cat, main=c.sub?c.sub:c.top, sub=c.custom?'🏷️ your own category':(c.sub?c.top:'category set');
+    const c=f.cat, main=c.sub?c.sub:c.top, sub=c.custom?('🏷️ your own '+noun):(c.sub?c.top:(noun+' set'));
     h+=`<div class="cat-confirmed"><span class="cc-em">${c.em}</span><span class="cc-tx">${esc(main)}<small>${esc(sub)}</small></span><button type="button" class="cc-ch" onclick="catOpenPicker('${scope}')">Change</button></div>`;
   } else if(u.picking){
     if(u.openIdx===null){
       const q=(u.search||'').trim().toLowerCase();
-      h+=`<div class="cat-ph"><button type="button" class="cat-back" onclick="catClosePicker('${scope}')">←</button><div class="cat-pt">Pick or type a category<small>Browse, search, or type your own</small></div></div>`;
-      h+=`<input class="form-input" id="cat-srch" placeholder="🔍 Search or type your own category…" value="${esc(u.search||'')}" oninput="catSearch('${scope}',this.value)" autocomplete="off" style="margin-bottom:10px">`;
+      h+=`<div class="cat-ph"><button type="button" class="cat-back" onclick="catClosePicker('${scope}')">←</button><div class="cat-pt">Pick or type a ${noun}<small>Browse, search, or type your own</small></div></div>`;
+      h+=`<input class="form-input" id="cat-srch" placeholder="🔍 Search or type your own ${noun}…" value="${esc(u.search||'')}" oninput="catSearch('${scope}',this.value)" autocomplete="off" style="margin-bottom:10px">`;
       if(q){
         const safe=esc(u.search.trim());
-        const matches=[]; CAT_TAX.forEach((c,ci)=>c.subs.forEach((s,si)=>{ if((c.name+' '+s).toLowerCase().includes(q)) matches.push([ci,si,c.em,s,c.name]); }));
-        h+=`<div class="cat-subs"><div class="cat-sub custom" onclick="catCustom('${scope}')"><span>➕ Use "<b>${safe}</b>" as your category</span> <span class="go">✓</span></div>`;
-        matches.slice(0,8).forEach(m=>{ h+=`<div class="cat-sub" onclick="catChooseIdx('${scope}',${m[0]},${m[1]})"><span>${m[2]} ${esc(m[3])} <span style="color:var(--muted);font-weight:500;font-size:11px">· ${esc(m[4])}</span></span> <span class="go">›</span></div>`; });
+        const matches=[];
+        T.forEach((c,ci)=>{
+          if(c.name.toLowerCase().includes(q)) matches.push([ci,-1,c.em,c.name,'']);
+          c.subs.forEach((s,si)=>{ if((c.name+' '+s).toLowerCase().includes(q)) matches.push([ci,si,c.em,s,c.name]); });
+        });
+        h+=`<div class="cat-subs"><div class="cat-sub custom" onclick="catCustom('${scope}')"><span>➕ Use "<b>${safe}</b>" as your ${noun}</span> <span class="go">✓</span></div>`;
+        matches.slice(0,8).forEach(m=>{ const ctx=m[4]?` <span style="color:var(--muted);font-weight:500;font-size:11px">· ${esc(m[4])}</span>`:''; h+=`<div class="cat-sub" onclick="catChooseIdx('${scope}',${m[0]},${m[1]})"><span>${m[2]} ${esc(m[3])}${ctx}</span> <span class="go">›</span></div>`; });
         if(!matches.length) h+=`<div style="font-size:11.5px;color:var(--muted);padding:8px 2px;line-height:1.5">No match — tap above to use your own.</div>`;
         h+=`</div>`;
       } else {
-        h+=`<div class="cat-grid">`+CAT_TAX.map((c,i)=>`<button type="button" class="cat-tile" onclick="catOpenCat('${scope}',${i})"><span class="em">${c.em}</span><span><span class="nm">${esc(c.name)}</span><span class="ct">${c.subs.length} types</span></span></button>`).join('')+`</div>`;
+        h+=`<div class="cat-grid">`+T.map((c,i)=>{ const act=c.subs.length?`catOpenCat('${scope}',${i})`:`catChooseIdx('${scope}',${i},-1)`; const meta=c.subs.length?`${c.subs.length} types`:'tap to pick'; return `<button type="button" class="cat-tile" onclick="${act}"><span class="em">${c.em}</span><span><span class="nm">${esc(c.name)}</span><span class="ct">${meta}</span></span></button>`; }).join('')+`</div>`;
       }
     } else {
-      const c=CAT_TAX[u.openIdx], ci=u.openIdx;
+      const c=T[u.openIdx], ci=u.openIdx;
       h+=`<div class="cat-ph"><button type="button" class="cat-back" onclick="catBack('${scope}')">←</button><div class="cat-pt">${c.em} ${esc(c.name)}<small>Choose the closest type</small></div></div>`;
       h+=`<div class="cat-subs"><div class="cat-sub any" onclick="catChooseIdx('${scope}',${ci},-1)"><span>All of ${esc(c.name)}</span> <span class="go">✓</span></div>`+
         c.subs.map((s,si)=>`<div class="cat-sub" onclick="catChooseIdx('${scope}',${ci},${si})"><span>${esc(s)}</span> <span class="go">›</span></div>`).join('')+`</div>`;
     }
   } else {
-    const sug = text.length>=2 ? catClassify(text) : null;
+    const sug = text.length>=2 ? catClassify(text, scope) : null;
     f._sug = sug;
     if(sug){
-      h+=`<div class="cat-ai"><div class="cat-ai-lbl">🤖 AI suggests</div><div class="cat-ai-pick"><span class="cat-ai-em">${sug.em}</span><div><div class="cat-ai-top">${esc(sug.top)}</div><div class="cat-ai-sub">${esc(sug.sub)}</div></div></div><div class="cat-ai-act"><button type="button" class="btn-primary cat-use" onclick="catUseSug('${scope}')">✓ Use this</button><button type="button" class="cat-change" onclick="catOpenPicker('${scope}')">Change</button></div></div>`;
+      const pick = sug.sub ? `<div class="cat-ai-top">${esc(sug.top)}</div><div class="cat-ai-sub">${esc(sug.sub)}</div>` : `<div class="cat-ai-sub">${esc(sug.top)}</div>`;
+      h+=`<div class="cat-ai"><div class="cat-ai-lbl">🤖 AI suggests</div><div class="cat-ai-pick"><span class="cat-ai-em">${sug.em}</span><div>${pick}</div></div><div class="cat-ai-act"><button type="button" class="btn-primary cat-use" onclick="catUseSug('${scope}')">✓ Use this</button><button type="button" class="cat-change" onclick="catOpenPicker('${scope}')">Change</button></div></div>`;
     } else if(text.length>=2){
-      h+=`<div class="cat-unsure">🤔 AI isn't sure yet — <button type="button" class="cat-link" onclick="catOpenPicker('${scope}')">pick or type a category</button>.</div>`;
+      h+=`<div class="cat-unsure">🤔 AI isn't sure yet — <button type="button" class="cat-link" onclick="catOpenPicker('${scope}')">pick or type a ${noun}</button>.</div>`;
     } else {
-      h+=`<div class="cat-hint">⌨️ Type a title and AI suggests a category — or <button type="button" class="cat-link" onclick="catOpenPicker('${scope}')">pick one</button>.</div>`;
+      h+=`<div class="cat-hint">⌨️ Type a name and AI suggests a ${noun} — or <button type="button" class="cat-link" onclick="catOpenPicker('${scope}')">pick one</button>.</div>`;
     }
   }
-  h+='</div>';
   return h;
+}
+// Urgent form helpers: read its title/qty from the DOM, and re-render just its category block.
+function urfCatText(){ return (urfGV('urf-title')+' '+urfGV('urf-qty')).trim(); }
+function urfCatRender(){
+  const el=document.getElementById('urf-cat-sec'); if(!el) return;
+  const ae=document.activeElement; const fid=ae&&ae.id; const cs=(ae&&typeof ae.selectionStart==='number')?ae.selectionStart:null;
+  el.innerHTML = catBody('urgent', (typeof urfF==='object'&&urfF)?urfF:{}, urfCatText());
+  if(fid){ const n=document.getElementById(fid); if(n){ try{ n.focus(); if(cs!=null&&n.setSelectionRange) n.setSelectionRange(cs,cs); }catch(e){} } }
 }
 
 // ── PRODUCT SEARCH ENGINE ──────────────────────────────────────────────────────
@@ -4285,11 +4336,11 @@ function buildHelpDetailModal() {
           <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:10px">📤 Know where to find this? Reply & earn ⭐</div>
           <div class="form-group">
             <label class="form-label">Store Name *</label>
-            <input class="form-input" type="text" placeholder="e.g. TechZone SJDM" value="${esc(f.store)}" oninput="S.helpReplyForm.store=this.value">
+            <input class="form-input" type="text" placeholder="e.g. TechZone" value="${esc(f.store)}" oninput="S.helpReplyForm.store=this.value">
           </div>
           <div class="form-group">
             <label class="form-label">Address</label>
-            <input class="form-input" type="text" placeholder="e.g. Tungkong Mangga, SJDM" value="${esc(f.address)}" oninput="S.helpReplyForm.address=this.value">
+            <input class="form-input" type="text" placeholder="e.g. Market Area, Main St" value="${esc(f.address)}" oninput="S.helpReplyForm.address=this.value">
           </div>
           <div class="form-group">
             <label class="form-label">Your Message *</label>
@@ -4351,37 +4402,52 @@ function buildStoreRegisterModal() {
     <div class="modal" style="width:500px" onclick="event.stopPropagation()">
       <button class="close-btn" onclick="closeModal()">✕</button>
       <div class="modal-head">
-        <div class="modal-title">🏪 Register Your Store</div>
-        <div class="modal-sub">Appear on the map when buyers need your products.</div>
+        <div class="modal-title">🏪 Post a Shop/Service</div>
+        <div class="modal-sub">Put your place on the map — a shop, a backyard business, a clinic, an office, a service. Nearby neighbors will find you.</div>
       </div>
       <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px">
+          <button type="button" onclick="S.storeForm.poster='community';renderModal()" style="text-align:left;border:2px solid ${(f.poster||'community')!=='owner'?'var(--gold)':'var(--border)'};background:${(f.poster||'community')!=='owner'?'#FFFBEF':'#fff'};border-radius:13px;padding:11px;cursor:pointer;font-family:inherit">
+            <div style="font-size:20px">👥</div><div style="font-weight:800;font-size:12.5px;margin-top:2px;color:${(f.poster||'community')!=='owner'?'var(--gold-dk)':'var(--text)'}">I know this shop</div><div style="font-size:10px;color:var(--muted)">Post it · unofficial</div>
+          </button>
+          <button type="button" onclick="S.storeForm.poster='owner';renderModal()" style="text-align:left;border:2px solid ${f.poster==='owner'?'var(--gold)':'var(--border)'};background:${f.poster==='owner'?'#FFFBEF':'#fff'};border-radius:13px;padding:11px;cursor:pointer;font-family:inherit">
+            <div style="font-size:20px">🏪</div><div style="font-weight:800;font-size:12.5px;margin-top:2px;color:${f.poster==='owner'?'var(--gold-dk)':'var(--text)'}">I own this shop</div><div style="font-size:10px;color:var(--muted)">Official · needs proof</div>
+          </button>
+        </div>
+        ${f.poster==='owner'?`<div style="border:1.5px solid rgba(26,107,58,.3);border-radius:13px;padding:12px;background:#F6FBF2;margin-bottom:15px">
+          <div style="font-weight:800;font-size:12.5px;color:var(--green)">📄 Proof of ownership *</div>
+          <div style="font-size:11px;color:#5a6b60;margin:4px 0 9px;line-height:1.5">Business permit / DTI / BIR (image or PDF). Verified → ✅ badge. Not the owner? Switch to "I know this shop".</div>
+          ${(f.docs||[]).map((d,i)=>`<div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700;margin-bottom:7px">📄 <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(d)}</span><button onclick="S.storeForm.docs.splice(${i},1);renderModal()" style="border:none;background:none;color:#c3bca8;font-size:14px;cursor:pointer">✕</button></div>`).join('')}
+          <label style="display:flex;align-items:center;justify-content:center;gap:7px;border:1.5px dashed rgba(26,107,58,.4);border-radius:11px;padding:10px;background:#fff;color:var(--green);font-weight:800;font-size:12px;cursor:pointer">⬆️ Upload document<input type="file" accept="image/*,.pdf" multiple style="display:none" onchange="storeDocSelect(event)"></label>
+        </div>`:''}
         <div class="form-grid">
           <div class="form-group full">
-            <label class="form-label">Store Name *</label>
-            <input class="form-input" type="text" value="${esc(f.name)}" placeholder="e.g. TechZone SJDM" oninput="S.storeForm.name=this.value" onblur="renderModal()">
+            <label class="form-label">Name *</label>
+            <input class="form-input" type="text" value="${esc(f.name)}" placeholder="e.g. Aling Rosa's Home Bakery · TechZone · City Clinic" oninput="S.storeForm.name=this.value" onblur="renderModal()">
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Type <span style="font-weight:400;color:var(--muted);text-transform:none">— AI suggests from your name &amp; what you offer</span></label>
+            ${catSection('place')}
           </div>
           <div class="form-group full">
             <label class="form-label">Address *</label>
-            <input class="form-input" type="text" value="${esc(f.address)}" placeholder="e.g. Tungkong Mangga, SJDM" oninput="S.storeForm.address=this.value">
+            <input class="form-input" type="text" value="${esc(f.address)}" placeholder="e.g. Market Area, Main St" oninput="S.storeForm.address=this.value">
           </div>
           <div class="form-group">
-            <label class="form-label">Contact Number *</label>
+            <label class="form-label">Contact Number ${f.poster==='owner'?'*':'<span style="font-weight:400;color:var(--muted);text-transform:none">(optional)</span>'}</label>
             <input class="form-input" type="text" value="${esc(f.contact)}" placeholder="e.g. 09171234567" oninput="S.storeForm.contact=this.value">
           </div>
           <div class="form-group">
-            <label class="form-label">Business Hours</label>
+            <label class="form-label">Hours <span style="font-weight:400;color:var(--muted);text-transform:none">(optional)</span></label>
             <input class="form-input" type="text" value="${esc(f.hours)}" placeholder="e.g. 9AM–7PM" oninput="S.storeForm.hours=this.value">
           </div>
           <div class="form-group full">
-            <label class="form-label">Category <span style="font-weight:400;color:var(--muted);text-transform:none">— AI suggests from your store name &amp; products</span></label>
-            ${catSection('store')}
-          </div>
-          <div class="form-group">
-            <label class="form-label">Products (comma-separated)</label>
-            <input class="form-input" type="text" value="${esc(f.products)}" placeholder="e.g. Laptop, Charger, Earphones" oninput="S.storeForm.products=this.value" onblur="renderModal()">
+            <label class="form-label">What you offer <span style="font-weight:400;color:var(--muted);text-transform:none">(comma-separated)</span></label>
+            <input class="form-input" type="text" value="${esc(f.products)}" placeholder="e.g. Cakes, Milk Tea · or Laptop, Charger · or Checkup, Vaccine" oninput="S.storeForm.products=this.value" onblur="renderModal()">
           </div>
         </div>
-        <button class="btn-primary store-reg-btn" onclick="submitStore()">🚀 Register Store on Map</button>
+        <div style="font-size:11.5px;color:#5a6b60;margin:2px 0 10px;line-height:1.5">Will appear as ${f.poster==='owner'?'<b style="color:var(--green)">✅ Verified Owner</b> after review.':'<b style="color:#9a6b12">👥 Community-added · unofficial</b> — the owner can claim it, and anyone can report it.'}</div>
+        <button class="btn-primary store-reg-btn" onclick="submitStore()">${f.poster==='owner'?'✅ Submit for verification':'📍 Post to the map'}</button>
       </div>
     </div>
   </div>`;
@@ -5186,12 +5252,12 @@ function renderLeftPanel() {
   let findReqs = helpRequests.filter(r =>
     r.reqType === 'find' && (!search || r.item.toLowerCase().includes(search))
   );
-  urgentReqs = bmSortReqs(urgentReqs, BM_SORT.urgent);
-  findReqs = bmSortReqs(findReqs, BM_SORT.find);
+  urgentReqs = bmSortReqs(inView(urgentReqs), BM_SORT.urgent).slice(0, FEED_CAP);  // only what the map shows, capped
+  findReqs = bmSortReqs(inView(findReqs), BM_SORT.find).slice(0, FEED_CAP);
   // Also include buy listings in find section
-  const buyListings = listings.filter(l =>
+  const buyListings = inView(listings.filter(l =>
     l.type === 'buy' && (!search || l.title.toLowerCase().includes(search))
-  );
+  )).slice(0, FEED_CAP);
 
   const total = urgentReqs.length + findReqs.length + buyListings.length;
   const countEl = document.getElementById('lf-count');
@@ -5531,7 +5597,7 @@ function updateProfileBar(user) {
   if (nameEl) nameEl.textContent = user.firstName || 'My Account';
   if (nickEl) nickEl.textContent = nick;
   if (fullNameEl) fullNameEl.textContent = name;
-  if (popupNickEl) popupNickEl.textContent = nick + ' · ' + (user.location || 'San Jose del Monte');
+  if (popupNickEl) popupNickEl.textContent = nick + ' · ' + (user.location || 'Your Area');
 }
 
 // Call updateProfileBar when auth completes
@@ -6341,8 +6407,10 @@ function renderRightPanel() {
     (s.categories||[]).some(c=>c.toLowerCase().includes(storeSearch)) ||
     (s.products||[]).some(p=>p.toLowerCase().includes(storeSearch))
   );
+  filteredStores = inView(filteredStores);                        // only what the map can show
   filteredStores = bmSortStores(filteredStores, BM_SORT.stores);
   filteredStores.sort((a,b) => (b.featured?1:0)-(a.featured?1:0)); // featured stay on top (stable sort)
+  filteredStores = filteredStores.slice(0, FEED_CAP);             // cap the list
 
   const storesCountEl = document.getElementById('stores-count');
   if (storesCountEl) storesCountEl.textContent = filteredStores.length;
@@ -6356,7 +6424,7 @@ function renderRightPanel() {
         const distKm = haversine(USER.lat, USER.lng, s.lat, s.lng).toFixed(1);
         return `<div class="store-card-sm ${s.featured?'featured-s':''}" onclick="map&&map.panTo({lat:${s.lat},lng:${s.lng}});selectItem(${s.id},'store')">
           <div class="sc-row">
-            <div class="sc-emoji">🏪</div>
+            <div class="sc-emoji">${s.catEmoji||'🏪'}</div>
             <div class="sc-body">
               <div class="sc-name">${esc(s.name)}</div>
               <div class="sc-meta">
@@ -6364,6 +6432,7 @@ function renderRightPanel() {
                 <span class="sc-dist">${distKm}km</span>
               </div>
               <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">
+                ${s.official?'<span class="sc-badge" style="background:rgba(26,107,58,.14);color:#1A6B3A;border:1px solid rgba(26,107,58,.3)">✅ Official</span>':'<span class="sc-badge" style="background:rgba(176,122,20,.12);color:#9a6b12;border:1px solid rgba(176,122,20,.3)">👥 Unofficial</span>'}
                 <span class="sc-badge sc-open">Open</span>
                 ${s.featured?'<span class="sc-badge sc-feat">⭐ Featured</span>':''}
               </div>
@@ -6390,8 +6459,10 @@ function renderRightPanel() {
     if (currentListingFilter==='saved' && !BM_SAVED.has(String(l.id))) return false;
     return true;
   });
+  filteredListings = inView(filteredListings);                       // only what the map can show
   filteredListings = bmSortItems(filteredListings, BM_SORT.items);
   filteredListings.sort((a,b) => (b.promoted?1:0)-(a.promoted?1:0)); // promoted stay on top (stable sort)
+  filteredListings = filteredListings.slice(0, FEED_CAP);            // cap the list
 
   const listingsCountEl = document.getElementById('listings-count');
   if (listingsCountEl) listingsCountEl.textContent = filteredListings.length;
@@ -6444,6 +6515,22 @@ var BM_SAVED = (function(){ try{ return new Set(JSON.parse(localStorage.getItem(
 function bmSavePersist(){ try{ localStorage.setItem('bm_saved', JSON.stringify([...BM_SAVED])); }catch(e){} }
 function bmToggleSaved(ev, id){ if(ev&&ev.stopPropagation) ev.stopPropagation(); id=String(id); if(BM_SAVED.has(id)) BM_SAVED.delete(id); else BM_SAVED.add(id); bmSavePersist(); if(window.renderRightPanel) renderRightPanel(); }
 function bmDist(lat,lng){ try{ if(lat==null||lng==null||typeof USER==='undefined'||USER.lat==null) return 1e9; return Math.hypot(lat-USER.lat, lng-USER.lng); }catch(e){ return 1e9; } }
+
+// ── VIEWPORT LIMIT: only render what the map can currently show (scales to 100k+) ──
+// This is the client-side version of the eventual Supabase query:
+//   select * from <table> where lat between :s and :n and lng between :w and :e limit :cap
+const FEED_CAP = 120;  // max of each posting type drawn at once
+function mapBounds(){ try{ return (typeof map!=='undefined'&&map&&map.getBounds)?map.getBounds():null; }catch(e){ return null; } }
+function mapCenter(){ try{ const c=map&&map.getCenter&&map.getCenter(); if(c){ const la=c.lat(), ln=c.lng(); if(typeof la==='number'&&typeof ln==='number') return {lat:la,lng:ln}; } }catch(e){} return (typeof USER==='object')?{lat:USER.lat,lng:USER.lng}:{lat:0,lng:0}; }
+function inMapView(lat,lng){ if(lat==null||lng==null) return false; const bb=mapBounds(); if(!bb) return true; try{ return bb.contains(new google.maps.LatLng(lat,lng)); }catch(e){ return true; } }
+function inView(arr){ const bb=mapBounds(); return bb ? arr.filter(x=>inMapView(x.lat,x.lng)) : arr.slice(); }  // viewport filter, keeps order
+function capNearest(arr, limit){ const c=mapCenter(); const a=inView(arr); a.sort((x,y)=>Math.hypot((x.lat||0)-c.lat,(x.lng||0)-c.lng)-Math.hypot((y.lat||0)-c.lat,(y.lng||0)-c.lng)); return a.slice(0, limit||FEED_CAP); }
+let _mapIdleHooked=false;
+function hookMapIdle(){
+  if(_mapIdleHooked||typeof map==='undefined'||!map||!map.addListener) return;
+  _mapIdleHooked=true; let t;
+  map.addListener('idle',()=>{ clearTimeout(t); t=setTimeout(()=>{ try{ buildMarkers(); if(window.renderRightPanel) renderRightPanel(); if(window.renderLeftPanel) renderLeftPanel(); }catch(e){} }, 160); });
+}
 function bmAgoMin(t){ if(!t) return 1e9; var m=(''+t).match(/(\d+)\s*(min|hr|hour|day)/i); if(!m) return 1e9; var n=+m[1], u=m[2].toLowerCase(); return u.indexOf('min')===0?n:((u.indexOf('hr')===0||u.indexOf('hour')===0)?n*60:n*1440); }
 function bmReward(r){ var o=(r&&r.offer)||{}; return Math.max(o.cash||0, o.points||0); }
 function bmOpenNow(s){ try{ var h=(s.hours||'').match(/(\d+)\s*(AM|PM)[^\d]+(\d+)\s*(AM|PM)/i); if(!h) return 1; var now=new Date().getHours(); var o=(+h[1]%12)+(/pm/i.test(h[2])?12:0); var c=(+h[3]%12)+(/pm/i.test(h[4])?12:0); return (now>=o&&now<c)?1:0; }catch(e){ return 1; } }
@@ -7348,6 +7435,7 @@ function clearPinLocation() {
 // ── ADD LABEL TOGGLE TO MAP TOPBAR ────────────────────────────────
 // Add a label mode toggle button to the radius wrap
 S.labelMode = 'title'; // 'title' | 'price' | 'none'
+S.showLabels = true;   // every posting shows its title on the map by default
 
 function cycleLabelMode() {
   const modes = ['title','price','none'];
@@ -7829,7 +7917,7 @@ window.submitPostRequest = function() {
 
 <!-- Panel toggle buttons (mobile) -->
 <button class="panel-toggle left-toggle" onclick="toggleLeftPanel()">🔍 Requests</button>
-<button class="panel-toggle right-toggle" onclick="toggleRightPanel()">🏪 Stores</button>
+<button class="panel-toggle right-toggle" onclick="toggleRightPanel()">🏪 Establishments</button>
 
 <!-- ── MOBILE BOTTOM NAV ── -->
 <div class="mobile-nav" id="mobile-nav">
@@ -8637,7 +8725,7 @@ const urfCATS = [
 function urfGV(id){ const el=document.getElementById(id); return el ? (el.value||'').trim() : ''; }
 function urfBuildForm(){
   urfManual = false;
-  urfF = { cat:'', emoji:'🆘', when:'', reward:'', cover:'back', delivery:'' };
+  urfF = { cat:null, catUI:null, when:'', reward:'', cover:'back', delivery:'' };
   return `<div class="overlay" onclick="if(event.target===this)closeModal()">
     <div class="modal urfm" style="width:480px;max-width:94vw;max-height:92vh;padding:0;overflow:hidden;display:flex;flex-direction:column;border-radius:16px" onclick="event.stopPropagation()">
       <div class="urfm-head">
@@ -8648,12 +8736,11 @@ function urfBuildForm(){
       <div class="urfm-body">
         <div class="fsec">
           <div class="fsec-t"><span class="num">1</span> What do you need? <span class="req">*</span></div>
-          <input class="inp" id="urf-title" placeholder="e.g. 65W USB-C charger, Paracetamol 500mg" oninput="urfAutoCat()">
-          <label class="fl">Category <span class="req">*</span> <span class="opt">— suggested as you type</span></label>
-          <div class="cat-box" id="urf-cat-box" onclick="urfToggleCat()"><span id="urf-cat-face" style="font-size:16px">✨</span><span id="urf-cat-label" style="flex:1">Start typing above…</span><span style="color:var(--muted);font-size:11px;font-weight:700">▾ change</span></div>
-          <div class="cat-picker" id="urf-cat-picker"><input class="inp" id="urf-cat-search" placeholder="Search or type your own…" oninput="urfRenderCats(this.value)"><div class="cat-grid" id="urf-cat-grid"></div></div>
+          <input class="inp" id="urf-title" placeholder="e.g. 65W USB-C charger, Paracetamol 500mg" oninput="urfCatRender()">
+          <label class="fl">Category <span class="req">*</span> <span class="opt">— AI suggests as you type</span></label>
+          <div id="urf-cat-sec">${catBody('urgent', urfF, '')}</div>
           <label class="fl">Quantity / details <span class="opt">(optional)</span></label>
-          <input class="inp" id="urf-qty" placeholder="e.g. 10 tablets · brand · size" oninput="urfAutoCat()">
+          <input class="inp" id="urf-qty" placeholder="e.g. 10 tablets · brand · size" oninput="urfCatRender()">
           <label class="fl">Photo <span class="opt">(optional)</span></label>
           <div class="urf-photo" onclick="showToast('📷 Photo upload coming soon','info')">📷 Add a photo</div>
         </div>
@@ -8760,7 +8847,7 @@ function urfPost(){
   const newReq = {
     id: Date.now(), reqType:'urgent',
     item: qty ? title+' · '+qty : title,
-    category: urfF.cat,
+    category: catLabel(urfF)||'Other', catTop:(urfF.cat&&urfF.cat.top)||'', catSub:(urfF.cat&&urfF.cat.sub)||'', catEmoji:(urfF.cat&&urfF.cat.em)||'🆘',
     user:'You', avatar:'ME', time:'Just now',
     offer:{ type:urfF.reward, cash:Number(cash)||0, points:Number(pts)||0 },
     delivery: urfF.delivery,
