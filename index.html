@@ -3947,6 +3947,7 @@ function buildPostModal() {
                   ${p.suggestedPrice?`<div style="font-size:12px;color:var(--gold-dk);font-weight:700;white-space:nowrap">~₱${p.suggestedPrice.toLocaleString()}</div>`:''}
                 </div>`).join('')}
             </div>`:''}
+            ${(PS.note && !PS.loading && !PS.suggestions.length && (f.title||'').trim().length>=2)?`<div style="margin-top:6px;background:#FFF7E6;border:1px solid rgba(227,168,16,.3);border-radius:10px;padding:8px 11px;font-size:11.5px;color:#8a6d1f;line-height:1.45">✍️ Auto-fill isn't available right now — just type the name and fill in the details yourself. Everything still works.</div>`:''}
           </div>
           <label class="sf-fl">Description <span class="sf-opt">(optional — auto-fills from search, edit freely)</span></label>
           <textarea class="sf-inp" rows="3" placeholder="Condition details, specs, what's included..." oninput="S.form.desc=this.value" onblur="renderModal()" style="resize:vertical">${esc(f.desc)}</textarea>
@@ -4246,11 +4247,23 @@ const PHP_RATE = 56;
 function onProductSearch(val) {
   S.form.title = val;
   clearTimeout(PS.timer);
-  if (!val || val.length < 2) { PS.suggestions=[]; PS.loading=false; renderModal(); return; }
+  if (!val || val.length < 2) { PS.suggestions=[]; PS.loading=false; PS.note=false; renderModal(); return; }
   PS.loading = true; renderModal();
   PS.timer = setTimeout(() => searchProducts(val), 400);
 }
 
+// Fetch JSON with a hard timeout so a slow or unreachable API fails fast instead of hanging.
+function fetchJSON(url, ms){
+  ms = ms || 7000;
+  return new Promise((resolve, reject) => {
+    const ctrl = (typeof AbortController!=='undefined') ? new AbortController() : null;
+    const to = setTimeout(() => { if(ctrl) ctrl.abort(); reject(new Error('timeout')); }, ms);
+    fetch(url, ctrl?{signal:ctrl.signal}:undefined)
+      .then(r => r.json())
+      .then(d => { clearTimeout(to); resolve(d); })
+      .catch(e => { clearTimeout(to); reject(e); });
+  });
+}
 async function searchProducts(query) {
   const q = query.toLowerCase().trim();
   const results = [];
@@ -4278,8 +4291,7 @@ async function searchProducts(query) {
     if (isFood) {
       // Open Food Facts search
       const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=8&fields=product_name,brands,categories_tags,image_front_small_url,ingredients_text,nutriments`;
-      const res = await fetch(url);
-      const data = await res.json();
+      const data = await fetchJSON(url);
       (data.products||[]).slice(0,8).forEach(p => {
         if (!p.product_name) return;
         const rawCat = (p.categories_tags||[])[0]||'';
@@ -4298,8 +4310,7 @@ async function searchProducts(query) {
       PS.source = 'food';
     } else {
       // FakeStore API — get all and filter client-side
-      const res = await fetch('https://fakestoreapi.com/products');
-      const data = await res.json();
+      const data = await fetchJSON('https://fakestoreapi.com/products');
       data.filter(p => p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q))
         .slice(0,8)
         .forEach(p => {
@@ -4318,8 +4329,7 @@ async function searchProducts(query) {
       // If no FakeStore results, try Open Food Facts as fallback
       if (!results.length) {
         const url2 = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=6&fields=product_name,brands,categories_tags,image_front_small_url,ingredients_text`;
-        const res2 = await fetch(url2);
-        const data2 = await res2.json();
+        const data2 = await fetchJSON(url2);
         (data2.products||[]).slice(0,6).forEach(p => {
           if (!p.product_name) return;
           const rawCat = (p.categories_tags||[])[0]||'';
@@ -4336,16 +4346,19 @@ async function searchProducts(query) {
       }
     }
   } catch(e) {
-    console.warn('Product search error:', e);
+    // Autofill is an optional convenience — if its third-party API is unreachable,
+    // fail quietly (the item-name field still works as plain text) instead of alarming.
+    console.warn('Product autofill unavailable:', e);
     PS.suggestions = [];
     PS.loading = false;
-    showToast('⚠️ Could not reach product database. Check your connection.', 'error');
+    PS.note = true;
     renderModal();
     return;
   }
 
   PS.suggestions = results;
   PS.loading = false;
+  PS.note = false;
   renderModal();
 
   // Re-focus search input
