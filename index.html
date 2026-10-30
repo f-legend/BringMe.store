@@ -3815,6 +3815,45 @@ function openModal(name) {
 }
 function closeModal() { S.modal=null; document.getElementById('modal-root').innerHTML=''; }
 
+// ── Unsaved-form guard ───────────────────────────────────────────────────────
+// Clicking the backdrop (or ✕) on a half-filled form used to throw the post away
+// with no warning. confirmDiscard() checks whether the open form has any content
+// and, if so, asks before closing. Empty forms close straight away (no nagging).
+function modalDirty(){
+  const m=S.modal;
+  if(m==='post'){ const f=S.form||{}; return !!(f.title||f.desc||f.brand||f.price||f.reason||f.location||f.contact||(f.images&&f.images.length)||f.cat); }
+  if(m==='store-register'){ const f=S.storeForm||{}; return !!(f.name||f.address||f.contact||f.hours||f.cat||f.located||(f.items&&f.items.length)||(f.photos&&f.photos.length)||(f.docs&&f.docs.length)); }
+  if(m==='post-request'){
+    if(S._postReqType==='urgent'){ const uf=(typeof urfF==='object'&&urfF)?urfF:{}; const t=(document.getElementById('urf-title')||{}).value||''; return !!(t||uf.cat||uf.when||uf.reward||uf.delivery); }
+    const f=S._reqForm||{}; return !!(f.item||f.details||f.points||f.cat||f.location||(f.images&&f.images.length));
+  }
+  if(m==='help-request'){ const f=S.helpForm||{}; return !!(f.item); }
+  return false;
+}
+function confirmDiscard(){
+  if(!modalDirty()){ closeModal(); return; }
+  if(document.getElementById('discard-confirm')) return;
+  const kind = S.modal==='post' ? 'listing' : (S.modal==='store-register' ? 'shop post' : 'request');
+  const el=document.createElement('div');
+  el.id='discard-confirm';
+  el.style.cssText='position:fixed;inset:0;z-index:5000;display:flex;align-items:center;justify-content:center;background:rgba(8,18,50,.6);backdrop-filter:blur(3px);padding:20px;animation:fadeIn .15s ease';
+  el.innerHTML=`<div style="background:#fff;border-radius:18px;max-width:340px;width:100%;padding:22px;text-align:center;box-shadow:0 24px 70px rgba(0,0,40,.5);border:1px solid rgba(255,200,60,.25)">
+     <div style="font-size:38px;line-height:1;margin-bottom:10px">📝</div>
+     <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy);margin-bottom:6px">Discard this ${kind}?</div>
+     <div style="font-size:13px;color:#667;line-height:1.55;margin-bottom:18px">You haven't posted yet — the details you entered will be lost if you leave now.</div>
+     <div style="display:flex;gap:10px">
+       <button onclick="dismissDiscard()" style="flex:1;padding:13px;border:2px solid var(--gold);background:#fff;color:var(--navy);border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer">← Keep editing</button>
+       <button onclick="dismissDiscard(true)" style="flex:1;padding:13px;border:none;background:var(--red);color:#fff;border-radius:12px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:14px;cursor:pointer">Discard</button>
+     </div>
+  </div>`;
+  el.onclick=function(e){ if(e.target===el) dismissDiscard(); }; // tapping outside the confirm = keep editing (the safe default)
+  document.body.appendChild(el);
+}
+function dismissDiscard(doClose){
+  const el=document.getElementById('discard-confirm'); if(el) el.remove();
+  if(doClose===true) closeModal();
+}
+
 function renderModal() {
   const root=document.getElementById('modal-root');
   if (!S.modal) { root.innerHTML=''; renderModal._last=null; return; }
@@ -3876,9 +3915,9 @@ function buildPostModal() {
   const condChip=(val,emoji,label)=>`<span class="sf-chip ${cond===val?'on':''}" onclick="sfSetCondition(this,'${val}')">${emoji} ${label}</span>`;
   const dealRow=(key,emoji,title,sub)=>{const on=!!f[key];return `<div class="sf-deal-row ${on?'on':''}" onclick="sfToggleDeal(this,'${key}')"><span class="sf-ic">${emoji}</span><div class="sf-d"><b>${title}</b><span>${sub}</span></div><div class="sf-box">${on?'✓':''}</div></div>`;};
   const ccOpts=['🇵🇭 +63','🇸🇬 +65','🇮🇩 +62','🇲🇾 +60','🇹🇭 +66','🇻🇳 +84','🇦🇺 +61','🇬🇧 +44','🇺🇸 +1'];
-  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+  return `<div class="overlay" onclick="if(event.target===this)confirmDiscard()">
     <div class="modal" style="width:600px;max-width:calc(100vw - 24px)" onclick="event.stopPropagation()">
-      <button class="close-btn" onclick="closeModal()">✕</button>
+      <button class="close-btn" onclick="confirmDiscard()">✕</button>
       <div class="modal-head">
         <div class="modal-title">🛍️ Sell an Item</div>
       </div>
@@ -4341,9 +4380,9 @@ function clearProduct() {
 
 function buildHelpRequestModal() {
   const f=S.helpForm;
-  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+  return `<div class="overlay" onclick="if(event.target===this)confirmDiscard()">
     <div class="modal" style="width:460px" onclick="event.stopPropagation()">
-      <button class="close-btn" onclick="closeModal()">✕</button>
+      <button class="close-btn" onclick="confirmDiscard()">✕</button>
       <div class="modal-head">
         <div class="modal-title" style="color:var(--red)">🆘 Ask the Community</div>
         <div class="modal-sub">Tell neighbors what you urgently need. Helpers earn ⭐ 1 pt = ₱1!</div>
@@ -4606,7 +4645,7 @@ function stItemsHTML(){
 function buildStoreRegisterModal() {
   const f=S.storeForm;
   const owner=f.poster==='owner';
-  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+  return `<div class="overlay" onclick="if(event.target===this)confirmDiscard()">
     <div class="modal sreg" style="width:520px" onclick="event.stopPropagation()">
       <style>
       .sreg .sreg-inp{width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14.5px;color:var(--text);background:#fff;outline:none}
@@ -4716,7 +4755,7 @@ function buildStoreRegisterModal() {
       .sreg .sreg-badge.official{background:rgba(26,107,58,.14);color:#1A6B3A;border:1px solid rgba(26,107,58,.35)}
       .sreg .sreg-badge.unofficial{background:rgba(176,122,20,.12);color:#9a6b12;border:1px solid rgba(176,122,20,.3)}
       </style>
-      <button class="close-btn" onclick="closeModal()">✕</button>
+      <button class="close-btn" onclick="confirmDiscard()">✕</button>
       <div class="modal-head">
         <div class="modal-title">🏪 Post a Shop/Service</div>
         <div class="modal-sub">Put any shop on the map so neighbors find it. <b>Know a shop?</b> Post it as unofficial. <b>Own it?</b> Claim it official with proof.</div>
@@ -5725,9 +5764,9 @@ function buildPostRequestModal() {
   S._reqForm = f;
   if (!f.images) f.images = [];
 
-  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+  return `<div class="overlay" onclick="if(event.target===this)confirmDiscard()">
     <div class="modal" style="width:520px;max-width:calc(100vw - 24px)" onclick="event.stopPropagation()">
-      <button class="close-btn" onclick="closeModal()">✕</button>
+      <button class="close-btn" onclick="confirmDiscard()">✕</button>
       <div class="modal-head">
         <div class="modal-title" style="color:var(--gold-dk)">🔍 Find Me — Where to Buy</div>
         <div class="modal-sub">Ask the community where to buy something nearby. Reward helpers with Trust Points — tip cash later to say thanks.</div>
@@ -9062,12 +9101,12 @@ function urfGV(id){ const el=document.getElementById(id); return el ? (el.value|
 function urfBuildForm(){
   urfManual = false;
   urfF = { cat:null, catUI:null, when:'', reward:'', cover:'back', delivery:'' };
-  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+  return `<div class="overlay" onclick="if(event.target===this)confirmDiscard()">
     <div class="modal urfm" style="width:480px;max-width:94vw;max-height:92vh;padding:0;overflow:hidden;display:flex;flex-direction:column;border-radius:16px" onclick="event.stopPropagation()">
       <div class="urfm-head">
         <span style="font-size:20px">⚡</span>
         <span class="urfm-ttl">Post an Urgent Request</span>
-        <button class="urfm-x" onclick="closeModal()">✕</button>
+        <button class="urfm-x" onclick="confirmDiscard()">✕</button>
       </div>
       <div class="urfm-body">
         <div class="fsec">
