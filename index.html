@@ -2440,8 +2440,13 @@ body.bm-profile #float-profile-bar{display:none}           /* the bar that opene
 /* side panels: hide the normal feed, show the own-posts feed */
 #left-profile,#sidebar-profile{display:none}
 body.bm-profile #left-profile,body.bm-profile #sidebar-profile{display:block;flex:1 1 auto;min-height:0;overflow-y:auto}
-body.bm-profile #left-panel > :not(#left-profile){display:none}
-body.bm-profile #sidebar > :not(#sidebar-profile):not(.sidebar-handle){display:none}
+body.bm-profile #left-panel > :not(#left-profile){display:none !important}   /* !important: beats the app's forced display:flex on these sections */
+body.bm-profile #sidebar > :not(#sidebar-profile):not(.sidebar-handle){display:none !important}
+/* On very wide screens, keep the 3 panels grouped and centred so the side
+   panels stay attached to the profile instead of flying out to the edges.
+   1440px ≈ a common desktop width worldwide. MAP mode is intentionally NOT
+   capped, so the map can still use the full screen width. */
+body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
 /* stacked halves inside the real scrolling panels */
 #left-profile .fp-half,#sidebar-profile .fp-half{display:block}
 #left-profile .fp-half-body,#sidebar-profile .fp-half-body{height:auto;overflow:visible}
