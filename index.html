@@ -2421,6 +2421,153 @@ try {
 </style>
 
 <style>
+/* =====================================================================
+   PROFILE MODE  —  tap the floating bar → the map is replaced by your
+   Business Card, and the two side panels swap from the nearby feed to
+   YOUR OWN posts. Ported from the approved map-to-business-card demo.
+   Turned on by adding the class `bm-profile` to <body>; the live map
+   stays mounted underneath the card so nothing has to reload.
+   (Colours/variables below already exist in :root — these just add the
+   card + section styling that the app didn't have yet.)
+   ===================================================================== */
+.pm{ --ink:#0a1f63; --hair:#E7EAF4; --text:#0a1f63; }
+
+/* ---- the toggle: show/hide map vs profile ---- */
+#profile-page{display:none}
+body.bm-profile #profile-page{display:block;position:absolute;inset:0;z-index:45;background:#fff;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pm-inner{max-width:820px;margin:0 auto}
+body.bm-profile #float-profile-bar{display:none}           /* the bar that opened us – hide while inside */
+/* side panels: hide the normal feed, show the own-posts feed */
+#left-profile,#sidebar-profile{display:none}
+body.bm-profile #left-profile,body.bm-profile #sidebar-profile{display:block;flex:1 1 auto;min-height:0;overflow-y:auto}
+body.bm-profile #left-panel > :not(#left-profile){display:none}
+body.bm-profile #sidebar > :not(#sidebar-profile):not(.sidebar-handle){display:none}
+/* stacked halves inside the real scrolling panels */
+#left-profile .fp-half,#sidebar-profile .fp-half{display:block}
+#left-profile .fp-half-body,#sidebar-profile .fp-half-body{height:auto;overflow:visible}
+
+/* ---- back bar (sticky top of the profile) ---- */
+.back-link{display:flex;align-items:center;gap:7px;width:100%;padding:12px 18px;border:none;border-bottom:1px solid var(--hair);background:var(--off-white);color:var(--royal2);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;text-align:left;position:sticky;top:0;z-index:5}
+.back-link:hover{background:var(--cream)}
+
+/* ---- business card (3:2 landscape, navy + gold) ---- */
+.bcard{position:relative;aspect-ratio:3 / 2;overflow:hidden;background:linear-gradient(145deg,#0a1f63 0%,#15328c 100%);color:#fff}
+.bcard.has-img{background-size:cover;background-position:center}
+.bcard .cover-svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9}
+.bc-scrim{position:absolute;inset:0;z-index:0;background:linear-gradient(155deg,rgba(10,31,99,.74),rgba(7,22,74,.93))}
+.cover-edit{position:absolute;right:16px;top:14px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:5px 10px;font-family:inherit;font-size:11px;font-weight:600;color:#fff;cursor:pointer;z-index:3}
+.bcard-inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:24px 26px;text-align:left}
+.bc-row{display:flex;align-items:center;gap:14px}
+.bc-ava{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid rgba(255,255,255,.85);box-shadow:0 5px 16px rgba(0,0,0,.35);position:relative;overflow:visible}
+.bc-ava .pc-av-img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.bc-ini{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:600;color:#fff;letter-spacing:.5px}
+.bc-ava .pc-cam{position:absolute;bottom:-3px;right:-3px;width:23px;height:23px;border-radius:50%;background:#fff;border:2px solid var(--royal);display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer}
+.bc-id{flex:1;min-width:0;padding-top:1px}
+.bc-name{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:600;color:#fff;line-height:1.05;letter-spacing:.2px}
+.bc-role{font-size:12px;font-weight:600;color:var(--gold-lt);margin-top:3px}
+.bc-badge{display:inline-flex;align-items:center;gap:5px;margin-top:9px;background:linear-gradient(135deg,rgba(255,210,74,.22),rgba(227,165,15,.12));border:1px solid rgba(255,210,74,.5);color:#FFE08A;font-weight:700;font-size:11.5px;padding:5px 11px;border-radius:100px}
+.bc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.bc-chip{font-size:11px;font-weight:600;color:rgba(255,255,255,.85);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:100px;padding:4px 10px}
+.bc-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:14px}
+.bc-foot-txt{flex:1;min-width:0}
+.bc-tagline{font-size:12px;font-style:italic;color:rgba(255,255,255,.84);line-height:1.4}
+.bc-metaline{font-size:10.5px;color:rgba(255,255,255,.6);margin-top:7px;line-height:1.5}
+.bc-qrbox{flex-shrink:0;text-align:center}
+.bc-qr-tile{width:66px;height:66px;background:#fff;border-radius:9px;padding:6px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.bc-qr-cap{font-size:9px;color:rgba(255,255,255,.62);margin-top:4px;letter-spacing:.3px}
+.bc-actions{display:flex;gap:10px;margin-bottom:13px}
+
+/* ---- section wrapper + gold section titles ---- */
+.psec{padding:22px 24px}
+.psec + .psec{border-top:8px solid var(--off-white)}
+.psec-ttl{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--ink);margin:0 0 13px;position:relative;padding-left:14px}
+.psec-ttl::before{content:'';position:absolute;left:0;top:3px;bottom:4px;width:4px;border-radius:2px;background:linear-gradient(#FFD24A,#E3A810)}
+.psec-ttl.sub{margin-top:24px}
+
+/* achievements grid */
+.ach{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 8px}
+.ach-item{text-align:center}
+.ach-ic{width:46px;height:46px;margin:0 auto;border-radius:13px;background:var(--off-white);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;font-size:21px}
+.ach-item.off .ach-ic{filter:grayscale(1);opacity:.4}
+.ach-l{font-size:10.5px;font-weight:600;color:var(--muted);margin-top:6px;line-height:1.25}
+.ach-item.off .ach-l{opacity:.6}
+
+/* contact */
+.cc-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:11px;background:linear-gradient(135deg,#FFD24A,#E3A810);color:#402d04;border:none;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+.cc-grid{display:flex;gap:8px;margin-top:9px}
+.cc-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 4px;border:1px solid var(--hair);border-radius:11px;background:#fff;cursor:pointer;font-family:inherit;min-width:0}
+.cc-btn:hover{border-color:var(--border);background:var(--off-white)}
+.cc-ic{font-size:18px;line-height:1}
+.cc-l{font-size:9.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+
+/* trust & standing */
+.ts-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.ts-tier{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:var(--gold-dk);line-height:1}
+.ts-lvl{font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap}
+.ts-lvl span{opacity:.6}
+.ts-prog{height:4px;background:var(--hair);border-radius:100px;overflow:hidden;margin:11px 0 6px}
+.ts-prog-fill{height:100%;background:linear-gradient(90deg,#FFD24A,#E3A810);border-radius:100px}
+.ts-prog-txt{font-size:11px;color:var(--muted)}
+.ts-give{display:inline-block;margin-top:11px;font-size:11.5px;font-weight:700;color:var(--gold-dk);background:var(--gold-pale);border-radius:100px;padding:4px 12px}
+.ts-stats{display:flex;justify-content:space-between;gap:6px;margin-top:15px;padding-top:15px;border-top:1px solid var(--hair)}
+.ts-stats > div{text-align:center;flex:1;min-width:0}
+.ts-stats b{display:block;font-size:17px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.ts-stats span{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+
+/* edit / share / log-out buttons */
+.mh-btn{flex:1;padding:12px;border:1px solid var(--border);border-radius:11px;background:#fff;color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.mh-btn.primary{background:linear-gradient(135deg,#FFD24A,#E3A810);border-color:transparent;color:#402d04}
+.mh-btn.ghost{background:var(--off-white);border-color:transparent;color:var(--muted)}
+
+/* activity timeline */
+.tl{position:relative}
+.tl-item{position:relative;display:flex;gap:14px;align-items:baseline;padding:0 0 17px 22px;border-left:1px solid var(--hair);margin-left:6px}
+.tl-item:last-child{border-left-color:transparent;padding-bottom:0}
+.tl-dot{position:absolute;left:-4.5px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--gold);border:none}
+.tl-body{flex:1;min-width:0}
+.tl-t{font-size:13.5px;font-weight:500;color:var(--ink);line-height:1.45}
+.tl-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.tl-pts{font-size:13px;font-weight:700;color:var(--gold-dk);background:none;padding:0;white-space:nowrap}
+.tl-pts.minus{color:var(--red)}
+
+/* reviews */
+.kudo{background:none;border:none;border-top:1px solid var(--hair);border-radius:0;padding:15px 2px 3px;margin-bottom:0}
+.kudo:first-of-type{border-top:none;padding-top:2px}
+.kudo-stars{color:var(--gold);font-size:11px;letter-spacing:2px}
+.kudo-tx{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--ink);line-height:1.45;margin:7px 0 7px;font-style:normal;font-weight:500}
+.kudo-by{font-size:11.5px;font-weight:600;color:var(--muted)}
+
+/* gold call-to-action buttons */
+.gold-cta{width:100%;margin-top:15px;padding:12px;border-radius:11px;border:1px solid var(--gold);background:var(--gold-pale);color:var(--gold-dk);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.gold-cta:hover{background:#F7E7A8}
+
+/* real-name privacy row */
+.tc-realname{font-size:11.5px;color:var(--text-light);line-height:1.6;margin:0}
+.tc-realname b{color:var(--text)}
+.tc-more{color:var(--royal2);font-weight:700;cursor:pointer;text-decoration:underline}
+
+/* ---- own-posts side feeds ---- */
+.fp-half{border-top:1px solid var(--border-light)}
+.fp-half:first-child{border-top:none}
+.fp-half-body{padding:11px 12px;display:flex;flex-direction:column;gap:8px}
+.fp-sec-hdr{display:flex;align-items:center;gap:8px;padding:11px 14px 10px;background:var(--off-white);border-bottom:1px solid var(--border-light)}
+.fp-sec-ttl{flex:1;font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:.3px;color:var(--royal)}
+.fp-sec-cnt{font-size:11px;font-weight:800;background:var(--cream);color:var(--royal);min-width:22px;text-align:center;padding:2px 8px;border-radius:100px}
+.fp-empty{font-size:12px;color:var(--muted);padding:6px 2px}
+
+/* semantic tones: red urgent · gold looking · blue selling · green stores */
+.fp-half.t-red .fp-sec-hdr{border-left:4px solid #C0392B}
+.fp-half.t-gold .fp-sec-hdr{border-left:4px solid #E3A810}
+.fp-half.t-blue .fp-sec-hdr{border-left:4px solid #2550b8}
+.fp-half.t-green .fp-sec-hdr{border-left:4px solid #1A6B3A}
+.fp-half.t-red .fp-sec-ttl{color:#9B2D1F} .fp-half.t-red .fp-sec-cnt{background:#FDE7E3;color:#C0392B} .fp-half.t-red .mp-emoji{background:#FDE7E3} .fp-half.t-red .mp-status{background:#FDE7E3;color:#9B2D1F}
+.fp-half.t-gold .fp-sec-ttl{color:#8B6508} .fp-half.t-gold .fp-sec-cnt{background:#FBF0C0;color:#8B6508} .fp-half.t-gold .mp-emoji{background:#FBF0C0} .fp-half.t-gold .mp-status{background:#FBF0C0;color:#8B6508}
+.fp-half.t-blue .fp-sec-ttl{color:#2550b8} .fp-half.t-blue .fp-sec-cnt{background:#E7ECFB;color:#2550b8} .fp-half.t-blue .mp-emoji{background:#E7ECFB} .fp-half.t-blue .mp-status{background:#E7ECFB;color:#2550b8}
+.fp-half.t-green .fp-sec-ttl{color:#1A6B3A} .fp-half.t-green .fp-sec-cnt{background:#E6F5EE;color:#1A6B3A} .fp-half.t-green .mp-emoji{background:#E6F5EE} .fp-half.t-green .mp-status{background:#E6F5EE;color:#1A6B3A}
+.mp-look{background:#FBF0C0;color:#8B6508}
+</style>
+
+<style>
 /* ===== PANEL DEMO MATCH ===== */
 .lp-section-hdr, .rp-section-hdr{ background:linear-gradient(135deg,#0a1f63,#173c88) !important; border-bottom:1px solid rgba(255,200,60,.28) !important; padding:11px 14px 9px !important; display:flex; align-items:center; gap:7px; }
 .lp-section-title, .rp-section-title{ color:#FFD24A !important; font-family:'Cinzel',serif; font-size:13px; font-weight:700; letter-spacing:.5px; flex:1; }
@@ -2602,6 +2749,9 @@ try {
      LEFT PANEL — Requests
      ══════════════════════════════════════════ -->
 <div class="left-panel" id="left-panel">
+  <!-- PROFILE MODE: your own Requests (urgent + looking-for). Hidden until the profile opens. -->
+  <div id="left-profile" class="pm"></div>
+
   <div class="lp-head">
     <div class="lp-title-bar">
       <div class="lp-title">Requests</div>
@@ -2679,6 +2829,12 @@ try {
   <div class="nm-fab-wrap nm-lr"><button class="nm-fab" style="background:linear-gradient(135deg,#1A6B3A,#0d4423)" onclick="openModal('store-register')">🏪</button><span class="nm-fab-lbl">Register Store</span></div>
 
     <div id="map"></div>
+
+    <!-- PROFILE PAGE — swaps in over the map when the floating bar is tapped.
+         The map keeps running underneath; JS fills #profile-page in render(). -->
+    <div id="profile-page" class="pm"></div>
+    <input type="file" id="bm-av-in" accept="image/*" style="display:none">
+    <input type="file" id="bm-cov-in" accept="image/*" style="display:none">
 
     <!-- ══ BUILT-IN NAVIGATION OVERLAY ══ -->
     <div class="nav-overlay" id="nav-overlay">
@@ -2842,6 +2998,8 @@ try {
      ══════════════════════════════════════════ -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-handle" id="sb-handle"></div>
+  <!-- PROFILE MODE: your own Listings (selling) + Establishments. Hidden until the profile opens. -->
+  <div id="sidebar-profile" class="pm"></div>
 
   <!-- STORES SECTION (top) -->
   <div class="listings-section" id="listings-section">
@@ -3874,6 +4032,7 @@ function renderModal() {
   if (reRender){ if(newOverlay) newOverlay.classList.add('no-anim'); if(newModal) newModal.classList.add('no-anim'); }
   if (newModal) newModal.scrollTop=prevScroll;
   if (focusId){ const el=document.getElementById(focusId); if(el){ el.focus(); if(caret!=null&&el.setSelectionRange){ try{ el.setSelectionRange(caret,caret); }catch(e){} } } }
+  killAutofill(root);
   renderModal._last=S.modal;
 }
 
@@ -4244,11 +4403,36 @@ function catEmoji(cat) {
 // PHP conversion rate (approx)
 const PHP_RATE = 56;
 
+// Refresh ONLY the sell-form category block in place — re-rendering the whole modal
+// on every keystroke made the category suggestion (and the rest of the form) flicker.
+function updateSellCat(){
+  const el=document.getElementById('cat-sec-sell'); if(!el) return;
+  const {f,text}=catCtx('sell'); el.innerHTML=catBody('sell',f,text);
+}
+// Tell Chrome/Safari to keep their autofill (saved cards, addresses, names) out of our
+// form fields — those chips above the mobile keyboard are the browser's, not ours.
+function killAutofill(root){
+  try{ (root||document).querySelectorAll('input,textarea').forEach(el=>{
+    if(el.type==='file') return;
+    el.setAttribute('autocomplete','off');
+    el.setAttribute('autocorrect','off');
+    el.setAttribute('autocapitalize','off');
+    el.setAttribute('data-lpignore','true');
+    el.setAttribute('data-form-type','other');
+  }); }catch(e){}
+}
 function onProductSearch(val) {
   S.form.title = val;
   clearTimeout(PS.timer);
-  if (!val || val.length < 2) { PS.suggestions=[]; PS.loading=false; PS.note=false; renderModal(); return; }
-  PS.loading = true; renderModal();
+  // Live-update just the category suggestion (no full re-render → no flicker).
+  updateSellCat();
+  if (!val || val.length < 2) {
+    PS.suggestions=[]; PS.loading=false; PS.note=false;
+    const box=document.getElementById('suggestions-box'); if(box) box.remove();
+    return;
+  }
+  PS.loading = true;
+  const box=document.getElementById('suggestions-box'); if(box) box.remove(); // drop stale results while typing
   PS.timer = setTimeout(() => searchProducts(val), 400);
 }
 
@@ -4378,6 +4562,10 @@ function applyProduct(idx) {
   S.form.imageUrl = p.image || '';
   S.form.brand = p.brand || '';
   if (p.suggestedPrice && !S.form.price) S.form.price = p.suggestedPrice;
+  // Set the category the form actually uses (the {em,top,sub} object), not just the
+  // legacy string — otherwise picking a product leaves the Category section empty.
+  S.form.cat = catClassify(((p.title||'')+' '+(p.desc||'')).trim(), 'sell') || S.form.cat;
+  S.form.catUI = {picking:false,openIdx:null,search:''};
   PS.suggestions = [];
   renderModal();
   // Focus price field
@@ -8728,6 +8916,8 @@ function awDetectLocation() {
 }
 // Pre-fill location silently on load (map already requests GPS)
 window.addEventListener('load', () => { setTimeout(() => { if (document.querySelector('.aw-loc-field')) awDetectLocation(); }, 1500); });
+// Keep browser autofill (saved cards / addresses) out of the always-present inputs too.
+window.addEventListener('load', () => { try{ killAutofill(document); }catch(e){} });
 </script>
 
 <!-- FLOATING PROFILE PAGE -->
@@ -8790,7 +8980,9 @@ function openProfile(){
   // Guests have no profile yet — nudge them to join instead of opening an empty card
   const g=document.getElementById('fp-guest');
   if(g && g.style.display!=='none'){ fpOpenJoin(); return; }
-  var o=document.getElementById('profile-overlay'); if(o) o.classList.add('open');
+  // NEW: swap the map for the inline Business Card profile (bmOpenProfile, defined below).
+  if(typeof bmOpenProfile==='function'){ bmOpenProfile(); return; }
+  var o=document.getElementById('profile-overlay'); if(o) o.classList.add('open'); // fallback to old modal
 }
 // Profile-bar auth buttons
 function fpOpenLogin(){ if(typeof openAuthGate==='function') openAuthGate(); if(typeof awShowTab==='function') awShowTab('login'); }
@@ -8801,12 +8993,200 @@ function setProfileBarMode(signedIn){
   if(g) g.style.display = signedIn ? 'none' : 'flex';
   if(m) m.style.display = signedIn ? 'flex' : 'none';
 }
-function closeProfile(){ var o=document.getElementById('profile-overlay'); if(o) o.classList.remove('open'); }
+function closeProfile(){ if(typeof bmCloseProfile==='function') bmCloseProfile(); var o=document.getElementById('profile-overlay'); if(o) o.classList.remove('open'); }
 function pcTab(name, btn){
   ['profile','posts','alerts'].forEach(function(p){ var el=document.getElementById('pane-'+p); if(el) el.style.display=(p===name)?'block':'none'; });
   document.querySelectorAll('.pc-tab').forEach(function(t){ t.classList.remove('active'); });
   if(btn) btn.classList.add('active');
 }
+</script>
+
+<script>
+/* =====================================================================
+   PROFILE MODE controller.  openProfile() (above) calls bmOpenProfile(),
+   which drops the class `bm-profile` on <body> and fills three slots:
+     • #profile-page    — the Business Card + trust + achievements/reviews
+     • #left-profile     — your Requests (urgent + looking-for)
+     • #sidebar-profile  — your Listings (selling) + Establishments
+   bmCloseProfile() removes the class and the map is shown again.
+
+   ►► DEMO DATA ◄◄  The object `U` and `STORES` below are placeholder
+   content (same as the approved demo). To show the real signed-in user,
+   replace these with that user's Supabase row — the render functions
+   stay exactly the same.
+   ===================================================================== */
+(function(){
+  const U = {
+    avatar:null, cover:null, name:'Marco Dela Cruz', role:'Gadget reseller & repair-shop owner',
+    level:47, title:'⭐ Trusted Local', area:'Balibago, Angeles City', joined:'Joined Mar 2026',
+    tagline:'Honest deals, quick replies — I keep it simple.', responseTime:'within an hour',
+    rating:4.9, reviews:23, helped:47, asked:12, deals:31, followers:128,
+    verified:{ phone:true, id:true, owner:true },
+    xpInto:680, xpNeed:1000,
+    badges:[
+      {ic:'🌟',l:'First Sale',on:true},{ic:'🤝',l:'10 Helps',on:true},
+      {ic:'📍',l:'Verified Spot',on:true},{ic:'⚡',l:'Fast Reply',on:true},
+      {ic:'🔥',l:'7-day Streak',on:true},{ic:'🏅',l:'50 Deals',on:false},
+      {ic:'👑',l:'Legend',on:false},{ic:'🛡️',l:'ID Verified',on:true},
+    ],
+    postsReq:[
+      {em:'⚡',t:'USB-C fast charger (65W)',m:'⚡ Urgent · 2 replies · 1.2km away',s:'Open',sc:'mp-open'},
+      {em:'⚡',t:'Ride to Clark Airport, 5 AM Sat',m:'⚡ Urgent · 4 replies',s:'Open',sc:'mp-open'},
+    ],
+    postsLooking:[
+      {em:'🎮',t:'PS5 DualSense controller',m:'Looking for · 2nd-hand ok',s:'Wanted',sc:'mp-look'},
+      {em:'📚',t:'Nursing board reviewer books',m:'Looking for · around Angeles',s:'Wanted',sc:'mp-look'},
+    ],
+    postsActive:[
+      {em:'📱',t:'iPhone 13 Pro 128GB',m:'₱28,000 · 👁️ 142',s:'Active',sc:'mp-active'},
+      {em:'🎧',t:'Sony WH-1000XM4',m:'₱9,500 · 👁️ 88',s:'Active',sc:'mp-active'},
+    ],
+    reviewList:[
+      {n:'Ana L.',st:5,tagL:'Bought',when:'2 weeks ago',tx:'Super smooth transaction. Item exactly as described, and he waited when I was late. Highly recommend!'},
+      {n:'Jose M.',st:5,tagL:'Helped',when:'3 weeks ago',tx:'Pointed me to a store that had the exact charger I needed. Fast reply, very kind.'},
+      {n:'Clara V.',st:4,tagL:'Bought',when:'1 month ago',tx:'Good item, fair price. Meet-up spot was easy to find. Would buy again.'},
+    ],
+    repLog:[
+      {t:'Helped a senior find her meds nearby',pts:15,when:'2d'},
+      {t:'Smooth deal with Ana — Sony WH-1000XM4',pts:50,when:'5d'},
+      {t:'Reported a scam listing — confirmed by the community',pts:20,when:'1w'},
+      {t:'Added an establishment: Marco’s Phone Repair',pts:10,when:'2w'},
+      {t:'Earned a 5-star review from Jose',pts:8,when:'3w'},
+      {t:'Changed display name',pts:-40,when:'1mo'},
+    ],
+  };
+  const STORES = [
+    {avatar:null,name:"Aling Rosa's Bakeshop",type:'🍞 Bakery / Eatery',official:true,rating:4.8,reviews:64},
+    {avatar:null,name:"Marco's Phone Repair",type:'🔧 Repair / Services',official:true,rating:4.7,reviews:19},
+  ];
+
+  function initials(name){ return name.split(' ').filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+  function coverArt(){
+    return `<svg class="cover-svg" viewBox="0 0 400 134" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g fill="none" stroke="#FFD24A" stroke-opacity="0.22" stroke-width="1.1">
+        <path d="M-10,30 C70,10 130,46 210,30 S350,8 430,32"/>
+        <path d="M-10,52 C70,32 130,68 210,52 S350,30 430,54"/>
+        <path d="M-10,74 C70,54 130,90 210,74 S350,52 430,76"/>
+        <path d="M-10,96 C70,76 130,112 210,96 S350,74 430,98"/>
+        <path d="M-10,118 C70,98 130,134 210,118 S350,96 430,120"/>
+      </g></svg>`;
+  }
+  function qrSvg(){
+    const N=23, cell=4; let mod=[]; for(let r=0;r<N;r++){mod[r]=[];for(let c=0;c<N;c++)mod[r][c]=0;}
+    function finder(R,C){ for(let r=0;r<7;r++)for(let c=0;c<7;c++){ const edge=r===0||r===6||c===0||c===6, ctr=r>=2&&r<=4&&c>=2&&c<=4; mod[R+r][C+c]=(edge||ctr)?1:0; } }
+    finder(0,0); finder(0,N-7); finder(N-7,0);
+    let seed=1337; const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
+    for(let r=0;r<N;r++)for(let c=0;c<N;c++){ const inF=(r<8&&c<8)||(r<8&&c>=N-8)||(r>=N-8&&c<8); if(!inF && rnd()>0.52) mod[r][c]=1; }
+    let rects=''; for(let r=0;r<N;r++)for(let c=0;c<N;c++) if(mod[r][c]) rects+=`<rect x="${c*cell}" y="${r*cell}" width="${cell}" height="${cell}"/>`;
+    const S=N*cell; return `<svg viewBox="0 0 ${S} ${S}" width="100%" height="100%" aria-label="QR code"><g fill="#0a1f63">${rects}</g></svg>`;
+  }
+
+  function bcard(){
+    const v=U.verified, chips=[];
+    if(v.id) chips.push('✓ ID'); if(v.phone) chips.push('✓ Phone'); chips.push('✓ Location'); if(v.owner) chips.push('🏪 Owner');
+    return `<div class="bcard${U.cover?' has-img':''}"${U.cover?` style="background-image:url('${U.cover}')"`:''}>
+      ${U.cover?'<div class="bc-scrim"></div>':coverArt()}
+      <button class="cover-edit" onclick="bmPickCover()">Change cover</button>
+      <div class="bcard-inner">
+        <div class="bc-row">
+          <div class="bc-ava" onclick="bmPickAvatar()" style="cursor:pointer">
+            ${U.avatar?`<img class="pc-av-img" src="${U.avatar}">`:`<span class="bc-ini">${initials(U.name)}</span>`}
+            <span class="pc-cam" onclick="event.stopPropagation();bmPickAvatar()">📷</span>
+          </div>
+          <div class="bc-id"><div class="bc-name">${U.name}</div><div class="bc-role">${U.role}</div></div>
+        </div>
+        <div class="bc-mid">
+          <div class="bc-badge">⭐ ${U.title.replace(/^\S+\s/,'')} · Level ${U.level}</div>
+          <div class="bc-chips">${chips.map(c=>`<span class="bc-chip">${c}</span>`).join('')}</div>
+        </div>
+        <div class="bc-foot">
+          <div class="bc-foot-txt"><div class="bc-tagline">“${U.tagline}”</div><div class="bc-metaline">📍 ${U.area}   ·   🕑 Replies ${U.responseTime}   ·   📅 Since ${U.joined.replace(/^Joined\s/,'')}</div></div>
+          <div class="bc-qrbox"><div class="bc-qr-tile">${qrSvg()}</div><div class="bc-qr-cap">Scan card</div></div>
+        </div>
+      </div>
+    </div>`;
+  }
+  function realNameRow(){ return `<div class="tc-realname">🔒 Your real name is <b>private</b> — shown to others only when you approve a request. <span class="tc-more" onclick="bmToast('Choose: Always show · Only on request · Never')">change</span></div>`; }
+  function belowCard(){ return `<div class="psec"><div class="bc-actions"><button class="mh-btn primary" onclick="bmToast('Edit your card')">Edit card</button><button class="mh-btn ghost" onclick="bmToast('Share your business card')">Share card</button></div>${realNameRow()}</div>`; }
+  function contactSection(){
+    const chans=[{ic:'📨',l:'Messenger'},{ic:'📲',l:'Viber'},{ic:'🟢',l:'WhatsApp'},{ic:'📞',l:'Call/SMS'},{ic:'✉️',l:'Email'}];
+    return `<div class="psec"><div class="psec-ttl">How people reach you</div>
+      <button class="cc-primary" onclick="bmToast('Opens in-app chat')">💬 Message in BringMe</button>
+      <div class="cc-grid">${chans.map(c=>`<button class="cc-btn" onclick="bmToast('${c.l}')"><span class="cc-ic">${c.ic}</span><span class="cc-l">${c.l}</span></button>`).join('')}</div>
+      <div class="tc-realname" style="margin-top:9px">In-app chat is always on — you pick which other channels to show.</div></div>`;
+  }
+  function trustSection(){
+    const pct=Math.round(U.xpInto/U.xpNeed*100);
+    const given=U.helped, asked=U.asked, ratio=asked?given/asked:given;
+    const giveTag=ratio>=2?`🌟 Helps ${Math.round(ratio)}× more than asks`:ratio>=1?'🤝 Fair give &amp; take':'⚠️ Asks more than helps';
+    const joined=U.joined.replace(/^Joined\s/,'');
+    return `<div class="psec"><div class="psec-ttl">Trust &amp; standing</div>
+      <div class="ts-head"><div class="ts-tier">⭐ ${U.title.replace(/^\S+\s/,'')}</div><div class="ts-lvl">Level ${U.level}<span>/100</span></div></div>
+      <div class="ts-prog"><div class="ts-prog-fill" style="width:${pct}%"></div></div>
+      <div class="ts-prog-txt">${(U.xpNeed-U.xpInto).toLocaleString()} XP to Level ${U.level+1}</div>
+      <div class="ts-give">${giveTag}</div>
+      <div class="ts-stats"><div><b>${U.rating}</b><span>Rating</span></div><div><b>${U.deals}</b><span>Deals</span></div><div><b>${U.helped}</b><span>Helped</span></div><div><b>${U.followers}</b><span>Followers</span></div><div><b>${joined}</b><span>Joined</span></div></div>
+    </div>`;
+  }
+  function activitySection(){
+    const sign=p=>(p>=0?'+':'')+p;
+    let h=`<div class="psec"><div class="psec-ttl">Achievements</div><div class="ach">${U.badges.map(b=>`<div class="ach-item ${b.on?'':'off'}"><div class="ach-ic">${b.ic}</div><div class="ach-l">${b.l}</div></div>`).join('')}</div><button class="gold-cta" onclick="bmToast('All badges')">🏅 View all badges</button>`;
+    h+=`<div class="psec-ttl sub">Activity</div><div class="tl">${U.repLog.map(e=>`<div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><div class="tl-t">${e.t}</div><div class="tl-meta">${e.when} ago</div></div><div class="tl-pts ${e.pts<0?'minus':''}">${sign(e.pts)}</div></div>`).join('')}</div><button class="gold-cta" onclick="bmToast('Full activity log')">📜 See full activity</button>`;
+    h+=`<div class="psec-ttl sub">Reviews</div>${U.reviewList.slice(0,3).map(r=>`<div class="kudo"><div class="kudo-stars">${'★'.repeat(r.st)}${'☆'.repeat(5-r.st)}</div><div class="kudo-tx">“${r.tx}”</div><div class="kudo-by">${r.n}, ${r.tagL.toLowerCase()} ${r.when}</div></div>`).join('')}<button class="gold-cta" onclick="bmToast('All reviews')">⭐ See all ${U.reviews} reviews</button>`;
+    h+=`</div>`; return h;
+  }
+
+  function postCard(p){ return `<div class="mp-card"><div class="mp-emoji">${p.em}</div><div class="mp-body"><div class="mp-title">${p.t}</div><div class="mp-meta">${p.m}</div></div><span class="mp-status ${p.sc}">${p.s}</span></div>`; }
+  function estabCard(s){ const face=s.avatar?`<img src="${s.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:11px">`:s.type.split(' ')[0]; return `<div class="mp-card"><div class="mp-emoji">${face}</div><div class="mp-body"><div class="mp-title">${s.name}</div><div class="mp-meta">⭐ ${s.rating} · ${s.reviews} reviews · ${s.official?'✅ Verified':'👥 Community'}</div></div><span class="mp-status mp-active">Open ›</span></div>`; }
+  const feedEmpty = m => `<div class="fp-empty">${m}</div>`;
+  const feedList  = arr => arr.map(postCard).join('');
+  function feedHalf(title,count,inner,tone){ return `<div class="fp-half ${tone?'t-'+tone:''}"><div class="fp-sec-hdr"><span class="fp-sec-ttl">${title}</span><span class="fp-sec-cnt">${count}</span></div><div class="fp-half-body">${inner}</div></div>`; }
+  function leftFeed(){
+    let h=feedHalf('My Urgent Requests', U.postsReq.length, U.postsReq.length?feedList(U.postsReq):feedEmpty('No urgent requests right now.'), 'red');
+    h+=feedHalf('Items I’m Looking For', U.postsLooking.length, U.postsLooking.length?feedList(U.postsLooking):feedEmpty('Not looking for anything yet.'), 'gold');
+    return h;
+  }
+  function rightFeed(){
+    let h=feedHalf('Items I’m Selling', U.postsActive.length, U.postsActive.length?feedList(U.postsActive):feedEmpty('Nothing listed for sale.'), 'blue');
+    h+=feedHalf('My Establishments', STORES.length, STORES.length?STORES.map(estabCard).join(''):feedEmpty('No registered businesses.'), 'green');
+    return h;
+  }
+
+  function render(){
+    const pg=document.getElementById('profile-page'); if(!pg) return;
+    pg.innerHTML = `<button class="back-link" onclick="bmCloseProfile()">← Back to the map</button>`
+      + `<div class="pm-inner">` + bcard() + belowCard() + contactSection() + trustSection() + activitySection()
+      + `<div class="psec" style="display:flex;gap:8px"><button class="mh-btn ghost" onclick="bmToast('Saved items')">🔖 Saved</button><button class="mh-btn ghost" style="color:#9B2D1F" onclick="if(typeof sbSignOut==='function'){sbSignOut();}bmCloseProfile();">Log out</button></div>`
+      + `</div>`;
+    const lp=document.getElementById('left-profile');   if(lp) lp.innerHTML=leftFeed();
+    const rp=document.getElementById('sidebar-profile');if(rp) rp.innerHTML=rightFeed();
+  }
+
+  window.bmOpenProfile=function(){ document.body.classList.add('bm-profile'); render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
+  window.bmCloseProfile=function(){ document.body.classList.remove('bm-profile'); };
+  window.bmToast=function(m){ if(typeof showToast==='function'){ showToast(m,'info'); } };
+
+  // --- optional avatar / cover upload (same behaviour as the demo) ---
+  window.bmPickAvatar=function(){ const el=document.getElementById('bm-av-in'); if(el) el.click(); };
+  window.bmPickCover =function(){ const el=document.getElementById('bm-cov-in'); if(el) el.click(); };
+  function wireUpload(inputId,prop){
+    const el=document.getElementById(inputId); if(!el) return;
+    el.addEventListener('change',function(e){
+      const f=e.target.files&&e.target.files[0];
+      if(f){ const r=new FileReader(); r.onload=ev=>{ const img=new Image(); img.onload=()=>{
+        const max=(prop==='cover')?1000:420; let w=img.width,h=img.height;
+        if(prop==='cover'){ if(w>max){const s=max/w;w=max;h=Math.round(h*s);} }
+        else { if(w>max||h>max){const s=Math.min(max/w,max/h);w=Math.round(w*s);h=Math.round(h*s);} }
+        const c=document.createElement('canvas'); c.width=w;c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
+        let url; try{url=c.toDataURL('image/jpeg',0.84);}catch(_){url=ev.target.result;}
+        U[prop]=url; render(); bmToast(prop==='cover'?'Cover photo updated':'Profile photo updated');
+      }; img.onerror=()=>bmToast('Could not read that image'); img.src=ev.target.result; }; r.readAsDataURL(f); }
+      e.target.value='';
+    });
+  }
+  if(document.readyState!=='loading'){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); }
+  else document.addEventListener('DOMContentLoaded',function(){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); });
+})();
 </script>
 
 <style>
