@@ -9020,189 +9020,616 @@ function pcTab(name, btn){
 }
 </script>
 
+<style>
+/* ===== PROFILE CARD — ported from the approved CV Profile demo, scoped to #profile-page ===== */
+body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10%,#2550b8,#0a1f63 62%)}
+#profile-page .bmprof{max-width:560px;margin:0 auto;padding:18px 16px 56px}
+#profile-page .bmprof *{box-sizing:border-box}
+#profile-page .bmprof p{margin:0}
+#profile-page .bmprof button,#profile-page .bmprof input,#profile-page .bmprof textarea{margin:0;font-family:inherit}
+#profile-page .bp-foot{display:flex;gap:9px;margin-top:16px}
+#profile-page .bp-foot-btn{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
+#profile-page .bp-foot-btn:hover{background:rgba(255,255,255,.16)}
+#profile-page .bp-foot-btn.danger{color:#FFC9C0;border-color:rgba(255,120,100,.4);background:rgba(192,57,43,.2)}
+#profile-page{--navy:#0a1f63; --royal:#173c88; --royal2:#2550b8;
+    --gold:#E3A50F; --gold-dk:#8B6508; --gold-lt:#FFD24A; --gold-pale:#FBF0C0;
+    --off-white:#F5F7FF; --cream:#EEF1FF; --hair:#E7EAF4; --muted:#6677AA; --ink:#0a1f63;
+    --red:#C0392B; --green:#1A6B3A;}
+#profile-page .bizcard{position:relative;border-radius:22px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,40,.5), 0 0 0 2px rgba(227,165,15,.6), 0 0 36px rgba(227,165,15,.22);background:#0a1f63}
+#profile-page .vcard{aspect-ratio:3 / 2}
+#profile-page .bc-cover{position:absolute;inset:0;background:linear-gradient(150deg,#0a1f63,#2550b8 75%);background-size:cover;background-position:center}
+#profile-page .cover-art{position:absolute;inset:0;width:100%;height:100%}
+#profile-page .vscrim{position:absolute;left:0;right:0;bottom:0;height:80%;background:linear-gradient(to bottom, rgba(6,14,48,0) 0%, rgba(6,14,48,.45) 38%, rgba(5,12,40,.94) 100%)}
+#profile-page .vtop{position:absolute;top:14px;right:14px;z-index:4;display:flex;gap:8px}
+#profile-page .vtop button{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:10px;padding:8px 13px;font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;cursor:pointer;backdrop-filter:blur(6px)}
+#profile-page .vtop button:hover{background:rgba(255,255,255,.3)}
+#profile-page .vtop .gold-btn{background:linear-gradient(135deg,#FFD24A,#E3A810);color:#402d04;border-color:rgba(255,210,74,.7)}
+#profile-page .vtop .gold-btn:hover{filter:brightness(1.06);background:linear-gradient(135deg,#FFD24A,#E3A810)}
+#profile-page .voverlay{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 20px 16px;color:#fff}
+#profile-page .vrow{display:flex;align-items:center;gap:14px}
+#profile-page .vphoto{width:78px;height:78px;flex-shrink:0;border-radius:15px;border:3px solid #fff;overflow:hidden;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #E3A50F, 0 8px 22px rgba(0,0,0,.45)}
+#profile-page .vphoto img{width:100%;height:100%;object-fit:cover}
+#profile-page .vini{font-family:'Poppins',sans-serif;font-size:27px;font-weight:700;color:#5a3d00}
+#profile-page .vid{flex:1;min-width:0;padding-bottom:3px}
+#profile-page .vname{font-family:'Poppins',sans-serif;font-size:21px;font-weight:700;color:#fff;line-height:1.08;text-shadow:0 2px 12px rgba(0,0,0,.45)}
+#profile-page .vhandle{font-size:12px;color:#CFE0FF;font-weight:700;margin-top:2px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+#profile-page .vhandle.priv{color:rgba(255,255,255,.62);font-weight:600}
+#profile-page .vjob{font-size:12.5px;color:var(--gold-lt);font-weight:700;margin-top:3px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+#profile-page .ed-handle-wrap{display:flex;align-items:center;margin-top:8px;border:1.5px solid var(--hair);border-radius:9px;background:#fff;overflow:hidden}
+#profile-page .ed-handle-wrap:focus-within{border-color:var(--royal2)}
+#profile-page .ed-at{padding:9px 3px 9px 11px;color:var(--muted);font-weight:800;font-family:'Poppins',sans-serif}
+#profile-page .ed-handle{flex:1;border:none;padding:9px 11px 9px 2px;outline:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);min-width:0;background:transparent}
+#profile-page .ed-handle-note{font-size:10.5px;color:var(--muted);margin-top:6px;line-height:1.4;font-style:italic}
+#profile-page .ec-cvedit{padding:2px 20px 0}
+#profile-page .ed-about{width:100%;border:1.5px solid var(--hair);border-radius:9px;padding:9px 11px;outline:none;font-family:inherit;font-size:13px;color:var(--ink);resize:vertical;min-height:72px;line-height:1.5;background:#fff}
+#profile-page .ed-about:focus{border-color:var(--royal2)}
+#profile-page .svc-edit{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:9px}
+#profile-page .svc-tag{display:inline-flex;align-items:center;gap:5px;background:var(--off-white);border:1px solid var(--hair);color:var(--royal);border-radius:100px;padding:5px 7px 5px 12px;font-size:12px;font-weight:700}
+#profile-page .svc-rm{border:none;background:none;color:var(--red);cursor:pointer;font-size:11px;font-weight:800;padding:0 2px;line-height:1}
+#profile-page .svc-add{display:flex;gap:7px}
+#profile-page .svc-in{flex:1;border:1.5px solid var(--hair);border-radius:8px;padding:8px 10px;outline:none;font-family:inherit;font-size:12.5px;min-width:0}
+#profile-page .svc-in:focus{border-color:var(--royal2)}
+#profile-page .svc-addbtn{border:1px solid var(--royal2);background:var(--cream);color:var(--royal);border-radius:8px;padding:8px 13px;font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;cursor:pointer;white-space:nowrap}
+#profile-page .cv-entry{padding-bottom:10px}
+#profile-page .cv-entry+.cv-entry{border-top:1px solid var(--off-white);padding-top:10px}
+#profile-page .ce-main{font-size:13.5px;font-weight:700;color:var(--ink)}
+#profile-page .ce-sub{font-size:12px;color:var(--muted);margin-top:2px}
+#profile-page .cv-empty{font-size:12.5px;color:var(--muted);font-style:italic}
+#profile-page .entry-edit{display:flex;flex-direction:column;gap:9px;margin-bottom:9px}
+#profile-page .ee-card{background:var(--off-white);border:1px solid var(--hair);border-radius:11px;padding:9px;display:flex;flex-direction:column;gap:7px}
+#profile-page .ee-in{border:1.5px solid var(--hair);border-radius:8px;padding:8px 10px;outline:none;font-family:inherit;font-size:12.5px;min-width:0;background:#fff;width:100%}
+#profile-page .ee-in:focus{border-color:var(--royal2)}
+#profile-page .ee-two{display:flex;gap:7px}
+#profile-page .ee-two .ee-in{flex:1}
+#profile-page .ee-in.yr{flex:0 0 66px}
+#profile-page .ee-rm{flex:0 0 auto;width:34px;border-radius:8px;border:1px solid var(--hair);background:#fff;color:var(--red);cursor:pointer;font-size:12px;font-weight:800}
+#profile-page .ee-rm:hover{background:#FDE7E3;border-color:var(--red)}
+#profile-page .ee-add{border:1px dashed var(--royal2);background:var(--cream);color:var(--royal);border-radius:9px;padding:8px 14px;font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;cursor:pointer}
+#profile-page .vis-panel{background:linear-gradient(135deg,#0a1f63,#173c88);border:1px solid var(--gold);border-radius:13px;padding:12px 13px;margin-bottom:14px}
+#profile-page .vis-ttl{font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;color:var(--gold-lt);margin-bottom:9px}
+#profile-page .vis-chips{display:flex;flex-wrap:wrap;gap:7px}
+#profile-page .vis-chip{border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);border-radius:999px;padding:6px 11px;font-family:'Nunito',sans-serif;font-weight:700;font-size:12px;cursor:pointer;transition:.12s}
+#profile-page .vis-chip.on{border-color:var(--gold);background:rgba(227,165,15,.18);color:#FFE9B0}
+#profile-page .vis-hint{font-size:10.5px;color:rgba(255,255,255,.6);margin-top:9px;line-height:1.5}
+#profile-page .vbanner{margin-top:12px;border-radius:11px;padding:9px 14px;font-size:11.5px;font-weight:700;text-align:center}
+#profile-page .vbanner.priv{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.82)}
+#profile-page .vbanner.pub{background:rgba(255,210,74,.14);border:1px solid rgba(255,210,74,.32);color:#FFE9B0}
+#profile-page .vstats{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
+#profile-page .vlevel{background:linear-gradient(135deg,#FFD24A,#E3A810);color:#402d04;font-family:'Poppins',sans-serif;font-weight:800;font-size:11.5px;padding:4px 11px;border-radius:100px}
+#profile-page .vpts{background:linear-gradient(135deg,rgba(255,210,74,.3),rgba(227,165,15,.16));border:1px solid rgba(255,210,74,.6);color:#FFE08A;font-family:'Poppins',sans-serif;font-weight:800;font-size:11.5px;padding:4px 11px;border-radius:100px;backdrop-filter:blur(4px)}
+#profile-page .vsince{background:rgba(227,165,15,.2);border:1px solid rgba(255,210,74,.5);color:#FFE08A;font-weight:700;font-size:11.5px;padding:4px 11px;border-radius:100px;backdrop-filter:blur(4px)}
+#profile-page .vctttl{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:var(--gold-lt);letter-spacing:.6px;text-transform:uppercase;margin:12px 0 8px;padding-top:11px;border-top:1px solid rgba(255,210,74,.24)}
+#profile-page .vcontacts{display:block}
+#profile-page .vnums{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:9px}
+#profile-page .vicons{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+#profile-page .vnum{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.26);color:#fff;border-radius:100px;padding:4px 15px 4px 4px;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;cursor:pointer;backdrop-filter:blur(5px);transition:.15s}
+#profile-page .vnum:hover{background:rgba(255,255,255,.24);transform:translateY(-1px)}
+#profile-page .vnum.vprime{background:linear-gradient(135deg,rgba(255,210,74,.3),rgba(227,165,15,.17));border-color:rgba(255,210,74,.62);color:#FFE9B0}
+#profile-page .vnum.vprime:hover{background:linear-gradient(135deg,rgba(255,210,74,.42),rgba(227,165,15,.26))}
+#profile-page .vnum-ic{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 7px rgba(0,0,0,.3)}
+#profile-page .vnum-ic svg{width:16px;height:16px}
+#profile-page .vnum-tx{letter-spacing:.3px}
+#profile-page .appic{width:38px;height:38px;border-radius:12px;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.35);transition:.15s}
+#profile-page .appic:hover{transform:translateY(-2px) scale(1.06)}
+#profile-page .appic svg{width:22px;height:22px}
+#profile-page .icsq{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.18);width:30px;height:30px}
+#profile-page .icsq svg{width:18px;height:18px}
+#profile-page .icsq.sm{width:19px;height:19px;border-radius:6px}
+#profile-page .icsq.sm svg{width:12px;height:12px}
+#profile-page .ecard{background:#fff}
+#profile-page .ec-cover{height:132px;position:relative;background:linear-gradient(135deg,#0a1f63,#2550b8);overflow:hidden}
+#profile-page .cover-btn{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;border-radius:9px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;backdrop-filter:blur(4px)}
+#profile-page .ec-main{display:flex;gap:16px;padding:0 20px}
+#profile-page .ec-left{width:104px;flex-shrink:0}
+#profile-page .ec-photo{width:96px;height:96px;border-radius:16px;margin-top:-40px;border:4px solid #fff;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810);box-shadow:0 8px 20px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer}
+#profile-page .ec-photo img{width:100%;height:100%;object-fit:cover}
+#profile-page .ec-ini{font-family:'Poppins',sans-serif;font-size:32px;font-weight:700;color:#5a3d00}
+#profile-page .ec-photo .cam{position:absolute;bottom:4px;right:4px;width:26px;height:26px;border-radius:50%;background:#fff;border:2px solid var(--royal);display:flex;align-items:center;justify-content:center;font-size:12px}
+#profile-page .ec-meta{margin-top:12px}
+#profile-page .ec-level{display:inline-flex;align-items:center;gap:4px;background:var(--gold-pale);color:var(--gold-dk);font-weight:800;font-size:12px;padding:4px 11px;border-radius:100px;border:1px solid rgba(227,168,16,.35);font-family:'Poppins',sans-serif}
+#profile-page .ec-pts{display:inline-flex;align-items:center;gap:4px;margin-top:7px;background:#FFF6D6;color:var(--gold-dk);font-weight:800;font-size:11.5px;padding:4px 11px;border-radius:100px;border:1px solid rgba(227,168,16,.4);font-family:'Poppins',sans-serif}
+#profile-page .ec-since{font-size:10.5px;color:var(--muted);line-height:1.4;margin-top:9px}
+#profile-page .ec-since b{display:block;color:var(--ink);font-size:12px;font-weight:700;font-family:'Poppins',sans-serif}
+#profile-page .ro-note{font-size:9.5px;color:var(--muted);margin-top:7px;font-style:italic;line-height:1.4}
+#profile-page .ec-right{flex:1;min-width:0;padding-top:10px}
+#profile-page .ed-name,#profile-page .ed-job{width:100%;border:1.5px solid var(--hair);border-radius:9px;padding:9px 11px;outline:none;font-family:inherit;background:#fff}
+#profile-page .ed-name{font-family:'Poppins',sans-serif;font-size:19px;font-weight:700;color:var(--ink)}
+#profile-page .ed-job{font-size:13px;color:var(--ink);margin-top:8px}
+#profile-page .ed-name:focus,#profile-page .ed-job:focus,#profile-page .ct-val:focus{border-color:var(--royal2)}
+#profile-page .ed-namerow{display:flex;gap:8px}
+#profile-page .ed-namerow .ed-name{flex:1;min-width:0}
+#profile-page .ec-ctttl{font-family:'Poppins',sans-serif;font-size:11.5px;font-weight:700;color:var(--royal);margin:14px 0 9px;text-transform:uppercase;letter-spacing:.5px}
+#profile-page .ct-edit{display:flex;align-items:center;gap:8px;width:100%;margin-bottom:8px}
+#profile-page .ct-edit{align-items:center}
+#profile-page .ct-val{flex:1;border:1.5px solid var(--hair);border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none;min-width:0}
+#profile-page .ct-rm{width:28px;height:28px;flex-shrink:0;border-radius:7px;border:1px solid var(--hair);background:#fff;color:var(--red);cursor:pointer;font-size:12px;font-weight:800}
+#profile-page .ct-rm:hover{background:#FDE7E3;border-color:var(--red)}
+#profile-page .ct-lock{font-size:10px;color:var(--muted);font-style:italic;white-space:nowrap;flex-shrink:0}
+#profile-page .add-ct{margin-top:11px;border-top:1px dashed var(--hair);padding-top:12px}
+#profile-page .add-ct-lbl{font-size:11.5px;font-weight:800;color:var(--muted);margin-bottom:8px}
+#profile-page .add-ct-row{display:flex;flex-wrap:wrap;gap:6px}
+#profile-page .add-ct-btn{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;background:var(--off-white);border:1px solid var(--hair);border-radius:8px;padding:6px 10px;cursor:pointer;font-family:inherit;color:var(--ink)}
+#profile-page .add-ct-btn:hover{border-color:var(--royal2);background:var(--cream)}
+#profile-page .ec-actions{display:flex;gap:9px;padding:16px 20px 20px}
+#profile-page .act{padding:12px;border-radius:12px;border:none;font-family:'Poppins',sans-serif;font-weight:700;font-size:13.5px;cursor:pointer}
+#profile-page .act.grow{flex:1}
+#profile-page .act.save{background:linear-gradient(135deg,#2E9E5B,#1A6B3A);color:#fff}
+#profile-page .act.ghost{background:var(--off-white);color:var(--muted)}
+#profile-page .act:active{transform:translateY(1px)}
+#profile-page .cvpanel{background:#fff;border-radius:20px;margin-top:16px;box-shadow:0 18px 50px rgba(0,0,40,.35);border:1px solid rgba(227,165,15,.35);overflow:hidden}
+#profile-page .cvsec{padding:18px 22px}
+#profile-page .cvsec+.cvsec{border-top:1px solid var(--hair)}
+#profile-page .cvttl{font-family:'Poppins',sans-serif;font-size:16px;font-weight:700;color:var(--ink);position:relative;padding-left:13px;margin-bottom:12px}
+#profile-page .cvttl::before{content:'';position:absolute;left:0;top:3px;bottom:3px;width:4px;border-radius:2px;background:linear-gradient(#FFD24A,#E3A810)}
+#profile-page .cvabout{font-size:13.5px;color:#43506f;line-height:1.6}
+#profile-page .cvtags{display:flex;flex-wrap:wrap;gap:7px}
+#profile-page .cvtag{font-size:12px;font-weight:700;background:var(--off-white);border:1px solid var(--hair);color:var(--royal);border-radius:100px;padding:5px 12px}
+#profile-page .cvstats{display:flex;flex-wrap:wrap;gap:9px}
+#profile-page .cvstat{flex:1;min-width:76px;text-align:center;background:var(--off-white);border:1px solid var(--hair);border-radius:12px;padding:11px 6px}
+#profile-page .cvstat b{display:block;font-family:'Poppins',sans-serif;font-size:18px;font-weight:800;color:var(--ink)}
+#profile-page .cvstat span{font-size:10px;color:var(--muted);margin-top:3px;display:block}
+#profile-page .cvkudo{border-top:1px solid var(--hair);padding:13px 0 3px}
+#profile-page .cvkudo:first-of-type{border-top:none;padding-top:2px}
+#profile-page .cvkudo-top{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+#profile-page .cvkudo-stars{color:var(--gold);font-size:12px;letter-spacing:2px}
+#profile-page .cvkudo-tag{font-size:10px;font-weight:800;background:var(--gold-pale);color:var(--gold-dk);padding:2px 9px;border-radius:100px}
+#profile-page .cvkudo-tx{font-size:14px;color:var(--ink);line-height:1.5;font-style:italic}
+#profile-page .cvkudo-by{font-size:11.5px;font-weight:700;color:var(--muted);margin-top:6px}
+#profile-page .vtoggle{display:flex;gap:6px;margin-top:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:13px;padding:5px}
+#profile-page .vt-btn{flex:1;padding:9px;border:none;border-radius:9px;background:transparent;color:rgba(255,255,255,.72);font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:.15s}
+#profile-page .vt-btn.on{background:#fff;color:var(--ink);box-shadow:0 2px 9px rgba(0,0,40,.25)}
+#profile-page .cvpanel.owner{margin-top:14px}
+#profile-page .ownhero{padding:20px 22px;background:linear-gradient(135deg,#0a1f63,#173c88);color:#fff}
+#profile-page .oh-top{display:flex;align-items:baseline;justify-content:space-between}
+#profile-page .oh-lvl{font-family:'Poppins',sans-serif;font-size:21px;font-weight:800;color:#FFD24A}
+#profile-page .oh-next{font-size:12px;color:rgba(255,255,255,.72);font-weight:700}
+#profile-page .oh-bar{height:10px;background:rgba(255,255,255,.16);border-radius:100px;overflow:hidden;margin:13px 0 9px}
+#profile-page .oh-fill{height:100%;background:linear-gradient(90deg,#FFD24A,#E3A810);border-radius:100px}
+#profile-page .oh-togo{font-size:13px;color:#fff}
+#profile-page .oh-togo b{color:#FFD24A;font-family:'Poppins',sans-serif;font-weight:800}
+#profile-page .oh-reward{margin-top:12px;font-size:11.5px;color:#FFE9B0;background:rgba(255,210,74,.13);border:1px solid rgba(255,210,74,.32);border-radius:10px;padding:9px 12px}
+#profile-page .quests{display:flex;flex-direction:column}
+#profile-page .quest{display:flex;align-items:center;gap:10px;padding:10px 0}
+#profile-page .quest+.quest{border-top:1px solid var(--off-white)}
+#profile-page .q-check{font-size:15px}
+#profile-page .q-t{flex:1;font-size:13px;font-weight:600;color:var(--ink)}
+#profile-page .quest.done .q-t{color:var(--muted);text-decoration:line-through}
+#profile-page .q-once{font-size:9px;font-weight:800;background:var(--cream);color:var(--royal);padding:1px 6px;border-radius:100px;margin-left:4px}
+#profile-page .q-r{font-size:12px;font-weight:800;color:var(--gold-dk);background:var(--gold-pale);padding:3px 10px;border-radius:100px;white-space:nowrap}
+#profile-page .quest.done .q-r{opacity:.45}
+#profile-page .cv-add{font-size:11px;font-weight:700;color:var(--royal2);cursor:pointer;float:right}
+#profile-page .goals{display:flex;flex-direction:column;gap:14px}
+#profile-page .g-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+#profile-page .g-ic{font-size:15px}
+#profile-page .g-t{flex:1;font-size:13px;font-weight:700;color:var(--ink)}
+#profile-page .g-n{font-size:12px;font-weight:800;color:var(--muted)}
+#profile-page .g-bar{height:7px;background:var(--off-white);border-radius:100px;overflow:hidden}
+#profile-page .g-fill{height:100%;background:linear-gradient(90deg,#FFD24A,#E3A810);border-radius:100px}
+#profile-page .g-sub{font-size:10.5px;color:var(--muted);margin-top:4px}
+#profile-page .nearbadges{display:flex;flex-direction:column;gap:12px}
+#profile-page .nb{display:flex;align-items:center;gap:11px}
+#profile-page .nb-ic{width:40px;height:40px;border-radius:11px;background:var(--off-white);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+#profile-page .nb-body{flex:1;min-width:0}
+#profile-page .nb-l{font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:5px}
+#profile-page .nb-bar{height:6px;background:var(--off-white);border-radius:100px;overflow:hidden}
+#profile-page .nb-fill{height:100%;background:linear-gradient(90deg,#FFD24A,#E3A810);border-radius:100px}
+#profile-page .nb-n{font-size:11.5px;font-weight:800;color:var(--muted);white-space:nowrap}
+</style>
+
 <script>
 /* =====================================================================
-   PROFILE MODE controller.  openProfile() (above) calls bmOpenProfile(),
-   which drops the class `bm-profile` on <body> and fills three slots:
-     • #profile-page    — the Business Card + trust + achievements/reviews
-     • #left-profile     — your Requests (urgent + looking-for)
-     • #sidebar-profile  — your Listings (selling) + Establishments
-   bmCloseProfile() removes the class and the map is shown again.
+   PROFILE MODE controller — the real Business Card wired to Supabase.
+   openProfile() calls bmOpenProfile(), which adds class `bm-profile` to
+   <body> and fills three slots:
+     • #profile-page    — the card + About Me (public) / Control Panel (private)
+     • #left-profile    — the user's Requests (urgent + find)
+     • #sidebar-profile — the user's Listings (selling) + Establishments
+   bmCloseProfile() removes the class; the map shows again.
 
-   ►► DEMO DATA ◄◄  The object `U` and `STORES` below are placeholder
-   content (same as the approved demo). To show the real signed-in user,
-   replace these with that user's Supabase row — the render functions
-   stay exactly the same.
+   DATA: identity + CV (name, @handle, job, contacts, cover, avatar, about,
+   skills, education, jobs, visibility) load from the user's `profiles` row
+   (SB_PROFILE) and save back on ✓ Save profile. The gamification layer
+   (level, points, badges, reviews, quests) and the side-panel lists are
+   PLACEHOLDER until the reputation + posts systems are wired.
+
+   Handlers used by inline onclick/oninput are exposed on window.BP.
    ===================================================================== */
 (function(){
-  const U = {
-    avatar:null, cover:null, name:'Marco Dela Cruz', role:'Gadget reseller & repair-shop owner',
-    level:47, title:'⭐ Trusted Local', area:'Balibago, Angeles City', joined:'Joined Mar 2026',
-    tagline:'Honest deals, quick replies — I keep it simple.', responseTime:'within an hour',
-    rating:4.9, reviews:23, helped:47, asked:12, deals:31, followers:128,
-    verified:{ phone:true, id:true, owner:true },
-    xpInto:680, xpNeed:1000,
-    badges:[
-      {ic:'🌟',l:'First Sale',on:true},{ic:'🤝',l:'10 Helps',on:true},
-      {ic:'📍',l:'Verified Spot',on:true},{ic:'⚡',l:'Fast Reply',on:true},
-      {ic:'🔥',l:'7-day Streak',on:true},{ic:'🏅',l:'50 Deals',on:false},
-      {ic:'👑',l:'Legend',on:false},{ic:'🛡️',l:'ID Verified',on:true},
-    ],
-    postsReq:[
-      {em:'⚡',t:'USB-C fast charger (65W)',m:'⚡ Urgent · 2 replies · 1.2km away',s:'Open',sc:'mp-open'},
-      {em:'⚡',t:'Ride to Clark Airport, 5 AM Sat',m:'⚡ Urgent · 4 replies',s:'Open',sc:'mp-open'},
-    ],
-    postsLooking:[
-      {em:'🎮',t:'PS5 DualSense controller',m:'Looking for · 2nd-hand ok',s:'Wanted',sc:'mp-look'},
-      {em:'📚',t:'Nursing board reviewer books',m:'Looking for · around Angeles',s:'Wanted',sc:'mp-look'},
-    ],
-    postsActive:[
-      {em:'📱',t:'iPhone 13 Pro 128GB',m:'₱28,000 · 👁️ 142',s:'Active',sc:'mp-active'},
-      {em:'🎧',t:'Sony WH-1000XM4',m:'₱9,500 · 👁️ 88',s:'Active',sc:'mp-active'},
-    ],
-    reviewList:[
-      {n:'Ana L.',st:5,tagL:'Bought',when:'2 weeks ago',tx:'Super smooth transaction. Item exactly as described, and he waited when I was late. Highly recommend!'},
-      {n:'Jose M.',st:5,tagL:'Helped',when:'3 weeks ago',tx:'Pointed me to a store that had the exact charger I needed. Fast reply, very kind.'},
-      {n:'Clara V.',st:4,tagL:'Bought',when:'1 month ago',tx:'Good item, fair price. Meet-up spot was easy to find. Would buy again.'},
-    ],
-    repLog:[
-      {t:'Helped a senior find her meds nearby',pts:15,when:'2d'},
-      {t:'Smooth deal with Ana — Sony WH-1000XM4',pts:50,when:'5d'},
-      {t:'Reported a scam listing — confirmed by the community',pts:20,when:'1w'},
-      {t:'Added an establishment: Marco’s Phone Repair',pts:10,when:'2w'},
-      {t:'Earned a 5-star review from Jose',pts:8,when:'3w'},
-      {t:'Changed display name',pts:-40,when:'1mo'},
+  /* ---------- contact types + little brand icons ---------- */
+  const CT = {
+    ingame:   {icon:'💬', label:'In-app message'},
+    phone:    {icon:'📞', label:'Phone / SMS'},
+    viber:    {icon:'📲', label:'Viber'},
+    whatsapp: {icon:'🟢', label:'WhatsApp'},
+    messenger:{icon:'📨', label:'Messenger'},
+    discord:  {icon:'🎮', label:'Discord'},
+    email:    {icon:'✉️', label:'Email'},
+    instagram:{icon:'📸', label:'Instagram'},
+    telegram: {icon:'✈️', label:'Telegram'},
+    custom:   {icon:'🔗', label:'Other'},
+  };
+  const APP = {
+    ingame:   {bg:'linear-gradient(135deg,#2550b8,#0a1f63)', fg:'#FFD24A', g:'<path d="M5 5.5h14c.8 0 1.5.7 1.5 1.5v7c0 .8-.7 1.5-1.5 1.5h-7l-4 3v-3H5c-.8 0-1.5-.7-1.5-1.5V7c0-.8.7-1.5 1.5-1.5z"/>'},
+    phone:    {bg:'#1A6B3A', fg:'#fff', g:'<path d="M7 3.8c.5 0 1 .3 1.1.8l.9 2.3c.2.5 0 1-.4 1.4l-1 .8a10 10 0 0 0 4.3 4.3l.8-1c.4-.4.9-.6 1.4-.4l2.3.9c.5.1.8.6.8 1.1v2.2c0 .8-.7 1.5-1.5 1.4A13.5 13.5 0 0 1 4.1 5.3C4 4.5 4.7 3.8 5.5 3.8z"/>'},
+    viber:    {bg:'#7360F2', fg:'#fff', g:'<path d="M12 4.3c3.9 0 5.9 1.9 5.9 5.8 0 2.9-1 4.8-2.9 5.8l.3 2.3-2.1-1.4a6.8 6.8 0 0 1-1.2.1c-3.9 0-5.9-1.9-5.9-5.8S8.1 4.3 12 4.3z"/>'},
+    whatsapp: {bg:'#25D366', fg:'#fff', g:'<path d="M12 4.2A7.7 7.7 0 0 0 5.3 15.9L4.3 20l4.2-1.1A7.7 7.7 0 1 0 12 4.2zm4.3 10.7c-.2.5-1 .9-1.4 1-.4 0-.8.2-2.8-.6-2.3-1-3.8-3.3-4-3.5-.1-.2-1-1.3-1-2.4s.6-1.7.8-1.9c.2-.2.4-.3.6-.3h.4c.2 0 .4 0 .5.4l.7 1.7c.1.1.1.3 0 .4l-.3.4-.3.3c-.1.1-.2.3-.1.5l.8 1.1c.5.7 1 1 1.3 1.1.2.1.4.1.5 0l.6-.7c.1-.2.3-.2.5-.1l1.5.8c.2.1.4.2.4.3.1.1.1.5 0 .9z"/>'},
+    messenger:{bg:'linear-gradient(135deg,#00B2FF,#006AFF 48%,#A033FF)', fg:'#fff', g:'<path d="M12 4C7.6 4 4.3 7.2 4.3 11.4c0 2.2 1 4.1 2.6 5.4V21l2.5-1.4c.8.2 1.7.3 2.6.3 4.4 0 7.7-3.2 7.7-7.5S16.4 4 12 4zm.8 9.9l-2-2.1-3.8 2.1 4.2-4.4 2 2.1 3.7-2.1-4.1 4.4z"/>'},
+    discord:  {bg:'#5865F2', fg:'#fff', g:'<path d="M18.9 6.6A15 15 0 0 0 15 5.4l-.2.4A14 14 0 0 1 17.5 7a12.5 12.5 0 0 0-11 0 14 14 0 0 1 2.7-1.2L9 5.4A15 15 0 0 0 5.1 6.6C2.8 10 2.2 13.3 2.5 16.6A15 15 0 0 0 7 18.8l.6-1a10 10 0 0 1-1.6-.8l.4-.3a9 9 0 0 0 7.2 0l.4.3a10 10 0 0 1-1.6.8l.6 1a15 15 0 0 0 4.5-2.2c.4-3.8-.6-7.1-2.6-10zM9.4 14.6c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8zm5.2 0c-.9 0-1.6-.8-1.6-1.8s.7-1.8 1.6-1.8 1.6.8 1.6 1.8-.7 1.8-1.6 1.8z"/>'},
+    email:    {bg:'#E0533D', fg:'#fff', g:'<path d="M5 6.2h14c.6 0 1 .5 1 1v9.6c0 .6-.4 1-1 1H5c-.6 0-1-.4-1-1V7.2c0-.5.4-1 1-1zm0 2.3V9l7 4 7-4v-.5l-7 4z"/>'},
+    instagram:{bg:'linear-gradient(135deg,#FEDA75,#FA7E1E 35%,#D62976 65%,#962FBF)', fg:'#fff', g:'<rect x="5.2" y="5.2" width="13.6" height="13.6" rx="4.3" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.3" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.2" cy="7.9" r="1.05"/>'},
+    telegram: {bg:'#2AABEE', fg:'#fff', g:'<path d="M5.2 11.7 18 6.6c.5-.2 1 .1.8.8l-2.2 10.3c-.1.5-.5.7-1 .4l-3-2.2-1.5 1.4c-.2.2-.3.3-.6.3l.2-3.1 5.6-5c.2-.2 0-.3-.3-.1l-7 4.4-3-1c-.6-.1-.6-.5.1-.8z"/>'},
+    custom:   {bg:'#64748B', fg:'#fff', g:'<path d="M10 13.5a3.2 3.2 0 0 0 4.5 0l2-2a3.2 3.2 0 0 0-4.5-4.5l-1 1M13.5 10a3.2 3.2 0 0 0-4.5 0l-2 2a3.2 3.2 0 0 0 4.5 4.5l1-1" fill="none" stroke="#fff" stroke-width="1.6"/>'},
+  };
+  const appBg  = t => (APP[t]||APP.custom).bg;
+  const appSvg = t => { const a=APP[t]||APP.custom; return `<svg viewBox="0 0 24 24" fill="${a.fg}" fill-rule="evenodd">${a.g}</svg>`; };
+
+  /* ---------- state ---------- */
+  let card = blankCard();
+  let editing=false, draft=null, nextId=100, ownerView=true;
+
+  /* placeholder gamification until the reputation system is wired */
+  const cv = {
+    reviews:[
+      {n:'Ana L.',st:5,tag:'Bought',when:'2 weeks ago',tx:'Super smooth transaction. Item exactly as described, and he even waited when I was running late. Highly recommend!'},
+      {n:'Jose M.',st:5,tag:'Helped',when:'3 weeks ago',tx:'Pointed me to a store that had the exact charger I needed. Fast reply, very kind.'},
+      {n:'Clara V.',st:4,tag:'Bought',when:'1 month ago',tx:'Good item, fair price. Meet-up spot was easy to find. Would buy again.'},
     ],
   };
-  const STORES = [
-    {avatar:null,name:"Aling Rosa's Bakeshop",type:'🍞 Bakery / Eatery',official:true,rating:4.8,reviews:64},
-    {avatar:null,name:"Marco's Phone Repair",type:'🔧 Repair / Services',official:true,rating:4.7,reviews:19},
-  ];
+  /* placeholder side-panel lists until the posts system feeds them */
+  const SIDE = {
+    req:[{em:'⚡',t:'USB-C fast charger (65W)',m:'Urgent · 2 replies · 1.2km away',s:'Open',sc:'mp-open'},{em:'⚡',t:'Ride to Clark Airport, 5 AM Sat',m:'Urgent · 4 replies',s:'Open',sc:'mp-open'}],
+    look:[{em:'🎮',t:'PS5 DualSense controller',m:'Looking for · 2nd-hand ok',s:'Wanted',sc:'mp-look'},{em:'📚',t:'Nursing board reviewer books',m:'Looking for · around Angeles',s:'Wanted',sc:'mp-look'}],
+    active:[{em:'📱',t:'iPhone 13 Pro 128GB',m:'₱28,000 · 142 views',s:'Active',sc:'mp-active'},{em:'🎧',t:'Sony WH-1000XM4',m:'₱9,500 · 88 views',s:'Active',sc:'mp-active'}],
+    stores:[{avatar:null,name:"Aling Rosa's Bakeshop",type:'🍞 Bakery / Eatery',official:true,rating:4.8,reviews:64},{avatar:null,name:"Marco's Phone Repair",type:'🔧 Repair / Services',official:true,rating:4.7,reviews:19}],
+  };
 
-  function initials(name){ return name.split(' ').filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+  /* ---------- helpers ---------- */
+  const esc = s => (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const ini = c => ((((c.firstName||' ')[0]||'')+((c.lastName||' ')[0]||'')).toUpperCase()) || '?';
+  function bmToast(m){ if(typeof showToast==='function'){ showToast(m,'info'); } else { console.log('[BringMe]',m); } }
   function coverArt(){
-    return `<svg class="cover-svg" viewBox="0 0 400 134" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <g fill="none" stroke="#FFD24A" stroke-opacity="0.22" stroke-width="1.1">
-        <path d="M-10,30 C70,10 130,46 210,30 S350,8 430,32"/>
-        <path d="M-10,52 C70,32 130,68 210,52 S350,30 430,54"/>
-        <path d="M-10,74 C70,54 130,90 210,74 S350,52 430,76"/>
-        <path d="M-10,96 C70,76 130,112 210,96 S350,74 430,98"/>
-        <path d="M-10,118 C70,98 130,134 210,118 S350,96 430,120"/>
-      </g></svg>`;
-  }
-  function qrSvg(){
-    const N=23, cell=4; let mod=[]; for(let r=0;r<N;r++){mod[r]=[];for(let c=0;c<N;c++)mod[r][c]=0;}
-    function finder(R,C){ for(let r=0;r<7;r++)for(let c=0;c<7;c++){ const edge=r===0||r===6||c===0||c===6, ctr=r>=2&&r<=4&&c>=2&&c<=4; mod[R+r][C+c]=(edge||ctr)?1:0; } }
-    finder(0,0); finder(0,N-7); finder(N-7,0);
-    let seed=1337; const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
-    for(let r=0;r<N;r++)for(let c=0;c<N;c++){ const inF=(r<8&&c<8)||(r<8&&c>=N-8)||(r>=N-8&&c<8); if(!inF && rnd()>0.52) mod[r][c]=1; }
-    let rects=''; for(let r=0;r<N;r++)for(let c=0;c<N;c++) if(mod[r][c]) rects+=`<rect x="${c*cell}" y="${r*cell}" width="${cell}" height="${cell}"/>`;
-    const S=N*cell; return `<svg viewBox="0 0 ${S} ${S}" width="100%" height="100%" aria-label="QR code"><g fill="#0a1f63">${rects}</g></svg>`;
+    let seed=987654321; const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; };
+    let dots=''; for(let i=0;i<80;i++){ const x=(rnd()*400).toFixed(1), y=(rnd()*180).toFixed(1), r=(0.5+rnd()*1.7).toFixed(1), op=(0.2+rnd()*0.6).toFixed(2); dots+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#FFD24A" opacity="${op}"/>`; }
+    let streaks=''; for(let i=0;i<11;i++){ const x=(rnd()*400).toFixed(1), y=(rnd()*110).toFixed(1), h=(28+rnd()*120).toFixed(0), op=(0.08+rnd()*0.22).toFixed(2); streaks+=`<rect x="${x}" y="${y}" width="0.8" height="${h}" fill="#FFD24A" opacity="${op}"/>`; }
+    const blds=[[0,152,34],[32,112,40],[74,166,30],[106,86,44],[152,134,28],[182,66,50],[234,144,32],[268,98,40],[310,158,34],[346,118,56]];
+    let rects='', edges='', wins='';
+    blds.forEach((b)=>{ const x=b[0],top=b[1],w=b[2];
+      rects+=`<rect x="${x}" y="${top}" width="${w}" height="${272-top}" fill="#050e2a"/>`;
+      edges+=`<rect x="${x}" y="${top}" width="${w}" height="1.8" fill="#E3A50F" opacity="0.6"/>`;
+      edges+=`<rect x="${x}" y="${top}" width="1.3" height="${272-top}" fill="#C8900E" opacity="0.38"/>`;
+      for(let wy=top+8; wy<268; wy+=10){ for(let wx=x+5; wx<x+w-4; wx+=8){ const lit=rnd()<0.62; wins+=`<rect x="${wx.toFixed(1)}" y="${wy}" width="3.6" height="4.4" fill="${lit?'#FFD24A':'#1a3a86'}" opacity="${lit?(0.62+rnd()*0.38).toFixed(2):'0.3'}"/>`; } }
+    });
+    return `<svg class="cover-art" viewBox="0 0 400 270" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="bmsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#081845"/><stop offset="0.55" stop-color="#0c2159"/><stop offset="1" stop-color="#123074"/></linearGradient>
+        <radialGradient id="bmglow" cx="50%" cy="100%" r="74%"><stop offset="0" stop-color="#E3A50F" stop-opacity="0.6"/><stop offset="0.5" stop-color="#E3A50F" stop-opacity="0.13"/><stop offset="1" stop-color="#E3A50F" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect width="400" height="270" fill="url(#bmsky)"/>
+      ${streaks}${dots}
+      <rect width="400" height="270" fill="url(#bmglow)"/>
+      ${rects}${edges}${wins}
+    </svg>`;
   }
 
-  function bcard(){
-    const v=U.verified, chips=[];
-    if(v.id) chips.push('✓ ID'); if(v.phone) chips.push('✓ Phone'); chips.push('✓ Location'); if(v.owner) chips.push('🏪 Owner');
-    return `<div class="bcard${U.cover?' has-img':''}"${U.cover?` style="background-image:url('${U.cover}')"`:''}>
-      ${U.cover?'<div class="bc-scrim"></div>':coverArt()}
-      <button class="cover-edit" onclick="bmPickCover()">Change cover</button>
-      <div class="bcard-inner">
-        <div class="bc-row">
-          <div class="bc-ava" onclick="bmPickAvatar()" style="cursor:pointer">
-            ${U.avatar?`<img class="pc-av-img" src="${U.avatar}">`:`<span class="bc-ini">${initials(U.name)}</span>`}
-            <span class="pc-cam" onclick="event.stopPropagation();bmPickAvatar()">📷</span>
-          </div>
-          <div class="bc-id"><div class="bc-name">${U.name}</div><div class="bc-role">${U.role}</div></div>
+  /* ---------- build the card from the signed-in user's profile row ---------- */
+  function blankCard(){
+    return { firstName:'', lastName:'', handle:'', job:'', memberSince:'—', level:1, points:0,
+      avatar:null, cover:null,
+      contacts:[{id:1,type:'ingame',value:'Always on',locked:true}],
+      about:'', services:[], education:[], jobs:[],
+      vis:{about:true,services:true,education:true,jobs:true,references:true,phone:true,points:true} };
+  }
+  function bpLoadCard(){
+    const p = (typeof SB_PROFILE==='object' && SB_PROFILE) ? SB_PROFILE : {};
+    const u = (typeof SB_USER==='object' && SB_USER) ? SB_USER : {};
+    const emailName = ((u.email||'').split('@')[0]) || 'member';
+    let since='—'; const created = u.created_at || p.created_at;
+    if(created){ try{ since=new Date(created).toLocaleDateString(undefined,{month:'long',year:'numeric'}); }catch(_){ } }
+    const contacts=[{id:1,type:'ingame',value:'Always on',locked:true}]; let idn=2;
+    if(p.contact){ contacts.push({id:idn++,type:'phone',value:String(p.contact)}); }
+    if(Array.isArray(p.contacts)){ p.contacts.forEach(c=>{ if(c&&c.type&&c.type!=='ingame'&&c.type!=='phone'){ contacts.push({id:idn++,type:c.type,value:c.value||''}); } }); }
+    nextId = idn+50;
+    card = {
+      firstName: p.first_name||'',
+      lastName:  p.last_name||'',
+      handle:    (p.nickname||emailName).replace(/[^a-z0-9_.]/gi,'').toLowerCase(),
+      job:       p.job||'',
+      memberSince: since,
+      level:     (p.level!=null?p.level:1),
+      points:    (p.trust_points!=null?p.trust_points:0),
+      avatar:    p.avatar_url||null,
+      cover:     p.cover_url||null,
+      contacts:  contacts,
+      about:     p.about||'',
+      services:  Array.isArray(p.services)?p.services:[],
+      education: Array.isArray(p.education)?p.education:[],
+      jobs:      Array.isArray(p.jobs)?p.jobs:[],
+      vis:       Object.assign({about:true,services:true,education:true,jobs:true,references:true,phone:true,points:true}, (p.visibility&&typeof p.visibility==='object')?p.visibility:{}),
+    };
+  }
+
+  /* ---------- edit actions (exposed on window.BP) ---------- */
+  function startEdit(){ editing=true; draft=JSON.parse(JSON.stringify(card)); render(); }
+  function cancelEdit(){ editing=false; draft=null; render(); }
+  async function saveEdit(){
+    draft.contacts = draft.contacts.filter(c=>c.locked || (c.value||'').trim());
+    Object.assign(card, draft); editing=false; draft=null; render();
+    await bpSaveCard();
+  }
+  function setDraft(k,v){ if(draft) draft[k]=v; }
+  function setHandle(v){ if(draft) draft.handle=(v||'').replace(/[^a-z0-9_.]/gi,'').toLowerCase(); }
+  function setContact(id,v){ if(!draft)return; const c=draft.contacts.find(x=>x.id===id); if(c) c.value=v; }
+  function removeContact(id){ if(!draft)return; draft.contacts=draft.contacts.filter(x=>x.id!==id); render(); }
+  function addContact(type){ if(!draft)return; draft.contacts.push({id:nextId++,type,value:''}); render(); setTimeout(()=>{const els=document.querySelectorAll('#profile-page .ct-val');els[els.length-1]&&els[els.length-1].focus();},30); }
+  function removeService(i){ if(!draft)return; draft.services.splice(i,1); render(); }
+  function addService(){ const el=document.getElementById('bp-svc-in'); const v=((el&&el.value)||'').trim(); if(v&&draft){ draft.services.push(v); render(); setTimeout(()=>{const n=document.getElementById('bp-svc-in'); if(n) n.focus();},30); } }
+  function setEdu(i,k,v){ if(draft&&draft.education[i]) draft.education[i][k]=v; }
+  function removeEdu(i){ if(!draft)return; draft.education.splice(i,1); render(); }
+  function addEdu(){ if(!draft)return; draft.education.push({course:'',school:'',year:''}); render(); }
+  function setJob(i,k,v){ if(draft&&draft.jobs[i]) draft.jobs[i][k]=v; }
+  function removeJob(i){ if(!draft)return; draft.jobs.splice(i,1); render(); }
+  function addJob(){ if(!draft)return; draft.jobs.push({role:'',place:'',period:''}); render(); }
+  function toggleVis(k){ if(draft){ draft.vis[k]=!draft.vis[k]; render(); } }
+  function setView(o){ ownerView=o; render(); }
+  function pickAvatar(){ const el=document.getElementById('bm-av-in'); if(el) el.click(); }
+  function pickCover(){ const el=document.getElementById('bm-cov-in'); if(el) el.click(); }
+  function openContact(id){
+    const ct=(editing?draft:card).contacts.find(x=>x.id===id); if(!ct) return;
+    const v=(ct.value||'').trim(), digits=s=>s.replace(/[^0-9]/g,''), handle=s=>s.replace(/^@/,'');
+    let url=null;
+    switch(ct.type){
+      case 'ingame': bmToast('💬 Opens your in-app chat'); return;
+      case 'phone': url='tel:'+v.replace(/[^0-9+]/g,''); break;
+      case 'email': url='mailto:'+v; break;
+      case 'whatsapp': url='https://wa.me/'+digits(v); break;
+      case 'viber': url='viber://chat?number='+encodeURIComponent(v.replace(/[^0-9+]/g,'')); break;
+      case 'telegram': url='https://t.me/'+handle(v); break;
+      case 'instagram': url='https://instagram.com/'+handle(v); break;
+      case 'messenger': url='https://m.me/'+handle(v); break;
+      case 'discord': try{navigator.clipboard.writeText(v);}catch(_){} bmToast('🎮 Discord '+v+' — copied'); return;
+      case 'custom': url=/^https?:\/\//i.test(v)?v:'https://'+v; break;
+    }
+    if(url){ try{ window.open(url,'_blank'); }catch(_){ location.href=url; } }
+  }
+
+  /* ---------- save to Supabase (defensive: works before/after the new columns exist) ---------- */
+  async function bpUploadImage(dataUrl, kind){
+    if(!dataUrl || dataUrl.slice(0,5)!=='data:') return dataUrl||null;
+    if(typeof sb==='undefined' || !sb || !SB_USER) return null;
+    try{
+      const blob = await (await fetch(dataUrl)).blob();
+      const ext = ((blob.type.split('/')[1])||'jpg').replace('jpeg','jpg');
+      const path = SB_USER.id+'/'+kind+'_'+Date.now()+'.'+ext;
+      const up = await sb.storage.from('profile-media').upload(path, blob, {upsert:true, contentType:blob.type});
+      if(up.error){ console.warn('[BringMe] image upload failed:', up.error.message); return null; }
+      const pub = sb.storage.from('profile-media').getPublicUrl(path);
+      return (pub.data && pub.data.publicUrl) || null;
+    }catch(e){ console.warn('[BringMe] image upload error:', e); return null; }
+  }
+  async function bpSaveCard(){
+    if(typeof sb==='undefined' || !sb || !SB_USER){ bmToast('Saved on this device'); return; }
+    bmToast('Saving…');
+    try{
+      if(card.avatar && card.avatar.slice(0,5)==='data:'){ const url=await bpUploadImage(card.avatar,'avatar'); if(url) card.avatar=url; }
+      if(card.cover && card.cover.slice(0,5)==='data:'){ const url=await bpUploadImage(card.cover,'cover'); if(url) card.cover=url; }
+    }catch(_){}
+    const phone = (card.contacts.find(c=>c.type==='phone')||{}).value || null;
+    const extraContacts = card.contacts.filter(c=>!c.locked && c.type!=='phone' && (c.value||'').trim()).map(c=>({type:c.type,value:c.value}));
+    const payload = {
+      first_name:card.firstName, last_name:card.lastName, nickname:card.handle,
+      job:card.job, about:card.about,
+      services:card.services, education:card.education, jobs:card.jobs,
+      visibility:card.vis, contacts:extraContacts,
+      avatar_url:card.avatar, cover_url:card.cover, contact:phone,
+    };
+    try{
+      const res = await sb.from('profiles').update(payload).eq('id', SB_USER.id);
+      if(res.error) throw res.error;
+      if(SB_PROFILE) Object.assign(SB_PROFILE, payload);
+      if(typeof applyContact==='function' && phone) applyContact(phone);
+      if(typeof onSignedIn==='function') onSignedIn();   // refresh the floating bar identity
+      bmToast('✓ Profile saved');
+    }catch(e){
+      console.warn('[BringMe] profile save failed:', e && (e.message||e));
+      bmToast('Saved on this device — add the new profile columns to sync');
+    }
+  }
+
+  /* ---------- VIEW card (photo-dominant) ---------- */
+  function viewCardHTML(){
+    const c=card;
+    const showPhone = ownerView || c.vis.phone;
+    const primary=c.contacts.filter(ct=>ct.value && (ct.type==='ingame'||(ct.type==='phone'&&showPhone)))
+      .map(ct=>{ const label = ct.type==='ingame' ? 'Message in app' : esc(ct.value);
+        return `<button class="vnum ${ct.type==='ingame'?'vprime':''}" onclick="BP.openContact(${ct.id})" title="${CT[ct.type].label}: ${esc(ct.value)}"><span class="vnum-ic" style="background:${appBg(ct.type)}">${appSvg(ct.type)}</span><span class="vnum-tx">${label}</span></button>`; }).join('');
+    const secondary=c.contacts.filter(ct=>ct.value && ct.type!=='ingame' && ct.type!=='phone')
+      .map(ct=>`<button class="appic" style="background:${appBg(ct.type)}" onclick="BP.openContact(${ct.id})" title="${CT[ct.type].label}: ${esc(ct.value)}">${appSvg(ct.type)}</button>`).join('');
+    const nameBlock = ownerView
+      ? `<div class="vname">${esc(c.firstName)||'Your name'} ${esc(c.lastName)}</div><div class="vhandle">@${esc(c.handle)}</div>`
+      : `<div class="vname">@${esc(c.handle)}</div><div class="vhandle priv">🔒 Real name shared on request</div>`;
+    const avInner = c.avatar?`<img src="${c.avatar}">`:`<span class="vini">${ownerView?ini(c):esc((c.handle||'?').slice(0,2).toUpperCase())}</span>`;
+    return `<div class="bizcard vcard">
+      <div class="bc-cover" style="${c.cover?`background-image:url('${c.cover}')`:''}">${c.cover?'':coverArt()}</div>
+      <div class="vscrim"></div>
+      <div class="vtop"><button class="gold-btn" onclick="BP.startEdit()">✎ Edit</button><button onclick="BP.toast('Share your card — coming soon')">Share</button></div>
+      <div class="voverlay">
+        <div class="vrow">
+          <div class="vphoto">${avInner}</div>
+          <div class="vid">${nameBlock}<div class="vjob">${esc(c.job)||'&nbsp;'}</div></div>
         </div>
-        <div class="bc-mid">
-          <div class="bc-badge">⭐ ${U.title.replace(/^\S+\s/,'')} · Level ${U.level}</div>
-          <div class="bc-chips">${chips.map(c=>`<span class="bc-chip">${c}</span>`).join('')}</div>
-        </div>
-        <div class="bc-foot">
-          <div class="bc-foot-txt"><div class="bc-tagline">“${U.tagline}”</div><div class="bc-metaline">📍 ${U.area}   ·   🕑 Replies ${U.responseTime}   ·   📅 Since ${U.joined.replace(/^Joined\s/,'')}</div></div>
-          <div class="bc-qrbox"><div class="bc-qr-tile">${qrSvg()}</div><div class="bc-qr-cap">Scan card</div></div>
-        </div>
+        <div class="vstats"><span class="vlevel">⭐ Level ${c.level}</span>${(ownerView||c.vis.points)?`<span class="vpts">🪙 ${Number(c.points).toLocaleString()} pts</span>`:''}<span class="vsince">📅 Since ${esc(c.memberSince)}</span></div>
+        <div class="vctttl">Contact</div>
+        <div class="vcontacts"><div class="vnums">${primary}</div>${secondary?`<div class="vicons">${secondary}</div>`:''}</div>
       </div>
     </div>`;
   }
-  function realNameRow(){ return `<div class="tc-realname">🔒 Your real name is <b>private</b> — shown to others only when you approve a request. <span class="tc-more" onclick="bmToast('Choose: Always show · Only on request · Never')">change</span></div>`; }
-  function belowCard(){ return `<div class="psec"><div class="bc-actions"><button class="mh-btn primary" onclick="bmToast('Edit your card')">Edit card</button><button class="mh-btn ghost" onclick="bmToast('Share your business card')">Share card</button></div>${realNameRow()}</div>`; }
-  function contactSection(){
-    const chans=[{ic:'📨',l:'Messenger'},{ic:'📲',l:'Viber'},{ic:'🟢',l:'WhatsApp'},{ic:'📞',l:'Call/SMS'},{ic:'✉️',l:'Email'}];
-    return `<div class="psec"><div class="psec-ttl">How people reach you</div>
-      <button class="cc-primary" onclick="bmToast('Opens in-app chat')">💬 Message in BringMe</button>
-      <div class="cc-grid">${chans.map(c=>`<button class="cc-btn" onclick="bmToast('${c.l}')"><span class="cc-ic">${c.ic}</span><span class="cc-l">${c.l}</span></button>`).join('')}</div>
-      <div class="tc-realname" style="margin-top:9px">In-app chat is always on — you pick which other channels to show.</div></div>`;
+
+  /* ---------- EDIT form ---------- */
+  function editContacts(){
+    return draft.contacts.map(ct=>`
+      <div class="ct-edit">
+        <span class="icsq" style="background:${appBg(ct.type)}">${appSvg(ct.type)}</span>
+        <input class="ct-val" value="${esc(ct.value)}" oninput="BP.setContact(${ct.id},this.value)" placeholder="${CT[ct.type].label}" ${ct.locked?'readonly style="background:var(--off-white);color:var(--muted)"':''}>
+        ${ct.locked ? '<span class="ct-lock">always on</span>' : `<button class="ct-rm" onclick="BP.removeContact(${ct.id})" title="Remove">✕</button>`}
+      </div>`).join('');
   }
-  function trustSection(){
-    const pct=Math.round(U.xpInto/U.xpNeed*100);
-    const given=U.helped, asked=U.asked, ratio=asked?given/asked:given;
-    const giveTag=ratio>=2?`🌟 Helps ${Math.round(ratio)}× more than asks`:ratio>=1?'🤝 Fair give &amp; take':'⚠️ Asks more than helps';
-    const joined=U.joined.replace(/^Joined\s/,'');
-    return `<div class="psec"><div class="psec-ttl">Trust &amp; standing</div>
-      <div class="ts-head"><div class="ts-tier">⭐ ${U.title.replace(/^\S+\s/,'')}</div><div class="ts-lvl">Level ${U.level}<span>/100</span></div></div>
-      <div class="ts-prog"><div class="ts-prog-fill" style="width:${pct}%"></div></div>
-      <div class="ts-prog-txt">${(U.xpNeed-U.xpInto).toLocaleString()} XP to Level ${U.level+1}</div>
-      <div class="ts-give">${giveTag}</div>
-      <div class="ts-stats"><div><b>${U.rating}</b><span>Rating</span></div><div><b>${U.deals}</b><span>Deals</span></div><div><b>${U.helped}</b><span>Helped</span></div><div><b>${U.followers}</b><span>Followers</span></div><div><b>${joined}</b><span>Joined</span></div></div>
+  function addContactUI(){
+    const types=['phone','viber','whatsapp','messenger','discord','email','instagram','telegram','custom'];
+    return `<div class="add-ct"><div class="add-ct-lbl">➕ Add a way to reach you</div>
+      <div class="add-ct-row">${types.map(t=>`<button class="add-ct-btn" onclick="BP.addContact('${t}')"><span class="icsq sm" style="background:${appBg(t)}">${appSvg(t)}</span>${CT[t].label}</button>`).join('')}</div></div>`;
+  }
+  function editCardHTML(){
+    const c=draft;
+    return `<div class="bizcard ecard">
+      <div class="ec-cover" style="${c.cover?`background-image:url('${c.cover}');background-size:cover;background-position:center`:''}">${c.cover?'':coverArt()}<button class="cover-btn" onclick="BP.pickCover()">📷 Change cover</button></div>
+      <div class="ec-main">
+        <div class="ec-left">
+          <div class="ec-photo" onclick="BP.pickAvatar()">${c.avatar?`<img src="${c.avatar}">`:`<span class="ec-ini">${ini(c)}</span>`}<span class="cam">📷</span></div>
+          <div class="ec-meta">
+            <div class="ec-level">⭐ Level ${c.level}</div>
+            <div class="ec-pts">🪙 ${Number(c.points).toLocaleString()} pts</div>
+            <div class="ec-since">📅 Member since<b>${esc(c.memberSince)}</b></div>
+            <div class="ro-note">Level, points &amp; join date are set automatically</div>
+          </div>
+        </div>
+        <div class="ec-right">
+          <div class="ed-namerow">
+            <input class="ed-name" value="${esc(c.firstName)}" oninput="BP.setDraft('firstName',this.value)" placeholder="First name" maxlength="24">
+            <input class="ed-name" value="${esc(c.lastName)}" oninput="BP.setDraft('lastName',this.value)" placeholder="Last name" maxlength="24">
+          </div>
+          <div class="ed-handle-wrap"><span class="ed-at">@</span><input class="ed-handle" value="${esc(c.handle)}" oninput="BP.setHandle(this.value)" placeholder="username" maxlength="20"></div>
+          <div class="ed-handle-note">🔒 Your @username. Changing it affects your reputation and is limited to once every 30 days.</div>
+          <input class="ed-job" value="${esc(c.job)}" oninput="BP.setDraft('job',this.value)" placeholder="What you do — job or trade" maxlength="60">
+          <div class="ec-ctttl">Ways people can reach you</div>
+          <div>${editContacts()}</div>
+          ${addContactUI()}
+        </div>
+      </div>
+      <div class="ec-cvedit">
+        <div class="vis-panel">
+          <div class="vis-ttl">👁 Visible on your public About Me</div>
+          <div class="vis-chips">${[['about','Summary'],['services','Skills'],['education','Education'],['jobs','Jobs'],['references','References'],['phone','Phone no.'],['points','Points']].map(kv=>`<button class="vis-chip ${c.vis[kv[0]]?'on':''}" onclick="BP.toggleVis('${kv[0]}')">${c.vis[kv[0]]?'👁':'🔒'} ${kv[1]}</button>`).join('')}</div>
+          <div class="vis-hint">Tap to hide anything you'd rather keep private — hidden details won't appear on your public page.</div>
+        </div>
+        <div class="ec-ctttl">Summary</div>
+        <textarea class="ed-about" oninput="BP.setDraft('about',this.value)" placeholder="A short intro — what you do and how you work" maxlength="320">${esc(c.about)}</textarea>
+        <div class="ec-ctttl" style="margin-top:15px">Skills / What I do</div>
+        <div class="svc-edit">${c.services.map((sv,i)=>`<span class="svc-tag">${esc(sv)}<button class="svc-rm" onclick="BP.removeService(${i})" title="Remove">✕</button></span>`).join('')}</div>
+        <div class="svc-add"><input class="svc-in" id="bp-svc-in" placeholder="Add a skill…" maxlength="30" onkeydown="if(event.key==='Enter'){BP.addService();event.preventDefault();}"><button class="svc-addbtn" onclick="BP.addService()">+ Add</button></div>
+        <div class="ec-ctttl" style="margin-top:16px">Education</div>
+        <div class="entry-edit">${c.education.map((e,i)=>`<div class="ee-card"><input class="ee-in" value="${esc(e.course)}" oninput="BP.setEdu(${i},'course',this.value)" placeholder="Course / degree"><div class="ee-two"><input class="ee-in" value="${esc(e.school)}" oninput="BP.setEdu(${i},'school',this.value)" placeholder="School"><input class="ee-in yr" value="${esc(e.year||'')}" oninput="BP.setEdu(${i},'year',this.value)" placeholder="Year"><button class="ee-rm" onclick="BP.removeEdu(${i})" title="Remove">✕</button></div></div>`).join('')}</div>
+        <button class="ee-add" onclick="BP.addEdu()">+ Add education</button>
+        <div class="ec-ctttl" style="margin-top:16px">Previous jobs</div>
+        <div class="entry-edit">${c.jobs.map((j,i)=>`<div class="ee-card"><input class="ee-in" value="${esc(j.role)}" oninput="BP.setJob(${i},'role',this.value)" placeholder="Role / position"><div class="ee-two"><input class="ee-in" value="${esc(j.place)}" oninput="BP.setJob(${i},'place',this.value)" placeholder="Company / place"><input class="ee-in yr" value="${esc(j.period||'')}" oninput="BP.setJob(${i},'period',this.value)" placeholder="Years"><button class="ee-rm" onclick="BP.removeJob(${i})" title="Remove">✕</button></div></div>`).join('')}</div>
+        <button class="ee-add" onclick="BP.addJob()">+ Add job</button>
+      </div>
+      <div class="ec-actions">
+        <button class="act save grow" onclick="BP.saveEdit()">✓ Save profile</button>
+        <button class="act ghost" onclick="BP.cancelEdit()">Cancel</button>
+      </div>
     </div>`;
   }
-  function activitySection(){
-    const sign=p=>(p>=0?'+':'')+p;
-    let h=`<div class="psec"><div class="psec-ttl">Achievements</div><div class="ach">${U.badges.map(b=>`<div class="ach-item ${b.on?'':'off'}"><div class="ach-ic">${b.ic}</div><div class="ach-l">${b.l}</div></div>`).join('')}</div><button class="gold-cta" onclick="bmToast('All badges')">🏅 View all badges</button>`;
-    h+=`<div class="psec-ttl sub">Activity</div><div class="tl">${U.repLog.map(e=>`<div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><div class="tl-t">${e.t}</div><div class="tl-meta">${e.when} ago</div></div><div class="tl-pts ${e.pts<0?'minus':''}">${sign(e.pts)}</div></div>`).join('')}</div><button class="gold-cta" onclick="bmToast('Full activity log')">📜 See full activity</button>`;
-    h+=`<div class="psec-ttl sub">Reviews</div>${U.reviewList.slice(0,3).map(r=>`<div class="kudo"><div class="kudo-stars">${'★'.repeat(r.st)}${'☆'.repeat(5-r.st)}</div><div class="kudo-tx">“${r.tx}”</div><div class="kudo-by">${r.n}, ${r.tagL.toLowerCase()} ${r.when}</div></div>`).join('')}<button class="gold-cta" onclick="bmToast('All reviews')">⭐ See all ${U.reviews} reviews</button>`;
-    h+=`</div>`; return h;
+
+  /* ---------- toggle + banner + bodies ---------- */
+  function viewToggle(){
+    return `<div class="vtoggle">
+      <button class="vt-btn ${ownerView?'on':''}" onclick="BP.setView(true)">⚙️ Control Panel</button>
+      <button class="vt-btn ${!ownerView?'on':''}" onclick="BP.setView(false)">👤 About Me</button>
+    </div>`;
+  }
+  function viewBanner(){
+    return ownerView
+      ? `<div class="vbanner priv">🔒 Control Panel — private, only you can see this</div>`
+      : `<div class="vbanner pub">🌐 About Me — this is your public page. Hidden items don't show here.</div>`;
+  }
+  function ownerBody(){
+    const lvl=card.level, pts=card.points, into=680, need=1000, pct=Math.round(into/need*100), togo=need-into;
+    const quests=[{t:'Close a deal',r:50,done:false},{t:'Help a neighbor find something',r:15,done:false},{t:'Earn a 5-star review',r:8,done:false},{t:'Keep your 7-day streak alive',r:5,done:true},{t:'Verify your ID',r:20,done:false,once:true}];
+    const goals=[{t:'Reach 50 deals',cur:31,max:50,ic:'🤝'},{t:'Hit Level 50',cur:49,max:50,ic:'⭐'},{t:'Unlock the “Legend” badge',cur:49,max:60,ic:'👑',sub:'Unlocks at Level 60'}];
+    const near=[{ic:'🏅',l:'50 Deals',cur:31,max:50},{ic:'🔥',l:'30-day Streak',cur:7,max:30}];
+    return `<div class="cvpanel owner">
+      <div class="ownhero">
+        <div class="oh-top"><div class="oh-lvl">⭐ Level ${lvl}</div><div class="oh-next">Next: Level ${lvl+1}</div></div>
+        <div class="oh-bar"><div class="oh-fill" style="width:${pct}%"></div></div>
+        <div class="oh-togo"><b>${togo} pts</b> to Level ${lvl+1} &nbsp;·&nbsp; 🪙 ${Number(pts).toLocaleString()} total</div>
+        <div class="oh-reward">🎁 At Level ${lvl+1}: a brighter badge frame + an extra daily boost</div>
+      </div>
+      <div class="cvsec"><div class="cvttl">Things to do</div><div class="quests">${quests.map(q=>`<div class="quest ${q.done?'done':''}"><span class="q-check">${q.done?'✅':'⬜'}</span><span class="q-t">${q.t}${q.once?' <span class="q-once">one-time</span>':''}</span><span class="q-r">+${q.r}</span></div>`).join('')}</div></div>
+      <div class="cvsec"><div class="cvttl">Your goals <span class="cv-add" onclick="BP.toast('Set a personal goal — coming soon')">+ Add goal</span></div><div class="goals">${goals.map(g=>{const p=Math.round(g.cur/g.max*100);return `<div class="goal"><div class="g-row"><span class="g-ic">${g.ic}</span><span class="g-t">${g.t}</span><span class="g-n">${g.cur}/${g.max}</span></div><div class="g-bar"><div class="g-fill" style="width:${p}%"></div></div>${g.sub?`<div class="g-sub">${g.sub}</div>`:''}</div>`;}).join('')}</div></div>
+      <div class="cvsec"><div class="cvttl">Almost there</div><div class="nearbadges">${near.map(b=>{const p=Math.round(b.cur/b.max*100);return `<div class="nb"><div class="nb-ic">${b.ic}</div><div class="nb-body"><div class="nb-l">${b.l}</div><div class="nb-bar"><div class="nb-fill" style="width:${p}%"></div></div></div><div class="nb-n">${b.cur}/${b.max}</div></div>`;}).join('')}</div></div>
+      <div class="cvsec"><div class="cvttl">This week</div><div class="cvstats"><div class="cvstat"><b>+128</b><span>Points earned</span></div><div class="cvstat"><b>7🔥</b><span>Day streak</span></div><div class="cvstat"><b>#12</b><span>In Angeles City</span></div><div class="cvstat"><b>3</b><span>Deals</span></div></div></div>
+    </div>`;
+  }
+  function cvBody(){
+    const v=card.vis, stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+    const edu = card.education.length ? card.education.map(e=>`<div class="cv-entry"><div class="ce-main">${esc(e.course)}</div><div class="ce-sub">${esc(e.school)}${e.year?` · ${esc(e.year)}`:''}</div></div>`).join('') : `<div class="cv-empty">Nothing added yet.</div>`;
+    const jobs = card.jobs.length ? card.jobs.map(j=>`<div class="cv-entry"><div class="ce-main">${esc(j.role)}</div><div class="ce-sub">${esc(j.place)}${j.period?` · ${esc(j.period)}`:''}</div></div>`).join('') : `<div class="cv-empty">Nothing added yet.</div>`;
+    const secs=[
+      v.about?`<div class="cvsec"><div class="cvttl">Summary</div><p class="cvabout">${esc(card.about)||'<span style="color:var(--muted)">No summary yet.</span>'}</p></div>`:'',
+      v.services?`<div class="cvsec"><div class="cvttl">Skills / What I do</div><div class="cvtags">${card.services.length?card.services.map(x=>`<span class="cvtag">${esc(x)}</span>`).join(''):'<span class="cv-empty">Nothing added yet.</span>'}</div></div>`:'',
+      v.education?`<div class="cvsec"><div class="cvttl">Education</div>${edu}</div>`:'',
+      v.jobs?`<div class="cvsec"><div class="cvttl">Previous jobs</div>${jobs}</div>`:'',
+      v.references?`<div class="cvsec"><div class="cvttl">References</div>${cv.reviews.map(r=>`<div class="cvkudo"><div class="cvkudo-top"><span class="cvkudo-stars">${stars(r.st)}</span><span class="cvkudo-tag">${r.tag}</span></div><p class="cvkudo-tx">“${r.tx}”</p><div class="cvkudo-by">— ${r.n}, ${r.when}</div></div>`).join('')}</div>`:'',
+    ].filter(Boolean).join('');
+    return `<div class="cvpanel">${secs || `<div class="cv-empty" style="padding:18px 22px">You've hidden everything on your public page. Open ✎ Edit to show sections.</div>`}</div>`;
   }
 
+  /* ---------- side panels (placeholder data) ---------- */
   function postCard(p){ return `<div class="mp-card"><div class="mp-emoji">${p.em}</div><div class="mp-body"><div class="mp-title">${p.t}</div><div class="mp-meta">${p.m}</div></div><span class="mp-status ${p.sc}">${p.s}</span></div>`; }
   function estabCard(s){ const face=s.avatar?`<img src="${s.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:11px">`:s.type.split(' ')[0]; return `<div class="mp-card"><div class="mp-emoji">${face}</div><div class="mp-body"><div class="mp-title">${s.name}</div><div class="mp-meta">⭐ ${s.rating} · ${s.reviews} reviews · ${s.official?'✅ Verified':'👥 Community'}</div></div><span class="mp-status mp-active">Open ›</span></div>`; }
-  const feedEmpty = m => `<div class="fp-empty">${m}</div>`;
-  const feedList  = arr => arr.map(postCard).join('');
   function feedHalf(title,count,inner,tone){ return `<div class="fp-half ${tone?'t-'+tone:''}"><div class="fp-sec-hdr"><span class="fp-sec-ttl">${title}</span><span class="fp-sec-cnt">${count}</span></div><div class="fp-half-body">${inner}</div></div>`; }
+  const feedEmpty = m => `<div class="fp-empty">${m}</div>`;
   function leftFeed(){
-    let h=feedHalf('My Urgent Requests', U.postsReq.length, U.postsReq.length?feedList(U.postsReq):feedEmpty('No urgent requests right now.'), 'red');
-    h+=feedHalf('My Find Requests', U.postsLooking.length, U.postsLooking.length?feedList(U.postsLooking):feedEmpty('No find requests yet.'), 'gold');
-    return h;
+    return feedHalf('My Urgent Requests', SIDE.req.length, SIDE.req.length?SIDE.req.map(postCard).join(''):feedEmpty('No urgent requests right now.'), 'red')
+         + feedHalf('My Find Requests', SIDE.look.length, SIDE.look.length?SIDE.look.map(postCard).join(''):feedEmpty('No find requests yet.'), 'gold');
   }
   function rightFeed(){
-    let h=feedHalf('Items I’m Selling', U.postsActive.length, U.postsActive.length?feedList(U.postsActive):feedEmpty('Nothing listed for sale.'), 'blue');
-    h+=feedHalf('My Establishments', STORES.length, STORES.length?STORES.map(estabCard).join(''):feedEmpty('No registered businesses.'), 'green');
-    return h;
+    return feedHalf('Items I’m Selling', SIDE.active.length, SIDE.active.length?SIDE.active.map(postCard).join(''):feedEmpty('Nothing listed for sale.'), 'blue')
+         + feedHalf('My Establishments', SIDE.stores.length, SIDE.stores.length?SIDE.stores.map(estabCard).join(''):feedEmpty('No registered businesses.'), 'green');
   }
 
+  /* ---------- render ---------- */
+  function footerHTML(){
+    return ownerView ? `<div class="bp-foot"><button class="bp-foot-btn" onclick="BP.toast('Saved items — coming soon')">🔖 Saved</button><button class="bp-foot-btn danger" onclick="BP.logout()">Log out</button></div>` : '';
+  }
+  function centerHTML(){
+    return editing ? editCardHTML()
+      : (viewCardHTML() + viewToggle() + viewBanner() + (ownerView ? ownerBody() : cvBody()) + footerHTML());
+  }
   function render(){
     const pg=document.getElementById('profile-page'); if(!pg) return;
-    pg.innerHTML = `<button class="back-link" onclick="bmCloseProfile()">← Back to the map</button>`
-      + `<div class="pm-inner">` + bcard() + belowCard() + contactSection() + trustSection() + activitySection()
-      + `<div class="psec" style="display:flex;gap:8px"><button class="mh-btn ghost" onclick="bmToast('Saved items')">🔖 Saved</button><button class="mh-btn ghost" style="color:#9B2D1F" onclick="if(typeof sbSignOut==='function'){sbSignOut();}bmCloseProfile();">Log out</button></div>`
-      + `</div>`;
-    const lp=document.getElementById('left-profile');   if(lp) lp.innerHTML=leftFeed();
-    const rp=document.getElementById('sidebar-profile');if(rp) rp.innerHTML=rightFeed();
+    pg.innerHTML = `<div class="bmprof">${centerHTML()}</div>`;
+    const lp=document.getElementById('left-profile');    if(lp) lp.innerHTML=leftFeed();
+    const rp=document.getElementById('sidebar-profile'); if(rp) rp.innerHTML=rightFeed();
   }
 
-  window.bmOpenProfile=function(){ document.body.classList.add('bm-profile'); render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
-  window.bmCloseProfile=function(){ document.body.classList.remove('bm-profile'); };
-  window.bmToast=function(m){ if(typeof showToast==='function'){ showToast(m,'info'); } };
-
-  // --- optional avatar / cover upload (same behaviour as the demo) ---
-  window.bmPickAvatar=function(){ const el=document.getElementById('bm-av-in'); if(el) el.click(); };
-  window.bmPickCover =function(){ const el=document.getElementById('bm-cov-in'); if(el) el.click(); };
+  /* ---------- image upload (same behaviour as the demo) ---------- */
   function wireUpload(inputId,prop){
     const el=document.getElementById(inputId); if(!el) return;
     el.addEventListener('change',function(e){
-      const f=e.target.files&&e.target.files[0];
-      if(f){ const r=new FileReader(); r.onload=ev=>{ const img=new Image(); img.onload=()=>{
-        const max=(prop==='cover')?1000:420; let w=img.width,h=img.height;
+      const f=e.target.files&&e.target.files[0]; if(!f){return;}
+      const r=new FileReader();
+      r.onload=ev=>{ const img=new Image(); img.onload=()=>{
+        const max=(prop==='cover')?1100:460; let w=img.width,h=img.height;
         if(prop==='cover'){ if(w>max){const s=max/w;w=max;h=Math.round(h*s);} }
         else { if(w>max||h>max){const s=Math.min(max/w,max/h);w=Math.round(w*s);h=Math.round(h*s);} }
-        const c=document.createElement('canvas'); c.width=w;c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
-        let url; try{url=c.toDataURL('image/jpeg',0.84);}catch(_){url=ev.target.result;}
-        U[prop]=url; render(); bmToast(prop==='cover'?'Cover photo updated':'Profile photo updated');
-      }; img.onerror=()=>bmToast('Could not read that image'); img.src=ev.target.result; }; r.readAsDataURL(f); }
-      e.target.value='';
+        const cnv=document.createElement('canvas'); cnv.width=w; cnv.height=h; cnv.getContext('2d').drawImage(img,0,0,w,h);
+        let url; try{url=cnv.toDataURL('image/jpeg',0.85);}catch(_){url=ev.target.result;}
+        (editing?draft:card)[prop]=url; render(); bmToast(prop==='cover'?'Cover updated':'Photo updated');
+      }; img.onerror=()=>bmToast('Could not read that image'); img.src=ev.target.result; };
+      r.readAsDataURL(f); e.target.value='';
     });
   }
+
+  /* ---------- expose + open/close ---------- */
+  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, openContact, toast:bmToast, logout:bpLogout };
+  function bpLogout(){ if(typeof sbSignOut==='function'){ sbSignOut(); } bmCloseProfile(); }
+  window.bmToast = bmToast;
+  window.bmPickAvatar = pickAvatar;
+  window.bmPickCover  = pickCover;
+  window.bmOpenProfile = function(){ document.body.classList.add('bm-profile'); bpLoadCard(); editing=false; draft=null; ownerView=true; render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
+  window.bmCloseProfile = function(){ document.body.classList.remove('bm-profile'); };
+
   if(document.readyState!=='loading'){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); }
   else document.addEventListener('DOMContentLoaded',function(){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); });
 })();
