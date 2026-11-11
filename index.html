@@ -85,6 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
+<!-- ═══════ BringMe.Store · index v3 · 2026-11-11 ═══════ -->
+<script>window.BM_VERSION='index v3 · 2026-11-11';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -2451,17 +2453,18 @@ body.bm-profile #bm-back-fab{display:inline-flex;align-items:center;gap:7px;posi
 body.bm-profile #bm-back-fab:hover{border-color:rgba(255,200,60,.6)}
 /* side panels: hide the normal feed, show the own-posts feed */
 #left-profile,#sidebar-profile{display:none}
-body.bm-profile #left-profile,body.bm-profile #sidebar-profile{display:block;flex:1 1 auto;min-height:0;overflow-y:auto}
+body.bm-profile #left-profile,body.bm-profile #sidebar-profile{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:hidden}
 body.bm-profile #left-panel > :not(#left-profile){display:none !important}   /* !important: beats the app's forced display:flex on these sections */
 body.bm-profile #sidebar > :not(#sidebar-profile):not(.sidebar-handle){display:none !important}
+body.bm-profile #locating-banner,body.bm-profile #preview-label,body.bm-profile #guest-teaser{display:none !important}  /* keep map overlays off the profile card */
 /* On very wide screens, keep the 3 panels grouped and centred so the side
    panels stay attached to the profile instead of flying out to the edges.
    1440px ≈ a common desktop width worldwide. MAP mode is intentionally NOT
    capped, so the map can still use the full screen width. */
 body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
 /* stacked halves inside the real scrolling panels */
-#left-profile .fp-half,#sidebar-profile .fp-half{display:block}
-#left-profile .fp-half-body,#sidebar-profile .fp-half-body{height:auto;overflow:visible}
+#left-profile .fp-half,#sidebar-profile .fp-half{display:flex;flex-direction:column;flex:1 1 0;min-height:0}
+#left-profile .fp-half-body,#sidebar-profile .fp-half-body{flex:1 1 auto;min-height:0;overflow-y:auto}
 
 /* ---- back bar (sticky top of the profile) ---- */
 .back-link{display:flex;align-items:center;gap:7px;width:100%;padding:12px 18px;border:none;border-bottom:1px solid var(--hair);background:var(--off-white);color:var(--royal2);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;text-align:left;position:sticky;top:0;z-index:5}
@@ -2581,6 +2584,12 @@ body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
 .fp-half.t-gold .fp-sec-ttl{color:#8B6508} .fp-half.t-gold .fp-sec-cnt{background:#FBF0C0;color:#8B6508} .fp-half.t-gold .mp-emoji{background:#FBF0C0} .fp-half.t-gold .mp-status{background:#FBF0C0;color:#8B6508}
 .fp-half.t-blue .fp-sec-ttl{color:#2550b8} .fp-half.t-blue .fp-sec-cnt{background:#E7ECFB;color:#2550b8} .fp-half.t-blue .mp-emoji{background:#E7ECFB} .fp-half.t-blue .mp-status{background:#E7ECFB;color:#2550b8}
 .fp-half.t-green .fp-sec-ttl{color:#1A6B3A} .fp-half.t-green .fp-sec-cnt{background:#E6F5EE;color:#1A6B3A} .fp-half.t-green .mp-emoji{background:#E6F5EE} .fp-half.t-green .mp-status{background:#E6F5EE;color:#1A6B3A}
+.fp-add{border:none;cursor:pointer;font-family:'Poppins',sans-serif;font-weight:800;font-size:11px;line-height:1;padding:6px 11px;border-radius:100px;color:#fff;background:#173c88;box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.fp-add:hover{filter:brightness(1.08)}
+.fp-half.t-red .fp-add{background:#C0392B}
+.fp-half.t-gold .fp-add{background:#E3A810;color:#3a2a06}
+.fp-half.t-blue .fp-add{background:#2550b8}
+.fp-half.t-green .fp-add{background:#1A6B3A}
 .mp-look{background:#FBF0C0;color:#8B6508}
 </style>
 
@@ -2851,6 +2860,7 @@ body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
          The map keeps running underneath; JS fills #profile-page in render(). -->
     <div id="profile-page" class="pm"></div>
     <input type="file" id="bm-av-in" accept="image/*" style="display:none">
+    <input type="file" id="bm-doc-in" accept="image/*,application/pdf" style="display:none">
     <input type="file" id="bm-cov-in" accept="image/*" style="display:none">
     <!-- floating "back to the map" button — takes the profile bar's place while in the profile -->
     <button id="bm-back-fab" onclick="bmCloseProfile()">← Back to the map</button>
@@ -9031,6 +9041,49 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
 #profile-page .bp-foot-btn{flex:1;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
 #profile-page .bp-foot-btn:hover{background:rgba(255,255,255,.16)}
 #profile-page .bp-foot-btn.danger{color:#FFC9C0;border-color:rgba(255,120,100,.4);background:rgba(192,57,43,.2)}
+#profile-page .dash-hero{background:linear-gradient(135deg,#0a1f63,#173c88);border:1px solid rgba(227,165,15,.25);border-radius:16px;padding:14px;margin-bottom:16px}
+#profile-page .dash-hero .dash-since{margin:0 0 11px 2px}
+#profile-page .dash-hero .dash-hint{margin-bottom:0}
+#profile-page .dash-meters{display:flex;gap:10px;margin-bottom:11px}
+#profile-page .dm{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px 13px}
+#profile-page .dm.karma{background:rgba(227,165,15,.14);border-color:rgba(227,165,15,.4)}
+#profile-page .dm-top{font-family:'Poppins',sans-serif;font-weight:800;font-size:17px;color:#fff}
+#profile-page .dm.karma .dm-top{color:#FFD24A}
+#profile-page .dm-band{font-size:12px;font-weight:700;color:rgba(255,255,255,.92);margin-top:3px}
+#profile-page .dm-lbl{font-size:10px;color:rgba(255,255,255,.6);margin-top:5px;line-height:1.35}
+#profile-page .dm-bar{height:6px;background:rgba(255,255,255,.14);border-radius:100px;overflow:hidden;margin:9px 0 5px}
+#profile-page .dm-fill{height:100%;border-radius:100px;transition:width .3s}
+#profile-page .dm-of{font-size:13px;color:rgba(255,255,255,.55);font-weight:700}
+#profile-page .dash-since{font-size:11.5px;color:rgba(255,255,255,.62);margin:0 0 12px 2px}
+#profile-page .dash-hint{color:rgba(255,255,255,.85);font-size:12px;line-height:1.55;margin-bottom:15px;background:rgba(255,255,255,.06);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:10px 13px}
+#profile-page .gs-list{display:flex;flex-direction:column;gap:8px}
+#profile-page .gs-item{display:flex;align-items:center;gap:11px;background:var(--off-white);border:1px solid var(--hair);border-radius:12px;padding:11px 13px;cursor:pointer;transition:border-color .12s,background .12s}
+#profile-page .gs-item:hover{border-color:var(--royal2);background:#fff}
+#profile-page .gs-ck{font-size:16px;flex:0 0 auto}
+#profile-page .gs-main{flex:1;min-width:0}
+#profile-page .gs-t{font-size:13.5px;font-weight:700;color:var(--ink)}
+#profile-page .gs-hint{font-size:11.5px;color:var(--muted);margin-top:2px}
+#profile-page .gs-go{color:var(--royal2);font-weight:800;font-size:18px;flex:0 0 auto}
+#profile-page .cv-addr{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:10px}
+#profile-page .cv-map{width:100%;height:180px;border:0;border-radius:12px;margin-bottom:10px;display:block}
+#profile-page .cv-nav{display:inline-flex;align-items:center;gap:6px;background:var(--royal);color:#fff;text-decoration:none;font-weight:700;font-size:12.5px;padding:9px 15px;border-radius:100px}
+#profile-page .addr-row{display:flex;align-items:center;gap:10px;margin:8px 0 2px}
+#profile-page .addr-pin{border:1.5px solid var(--royal2);background:var(--cream);color:var(--royal);border-radius:9px;padding:9px 13px;font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;cursor:pointer}
+#profile-page .addr-ok{font-size:12.5px;font-weight:700;color:var(--green)}
+#profile-page .addr-clear{border:1px solid var(--hair);background:#fff;color:var(--muted);border-radius:8px;padding:6px 11px;font-size:11.5px;font-weight:700;cursor:pointer}
+#profile-page .doc-note{font-size:11px;color:var(--muted);line-height:1.5;background:var(--off-white);border:1px solid var(--hair);border-radius:10px;padding:9px 11px;margin-bottom:10px}
+#profile-page .doc-list{display:flex;flex-direction:column;gap:7px;margin-bottom:9px}
+#profile-page .doc-item{display:flex;align-items:center;gap:10px;background:var(--off-white);border:1px solid var(--hair);border-radius:11px;padding:9px 11px}
+#profile-page .doc-ic{font-size:18px;flex:0 0 auto}
+#profile-page .doc-main{flex:1;min-width:0}
+#profile-page .doc-l{font-size:13px;font-weight:700;color:var(--ink)}
+#profile-page .doc-st{font-size:11px;color:var(--gold-dk);font-weight:700;margin-top:1px}
+#profile-page .doc-st.ok{color:var(--green)}
+#profile-page .doc-rm{flex:0 0 auto;width:30px;height:30px;border-radius:8px;border:1px solid var(--hair);background:#fff;color:var(--red);cursor:pointer;font-weight:800}
+#profile-page .doc-add{display:flex;flex-wrap:wrap;gap:7px}
+#profile-page .doc-add-btn{border:1px dashed var(--royal2);background:var(--cream);color:var(--royal);border-radius:9px;padding:7px 11px;font-family:'Nunito',sans-serif;font-weight:700;font-size:11.5px;cursor:pointer}
+#profile-page .vbadges{display:flex;flex-wrap:wrap;gap:8px}
+#profile-page .vbadge{background:#E6F5EE;color:#1A6B3A;border:1px solid rgba(26,107,58,.25);border-radius:100px;padding:7px 13px;font-size:12.5px;font-weight:700}
 #profile-page{--navy:#0a1f63; --royal:#173c88; --royal2:#2550b8;
     --gold:#E3A50F; --gold-dk:#8B6508; --gold-lt:#FFD24A; --gold-pale:#FBF0C0;
     --off-white:#F5F7FF; --cream:#EEF1FF; --hair:#E7EAF4; --muted:#6677AA; --ink:#0a1f63;
@@ -9265,7 +9318,8 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
 
   /* ---------- state ---------- */
   let card = blankCard();
-  let editing=false, draft=null, nextId=100, ownerView=true;
+  let editing=false, draft=null, nextId=100, ownerView=true, bpDocType='other';
+  const DOCT = { nbi:{l:'NBI Clearance',s:true}, gov_id:{l:'Government ID',s:true}, passport:{l:'Passport',s:true}, license:{l:"Driver's License",s:true}, prc:{l:'PRC License',s:false}, diploma:{l:'Diploma',s:false}, cert:{l:'Certificate',s:false}, permit:{l:'Business Permit',s:false}, other:{l:'Other',s:false} };
 
   /* placeholder gamification until the reputation system is wired */
   const cv = {
@@ -9276,15 +9330,17 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
     ],
   };
   /* placeholder side-panel lists until the posts system feeds them */
-  const SIDE = {
-    req:[{em:'⚡',t:'USB-C fast charger (65W)',m:'Urgent · 2 replies · 1.2km away',s:'Open',sc:'mp-open'},{em:'⚡',t:'Ride to Clark Airport, 5 AM Sat',m:'Urgent · 4 replies',s:'Open',sc:'mp-open'}],
-    look:[{em:'🎮',t:'PS5 DualSense controller',m:'Looking for · 2nd-hand ok',s:'Wanted',sc:'mp-look'},{em:'📚',t:'Nursing board reviewer books',m:'Looking for · around Angeles',s:'Wanted',sc:'mp-look'}],
-    active:[{em:'📱',t:'iPhone 13 Pro 128GB',m:'₱28,000 · 142 views',s:'Active',sc:'mp-active'},{em:'🎧',t:'Sony WH-1000XM4',m:'₱9,500 · 88 views',s:'Active',sc:'mp-active'}],
-    stores:[{avatar:null,name:"Aling Rosa's Bakeshop",type:'🍞 Bakery / Eatery',official:true,rating:4.8,reviews:64},{avatar:null,name:"Marco's Phone Repair",type:'🔧 Repair / Services',official:true,rating:4.7,reviews:19}],
-  };
+  // Side panels show the user's OWN posts only. Empty until the posts system feeds them.
+  const SIDE = { req:[], look:[], active:[], stores:[] };
 
   /* ---------- helpers ---------- */
   const esc = s => (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const MAPS_KEY = (()=>{ try{ const s=[...document.scripts].find(x=>/maps\.googleapis\.com/.test(x.src||'')); const m=s&&s.src.match(/[?&]key=([^&]+)/); return m?decodeURIComponent(m[1]):''; }catch(_){ return ''; } })();
+  // ── Economy: XP curve (Level 1→100) + Credit limit (soft cap). Mirrors the Credits & Levels tuner. ──
+  const ECON = { xpBase:20, xpGrowth:1.08, capBase:300, capPer:23 };
+  function creditLimit(L){ return Math.round(ECON.capBase + ECON.capPer*(Math.max(1,L)-1)); }
+  function xpToNext(L){ return Math.round(ECON.xpBase*Math.pow(ECON.xpGrowth, L-1)); }   // XP from L to L+1
+  function levelFromXP(xp){ let L=1, acc=0; xp=Math.max(0,Number(xp)||0); while(L<100){ const need=xpToNext(L); if(xp<acc+need) break; acc+=need; L++; } return { level:L, into:Math.round(xp-acc), need:xpToNext(L) }; }
   const ini = c => ((((c.firstName||' ')[0]||'')+((c.lastName||' ')[0]||'')).toUpperCase()) || '?';
   function bmToast(m){ if(typeof showToast==='function'){ showToast(m,'info'); } else { console.log('[BringMe]',m); } }
   function coverArt(){
@@ -9313,11 +9369,11 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
 
   /* ---------- build the card from the signed-in user's profile row ---------- */
   function blankCard(){
-    return { firstName:'', lastName:'', handle:'', job:'', memberSince:'—', level:1, points:0,
-      avatar:null, cover:null,
+    return { firstName:'', lastName:'', handle:'', job:'', memberSince:'—', level:1, points:0, xp:0,
+      avatar:null, cover:null, address:'', lat:null, lng:null,
       contacts:[{id:1,type:'ingame',value:'Always on',locked:true}],
-      about:'', services:[], education:[], jobs:[],
-      vis:{about:true,services:true,education:true,jobs:true,references:true,phone:true,points:true} };
+      about:'', services:[], education:[], jobs:[], docs:[],
+      vis:{about:true,services:true,education:true,jobs:true,references:true,phone:true,points:true,address:false,verification:true} };
   }
   function bpLoadCard(){
     const p = (typeof SB_PROFILE==='object' && SB_PROFILE) ? SB_PROFILE : {};
@@ -9335,16 +9391,21 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       handle:    (p.nickname||emailName).replace(/[^a-z0-9_.]/gi,'').toLowerCase(),
       job:       p.job||'',
       memberSince: since,
-      level:     (p.level!=null?p.level:1),
+      xp:        (p.xp!=null?Number(p.xp):0),
+      level:     levelFromXP(p.xp!=null?Number(p.xp):0).level,
       points:    (p.trust_points!=null?p.trust_points:0),
       avatar:    p.avatar_url||null,
       cover:     p.cover_url||null,
+      address:   p.address||'',
+      lat:       (p.lat!=null?Number(p.lat):null),
+      lng:       (p.lng!=null?Number(p.lng):null),
       contacts:  contacts,
       about:     p.about||'',
       services:  Array.isArray(p.services)?p.services:[],
       education: Array.isArray(p.education)?p.education:[],
       jobs:      Array.isArray(p.jobs)?p.jobs:[],
-      vis:       Object.assign({about:true,services:true,education:true,jobs:true,references:true,phone:true,points:true}, (p.visibility&&typeof p.visibility==='object')?p.visibility:{}),
+      docs:      Array.isArray(p.docs)?p.docs:[],
+      vis:       Object.assign({about:true,services:true,education:true,jobs:true,references:true,phone:true,points:true,address:false,verification:true}, (p.visibility&&typeof p.visibility==='object')?p.visibility:{}),
     };
   }
 
@@ -9373,6 +9434,40 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   function setView(o){ ownerView=o; render(); }
   function pickAvatar(){ const el=document.getElementById('bm-av-in'); if(el) el.click(); }
   function pickCover(){ const el=document.getElementById('bm-cov-in'); if(el) el.click(); }
+  function bpReverseGeocode(lat,lng,cb){ try{ const g=new google.maps.Geocoder(); g.geocode({location:{lat,lng}},(res,st)=>{ cb(st==='OK'&&res&&res[0]?res[0].formatted_address:''); }); }catch(_){ cb(''); } }
+  function pinLocation(){
+    if(!navigator.geolocation){ bmToast('Location is not available on this device'); return; }
+    bmToast('📍 Getting your location…');
+    navigator.geolocation.getCurrentPosition(function(p){
+      if(!draft) return;
+      draft.lat=+p.coords.latitude.toFixed(6); draft.lng=+p.coords.longitude.toFixed(6); render();
+      bpReverseGeocode(draft.lat,draft.lng,function(addr){ if(draft){ if(addr && !draft.address) draft.address=addr; render(); bmToast('📍 Location pinned'); } });
+    }, function(){ bmToast('Could not get location — type your area instead'); }, {enableHighAccuracy:true,timeout:10000,maximumAge:0});
+  }
+  function clearPin(){ if(draft){ draft.lat=null; draft.lng=null; render(); } }
+  async function bpUploadDoc(file,type){
+    if(typeof sb==='undefined'||!sb||!SB_USER) return null;
+    try{
+      const ext=((file.name||'').split('.').pop()||'bin').toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,5)||'bin';
+      const path=SB_USER.id+'/doc_'+type+'_'+Date.now()+'.'+ext;
+      const up=await sb.storage.from('profile-docs').upload(path,file,{upsert:true,contentType:file.type||'application/octet-stream'});
+      if(up.error){ console.warn('[BringMe] doc upload failed:',up.error.message); return null; }
+      return path;
+    }catch(e){ console.warn('[BringMe] doc upload error:',e); return null; }
+  }
+  function pickDoc(type){ bpDocType=type; const el=document.getElementById('bm-doc-in'); if(el) el.click(); }
+  function removeDoc(id){ if(!draft)return; draft.docs=draft.docs.filter(d=>d.id!==id); render(); }
+  function wireDoc(){
+    const el=document.getElementById('bm-doc-in'); if(!el) return;
+    el.addEventListener('change', async function(e){
+      const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f||!draft) return;
+      const type=bpDocType||'other';
+      bmToast('Uploading document…');
+      const path=await bpUploadDoc(f,type);
+      if(path){ draft.docs.push({id:nextId++,type,label:(DOCT[type]||DOCT.other).l,path,verified:false}); render(); bmToast('Document uploaded — pending review'); }
+      else { bmToast('Could not upload — add the profile-docs bucket first'); }
+    });
+  }
   function openContact(id){
     const ct=(editing?draft:card).contacts.find(x=>x.id===id); if(!ct) return;
     const v=(ct.value||'').trim(), digits=s=>s.replace(/[^0-9]/g,''), handle=s=>s.replace(/^@/,'');
@@ -9421,6 +9516,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       services:card.services, education:card.education, jobs:card.jobs,
       visibility:card.vis, contacts:extraContacts,
       avatar_url:card.avatar, cover_url:card.cover, contact:phone,
+      address:card.address, lat:card.lat, lng:card.lng, docs:card.docs,
     };
     try{
       const res = await sb.from('profiles').update(payload).eq('id', SB_USER.id);
@@ -9457,7 +9553,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
           <div class="vphoto">${avInner}</div>
           <div class="vid">${nameBlock}<div class="vjob">${esc(c.job)||'&nbsp;'}</div></div>
         </div>
-        <div class="vstats"><span class="vlevel">⭐ Level ${c.level}</span>${(ownerView||c.vis.points)?`<span class="vpts">🪙 ${Number(c.points).toLocaleString()} pts</span>`:''}<span class="vsince">📅 Since ${esc(c.memberSince)}</span></div>
+        <div class="vstats"><span class="vlevel">⭐ Level ${c.level}</span>${(ownerView||c.vis.points)?`<span class="vpts">✨ ${Number(c.points).toLocaleString()} Credits</span>`:''}<span class="vsince">📅 Since ${esc(c.memberSince)}</span></div>
         <div class="vctttl">Contact</div>
         <div class="vcontacts"><div class="vnums">${primary}</div>${secondary?`<div class="vicons">${secondary}</div>`:''}</div>
       </div>
@@ -9487,7 +9583,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
           <div class="ec-photo" onclick="BP.pickAvatar()">${c.avatar?`<img src="${c.avatar}">`:`<span class="ec-ini">${ini(c)}</span>`}<span class="cam">📷</span></div>
           <div class="ec-meta">
             <div class="ec-level">⭐ Level ${c.level}</div>
-            <div class="ec-pts">🪙 ${Number(c.points).toLocaleString()} pts</div>
+            <div class="ec-pts">✨ ${Number(c.points).toLocaleString()} Credits</div>
             <div class="ec-since">📅 Member since<b>${esc(c.memberSince)}</b></div>
             <div class="ro-note">Level, points &amp; join date are set automatically</div>
           </div>
@@ -9500,6 +9596,10 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
           <div class="ed-handle-wrap"><span class="ed-at">@</span><input class="ed-handle" value="${esc(c.handle)}" oninput="BP.setHandle(this.value)" placeholder="username" maxlength="20"></div>
           <div class="ed-handle-note">🔒 Your @username. Changing it affects your reputation and is limited to once every 30 days.</div>
           <input class="ed-job" value="${esc(c.job)}" oninput="BP.setDraft('job',this.value)" placeholder="What you do — job or trade" maxlength="60">
+          <div class="ec-ctttl">Your area / address</div>
+          <input class="ed-job" value="${esc(c.address)}" oninput="BP.setDraft('address',this.value)" placeholder="e.g. Balibago, Angeles City" maxlength="90">
+          <div class="addr-row">${c.lat?`<span class="addr-ok">✓ Location pinned</span><button class="addr-clear" onclick="BP.clearPin()">Clear</button>`:`<button class="addr-pin" onclick="BP.pinLocation()">📍 Use my current location</button>`}</div>
+          <div class="ed-handle-note">🔒 Hidden on your public page by default — turn on “Address” in the visibility panel below to show it with a map.</div>
           <div class="ec-ctttl">Ways people can reach you</div>
           <div>${editContacts()}</div>
           ${addContactUI()}
@@ -9508,7 +9608,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       <div class="ec-cvedit">
         <div class="vis-panel">
           <div class="vis-ttl">👁 Visible on your public About Me</div>
-          <div class="vis-chips">${[['about','Summary'],['services','Skills'],['education','Education'],['jobs','Jobs'],['references','References'],['phone','Phone no.'],['points','Points']].map(kv=>`<button class="vis-chip ${c.vis[kv[0]]?'on':''}" onclick="BP.toggleVis('${kv[0]}')">${c.vis[kv[0]]?'👁':'🔒'} ${kv[1]}</button>`).join('')}</div>
+          <div class="vis-chips">${[['about','Summary'],['services','Skills'],['education','Education'],['jobs','Jobs'],['references','References'],['phone','Phone no.'],['points','Credits'],['address','Address'],['verification','Verified']].map(kv=>`<button class="vis-chip ${c.vis[kv[0]]?'on':''}" onclick="BP.toggleVis('${kv[0]}')">${c.vis[kv[0]]?'👁':'🔒'} ${kv[1]}</button>`).join('')}</div>
           <div class="vis-hint">Tap to hide anything you'd rather keep private — hidden details won't appear on your public page.</div>
         </div>
         <div class="ec-ctttl">Summary</div>
@@ -9522,6 +9622,10 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
         <div class="ec-ctttl" style="margin-top:16px">Previous jobs</div>
         <div class="entry-edit">${c.jobs.map((j,i)=>`<div class="ee-card"><input class="ee-in" value="${esc(j.role)}" oninput="BP.setJob(${i},'role',this.value)" placeholder="Role / position"><div class="ee-two"><input class="ee-in" value="${esc(j.place)}" oninput="BP.setJob(${i},'place',this.value)" placeholder="Company / place"><input class="ee-in yr" value="${esc(j.period||'')}" oninput="BP.setJob(${i},'period',this.value)" placeholder="Years"><button class="ee-rm" onclick="BP.removeJob(${i})" title="Remove">✕</button></div></div>`).join('')}</div>
         <button class="ee-add" onclick="BP.addJob()">+ Add job</button>
+        <div class="ec-ctttl" style="margin-top:16px">Documents &amp; verification</div>
+        <div class="doc-note">🔒 <b>Private.</b> Used only to verify you and build trust — <b>never shown on your public page.</b> Once approved, others just see a ✓ Verified badge.</div>
+        <div class="doc-list">${c.docs.length?c.docs.map(d=>`<div class="doc-item"><span class="doc-ic">${(DOCT[d.type]&&DOCT[d.type].s)?'🪪':'📄'}</span><div class="doc-main"><div class="doc-l">${esc(d.label)}</div><div class="doc-st ${d.verified?'ok':''}">${d.verified?'✓ Verified':'⏳ Pending review'}</div></div><button class="doc-rm" onclick="BP.removeDoc(${d.id})" title="Remove">✕</button></div>`).join(''):'<div class="cv-empty" style="padding:2px">No documents uploaded yet.</div>'}</div>
+        <div class="doc-add">${Object.keys(DOCT).map(k=>`<button class="doc-add-btn" onclick="BP.pickDoc('${k}')">+ ${DOCT[k].l}</button>`).join('')}</div>
       </div>
       <div class="ec-actions">
         <button class="act save grow" onclick="BP.saveEdit()">✓ Save profile</button>
@@ -9533,31 +9637,40 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   /* ---------- toggle + banner + bodies ---------- */
   function viewToggle(){
     return `<div class="vtoggle">
-      <button class="vt-btn ${ownerView?'on':''}" onclick="BP.setView(true)">⚙️ Control Panel</button>
+      <button class="vt-btn ${ownerView?'on':''}" onclick="BP.setView(true)">⚙️ Dashboard</button>
       <button class="vt-btn ${!ownerView?'on':''}" onclick="BP.setView(false)">👤 About Me</button>
     </div>`;
   }
   function viewBanner(){
     return ownerView
-      ? `<div class="vbanner priv">🔒 Control Panel — private, only you can see this</div>`
+      ? `<div class="vbanner priv">🔒 Dashboard — private, only you can see this</div>`
       : `<div class="vbanner pub">🌐 About Me — this is your public page. Hidden items don't show here.</div>`;
   }
   function ownerBody(){
-    const lvl=card.level, pts=card.points, into=680, need=1000, pct=Math.round(into/need*100), togo=need-into;
-    const quests=[{t:'Close a deal',r:50,done:false},{t:'Help a neighbor find something',r:15,done:false},{t:'Earn a 5-star review',r:8,done:false},{t:'Keep your 7-day streak alive',r:5,done:true},{t:'Verify your ID',r:20,done:false,once:true}];
-    const goals=[{t:'Reach 50 deals',cur:31,max:50,ic:'🤝'},{t:'Hit Level 50',cur:49,max:50,ic:'⭐'},{t:'Unlock the “Legend” badge',cur:49,max:60,ic:'👑',sub:'Unlocks at Level 60'}];
-    const near=[{ic:'🏅',l:'50 Deals',cur:31,max:50},{ic:'🔥',l:'30-day Streak',cur:7,max:30}];
+    // Honest, economy-aware dashboard — two meters (Standing + Credits wallet), no fake progress.
+    const bands=[[86,'👑 Local Legend'],[61,'🏅 Community Guide'],[41,'⭐ Trusted Local'],[21,'🧭 Helper'],[0,'🌱 Newcomer']];
+    const band=(bands.find(b=>card.level>=b[0])||bands[bands.length-1])[1];
+    const bal=Number(card.points)||0;
+    const lv=levelFromXP(card.xp), limit=creditLimit(card.level);
+    const steps=[
+      {t:'Complete your profile', hint:'Add a photo, bio & skills', act:"BP.startEdit()"},
+      {t:'Help a neighbor', hint:'Reply to a request to earn your first Credits', act:"BP.toast('Help with a Find Me or Urgent request to earn Credits')"},
+      {t:'Post your first item or request', hint:'Use the + buttons on the side panels', act:"BP.toast('Use the + buttons on the side panels to post')"},
+      {t:'Verify your ID', hint:'Builds trust with neighbors', act:"BP.toast('ID verification — coming soon')", once:true},
+    ];
     return `<div class="cvpanel owner">
-      <div class="ownhero">
-        <div class="oh-top"><div class="oh-lvl">⭐ Level ${lvl}</div><div class="oh-next">Next: Level ${lvl+1}</div></div>
-        <div class="oh-bar"><div class="oh-fill" style="width:${pct}%"></div></div>
-        <div class="oh-togo"><b>${togo} pts</b> to Level ${lvl+1} &nbsp;·&nbsp; 🪙 ${Number(pts).toLocaleString()} total</div>
-        <div class="oh-reward">🎁 At Level ${lvl+1}: a brighter badge frame + an extra daily boost</div>
+      <div class="dash-hero">
+        <div class="dash-meters">
+          <div class="dm"><div class="dm-top">⭐ Level ${card.level}</div><div class="dm-band">${band}</div>${card.level<100?`<div class="dm-bar"><div class="dm-fill" style="width:${Math.max(3,Math.round(lv.into/lv.need*100))}%;background:var(--gold-lt)"></div></div><div class="dm-lbl">${Number(lv.into).toLocaleString()} / ${Number(lv.need).toLocaleString()} XP → Level ${card.level+1}</div>`:`<div class="dm-lbl">👑 Max level reached</div>`}</div>
+          <div class="dm karma"><div class="dm-top">✨ ${bal.toLocaleString()} <span class="dm-of">/ ${limit.toLocaleString()}</span></div><div class="dm-band">Credits</div><div class="dm-bar"><div class="dm-fill" style="width:${Math.min(100,Math.round(bal/limit*100))}%;background:var(--gold)"></div></div><div class="dm-lbl">your limit at Level ${card.level}</div></div>
+        </div>
+        <div class="dash-since">📅 Member since ${esc(card.memberSince)}</div>
+        <div class="dash-hint"><b>Give-and-take:</b> you help so you can ask. Earn <b>Credits</b> by helping neighbors and closing deals — spend them on <b>Find&nbsp;Me</b> and <b>Urgent</b> requests. Your <b>Level</b> never gets spent, and climbing it <b>raises your Credit limit</b>.</div>
       </div>
-      <div class="cvsec"><div class="cvttl">Things to do</div><div class="quests">${quests.map(q=>`<div class="quest ${q.done?'done':''}"><span class="q-check">${q.done?'✅':'⬜'}</span><span class="q-t">${q.t}${q.once?' <span class="q-once">one-time</span>':''}</span><span class="q-r">+${q.r}</span></div>`).join('')}</div></div>
-      <div class="cvsec"><div class="cvttl">Your goals <span class="cv-add" onclick="BP.toast('Set a personal goal — coming soon')">+ Add goal</span></div><div class="goals">${goals.map(g=>{const p=Math.round(g.cur/g.max*100);return `<div class="goal"><div class="g-row"><span class="g-ic">${g.ic}</span><span class="g-t">${g.t}</span><span class="g-n">${g.cur}/${g.max}</span></div><div class="g-bar"><div class="g-fill" style="width:${p}%"></div></div>${g.sub?`<div class="g-sub">${g.sub}</div>`:''}</div>`;}).join('')}</div></div>
-      <div class="cvsec"><div class="cvttl">Almost there</div><div class="nearbadges">${near.map(b=>{const p=Math.round(b.cur/b.max*100);return `<div class="nb"><div class="nb-ic">${b.ic}</div><div class="nb-body"><div class="nb-l">${b.l}</div><div class="nb-bar"><div class="nb-fill" style="width:${p}%"></div></div></div><div class="nb-n">${b.cur}/${b.max}</div></div>`;}).join('')}</div></div>
-      <div class="cvsec"><div class="cvttl">This week</div><div class="cvstats"><div class="cvstat"><b>+128</b><span>Points earned</span></div><div class="cvstat"><b>7🔥</b><span>Day streak</span></div><div class="cvstat"><b>#12</b><span>In Angeles City</span></div><div class="cvstat"><b>3</b><span>Deals</span></div></div></div>
+      <div class="cvsec"><div class="cvttl">Getting started</div>
+        <div class="gs-list">${steps.map(s=>`<div class="gs-item" onclick="${s.act}"><span class="gs-ck">⬜</span><div class="gs-main"><div class="gs-t">${s.t}${s.once?' <span class="q-once">one-time</span>':''}</div><div class="gs-hint">${s.hint}</div></div><span class="gs-go">›</span></div>`).join('')}</div>
+      </div>
+      <div class="cvsec"><div class="cvttl">Your goals <span class="cv-add" onclick="BP.toast('Personal goals — coming soon')">+ Add goal</span></div><div class="cv-empty" style="padding:4px 2px">No goals yet — set one to stay motivated.</div></div>
     </div>`;
   }
   function cvBody(){
@@ -9565,7 +9678,9 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
     const edu = card.education.length ? card.education.map(e=>`<div class="cv-entry"><div class="ce-main">${esc(e.course)}</div><div class="ce-sub">${esc(e.school)}${e.year?` · ${esc(e.year)}`:''}</div></div>`).join('') : `<div class="cv-empty">Nothing added yet.</div>`;
     const jobs = card.jobs.length ? card.jobs.map(j=>`<div class="cv-entry"><div class="ce-main">${esc(j.role)}</div><div class="ce-sub">${esc(j.place)}${j.period?` · ${esc(j.period)}`:''}</div></div>`).join('') : `<div class="cv-empty">Nothing added yet.</div>`;
     const secs=[
+      (v.verification && card.docs.some(d=>d.verified))?`<div class="cvsec"><div class="cvttl">Verified</div><div class="vbadges">${card.docs.filter(d=>d.verified).map(d=>`<span class="vbadge">✓ ${esc(d.label)}</span>`).join('')}</div></div>`:'',
       v.about?`<div class="cvsec"><div class="cvttl">Summary</div><p class="cvabout">${esc(card.about)||'<span style="color:var(--muted)">No summary yet.</span>'}</p></div>`:'',
+      (v.address && (card.address||card.lat))?`<div class="cvsec"><div class="cvttl">Area</div><div class="cv-addr">📍 ${esc(card.address)||'Pinned location'}</div>${(card.lat&&MAPS_KEY)?`<iframe class="cv-map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${card.lat},${card.lng}&zoom=15"></iframe>`:''}${card.lat?`<a class="cv-nav" href="https://www.google.com/maps/dir/?api=1&destination=${card.lat},${card.lng}" target="_blank" rel="noopener">🧭 Navigate here</a>`:''}</div>`:'',
       v.services?`<div class="cvsec"><div class="cvttl">Skills / What I do</div><div class="cvtags">${card.services.length?card.services.map(x=>`<span class="cvtag">${esc(x)}</span>`).join(''):'<span class="cv-empty">Nothing added yet.</span>'}</div></div>`:'',
       v.education?`<div class="cvsec"><div class="cvttl">Education</div>${edu}</div>`:'',
       v.jobs?`<div class="cvsec"><div class="cvttl">Previous jobs</div>${jobs}</div>`:'',
@@ -9577,15 +9692,35 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   /* ---------- side panels (placeholder data) ---------- */
   function postCard(p){ return `<div class="mp-card"><div class="mp-emoji">${p.em}</div><div class="mp-body"><div class="mp-title">${p.t}</div><div class="mp-meta">${p.m}</div></div><span class="mp-status ${p.sc}">${p.s}</span></div>`; }
   function estabCard(s){ const face=s.avatar?`<img src="${s.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:11px">`:s.type.split(' ')[0]; return `<div class="mp-card"><div class="mp-emoji">${face}</div><div class="mp-body"><div class="mp-title">${s.name}</div><div class="mp-meta">⭐ ${s.rating} · ${s.reviews} reviews · ${s.official?'✅ Verified':'👥 Community'}</div></div><span class="mp-status mp-active">Open ›</span></div>`; }
-  function feedHalf(title,count,inner,tone){ return `<div class="fp-half ${tone?'t-'+tone:''}"><div class="fp-sec-hdr"><span class="fp-sec-ttl">${title}</span><span class="fp-sec-cnt">${count}</span></div><div class="fp-half-body">${inner}</div></div>`; }
+  // Same section design as the map-view side panels (lp-section-hdr + sec-action), different feeds/titles.
+  const CS = {
+    red:'background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)',
+    gold:'background:rgba(227,168,16,0.08);color:#9B2D1F;border:1px solid rgba(155,45,31,0.2)',
+    blue:'background:rgba(37,80,184,0.09);color:#2550b8;border:1px solid rgba(37,80,184,0.2)',
+    green:'background:rgba(26,107,58,0.09);color:#1A6B3A;border:1px solid rgba(26,107,58,0.2)',
+  };
+  function feedHalf(c){
+    return `<div class="fp-half t-${c.tone}">
+      <div class="lp-section-hdr">
+        <span class="lp-section-icon">${c.icon}</span>
+        <div class="lp-section-titlewrap"><span class="lp-section-title">${c.title}</span><span class="lp-section-sub">${c.sub}</span></div>
+        <span class="lp-section-count" style="${c.cstyle}">${c.count}</span>
+      </div>
+      <div class="fp-half-body">${c.inner}<button class="sec-action ${c.saclass}" onclick="${c.act}">${c.btn}</button></div>
+    </div>`;
+  }
   const feedEmpty = m => `<div class="fp-empty">${m}</div>`;
   function leftFeed(){
-    return feedHalf('My Urgent Requests', SIDE.req.length, SIDE.req.length?SIDE.req.map(postCard).join(''):feedEmpty('No urgent requests right now.'), 'red')
-         + feedHalf('My Find Requests', SIDE.look.length, SIDE.look.length?SIDE.look.map(postCard).join(''):feedEmpty('No find requests yet.'), 'gold');
+    return feedHalf({tone:'red',icon:'⚡',title:'My Urgent Needs',sub:'Posted by you · reward offered',count:SIDE.req.length,cstyle:CS.red,
+        inner:SIDE.req.length?SIDE.req.map(postCard).join(''):feedEmpty('No urgent needs yet. Post one below.'),saclass:'sa-urgent',act:"if(typeof openPostRequest==='function')openPostRequest('urgent')",btn:'⚡ Post Urgent Need'})
+         + feedHalf({tone:'gold',icon:'🔍',title:'My Find Requests',sub:"Things you're looking for",count:SIDE.look.length,cstyle:CS.gold,
+        inner:SIDE.look.length?SIDE.look.map(postCard).join(''):feedEmpty('No find requests yet. Post one below.'),saclass:'sa-find',act:"if(typeof openPostRequest==='function')openPostRequest('find')",btn:'🔍 Post a Find Me'});
   }
   function rightFeed(){
-    return feedHalf('Items I’m Selling', SIDE.active.length, SIDE.active.length?SIDE.active.map(postCard).join(''):feedEmpty('Nothing listed for sale.'), 'blue')
-         + feedHalf('My Establishments', SIDE.stores.length, SIDE.stores.length?SIDE.stores.map(estabCard).join(''):feedEmpty('No registered businesses.'), 'green');
+    return feedHalf({tone:'blue',icon:'🏷️',title:"Items I'm Selling",sub:'Your listings',count:SIDE.active.length,cstyle:CS.blue,
+        inner:SIDE.active.length?SIDE.active.map(postCard).join(''):feedEmpty('Nothing listed yet. List an item below.'),saclass:'sa-sell',act:"if(typeof resetPostForm==='function'){resetPostForm();} if(typeof openModal==='function')openModal('post')",btn:'🏷️ List an Item'})
+         + feedHalf({tone:'green',icon:'🏪',title:'My Establishments',sub:'Your shops & services',count:SIDE.stores.length,cstyle:CS.green,
+        inner:SIDE.stores.length?SIDE.stores.map(estabCard).join(''):feedEmpty('No businesses yet. Register one below.'),saclass:'sa-store',act:"if(typeof openModal==='function')openModal('store-register')",btn:'🏪 Register a Store'});
   }
 
   /* ---------- render ---------- */
@@ -9622,7 +9757,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   }
 
   /* ---------- expose + open/close ---------- */
-  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, openContact, toast:bmToast, logout:bpLogout };
+  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, pinLocation, clearPin, pickDoc, removeDoc, openContact, toast:bmToast, logout:bpLogout };
   function bpLogout(){ if(typeof sbSignOut==='function'){ sbSignOut(); } bmCloseProfile(); }
   window.bmToast = bmToast;
   window.bmPickAvatar = pickAvatar;
@@ -9630,8 +9765,8 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   window.bmOpenProfile = function(){ document.body.classList.add('bm-profile'); bpLoadCard(); editing=false; draft=null; ownerView=true; render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
   window.bmCloseProfile = function(){ document.body.classList.remove('bm-profile'); };
 
-  if(document.readyState!=='loading'){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); }
-  else document.addEventListener('DOMContentLoaded',function(){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); });
+  if(document.readyState!=='loading'){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); wireDoc(); }
+  else document.addEventListener('DOMContentLoaded',function(){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); wireDoc(); });
 })();
 </script>
 
