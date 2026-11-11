@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v3 · 2026-11-11 ═══════ -->
-<script>window.BM_VERSION='index v3 · 2026-11-11';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v4 · 2026-11-11 ═══════ -->
+<script>window.BM_VERSION='index v4 · 2026-11-11';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -9064,6 +9064,16 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
 #profile-page .gs-t{font-size:13.5px;font-weight:700;color:var(--ink)}
 #profile-page .gs-hint{font-size:11.5px;color:var(--muted);margin-top:2px}
 #profile-page .gs-go{color:var(--royal2);font-weight:800;font-size:18px;flex:0 0 auto}
+#profile-page .txn-list{display:flex;flex-direction:column}
+#profile-page .txn{display:flex;align-items:center;gap:11px;padding:10px 2px;border-bottom:1px solid var(--off-white)}
+#profile-page .txn:last-child{border-bottom:none}
+#profile-page .txn-ic{font-size:17px;flex:0 0 auto;width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--off-white);border-radius:10px}
+#profile-page .txn-main{flex:1;min-width:0}
+#profile-page .txn-note{font-size:13px;font-weight:700;color:var(--ink)}
+#profile-page .txn-date{font-size:11px;color:var(--muted);margin-top:1px}
+#profile-page .txn-amt{flex:0 0 auto;font-family:'Poppins',sans-serif;font-weight:800;font-size:13.5px}
+#profile-page .txn-amt.pos{color:var(--green)}
+#profile-page .txn-amt.neg{color:var(--red)}
 #profile-page .cv-addr{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:10px}
 #profile-page .cv-map{width:100%;height:180px;border:0;border-radius:12px;margin-bottom:10px;display:block}
 #profile-page .cv-nav{display:inline-flex;align-items:center;gap:6px;background:var(--royal);color:#fff;text-decoration:none;font-weight:700;font-size:12.5px;padding:9px 15px;border-radius:100px}
@@ -9318,7 +9328,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
 
   /* ---------- state ---------- */
   let card = blankCard();
-  let editing=false, draft=null, nextId=100, ownerView=true, bpDocType='other';
+  let editing=false, draft=null, nextId=100, ownerView=true, bpDocType='other', bpLedger=null;
   const DOCT = { nbi:{l:'NBI Clearance',s:true}, gov_id:{l:'Government ID',s:true}, passport:{l:'Passport',s:true}, license:{l:"Driver's License",s:true}, prc:{l:'PRC License',s:false}, diploma:{l:'Diploma',s:false}, cert:{l:'Certificate',s:false}, permit:{l:'Business Permit',s:false}, other:{l:'Other',s:false} };
 
   /* placeholder gamification until the reputation system is wired */
@@ -9341,6 +9351,27 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   function creditLimit(L){ return Math.round(ECON.capBase + ECON.capPer*(Math.max(1,L)-1)); }
   function xpToNext(L){ return Math.round(ECON.xpBase*Math.pow(ECON.xpGrowth, L-1)); }   // XP from L to L+1
   function levelFromXP(xp){ let L=1, acc=0; xp=Math.max(0,Number(xp)||0); while(L<100){ const need=xpToNext(L); if(xp<acc+need) break; acc+=need; L++; } return { level:L, into:Math.round(xp-acc), need:xpToNext(L) }; }
+  // ── Credit activity ledger (read-only; entries are written server-side) ──
+  const TXN_ICON = { welcome:'🎁', deal:'🤝', help:'🙌', review:'⭐', urgent:'⚡', findme:'🔍', post:'📦', verify:'✅', penalty:'⚠️' };
+  async function bpLoadLedger(){
+    if(typeof sb==='undefined' || !sb || !SB_USER){ bpLedger=[]; return; }
+    try{ const r=await sb.from('credit_ledger').select('*').eq('user_id',SB_USER.id).order('created_at',{ascending:false}).limit(25); bpLedger=(r&&!r.error&&r.data)?r.data:[]; }
+    catch(_){ bpLedger=[]; }
+    if(!editing && ownerView){ render(); }
+  }
+  function txnRow(t){
+    const ic=TXN_ICON[t.kind]||'✨';
+    const c=Number(t.credits)||0, xp=Number(t.xp)||0;
+    const amt = c!==0 ? `<span class="txn-amt ${c>0?'pos':'neg'}">${c>0?'+':''}${c.toLocaleString()} ✨</span>` : (xp>0?`<span class="txn-amt pos">+${xp} XP</span>`:'');
+    let d=''; try{ d=t.created_at?new Date(t.created_at).toLocaleDateString(undefined,{month:'short',day:'numeric'}):''; }catch(_){}
+    const sub=[d,(c!==0&&xp>0?`+${xp} XP`:'')].filter(Boolean).join(' · ');
+    return `<div class="txn"><span class="txn-ic">${ic}</span><div class="txn-main"><div class="txn-note">${esc(t.note||t.kind)}</div><div class="txn-date">${sub}</div></div>${amt}</div>`;
+  }
+  function txnListHTML(){
+    if(bpLedger===null) return '<div class="cv-empty" style="padding:2px">Loading…</div>';
+    if(!bpLedger.length) return '<div class="cv-empty" style="padding:2px">No activity yet. Help a neighbor to earn your first Credits.</div>';
+    return `<div class="txn-list">${bpLedger.map(txnRow).join('')}</div>`;
+  }
   const ini = c => ((((c.firstName||' ')[0]||'')+((c.lastName||' ')[0]||'')).toUpperCase()) || '?';
   function bmToast(m){ if(typeof showToast==='function'){ showToast(m,'info'); } else { console.log('[BringMe]',m); } }
   function coverArt(){
@@ -9667,6 +9698,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
         <div class="dash-since">📅 Member since ${esc(card.memberSince)}</div>
         <div class="dash-hint"><b>Give-and-take:</b> you help so you can ask. Earn <b>Credits</b> by helping neighbors and closing deals — spend them on <b>Find&nbsp;Me</b> and <b>Urgent</b> requests. Your <b>Level</b> never gets spent, and climbing it <b>raises your Credit limit</b>.</div>
       </div>
+      <div class="cvsec"><div class="cvttl">Credit activity</div>${txnListHTML()}</div>
       <div class="cvsec"><div class="cvttl">Getting started</div>
         <div class="gs-list">${steps.map(s=>`<div class="gs-item" onclick="${s.act}"><span class="gs-ck">⬜</span><div class="gs-main"><div class="gs-t">${s.t}${s.once?' <span class="q-once">one-time</span>':''}</div><div class="gs-hint">${s.hint}</div></div><span class="gs-go">›</span></div>`).join('')}</div>
       </div>
@@ -9762,7 +9794,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   window.bmToast = bmToast;
   window.bmPickAvatar = pickAvatar;
   window.bmPickCover  = pickCover;
-  window.bmOpenProfile = function(){ document.body.classList.add('bm-profile'); bpLoadCard(); editing=false; draft=null; ownerView=true; render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
+  window.bmOpenProfile = function(){ document.body.classList.add('bm-profile'); bpLoadCard(); bpLedger=null; bpLoadLedger(); editing=false; draft=null; ownerView=true; render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
   window.bmCloseProfile = function(){ document.body.classList.remove('bm-profile'); };
 
   if(document.readyState!=='loading'){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); wireDoc(); }
