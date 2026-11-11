@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v4 · 2026-11-11 ═══════ -->
-<script>window.BM_VERSION='index v4 · 2026-11-11';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v5 · 2026-11-11 ═══════ -->
+<script>window.BM_VERSION='index v5 · 2026-11-11';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -9115,6 +9115,16 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
 #profile-page .vini{font-family:'Poppins',sans-serif;font-size:27px;font-weight:700;color:#5a3d00}
 #profile-page .vid{flex:1;min-width:0;padding-bottom:3px}
 #profile-page .vname{font-family:'Poppins',sans-serif;font-size:21px;font-weight:700;color:#fff;line-height:1.08;text-shadow:0 2px 12px rgba(0,0,0,.45)}
+/* ── phone fixes: taller card so the name clears Edit/Share; hide the side-panel drawers in profile mode ── */
+@media (max-width:560px){
+  #profile-page .vcard{aspect-ratio:auto}
+  #profile-page .voverlay{position:relative;padding:54px 16px 16px;background:linear-gradient(to top,rgba(8,20,60,.82),rgba(8,20,60,.34) 55%,rgba(8,20,60,.08))}
+  #profile-page .vname{font-size:19px}
+  #profile-page .vtop{top:12px;right:12px}
+  #profile-page .vtop button{padding:7px 11px;font-size:12px}
+  body.bm-profile #left-panel,body.bm-profile #sidebar,body.bm-profile .dedge,body.bm-profile .xtab,body.bm-profile .panel-edge-handle{display:none !important}
+  #profile-page .bmprof{padding:14px 13px 48px}
+}
 #profile-page .vhandle{font-size:12px;color:#CFE0FF;font-weight:700;margin-top:2px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
 #profile-page .vhandle.priv{color:rgba(255,255,255,.62);font-weight:600}
 #profile-page .vjob{font-size:12.5px;color:var(--gold-lt);font-weight:700;margin-top:3px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
