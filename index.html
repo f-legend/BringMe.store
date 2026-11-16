@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v6 · 2026-11-12 ═══════ -->
-<script>window.BM_VERSION='index v6 · 2026-11-12';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v9 · 2026-11-13 ═══════ -->
+<script>window.BM_VERSION='index v9 · 2026-11-13';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -3790,6 +3790,7 @@ function submitPost() {
       lat:(f.lat!=null?f.lat:USER.lat+(Math.random()-.5)*.015),
       lng:(f.lng!=null?f.lng:USER.lng+(Math.random()-.5)*.015)
     },...listings];
+    if(typeof bmPersistListing==='function') bmPersistListing(listings[0]);
     resetPostForm();
     closeModal(); renderAll(); showToast('✅ Listing posted!', 'success');
     }, 800); // simulate network delay
@@ -3854,6 +3855,7 @@ function submitStore() {
     docs:(f.docs||[]).slice(),
     rating:5.0, lat, lng
   },...stores];
+  if(typeof bmPersistStore==='function') bmPersistStore(stores[0]);
   if (typeof S.points==='number') S.points += owner?25:10;
   S.storeForm={name:'',address:'',contact:'',hours:'',cat:null,catUI:null,products:'',poster:'community',docs:[],items:[],draft:'',openCatFor:null,catSearch:'',drillTop:null,importOpen:false,importText:'',importRows:[],importDupes:0,photos:[],lat:null,lng:null,located:false};
   const regBtn = document.querySelector('.store-reg-btn');
@@ -5836,12 +5838,15 @@ function renderLeftPanel() {
   let findReqs = helpRequests.filter(r =>
     r.reqType === 'find' && (!search || r.item.toLowerCase().includes(search))
   );
-  urgentReqs = bmSortReqs(inView(urgentReqs), BM_SORT.urgent).slice(0, FEED_CAP);  // only what the map shows, capped
-  findReqs = bmSortReqs(inView(findReqs), BM_SORT.find).slice(0, FEED_CAP);
+  const urgentRange = bmRange(urgentReqs, 'urgent');   // nearest 100 to YOU (not the map view); your own posts always shown
+  const findRange   = bmRange(findReqs, 'find');
+  urgentReqs = bmSortReqs(urgentRange.list, BM_SORT.urgent);
+  findReqs   = bmSortReqs(findRange.list, BM_SORT.find);
   // Also include buy listings in find section
-  const buyListings = inView(listings.filter(l =>
+  const buyRange = bmRange(listings.filter(l =>
     l.type === 'buy' && (!search || l.title.toLowerCase().includes(search))
-  )).slice(0, FEED_CAP);
+  ), 'find');
+  const buyListings = buyRange.list;
 
   const total = urgentReqs.length + findReqs.length + buyListings.length;
   const countEl = document.getElementById('lf-count');
@@ -5882,6 +5887,7 @@ function renderLeftPanel() {
       <div style="font-size:28px;margin-bottom:6px">🕊️</div>
       <div style="font-size:12px;font-weight:600">No urgent requests</div>
     </div>`;
+    if (urgentRange.more) urgentList.innerHTML += bmMoreBtn('urgent');
   }
 
   // ── FIND LIST ──
@@ -5932,6 +5938,7 @@ function renderLeftPanel() {
       <div style="font-size:28px;margin-bottom:6px">🔍</div>
       <div style="font-size:12px;font-weight:600">No find requests</div>
     </div>`;
+    if (findRange.more || buyRange.more) findList.innerHTML += bmMoreBtn('find');
   }
 }
 
@@ -5943,6 +5950,7 @@ function selectRequest(id, type) {
   else item = helpRequests.find(r => r.id === id);
   if (item && map) map.panTo({ lat: item.lat, lng: item.lng });
   if (type === 'buy') { S.selectedId = id; S.selectedType = 'listing'; openModal('detail'); }
+  else if (item && item._db && typeof window.bmOpenThread === 'function') { window.bmOpenThread('help_requests', item._db.id, item); }
   else { S.selectedId = id; S.selectedType = 'help'; openModal('help-detail'); }
 }
 
@@ -6062,6 +6070,7 @@ function submitPostRequest() {
     replies: []
   };
   helpRequests = [newReq, ...helpRequests];
+  if(typeof bmPersistRequest==='function') bmPersistRequest(newReq,'find');
   S._reqForm = { item:'', details:'', cat:null, catUI:null, points:'', location:'', images:[] };
   closeModal();
   renderAll();
@@ -6991,10 +7000,9 @@ function renderRightPanel() {
     (s.categories||[]).some(c=>c.toLowerCase().includes(storeSearch)) ||
     (s.products||[]).some(p=>p.toLowerCase().includes(storeSearch))
   );
-  filteredStores = inView(filteredStores);                        // only what the map can show
-  filteredStores = bmSortStores(filteredStores, BM_SORT.stores);
+  const storesRange = bmRange(filteredStores, 'stores');          // nearest 100 to YOU; your own always shown
+  filteredStores = bmSortStores(storesRange.list, BM_SORT.stores);
   filteredStores.sort((a,b) => (b.featured?1:0)-(a.featured?1:0)); // featured stay on top (stable sort)
-  filteredStores = filteredStores.slice(0, FEED_CAP);             // cap the list
 
   const storesCountEl = document.getElementById('stores-count');
   if (storesCountEl) storesCountEl.textContent = filteredStores.length;
@@ -7030,6 +7038,7 @@ function renderRightPanel() {
         </div>`;
       }).join('');
     }
+    if (storesRange.more) storesList.innerHTML += bmMoreBtn('stores');
   }
 
   // Featured strip
@@ -7048,10 +7057,9 @@ function renderRightPanel() {
     if (currentListingFilter==='saved' && !BM_SAVED.has(String(l.id))) return false;
     return true;
   });
-  filteredListings = inView(filteredListings);                       // only what the map can show
-  filteredListings = bmSortItems(filteredListings, BM_SORT.items);
+  const listingsRange = bmRange(filteredListings, 'items');          // nearest 100 to YOU; your own always shown
+  filteredListings = bmSortItems(listingsRange.list, BM_SORT.items);
   filteredListings.sort((a,b) => (b.promoted?1:0)-(a.promoted?1:0)); // promoted stay on top (stable sort)
-  filteredListings = filteredListings.slice(0, FEED_CAP);            // cap the list
 
   const listingsCountEl = document.getElementById('listings-count');
   if (listingsCountEl) listingsCountEl.textContent = filteredListings.length;
@@ -7084,6 +7092,7 @@ function renderRightPanel() {
         </div>`;
       }).join('');
     }
+    if (listingsRange.more) listingsList.innerHTML += bmMoreBtn('items');
   }
 }
 
@@ -7112,7 +7121,21 @@ function bmDist(lat,lng){ try{ if(lat==null||lng==null||typeof USER==='undefined
 // ── VIEWPORT LIMIT: only render what the map can currently show (scales to 100k+) ──
 // This is the client-side version of the eventual Supabase query:
 //   select * from <table> where lat between :s and :n and lng between :w and :e limit :cap
-const FEED_CAP = 120;  // max of each posting type drawn at once
+const FEED_CAP = 120;  // max of each posting type drawn at once (markers)
+// ── Phase A: RANGE feeds — nearest-N to the USER (not the map viewport); the signed-in user's own posts are always shown ──
+var BM_RANGE = { urgent:100, find:100, items:100, stores:100 };   // how many nearest posts each feed shows; "Load more" adds 100
+function bmOwnId(){ return (typeof SB_USER!=='undefined' && SB_USER && SB_USER.id) ? SB_USER.id : null; }
+function bmDistUser(x){ if(!x || x.lat==null || x.lng==null) return Infinity; try{ return haversine(USER.lat, USER.lng, x.lat, x.lng); }catch(e){ return Infinity; } }
+function bmRange(arr, group){
+  var own=bmOwnId(), mine=[], rest=[];
+  (arr||[]).forEach(function(x){ if(own && x && x._ownerId===own) mine.push(x); else rest.push(x); });
+  rest.sort(function(a,b){ return bmDistUser(a)-bmDistUser(b); });   // nearest to the user first
+  var cap=BM_RANGE[group]||100, slots=Math.max(0, cap-mine.length);
+  var list=mine.concat(rest.slice(0, slots));                        // your own always in, then nearest others up to the cap
+  return { list:list, more:(mine.length+rest.length)>list.length };
+}
+function bmLoadMore(group){ BM_RANGE[group]=(BM_RANGE[group]||100)+100; try{ if(window.renderLeftPanel) renderLeftPanel(); }catch(e){} try{ if(window.renderRightPanel) renderRightPanel(); }catch(e){} }
+function bmMoreBtn(group){ return '<button onclick="bmLoadMore(\''+group+'\')" style="display:block;width:calc(100% - 24px);margin:4px 12px 14px;padding:11px;border:1px dashed #cdd4ea;border-radius:12px;background:#fff;color:#2550b8;font-weight:800;font-size:12.5px;font-family:inherit;cursor:pointer">↓ Load 100 more nearby</button>'; }
 function mapBounds(){ try{ return (typeof map!=='undefined'&&map&&map.getBounds)?map.getBounds():null; }catch(e){ return null; } }
 function mapCenter(){ try{ const c=map&&map.getCenter&&map.getCenter(); if(c){ const la=c.lat(), ln=c.lng(); if(typeof la==='number'&&typeof ln==='number') return {lat:la,lng:ln}; } }catch(e){} return (typeof USER==='object')?{lat:USER.lat,lng:USER.lng}:{lat:0,lng:0}; }
 function inMapView(lat,lng){ if(lat==null||lng==null) return false; const bb=mapBounds(); if(!bb) return true; try{ return bb.contains(new google.maps.LatLng(lat,lng)); }catch(e){ return true; } }
@@ -8670,6 +8693,7 @@ function onSignedIn() {
     setTimeout(showContactCapture, 500);
   }
   console.log('[BringMe] Signed in as', SB_PROFILE.nickname || SB_USER.email);
+  if (typeof window.bmLoadPosts === 'function') setTimeout(window.bmLoadPosts, 200);  // reload posts so the user's own show as "You"
 }
 
 // ---- EMAIL / PASSWORD AUTH (works right now, no OAuth setup needed) ----
@@ -10249,10 +10273,280 @@ function urfPost(){
     replies: []
   };
   helpRequests = [newReq, ...helpRequests];
+  if(typeof bmPersistRequest==='function') bmPersistRequest(newReq,'urgent');
   closeModal();
   renderAll();
   showToast('🆘 Urgent request posted! Helpers nearby will see it.', 'success');
 }
+</script>
+
+<!-- ══════════ REAL POSTS: persist to Supabase + load live posts (index v7) ══════════ -->
+<script>
+(function(){
+  function connected(){ return (typeof sb!=='undefined' && sb); }
+  function signedIn(){ return connected() && (typeof SB_USER!=='undefined') && SB_USER; }
+
+  // relative time from an ISO timestamp → "Just now / 5m / 2h / 3d"
+  function relTime(iso){
+    if(!iso) return 'Just now';
+    var t=new Date(iso).getTime(); if(isNaN(t)) return 'Just now';
+    var s=Math.max(0,Math.floor((Date.now()-t)/1000));
+    if(s<60) return 'Just now';
+    var m=Math.floor(s/60); if(m<60) return m+'m';
+    var h=Math.floor(m/60); if(h<24) return h+'h';
+    var d=Math.floor(h/24); if(d<7) return d+'d';
+    return new Date(t).toLocaleDateString();
+  }
+
+  // look up display names for a set of user ids (one query)
+  async function fetchNames(ids){
+    var map={}; if(!connected() || !ids.length) return map;
+    try{
+      var res=await sb.from('profiles').select('id,nickname,first_name').in('id', ids);
+      (res.data||[]).forEach(function(p){ map[p.id]= p.nickname?('@'+p.nickname):(p.first_name||'Member'); });
+    }catch(e){}
+    return map;
+  }
+  function who(id, names, own){ return (own && id===own) ? 'You' : (names[id] || 'Member'); }
+
+  // ── DB row → the shape the map/panels already render ──
+  function mapReq(r, names, own){
+    return {
+      id:r.id, _db:{table:'help_requests', id:r.id}, _ownerId:r.user_id,
+      reqType:r.type, item:r.item, details:r.note||'', note:r.note||'',
+      category: r.type==='urgent'?'Urgent need':'Looking for',
+      catTop:'', catSub:'', catEmoji: r.type==='urgent'?'🆘':'🔍', emoji: r.type==='urgent'?'🆘':'🔍',
+      user: who(r.user_id,names,own), avatar:'', time: relTime(r.created_at),
+      offer:{ type:r.offer_type||'pts', cash:r.offer_cash||0, points:r.offer_trust||0 },
+      delivery:r.delivery||'', when:'', cover:'back',
+      lat:r.lat, lng:r.lng, replies:[]
+    };
+  }
+  function mapListing(l, names, own){
+    return {
+      id:l.id, _db:{table:'listings', id:l.id}, _ownerId:l.user_id,
+      type:l.type||'sell', title:l.title, category:'', catTop:'', catSub:'',
+      catEmoji:l.emoji||'📦', emoji:l.emoji||'📦', price:Number(l.price)||0,
+      desc:l.description||'', brand:'',
+      location:l.location_label||'', contact:l.contact||'',
+      condition:'', conditionLabel:'', negotiable:false, quantity:1,
+      meetup:false, deliver:false, pickup:false, dealLabel:'',
+      seller: who(l.user_id,names,own), avatar:'',
+      image:l.emoji||'🛍️', imageUrl:'', rating:5.0, lat:l.lat, lng:l.lng
+    };
+  }
+  function mapStore(s, names, own){
+    return {
+      id:s.id, _db:{table:'stores', id:s.id}, _ownerId:s.owner_id,
+      name:s.name, address:s.address||'Nearby', contact:s.contact||'', hours:s.hours||'',
+      official:!!s.featured, pending:false, unofficial:!s.featured,
+      categories:['Shop'], catEmoji:s.emoji||'🏪', emoji:s.emoji||'🏪',
+      products:[], items:[], photos:[], cover:null, docs:[],
+      seller: who(s.owner_id,names,own), rating:5.0, lat:s.lat, lng:s.lng
+    };
+  }
+
+  // Load all live posts and hand them to the existing renderers.
+  var loading=false;
+  async function loadPosts(){
+    if(!connected() || loading) return; loading=true;
+    try{
+      var out=await Promise.all([
+        (typeof sbLoadRequests==='function'?sbLoadRequests():[]),
+        (typeof sbLoadListings==='function'?sbLoadListings():[]),
+        (typeof sbLoadStores==='function'?sbLoadStores():[])
+      ]);
+      var reqs=out[0]||[], lists=out[1]||[], strs=out[2]||[];
+      var ids={}; reqs.forEach(function(r){ids[r.user_id]=1;}); lists.forEach(function(l){ids[l.user_id]=1;}); strs.forEach(function(s){ids[s.owner_id]=1;});
+      var names=await fetchNames(Object.keys(ids));
+      var own = signedIn()?SB_USER.id:null;
+      helpRequests = reqs.map(function(r){return mapReq(r,names,own);});
+      listings     = lists.map(function(l){return mapListing(l,names,own);});
+      stores       = strs.map(function(s){return mapStore(s,names,own);});
+      if(typeof renderAll==='function') renderAll();
+      try{ if(typeof buildMarkers==='function') buildMarkers(); }catch(e){}
+      try{ if(typeof renderLeftPanel==='function') renderLeftPanel(); if(typeof renderRightPanel==='function') renderRightPanel(); }catch(e){}
+    }catch(e){ console.warn('[BringMe] loadPosts', e); }
+    loading=false;
+  }
+
+  // ── persistence hooks called right after each form adds its post locally ──
+  function persistRequest(o, type){
+    if(!signedIn() || typeof sbCreateRequest!=='function') return;
+    sbCreateRequest({ type:type||o.reqType, item:o.item, note:(o.note||o.details||''),
+      offerType:(o.offer&&o.offer.type)||'pts', cash:(o.offer&&o.offer.cash)||0, pts:(o.offer&&o.offer.points)||0,
+      delivery:o.delivery||'', lat:o.lat, lng:o.lng })
+     .then(function(res){ if(res&&res.data){ o._db={table:'help_requests',id:res.data.id}; o.id=res.data.id; loadPosts(); } });
+  }
+  function persistListing(o){
+    if(!signedIn() || typeof sbCreateListing!=='function') return;
+    sbCreateListing({ type:o.type||'sell', title:o.title, desc:o.desc||'', price:Number(o.price)||0,
+      emoji:o.catEmoji||o.image||'📦', lat:o.lat, lng:o.lng, loc:o.location||'', contact:o.contact||'' })
+     .then(function(res){ if(res&&res.data){ o._db={table:'listings',id:res.data.id}; o.id=res.data.id; loadPosts(); } });
+  }
+  function persistStore(o){
+    if(!signedIn() || typeof sbCreateStore!=='function') return;
+    var desc=(o.products&&o.products.length)? o.products.join(', ') : (o.desc||'');
+    sbCreateStore({ name:o.name, emoji:o.catEmoji||'🏪', desc:desc, addr:o.address||'', hrs:o.hours||'',
+      contact:o.contact||'', lat:o.lat, lng:o.lng, plan:'free' })
+     .then(function(res){ if(res&&res.data){ o._db={table:'stores',id:res.data.id}; o.id=res.data.id; loadPosts(); } });
+  }
+
+  // expose for the form submit handlers + manual refresh
+  window.bmPersistRequest = persistRequest;
+  window.bmPersistListing = persistListing;
+  window.bmPersistStore   = persistStore;
+  window.bmLoadPosts      = loadPosts;
+
+  // keep trying until Supabase is ready, then load live posts (+ one late refresh)
+  var tries=0, didFirst=false;
+  function boot(){
+    tries++;
+    if(connected()){ loadPosts(); if(!didFirst){ didFirst=true; setTimeout(boot, 8000); } return; }
+    if(tries<12) setTimeout(boot, 1200);
+  }
+  setTimeout(boot, 1000);
+})();
+</script>
+
+<!-- ══════════ PRIVATE REPLIES: "I can help" threads (index v8) ══════════ -->
+<style>
+.bmthread-back{position:fixed;inset:0;background:rgba(5,12,40,.55);z-index:3000;display:none;align-items:flex-end;justify-content:center}
+@media(min-width:620px){.bmthread-back{align-items:center}}
+.bmthread{width:100%;max-width:480px;max-height:92vh;display:flex;flex-direction:column;background:#eef1fb;border-radius:18px 18px 0 0;overflow:hidden;box-shadow:0 -10px 50px rgba(0,0,20,.4)}
+@media(min-width:620px){.bmthread{border-radius:18px;max-height:84vh}}
+.bmthread-hd{flex-shrink:0;display:flex;align-items:center;gap:10px;padding:14px 16px;background:linear-gradient(135deg,#0a1f63,#173c88);color:#fff}
+.bmthread-hd .ic{font-size:20px}
+.bmthread-hd .t{flex:1;min-width:0}
+.bmthread-hd .t b{font-family:'Poppins',sans-serif;font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmthread-hd .t span{font-size:11.5px;color:#CFE0FF}
+.bmthread-x{width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:14px;cursor:pointer;flex-shrink:0}
+.bmthread-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:14px 16px}
+.bmthread-foot{flex-shrink:0;border-top:1px solid #d8deef;background:#fff;padding:10px 12px}
+.bmprivnote{font-size:11px;color:#6b76a8;text-align:center;margin:6px 0 2px}
+.bmbub{max-width:82%;padding:9px 12px;border-radius:14px;font-size:13px;line-height:1.4;margin-bottom:8px;word-wrap:break-word;overflow-wrap:anywhere}
+.bmbub.them{background:#fff;border:1px solid #e0e5f3;color:#1a2550;border-bottom-left-radius:5px;margin-right:auto}
+.bmbub.me{background:linear-gradient(135deg,#2550b8,#173c88);color:#fff;border-bottom-right-radius:5px;margin-left:auto}
+.bmbub .who{font-size:10px;font-weight:800;opacity:.75;margin-bottom:2px;display:block}
+.bmbub .tm{font-size:9.5px;opacity:.6;margin-top:3px;display:block;text-align:right}
+.bmthr{background:#fff;border:1px solid #e3e7f4;border-radius:14px;padding:11px 12px;margin-bottom:11px}
+.bmthr-h{font-size:12.5px;font-weight:800;color:#0a1f63;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.bmthr-h .av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#FFD24A,#E3A810);color:#0a1f63;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;flex-shrink:0}
+.bmcompose{display:flex;gap:8px;align-items:flex-end}
+.bmcompose textarea{flex:1;border:1px solid #cdd4ea;border-radius:12px;padding:9px 11px;font-size:13px;font-family:inherit;resize:none;max-height:90px;min-height:40px;background:#fff}
+.bmsend{flex-shrink:0;border:none;border-radius:11px;padding:10px 15px;background:linear-gradient(135deg,#FFD24A,#E3A810);color:#0a1f63;font-weight:800;font-size:13px;cursor:pointer}
+.bmsend:disabled{opacity:.5}
+.bmthread-empty{text-align:center;color:#6b76a8;padding:26px 10px;font-size:13px}
+.bmthread-empty .big{font-size:34px;margin-bottom:8px}
+.bmpost-sum{background:#fff;border:1px solid #e3e7f4;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:#334a66;line-height:1.5}
+.bmpost-sum b{color:#0a1f63}
+.bmsignin{width:100%;border:none;border-radius:12px;padding:12px;background:linear-gradient(135deg,#2550b8,#173c88);color:#fff;font-weight:800;font-size:14px;cursor:pointer}
+</style>
+<script>
+(function(){
+  var cur=null; // { table, id, post }
+  function esc(s){ try{ if(typeof window.esc==='function') return window.esc(s); }catch(e){} return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function me(){ return (typeof SB_USER!=='undefined' && SB_USER)?SB_USER.id:null; }
+  function connected(){ return (typeof sb!=='undefined' && sb); }
+  function rel(iso){ if(!iso) return ''; var t=new Date(iso).getTime(); if(isNaN(t)) return ''; var s=Math.floor((Date.now()-t)/1000); if(s<60) return 'just now'; var m=Math.floor(s/60); if(m<60) return m+'m'; var h=Math.floor(m/60); if(h<24) return h+'h'; return Math.floor(h/24)+'d'; }
+  function initials(nm){ return String(nm||'').replace('@','').slice(0,2).toUpperCase()||'?'; }
+
+  async function fetchNames(ids){ var map={}; ids=(ids||[]).filter(Boolean); if(!connected()||!ids.length) return map;
+    try{ var r=await sb.from('profiles').select('id,nickname,first_name').in('id', ids); (r.data||[]).forEach(function(p){ map[p.id]= p.nickname?('@'+p.nickname):(p.first_name||'Member'); }); }catch(e){}
+    return map; }
+
+  function postTitle(p){ return (p && (p.item||p.title||p.name)) || 'Post'; }
+  function postSummary(p){
+    if(!p) return '';
+    if(p.item){ var off=''; if(p.offer){ if(p.offer.cash) off+='₱'+p.offer.cash+' '; if(p.offer.points) off+='✨'+p.offer.points+' Credits'; }
+      return '<b>'+esc(p.item)+'</b>'+(p.note?'<br>“'+esc(p.note)+'”':'')+(off.trim()?'<br>Reward offered: '+esc(off.trim()):''); }
+    if(p.title){ return '<b>'+esc(p.title)+'</b>'+(p.price?' — ₱'+esc(p.price):''); }
+    if(p.name){ return '<b>'+esc(p.name)+'</b>'+(p.address?' — '+esc(p.address):''); }
+    return '';
+  }
+
+  window.bmOpenThread = async function(table, id, post){
+    cur={ table:table, id:id, post:post };
+    var back=document.getElementById('bmthread-back');
+    if(!back){ back=document.createElement('div'); back.id='bmthread-back'; back.className='bmthread-back';
+      back.addEventListener('click', function(e){ if(e.target===back) window.bmCloseThread(); }); document.body.appendChild(back); }
+    back.style.display='flex';
+    paint('<div class="bmthread-empty"><div class="big">⏳</div>Loading…</div>', 'Loading…', false);
+    render(await load());
+  };
+  window.bmCloseThread = function(){ var b=document.getElementById('bmthread-back'); if(b){ b.style.display='none'; b.innerHTML=''; } cur=null; };
+
+  async function load(){
+    if(!cur) return null;
+    var out={ replies:[], nameMap:{}, me:me(), isOwner:false, signedIn:!!me() };
+    out.isOwner = !!(out.me && cur.post && cur.post._ownerId===out.me);
+    if(!connected() || !out.signedIn) return out;
+    try{
+      var r=await sb.from('post_replies').select('*').eq('post_table',cur.table).eq('post_id',cur.id).order('created_at',{ascending:true});
+      out.replies=r.data||[];
+      var ids={}; out.replies.forEach(function(x){ ids[x.helper_id]=1; ids[x.poster_id]=1; ids[x.sender_id]=1; });
+      out.nameMap=await fetchNames(Object.keys(ids));
+    }catch(e){ console.warn('[BringMe] thread load', e); }
+    return out;
+  }
+
+  function bubble(m, mine, nm){
+    return '<div class="bmbub '+(mine?'me':'them')+'">'+(nm?'<span class="who">'+esc(nm)+'</span>':'')+esc(m.body)+'<span class="tm">'+rel(m.created_at)+'</span></div>';
+  }
+
+  function render(d){
+    if(!d || !cur) return;
+    var p=cur.post;
+    if(!d.signedIn){
+      paint('<div class="bmpost-sum">'+postSummary(p)+'</div><div class="bmthread-empty"><div class="big">🔒</div>Sign in to offer help or message privately.</div><button class="bmsignin" onclick="bmCloseThread(); if(typeof openAuthGate===\'function\'){openAuthGate(); if(typeof awShowTab===\'function\') awShowTab(\'login\');}">Sign in / Join</button>',
+        'Private messaging', false);
+      return;
+    }
+    if(d.isOwner){
+      var groups={}, order=[];
+      d.replies.forEach(function(m){ if(!groups[m.helper_id]){ groups[m.helper_id]=[]; order.push(m.helper_id); } groups[m.helper_id].push(m); });
+      var inner='<div class="bmpost-sum">'+postSummary(p)+'</div>';
+      if(!order.length){ inner+='<div class="bmthread-empty"><div class="big">📭</div>No offers yet.<br>When someone offers to help, it shows here — privately.</div>'; }
+      else { inner+=order.map(function(hid){
+          var nm=d.nameMap[hid]||'Member';
+          var msgs=groups[hid].map(function(m){ return bubble(m, m.sender_id===d.me, ''); }).join('');
+          return '<div class="bmthr"><div class="bmthr-h"><span class="av">'+esc(initials(nm))+'</span>'+esc(nm)+'</div>'+msgs+
+                 '<div class="bmcompose"><textarea id="bmreply-'+esc(hid)+'" rows="1" placeholder="Reply to '+esc(nm)+'…"></textarea><button class="bmsend" onclick="bmThreadSend(\''+esc(hid)+'\')">Send</button></div></div>';
+        }).join(''); }
+      paint(inner, 'Your private offers'+(order.length?' ('+order.length+')':''), false);
+    } else {
+      var inner2='<div class="bmpost-sum">'+postSummary(p)+'</div>';
+      if(!d.replies.length){ inner2+='<div class="bmthread-empty"><div class="big">🤝</div>Offer to help — your message goes privately to the poster.</div>'; }
+      else { inner2+=d.replies.map(function(m){ var mine=m.sender_id===d.me; return bubble(m, mine, mine?'':(d.nameMap[m.poster_id]||'Poster')); }).join(''); }
+      paint(inner2, 'Private — only the poster sees this', true);
+    }
+  }
+
+  function paint(bodyHTML, sub, helperCompose){
+    var back=document.getElementById('bmthread-back'); if(!back || !cur) return;
+    var foot = helperCompose ? '<div class="bmthread-foot"><div class="bmcompose"><textarea id="bmreply-new" rows="1" placeholder="Offer to help privately…"></textarea><button class="bmsend" onclick="bmThreadSend(null)">Send</button></div><div class="bmprivnote">🔒 Private — only you and the poster</div></div>' : '';
+    back.innerHTML='<div class="bmthread"><div class="bmthread-hd"><span class="ic">💬</span><div class="t"><b>'+esc(postTitle(cur.post))+'</b><span>'+esc(sub)+'</span></div><button class="bmthread-x" onclick="bmCloseThread()">✕</button></div><div class="bmthread-body">'+bodyHTML+'</div>'+foot+'</div>';
+    Array.prototype.forEach.call(back.querySelectorAll('textarea'), function(t){ t.addEventListener('input', function(){ t.style.height='auto'; t.style.height=Math.min(90,t.scrollHeight)+'px'; }); });
+    var b=back.querySelector('.bmthread-body'); if(b) b.scrollTop=b.scrollHeight;
+  }
+
+  window.bmThreadSend = async function(helperId){
+    if(!cur) return;
+    var ta=document.getElementById(helperId? ('bmreply-'+helperId) : 'bmreply-new');
+    var body=ta? ta.value.trim() : '';
+    if(!body){ if(typeof showToast==='function') showToast('Type a message first'); return; }
+    if(!connected() || !me()){ if(typeof showToast==='function') showToast('Please sign in first'); return; }
+    var btn = ta && ta.parentNode ? ta.parentNode.querySelector('.bmsend') : null; if(btn){ btn.disabled=true; btn.textContent='…'; }
+    try{
+      var args={ p_table:cur.table, p_post_id:cur.id, p_body:body }; if(helperId) args.p_helper=helperId;
+      var r=await sb.rpc('send_reply', args);
+      if(r && r.error){ if(typeof showToast==='function') showToast('Could not send: '+r.error.message); if(btn){ btn.disabled=false; btn.textContent='Send'; } return; }
+      if(ta) ta.value='';
+      render(await load());
+      if(typeof showToast==='function') showToast('✅ Sent privately','success');
+    }catch(e){ if(typeof showToast==='function') showToast('Could not send'); if(btn){ btn.disabled=false; btn.textContent='Send'; } }
+  };
+})();
 </script>
 </body>
 </html>
