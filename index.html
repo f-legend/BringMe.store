@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v11 · 2026-11-18 ═══════ -->
-<script>window.BM_VERSION='index v11 · 2026-11-18';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v12.1 · 2026-11-18 ═══════ -->
+<script>window.BM_VERSION='index v12.1 · 2026-11-18';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
     <script>
     /* index v11: if Google Maps can't load (blocked, offline), keep the app running without the map */
@@ -2669,6 +2669,51 @@ body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
   #left-panel, #sidebar{ position:relative !important; transform:none !important; top:auto !important; bottom:auto !important; z-index:5 !important; box-shadow:none !important; }
 }
 </style>
+<style>
+/* index v12: my posts — Live / History tabs, actions, History search, edit sheet */
+/* Live / History and the History filters use the map's own gold chips (.bm-tools / .bm-chip) */
+.mine-tools .bm-tools{padding:0;flex-wrap:wrap;overflow:visible}
+.mine-card.edge-u{border-left:3px solid #E05A4E}
+.mine-card.edge-f{border-left:3px solid var(--purple,#E3A810)}
+.mine-empty{text-align:center;padding:24px 16px;color:var(--muted)}
+.mine-empty-ic{font-size:30px;margin-bottom:8px;line-height:1.1}
+.mine-empty-t{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.mine-empty-s{font-size:11.5px;line-height:1.5}
+#left-profile .fp-half>.sec-action{flex-shrink:0;margin-bottom:12px}
+#sidebar-profile .fp-half>.sec-action{flex-shrink:0;margin-bottom:10px}
+.sos-pill{display:inline-flex;align-items:center;justify-content:center;padding:3px 6px;border-radius:6px;background:linear-gradient(135deg,#C0392B,#9B2D1F);color:#fff;font-family:'Poppins',sans-serif;font-weight:800;font-size:10px;letter-spacing:.06em;line-height:1.1;box-shadow:0 1px 3px rgba(155,45,31,.3)}
+.mine-card{border:1px solid var(--border,#e3e7f4);border-radius:13px;padding:9px 10px;display:flex;flex-direction:column;gap:7px;background:#fff}
+.mine-card.dim .mine-main{opacity:.72}
+.mine-main{display:flex;align-items:center;gap:10px;min-width:0}
+.mine-main[role="button"]{cursor:pointer;border-radius:9px}
+.mine-main[role="button"]:hover .mp-title{text-decoration:underline}
+.mine-card .mp-emoji{width:38px;height:38px;font-size:19px}
+.mine-card .mp-title{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.mine-card .mp-meta{white-space:normal;line-height:1.4}
+.mine-card .mp-status{align-self:flex-start}
+.mine-acts{display:flex;gap:6px;flex-wrap:wrap}
+.mine-acts button{border:1px solid #cdd4ea;background:#fff;color:#173c88;border-radius:8px;padding:5px 9px;font-weight:800;font-size:11.5px;cursor:pointer;font-family:inherit}
+.mine-acts button.del{color:#9B2D1F;border-color:#EDC4BC}
+.mine-acts button.go{background:#173c88;border-color:#173c88;color:#fff}
+.mine-acts button:disabled{opacity:.5;cursor:default}
+.mine-ask{font-size:12px;line-height:1.45;color:#334a66;background:#F7F9FF;border:1px solid #e3e7f4;border-radius:10px;padding:8px 9px;display:flex;flex-direction:column;gap:7px}
+.mine-ask.del{background:#FBEDEA;border-color:#EDC4BC;color:#8a2a1c}
+.mine-ask .mine-acts button.del{background:#9B2D1F;border-color:#9B2D1F;color:#fff}
+.mine-flag{font-size:11.5px;font-weight:800;color:#5a4400;background:#FFF6DA;border:1px solid #F1D27A;border-radius:8px;padding:5px 8px;line-height:1.4}
+.mine-tools{display:flex;flex-direction:column;gap:7px}
+.mine-q{min-width:0;-webkit-appearance:none;appearance:none}
+.mine-list{display:flex;flex-direction:column;gap:8px}
+.mp-status.off{background:#EEF1F8 !important;color:#5a6690 !important}
+.mp-status.ok{background:#E6F4EA !important;color:#1A6B3A !important}
+.mp-status.bad{background:#FBEDEA !important;color:#9B2D1F !important}
+.me-form{display:flex;flex-direction:column;gap:11px}
+.me-row{display:flex;gap:9px}
+.me-row>*{flex:1;min-width:0}
+.me-form .bmu-safe{margin:0}
+.me-foot{display:flex;gap:8px;align-items:center}
+.me-foot .bmsend{flex:1;padding:12px 15px;font-size:14px}
+</style>
+<style>@media(max-width:768px){.mine-q{font-size:16px !important}}</style>
 </head>
 <body>
 <!-- ONBOARDING / WELCOME FLOW -->
@@ -3043,9 +3088,12 @@ body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
   <!-- STORES SECTION (top) -->
   <div class="listings-section" id="listings-section">
     <div class="rp-section-hdr">
-      <span style="font-size:13px">🛍️</span>
-      <span class="rp-section-title" style="color:var(--gold-lt)">Items for Sale</span>
-      <span class="rp-section-count" id="listings-count" style="background:rgba(255,200,60,0.09);color:var(--gold);border:1px solid rgba(255,200,60,0.17)">0</span>
+      <span class="lp-section-icon">🛍️</span>
+      <div class="lp-section-titlewrap">
+        <span class="lp-section-title">Items for Sale</span>
+        <span class="lp-section-sub">Buy &amp; sell with neighbors</span>
+      </div>
+      <span class="lp-section-count" id="listings-count">0</span>
     </div>
     <div class="listings-filter">
       <button class="lf-pill active" id="lf-all" onclick="setListingFilter('all')">🏠 All</button>
@@ -3066,9 +3114,12 @@ body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
   <!-- ACTIONS (bottom) -->
   <div class="stores-section" id="stores-section">
     <div class="rp-section-hdr">
-      <span style="font-size:13px">🏪</span>
-      <span class="rp-section-title" style="color:var(--gold)">Nearby Establishments</span>
-      <span class="rp-section-count" id="stores-count" style="background:rgba(176,58,46,0.09);color:#E05A4E;border:1px solid rgba(176,58,46,0.17)">0</span>
+      <span class="lp-section-icon">🏪</span>
+      <div class="lp-section-titlewrap">
+        <span class="lp-section-title">Nearby Establishments</span>
+        <span class="lp-section-sub">Shops &amp; services near you</span>
+      </div>
+      <span class="lp-section-count" id="stores-count">0</span>
     </div>
     <div class="bm-tools" data-group="stores">
       <button class="bm-chip active" onclick="setStoreSort('near',this)">📍 Nearest</button>
@@ -5894,7 +5945,7 @@ function renderLeftPanel() {
       <div class="req-card urgent-card ${selectedLF===String(r.id)?'active-req':''}"
            onclick="selectRequest(${jsId(r.id)},'urgent')">
         <div class="req-card-top">
-          <div class="req-emoji urgent-bg">🆘</div>
+          <div class="req-emoji urgent-bg"><span class="sos-pill">SOS</span></div>
           <div class="req-info">
             <div class="req-title">${r.item}</div>
             <div class="req-cat">${r.category}</div>
@@ -8777,21 +8828,27 @@ async function sbSignOut() {
 // READ — load everything from the database to show on the map
 async function sbLoadListings() {
   if (!sb) return [];
-  const { data, error } = await sb.from('listings').select('*').eq('status','active').order('created_at',{ascending:false});
+  // index v12: only items for sale right now (not sold, not deleted)
+  const live = () => sb.from('listings').select('*').eq('status','active');
+  let { data, error } = await live().is('removed_at', null).order('created_at',{ascending:false});
+  if (error && /removed_at/i.test(error.message || '')) ({ data, error } = await live().order('created_at',{ascending:false}));   // before db posts v3
   if (error) { console.warn('load listings', error); return []; }
   return data || [];
 }
 async function sbLoadStores() {
   if (!sb) return [];
-  const { data } = await sb.from('stores').select('*').order('featured',{ascending:false});
+  // index v12: deleted shops stay off the map
+  let { data, error } = await sb.from('stores').select('*').is('removed_at', null).order('featured',{ascending:false});
+  if (error && /removed_at/i.test(error.message || '')) ({ data, error } = await sb.from('stores').select('*').order('featured',{ascending:false}));
   return data || [];
 }
 async function sbLoadRequests() {
   if (!sb) return [];
-  // index v10: everyone sees open + in-progress (helper chosen) requests; you also see all of your own (incl. Found)
-  let q = sb.from('help_requests').select('*');
-  q = (SB_USER && SB_USER.id) ? q.or('status.in.(open,assigned),user_id.eq.' + SB_USER.id + ',chosen_helper.eq.' + SB_USER.id) : q.in('status', ['open','assigned']);   // index v11: + requests you're the helper on
-  const { data, error } = await q.order('created_at',{ascending:false});
+  // index v12: the map and feeds show only LIVE requests (open, or helper chosen), yours included.
+  // Finished, closed and deleted ones live in your profile History.
+  const live = () => sb.from('help_requests').select('*').in('status', ['open','assigned']);
+  let { data, error } = await live().is('removed_at', null).order('created_at',{ascending:false});
+  if (error && /removed_at/i.test(error.message || '')) ({ data, error } = await live().order('created_at',{ascending:false}));
   if (error) { console.warn('load requests', error); return []; }
   return data || [];
 }
@@ -9813,18 +9870,294 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
     </div>`;
   }
   const feedEmpty = m => `<div class="fp-empty">${m}</div>`;
-  function leftFeed(){
-    return feedHalf({tone:'red',icon:'⚡',title:'My Urgent Needs',sub:'Posted by you · reward offered',count:SIDE.req.length,cstyle:CS.red,
-        inner:SIDE.req.length?SIDE.req.map(postCard).join(''):feedEmpty('No urgent needs yet. Post one below.'),saclass:'sa-urgent',act:"if(typeof openPostRequest==='function')openPostRequest('urgent')",btn:'⚡ Post Urgent Need'})
-         + feedHalf({tone:'gold',icon:'🔍',title:'My Find Requests',sub:"Things you're looking for",count:SIDE.look.length,cstyle:CS.gold,
-        inner:SIDE.look.length?SIDE.look.map(postCard).join(''):feedEmpty('No find requests yet. Post one below.'),saclass:'sa-find',act:"if(typeof openPostRequest==='function')openPostRequest('find')",btn:'🔍 Post a Find Me'});
+  /* ---------- index v12: MY POSTS — edit, close, delete and History in the 4 side sections ---------- */
+  const MINE0=()=>({ loaded:false, err:null, reqs:[], lists:[], stores:[], deals:[] });
+  let mine=MINE0(), mineTok=0;
+  const mineUI={ tab:{urgent:'live',find:'live',sell:'live',shop:'live'}, q:{urgent:'',find:'',sell:'',shop:''},
+                 f:{urgent:'all',find:'all',sell:'all',shop:'all'}, ask:null, busy:false, edit:null };
+  const jid=v=>String(v==null?'':v).replace(/[^A-Za-z0-9_-]/g,'');
+  const SOS='<span class="sos-pill">SOS</span>';
+  // empty panels look like the map's: big icon, bold line, small line
+  const mEmpty=(ic,t,sub)=>`<div class="mine-empty">${ic?`<div class="mine-empty-ic">${ic}</div>`:''}<div class="mine-empty-t">${t}</div>${sub?`<div class="mine-empty-s">${sub}</div>`:''}</div>`;   // the 🆘 emoji shows pink on many phones
+  const LIVE_REQ=r=>!r.removed_at && (!r.status || r.status==='open' || r.status==='assigned');
+  function ago(iso){ if(!iso) return ''; const t=new Date(iso).getTime(); if(isNaN(t)) return ''; const s=Math.max(0,(Date.now()-t)/1000);
+    if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+'m ago'; if(s<86400) return Math.floor(s/3600)+'h ago'; if(s<7*86400) return Math.floor(s/86400)+'d ago'; return day(iso); }
+  function day(iso){ try{ return iso?new Date(iso).toLocaleDateString(undefined,{month:'short',day:'numeric'}):''; }catch(_){ return ''; } }
+  function rawOffer(r){ return { cash:(r.offer_type==='points'||r.offer_type==='pts')?0:(Number(r.offer_cash)||0), cr:(r.offer_type==='cash')?0:(Number(r.offer_trust)||0) }; }
+  function offerTxt(r){ const o=rawOffer(r), a=[]; if(o.cash) a.push('₱'+o.cash.toLocaleString()); if(o.cr) a.push('✨'+o.cr); return a.join(' + '); }
+  function dealPay(d){ const a=[]; if(Number(d.reward)) a.push('✨'+d.reward); if(Number(d.cash)) a.push('₱'+Number(d.cash).toLocaleString()+' cash'); return a.join(' + '); }
+  const dealOf=id=>mine.deals.find(d=>String(d.request_id)===String(id));
+  function mineRow(k,j){ const arr=k==='sell'?mine.lists:k==='shop'?mine.stores:mine.reqs; return arr.find(x=>jid(x.id)===j); }
+
+  async function bpLoadMine(){
+    if(typeof sb==='undefined'||!sb||typeof SB_USER==='undefined'||!SB_USER){ mine=MINE0(); return; }
+    const me=SB_USER.id, tok=++mineTok;
+    try{
+      const out=await Promise.all([
+        sb.from('help_requests').select('*').eq('user_id',me).order('created_at',{ascending:false}),
+        sb.from('listings').select('*').eq('user_id',me).order('created_at',{ascending:false}),
+        sb.from('stores').select('*').eq('owner_id',me).order('created_at',{ascending:false}),
+        sb.rpc('my_deals')
+      ]);
+      if(tok!==mineTok) return;
+      mine={ loaded:true, err:(out[0]&&out[0].error)?(out[0].error.message||'Could not load'):null,
+             reqs:(out[0]&&out[0].data)||[], lists:(out[1]&&out[1].data)||[], stores:(out[2]&&out[2].data)||[],
+             deals:(out[3]&&!out[3].error&&Array.isArray(out[3].data))?out[3].data:[] };
+    }catch(e){ if(tok!==mineTok) return; mine.loaded=true; mine.err=(e&&e.message)||String(e); }
+    if(!otherView && document.body.classList.contains('bm-profile')) renderSides();
   }
-  function rightFeed(){
-    return feedHalf({tone:'blue',icon:'🏷️',title:"Items I'm Selling",sub:'Your listings',count:SIDE.active.length,cstyle:CS.blue,
-        inner:SIDE.active.length?SIDE.active.map(postCard).join(''):feedEmpty('Nothing listed yet. List an item below.'),saclass:'sa-sell',act:"if(typeof resetPostForm==='function'){resetPostForm();} if(typeof openModal==='function')openModal('post')",btn:'🏷️ List an Item'})
-         + feedHalf({tone:'green',icon:'🏪',title:'My Establishments',sub:'Your shops & services',count:SIDE.stores.length,cstyle:CS.green,
-        inner:SIDE.stores.length?SIDE.stores.map(estabCard).join(''):feedEmpty('No businesses yet. Register one below.'),saclass:'sa-store',act:"if(typeof openModal==='function')openModal('store-register')",btn:'🏪 Register a Store'});
+  window.bmMineRefresh=function(){ if(!otherView && document.body.classList.contains('bm-profile')) bpLoadMine(); };
+
+  // draw only the two side panels (keeps each list's scroll position)
+  function renderSides(){
+    const keep={}, sel='#left-profile .fp-half-body[data-sec], #sidebar-profile .fp-half-body[data-sec]';
+    document.querySelectorAll(sel).forEach(b=>{ keep[b.getAttribute('data-sec')]=b.scrollTop; });
+    const lp=document.getElementById('left-profile');    if(lp) lp.innerHTML=otherView?theirFeed('left'):leftFeed();
+    const rp=document.getElementById('sidebar-profile'); if(rp) rp.innerHTML=otherView?theirFeed('right'):rightFeed();
+    document.querySelectorAll(sel).forEach(b=>{ const k=b.getAttribute('data-sec'); if(keep[k]) b.scrollTop=keep[k]; });
   }
+
+  const SEC={
+    urgent:{tone:'red',icon:'⚡',title:'My Urgent Needs',sub:'Your requests + jobs you help with',btn:'⚡ Post Urgent Need',cls:'sa-urgent',act:"if(typeof openPostRequest==='function')openPostRequest('urgent')",
+            empty:['🕊️','No urgent needs right now','Post one when you need help fast.'],hempty:'Finished, closed and deleted urgent posts show here, with the deals you helped on.'},
+    find:{tone:'gold',icon:'🔍',title:'My Find Requests',sub:"Things you're looking for",btn:'🔍 Post a Find Me',cls:'sa-find',act:"if(typeof openPostRequest==='function')openPostRequest('find')",
+          empty:['🔍','No find requests right now','Post one when you’re looking for something.'],hempty:'Found, closed and deleted Find Me posts show here.'},
+    sell:{tone:'blue',icon:'🛍️',title:"Items I'm Selling",sub:'Your listings',btn:'🏷️ List an Item',cls:'sa-sell',act:"if(typeof resetPostForm==='function'){resetPostForm();} if(typeof openModal==='function')openModal('post')",
+          empty:['🏷️','Nothing for sale right now','List an item and it shows on the map.'],hempty:'Sold and deleted items show here.'},
+    shop:{tone:'green',icon:'🏪',title:'My Establishments',sub:'Your shops & services',btn:'🏪 Post a Shop/Service',cls:'sa-store',act:"if(typeof openModal==='function')openModal('store-register')",
+          empty:['🏪','No shops or services yet','Post yours to put it on the map.'],hempty:'Deleted shops show here.'}
+  };
+  const FILTERS={ urgent:[['all','📋 All'],['asked','🙋 I asked'],['helped','🙌 I helped'],['deleted','🗑 Deleted']],
+                  find:[['all','📋 All'],['found','✅ Found'],['closed','🔒 Closed'],['deleted','🗑 Deleted']],
+                  sell:[['all','📋 All'],['sold','🏷️ Sold'],['deleted','🗑 Deleted']], shop:[] };
+  function leftFeed(){ return mineSection('urgent')+mineSection('find'); }
+  function rightFeed(){ return mineSection('sell')+mineSection('shop'); }
+
+  function liveItems(k){
+    if(k==='urgent') return mine.reqs.filter(r=>(r.type||'urgent')==='urgent'&&LIVE_REQ(r)).map(x=>({t:'req',x}))
+      .concat(mine.deals.filter(d=>d.role==='helper'&&!d.closed_at).map(x=>({t:'job',x})));
+    if(k==='find') return mine.reqs.filter(r=>r.type==='find'&&LIVE_REQ(r)).map(x=>({t:'req',x}));
+    if(k==='sell') return mine.lists.filter(l=>!l.removed_at&&(!l.status||l.status==='active')).map(x=>({t:'list',x}));
+    return mine.stores.filter(s=>!s.removed_at).map(x=>({t:'store',x}));
+  }
+  const whenOf=it=>{ const x=it.x; return String(x.removed_at||x.closed_at||x.found_at||x.sold_at||x.created_at||x.chosen_at||''); };
+  const byWhen=(a,b)=>whenOf(b).localeCompare(whenOf(a));
+  function histItems(k){
+    if(k==='urgent') return mine.reqs.filter(r=>(r.type||'urgent')==='urgent'&&!LIVE_REQ(r)).map(x=>({t:'req',x}))
+      .concat(mine.deals.filter(d=>d.role==='helper'&&d.closed_at).map(x=>({t:'helped',x}))).sort(byWhen);
+    if(k==='find') return mine.reqs.filter(r=>r.type==='find'&&!LIVE_REQ(r)).map(x=>({t:'req',x})).sort(byWhen);
+    if(k==='sell') return mine.lists.filter(l=>l.removed_at||l.status==='sold').map(x=>({t:'list',x})).sort(byWhen);
+    return mine.stores.filter(s=>s.removed_at).map(x=>({t:'store',x})).sort(byWhen);
+  }
+  function histMatch(k,it,f){
+    if(f==='all') return true; const x=it.x;
+    if(k==='urgent'){ if(f==='helped') return it.t==='helped'; if(f==='asked') return it.t==='req'&&!x.removed_at; if(f==='deleted') return it.t==='req'&&!!x.removed_at; }
+    if(k==='find'){ if(f==='found') return x.status==='found'; if(f==='closed') return x.status==='closed'&&!x.removed_at; if(f==='deleted') return !!x.removed_at; }
+    if(k==='sell'){ if(f==='sold') return x.status==='sold'&&!x.removed_at; if(f==='deleted') return !!x.removed_at; }
+    return true;
+  }
+  const histText=it=>{ const x=it.x; return [x.item,x.title,x.name,x.note,x.description,x.address,x.location_label,x.other_name].filter(Boolean).join(' ').toLowerCase(); };
+
+  function mineSection(k){
+    const c=SEC[k], tab=mineUI.tab[k], live=mine.loaded?liveItems(k):[], hist=mine.loaded?histItems(k):[];
+    const head=`<div class="lp-section-hdr"><span class="lp-section-icon">${c.icon}</span><div class="lp-section-titlewrap"><span class="lp-section-title">${c.title}</span><span class="lp-section-sub">${c.sub}</span></div><span class="lp-section-count" style="${CS[c.tone]}">${live.length}</span></div>`;
+    const seg=`<div class="bm-tools mine-seg" role="tablist" aria-label="${c.title}"><button type="button" role="tab" class="bm-chip${tab==='live'?' active':''}" aria-selected="${tab==='live'}" onclick="BP.mineTab('${k}','live')">● Live · ${live.length}</button><button type="button" role="tab" class="bm-chip${tab==='hist'?' active':''}" aria-selected="${tab==='hist'}" onclick="BP.mineTab('${k}','hist')">🕘 History · ${hist.length}</button></div>`;
+    let body;
+    if(!mine.loaded) body=mEmpty('','Loading your posts…');
+    else if(mine.err) body=mEmpty('⚠️','Couldn’t load your posts',esc(mine.err));
+    else if(tab==='live') body=live.length?live.map(it=>liveCard(k,it)).join(''):mEmpty(...c.empty);
+    else body=histTools(k)+`<div class="mine-list" id="mine-list-${k}">${histList(k)}</div>`;
+    return `<div class="fp-half t-${c.tone}">${head}${seg}<div class="fp-half-body" data-sec="${k}">${body}</div>${tab==='live'?`<button class="sec-action ${c.cls}" onclick="${c.act}">${c.btn}</button>`:''}</div>`;
+  }
+  function histTools(k){
+    const F=FILTERS[k];
+    return `<div class="mine-tools"><div class="stores-search-inner"><span class="si">🔍</span><input class="mine-q" type="search" placeholder="Search your history" aria-label="Search your history" value="${esc(mineUI.q[k])}" oninput="BP.mineQ('${k}',this.value)"></div>`+
+      (F.length?`<div class="bm-tools mine-chips" role="group" aria-label="Show">${F.map(f=>`<button type="button" class="bm-chip${mineUI.f[k]===f[0]?' active':''}" aria-pressed="${mineUI.f[k]===f[0]}" onclick="BP.mineF('${k}','${f[0]}')">${f[1]}</button>`).join('')}</div>`:'')+`</div>`;
+  }
+  function histList(k){
+    const f=mineUI.f[k], q=mineUI.q[k].trim().toLowerCase();
+    const items=histItems(k).filter(it=>histMatch(k,it,f)).filter(it=>!q||histText(it).includes(q));
+    return items.length?items.map(it=>histCard(k,it)).join(''):((q||f!=='all')?mEmpty('🔍','Nothing matches','Try another word or filter.'):mEmpty('🕘','No history yet',SEC[k].hempty));
+  }
+
+  function mcard(o){
+    return `<div class="mine-card${o.edge?' '+o.edge:''}${o.dim?' dim':''}"><div class="mine-main"${o.tap?` role="button" tabindex="0" onclick="${o.tap}" onkeydown="if(event.key==='Enter'){${o.tap}}"`:''}>`+
+      `<div class="mp-emoji">${o.em}</div><div class="mp-body"><div class="mp-title">${o.title}</div><div class="mp-meta">${o.meta||''}</div></div>`+
+      (o.pill?`<span class="mp-status ${o.pc||''}">${o.pill}</span>`:'')+`</div>`+
+      (o.flag?`<div class="mine-flag">${o.flag}</div>`:'')+(o.acts?`<div class="mine-acts">${o.acts}</div>`:'')+(o.ask||'')+`</div>`;
+  }
+  function btn(label, call, cls){ return `<button type="button" class="${cls||''}" ${mineUI.busy?'disabled':''} onclick="BP.${call}">${label}</button>`; }
+  function askBox(k,id,row){
+    const a=mineUI.ask; if(!a||a.k!==k||a.id!==id) return '';
+    const name=esc(row.item||row.title||row.name||'this post');
+    const T={ close:['Close this request? It leaves the map and moves to your History. You can open it again later.','Yes, close it',''],
+              delete:[`Delete “${name}”? It disappears for everyone. A copy stays in your History, where you can bring it back.`,'Yes, delete','del'],
+              sold:[`Mark “${name}” as sold? It leaves the map and moves to your History. You can list it again later.`,'Yes, it’s sold',''] }[a.act];
+    if(!T) return '';
+    return `<div class="mine-ask ${T[2]}" role="alert"><span>${T[0]}</span><div class="mine-acts">${btn(T[1],`mineDo('${k}','${id}','${a.act}')`,T[2]||'go')}${btn('Cancel','mineAsk(null)')}</div></div>`;
+  }
+  function liveCard(k,it){
+    const x=it.x;
+    if(it.t==='job'){ const id=jid(x.request_id), st={chosen:'Hand-over',delivered:'📦 Delivered',dispute:'⚖️ Under review'}[x.stage]||'In progress';
+      return mcard({ edge:'edge-u', em:'🤝', title:esc(x.item||'Urgent job'), meta:`You’re helping ${esc(x.other_name)}`+(dealPay(x)?` · ${esc(dealPay(x))}`:''), pill:st, tap:`BP.mineOpen('deal','${id}')`, acts:btn('Open the deal',`mineOpen('deal','${id}')`,'go') }); }
+    const id=jid(x.id);
+    if(it.t==='req'){
+      const isU=k==='urgent', n=Number(x.reply_count)||0; let pill, acts;
+      if(x.status==='assigned'){ pill=x.dispute_open?'⚖️ Under review':'🤝 Helper chosen'; acts=btn('Open the deal',`mineOpen('${k}','${id}')`,'go'); }
+      else { pill=n?(isU?`👥 ${n} offered`:`💬 ${n} ${n===1?'reply':'replies'}`):'Open';
+        acts=btn('✏️ Edit',`mineEdit('${k}','${id}')`)+btn('Close',`mineAsk('${k}','${id}','close')`)+btn('🗑 Delete',`mineAsk('${k}','${id}','delete')`,'del'); }
+      return mcard({ edge:isU?'edge-u':'edge-f', em:isU?SOS:'🔍', title:esc(x.item||'Request'), meta:[esc(offerTxt(x))||(isU?'Urgent':'Find Me'), ago(x.created_at)].filter(Boolean).join(' · '), pill, tap:`BP.mineOpen('${k}','${id}')`, acts, ask:askBox(k,id,x) });
+    }
+    if(it.t==='list') return mcard({ em:esc(x.emoji||'📦'), title:esc(x.title||'Item'), meta:['₱'+Number(x.price||0).toLocaleString(), esc(x.location_label||''), ago(x.created_at)].filter(Boolean).join(' · '),
+      pill:'For sale', tap:`BP.mineOpen('sell','${id}')`, acts:btn('✏️ Edit',`mineEdit('sell','${id}')`)+btn('Mark sold',`mineAsk('sell','${id}','sold')`)+btn('🗑 Delete',`mineAsk('sell','${id}','delete')`,'del'), ask:askBox('sell',id,x) });
+    return mcard({ em:esc(x.emoji||'🏪'), title:esc(x.name||'Shop'), meta:[esc(x.address||''), esc(x.hours||'')].filter(Boolean).join(' · ')||'Your shop',
+      pill:x.featured?'✅ Official':'👥 Community', tap:`BP.mineOpen('shop','${id}')`, acts:btn('✏️ Edit',`mineEdit('shop','${id}')`)+btn('🗑 Delete',`mineAsk('shop','${id}','delete')`,'del'), ask:askBox('shop',id,x) });
+  }
+  function histCard(k,it){
+    const x=it.x;
+    if(it.t==='helped'){
+      const id=jid(x.request_id); let pill='🙌 You helped', pc='ok', flag='';
+      if(x.stage==='decided'){ const won=x.winner==='helper'; pill=won?'⚖️ Decided for you':'⚖️ Decided against you'; pc=won?'ok':'bad'; }
+      else if(x.stage==='dispute'){ pill='⚖️ Under review'; pc=''; }
+      if(Number(x.cash)&&x.stage==='closed'&&!x.cash_got_at) flag='💵 Did you get the cash? Open the deal to confirm.';
+      const got=(x.credits_to==='helper'&&Number(x.reward))?`+✨${x.reward}`:'';
+      return mcard({ edge:'edge-u', em:'🙌', title:esc(x.item||'Urgent job'), meta:[`For ${esc(x.other_name)}`, got, Number(x.cash)?`₱${Number(x.cash).toLocaleString()} cash`:'', day(x.closed_at)].filter(Boolean).join(' · '),
+        pill, pc, flag, tap:`BP.mineOpen('deal','${id}')`, acts:btn('Open the deal',`mineOpen('deal','${id}')`,'go') });
+    }
+    const id=jid(x.id);
+    if(it.t==='req'){
+      const isU=k==='urgent', em=isU?SOS:'🔍', title=esc(x.item||'Request'), edge=isU?'edge-u':'edge-f';
+      if(x.removed_at) return mcard({ edge, em, title, meta:`Deleted ${day(x.removed_at)}`, pill:'Deleted', pc:'off', dim:true, acts:btn('↩️ Restore',`mineDo('${k}','${id}','restore')`) });
+      if(x.status==='closed') return mcard({ edge, em, title, meta:[esc(offerTxt(x)), `Posted ${day(x.created_at)}`].filter(Boolean).join(' · '), pill:'Closed', pc:'off', tap:`BP.mineOpen('${k}','${id}')`,
+        acts:btn('Open again',`mineDo('${k}','${id}','reopen')`)+btn('🗑 Delete',`mineAsk('${k}','${id}','delete')`,'del'), ask:askBox(k,id,x) });
+      if(x.status==='found') return mcard({ edge, em, title, meta:[`Found ${day(x.found_at)}`, Number(x.offer_trust)?`✨${x.offer_trust} reward`:''].filter(Boolean).join(' · '), pill:'✅ Found', pc:'ok', tap:`BP.mineOpen('${k}','${id}')`, acts:btn('See the replies',`mineOpen('${k}','${id}')`,'go') });
+      const d=dealOf(x.id); let pill='🤝 Deal closed', pc='ok', flag='';
+      if(d&&d.stage==='decided'){ const won=d.winner==='requester'; pill=won?'⚖️ Decided for you':'⚖️ Decided against you'; pc=won?'ok':'bad'; }
+      else if(d&&d.stage==='dispute'){ pill='⚖️ Under review'; pc=''; }
+      if(d&&Number(d.cash)&&d.stage==='closed'&&!d.cash_paid_at) flag='💵 Did you pay the cash? Open the deal to say so.';
+      return mcard({ edge, em, title, meta:[d?`With ${esc(d.other_name)}`:'', esc(d?dealPay(d):offerTxt(x)), day((d&&d.closed_at)||x.closed_at)].filter(Boolean).join(' · '),
+        pill, pc, flag, tap:`BP.mineOpen('${k}','${id}')`, acts:btn('Open the deal',`mineOpen('${k}','${id}')`,'go') });
+    }
+    if(it.t==='list'){
+      const em=esc(x.emoji||'📦'), title=esc(x.title||'Item');
+      if(x.removed_at) return mcard({ em, title, meta:`Deleted ${day(x.removed_at)}`, pill:'Deleted', pc:'off', dim:true, acts:btn('↩️ Restore',`mineDo('sell','${id}','restore')`) });
+      return mcard({ em, title, meta:`₱${Number(x.price||0).toLocaleString()} · Sold ${day(x.sold_at||x.created_at)}`, pill:'Sold', pc:'ok',
+        acts:btn('List again',`mineDo('sell','${id}','relist')`)+btn('🗑 Delete',`mineAsk('sell','${id}','delete')`,'del'), ask:askBox('sell',id,x) });
+    }
+    return mcard({ em:esc(x.emoji||'🏪'), title:esc(x.name||'Shop'), meta:`Deleted ${day(x.removed_at)}`, pill:'Deleted', pc:'off', dim:true, acts:btn('↩️ Restore',`mineDo('shop','${id}','restore')`) });
+  }
+
+  /* ---------- actions ---------- */
+  function mineTab(k,t){ if(t==='hist'&&mineUI.tab[k]!=='hist'){ mineUI.f[k]='all'; mineUI.q[k]=''; } mineUI.tab[k]=t; mineUI.ask=null; renderSides(); }   // History opens on “All”
+  function mineQ(k,v){ mineUI.q[k]=String(v||''); const el=document.getElementById('mine-list-'+k); if(el) el.innerHTML=histList(k); }
+  function mineF(k,f){ mineUI.f[k]=f; renderSides(); }
+  function mineAsk(k,id,act){ mineUI.ask=k?{k,id,act}:null; renderSides(); }
+  async function mineDo(k,j,act){
+    const r=mineRow(k,j); if(!r||mineUI.busy) return;
+    const table=k==='sell'?'listings':k==='shop'?'stores':'help_requests';
+    const P={ close:[{status:'closed'},'Closed. It moved to your History.'], reopen:[{status:'open'},'It’s live again.'],
+              delete:[{removed_at:new Date().toISOString()},'Deleted. A copy stays in your History.'], restore:[{removed_at:null},'Restored.'],
+              sold:[{status:'sold'},'Marked as sold. It moved to your History.'], relist:[{status:'active'},'Listed again.'] }[act];
+    if(!P) return;
+    mineUI.busy=true; renderSides();
+    let res; try{ res=await sb.from(table).update(P[0]).eq('id',r.id); }catch(e){ res={error:e}; }
+    mineUI.busy=false; mineUI.ask=null;
+    if(res&&res.error){ bmToast('⚠️ '+((res.error&&res.error.message)||'Could not save')); renderSides(); return; }
+    bmToast('✓ '+P[1]);
+    await bpLoadMine();
+    try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(_){}
+  }
+  function openReqThread(r){
+    const post={ id:r.id, _db:{table:'help_requests',id:r.id}, _ownerId:r.user_id, reqType:(r.type||'urgent'), item:r.item||'', note:r.note||'', details:r.note||'',
+      offer:{ type:r.offer_type||'pts', cash:Number(r.offer_cash)||0, points:Number(r.offer_trust)||0 }, user:(SB_USER&&r.user_id===SB_USER.id)?'You':'', time:'',
+      status:r.status||'open', replyCount:Number(r.reply_count)||0, chosenHelper:r.chosen_helper||null };
+    if(post.reqType==='find'&&typeof window.bmOpenFind==='function') window.bmOpenFind(post);
+    else if(typeof window.bmOpenThread==='function') window.bmOpenThread('help_requests', r.id, post);
+  }
+  function mineOpen(k,j){
+    if(k==='deal'){ const d=mine.deals.find(x=>jid(x.request_id)===j); if(!d) return;
+      openReqThread({ id:d.request_id, user_id:d.requester_id, type:'urgent', item:d.item, note:d.note, offer_type:d.offer_type, offer_cash:d.offer_cash, offer_trust:d.offer_trust,
+        status:d.status, reply_count:d.reply_count, chosen_helper:d.helper_id }); return; }
+    const r=mineRow(k,j); if(!r) return;
+    if(k==='urgent'||k==='find'){ openReqThread(r); return; }
+    if(r.removed_at||(k==='sell'&&r.status==='sold')) return;
+    if(typeof window.bmCloseProfile==='function') window.bmCloseProfile();
+    try{ if(typeof selectItem==='function') selectItem(r.id, k==='sell'?'listing':'store'); }catch(_){}
+  }
+
+  /* ---------- edit sheet ---------- */
+  function numOf(v){ const n=parseFloat(String(v==null?'':v).replace(/,/g,'').replace(/[^0-9.]/g,'')); return isNaN(n)?0:n; }
+  function editBack(){
+    let b=document.getElementById('bmedit-back');
+    if(!b){ b=document.createElement('div'); b.id='bmedit-back'; b.className='bmthread-back';
+      b.addEventListener('click',e=>{ if(e.target===b) mineCloseEdit(); }); document.body.appendChild(b); }
+    return b;
+  }
+  function mineCloseEdit(){ mineUI.edit=null; const b=document.getElementById('bmedit-back'); if(b){ b.style.display='none'; b.innerHTML=''; } }
+  function mineEdit(k,j){ const r=mineRow(k,j); if(!r) return; mineUI.ask=null; mineUI.edit={k,j,err:'',busy:false}; paintEdit(true); }
+  function fld(id,lbl,val,o){ o=o||{};
+    return `<div class="bmf-field"><label for="${id}">${lbl}</label>`+(o.area?`<textarea id="${id}" rows="3" maxlength="${o.max||500}">${esc(val)}</textarea>`
+      :`<input id="${id}" ${o.num?'inputmode="decimal"':''} autocomplete="off" maxlength="${o.max||120}" value="${esc(val)}">`)+`</div>`; }
+  function paintEdit(first){
+    const E=mineUI.edit; if(!E) return; const r=mineRow(E.k,E.j); if(!r){ mineCloseEdit(); return; }
+    const b=editBack(), keep={};
+    if(!first) b.querySelectorAll('input[id],textarea[id],select[id]').forEach(el=>{ keep[el.id]=el.value; });
+    const T={urgent:'Edit your Urgent request',find:'Edit your Find Me',sell:'Edit your item',shop:'Edit your shop'}[E.k];
+    let f='';
+    if(E.k==='urgent'||E.k==='find'){
+      f+=fld('me-item','What do you need?',r.item||'',{max:120})+fld('me-note','Note (optional)',r.note||'',{area:1,max:500});
+      const o=rawOffer(r);
+      if(E.k==='urgent'){
+        f+=`<div class="me-row">${fld('me-cash','Cash reward (₱)',o.cash||'',{num:1,max:7})}${fld('me-cr','Credits reward (✨)',o.cr||'',{num:1,max:6})}</div>`;
+        f+=`<div class="bmf-field"><label for="me-del">Delivery</label><select id="me-del">${[['doorstep','🏠 Deliver to my door'],['meetup','🤝 Meet halfway'],['pickup','🚶 I’ll pick it up']].map(x=>`<option value="${x[0]}"${(r.delivery||'doorstep')===x[0]?' selected':''}>${x[1]}</option>`).join('')}</select></div>`;
+      } else f+=fld('me-cr','Credits reward (✨)',Number(r.offer_trust)||'',{num:1,max:6});
+      const n=Number(r.reply_count)||0;
+      if(n) f+=`<div class="bmu-safe">${n} ${n===1?'person has':'people have'} already ${E.k==='urgent'?'offered':'replied'}. You can raise the reward, but not lower it.</div>`;
+    } else if(E.k==='sell'){
+      f+=fld('me-title','Item',r.title||'',{max:120})+fld('me-price','Price (₱)',(r.price!=null?Number(r.price):''),{num:1,max:10})+fld('me-desc','Description',r.description||'',{area:1,max:1000})+
+         fld('me-loc','Where (area or landmark)',r.location_label||'',{max:120})+fld('me-contact','Contact number',r.contact||'',{max:40});
+    } else {
+      f+=fld('me-name','Shop name',r.name||'',{max:80})+fld('me-addr','Address',r.address||'',{max:160})+fld('me-hours','Hours (e.g. 7 AM – 10 PM)',r.hours||'',{max:60})+
+         fld('me-contact','Contact number',r.contact||'',{max:40})+fld('me-desc','What it sells',r.description||'',{area:1,max:1000});
+    }
+    b.innerHTML=`<div class="bmthread" role="dialog" aria-modal="true" aria-label="${T}"><div class="bmthread-hd"><span class="ic">✏️</span><div class="t"><b>${T}</b><span>Only the parts other people see</span></div><button class="bmthread-x" type="button" aria-label="Close" onclick="BP.mineCloseEdit()">✕</button></div>`+
+      `<div class="bmthread-body"><div class="me-form">${f}${E.err?`<div class="bmd-msg" role="alert">${esc(E.err)}</div>`:''}</div></div>`+
+      `<div class="bmthread-foot"><div class="me-foot"><button class="bmsend" type="button" ${E.busy?'disabled':''} onclick="BP.mineSave()">${E.busy?'Saving…':'Save changes'}</button><button class="bmu-btn" type="button" onclick="BP.mineCloseEdit()">Cancel</button></div></div></div>`;
+    b.style.display='flex';
+    Object.keys(keep).forEach(id=>{ const el=document.getElementById(id); if(el) el.value=keep[id]; });
+    if(first){ const el=b.querySelector('input,textarea'); if(el) try{ el.focus(); }catch(_){} }
+  }
+  async function mineSave(){
+    const E=mineUI.edit; if(!E||E.busy) return; const r=mineRow(E.k,E.j); if(!r) return;
+    const v=id=>String((document.getElementById(id)||{}).value||'').trim();
+    const fail=m=>{ E.err=m; paintEdit(false); };
+    let table, patch;
+    if(E.k==='urgent'||E.k==='find'){
+      const item=v('me-item'); if(item.length<2) return fail('Say what you need.');
+      const cr=Math.round(numOf(v('me-cr')));
+      table='help_requests'; patch={ item, note:v('me-note') };
+      if(E.k==='urgent'){
+        const cash=Math.round(numOf(v('me-cash')));
+        if(!(cash>0)&&!(cr>0)) return fail('Add a reward: cash, Credits or both.');
+        Object.assign(patch,{ offer_cash:cash, offer_trust:cr, offer_type:(cash>0&&cr>0)?'both':(cash>0?'cash':'points'), delivery:v('me-del')||r.delivery||'doorstep' });
+      } else patch.offer_trust=cr;
+      if((Number(r.reply_count)||0)>0){ const o=rawOffer(r), n=rawOffer(Object.assign({},r,patch)); if(n.cash<o.cash||n.cr<o.cr) return fail('People already offered, so you can raise the reward but not lower it.'); }
+    } else if(E.k==='sell'){
+      const title=v('me-title'); if(title.length<2) return fail('Give the item a name.');
+      table='listings'; patch={ title, price:numOf(v('me-price')), description:v('me-desc'), location_label:v('me-loc'), contact:v('me-contact') };
+    } else {
+      const name=v('me-name'); if(name.length<2) return fail('Type the shop’s name.');
+      table='stores'; patch={ name, address:v('me-addr'), hours:v('me-hours'), contact:v('me-contact'), description:v('me-desc') };
+    }
+    E.busy=true; E.err=''; paintEdit(false);
+    let res; try{ res=await sb.from(table).update(patch).eq('id',r.id); }catch(e){ res={error:e}; }
+    if(res&&res.error){ E.busy=false; return fail((res.error&&res.error.message)||'Could not save'); }
+    mineCloseEdit(); bmToast('✓ Saved. Everyone sees the new details.');
+    await bpLoadMine();
+    try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(_){}
+  }
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&mineUI.edit) mineCloseEdit(); });
+
 
   /* ---------- index v11: someone else's public profile + your deal record ---------- */
   // photos only from a normal web address or an image file — anything else could carry code
@@ -9902,7 +10235,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
     if(!document.body.classList.contains('bm-profile')) return;
     if(otherView){ bpLoadPublic(); return; }
     if(editing) return;
-    bpLoadCard(); bpLoadLedger(); bpLoadSelfRec(); bpLoadMod(); render();
+    bpLoadCard(); bpLoadLedger(); bpLoadSelfRec(); bpLoadMod(); bpLoadMine(); render();
   }
   /* ---------- index v11: moderators — reported deals to decide (shown on a moderator's Dashboard) ---------- */
   let modState={ admin:false, list:null, err:null, open:null, chats:{}, ask:null, busy:false };
@@ -10001,8 +10334,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   function render(){
     const pg=document.getElementById('profile-page'); if(!pg) return;
     pg.innerHTML = `<div class="bmprof">${centerHTML()}</div>`;
-    const lp=document.getElementById('left-profile');    if(lp) lp.innerHTML=otherView?theirFeed('left'):leftFeed();
-    const rp=document.getElementById('sidebar-profile'); if(rp) rp.innerHTML=otherView?theirFeed('right'):rightFeed();
+    renderSides();   // index v12
   }
 
   /* ---------- image upload (same behaviour as the demo) ---------- */
@@ -10024,12 +10356,12 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   }
 
   /* ---------- expose + open/close ---------- */
-  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, pinLocation, clearPin, pickDoc, removeDoc, openContact, toast:bmToast, logout:bpLogout, refresh:bpRefresh, modChat, modAsk, modDecide };
+  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, pinLocation, clearPin, pickDoc, removeDoc, openContact, toast:bmToast, logout:bpLogout, refresh:bpRefresh, modChat, modAsk, modDecide, mineTab, mineQ, mineF, mineAsk, mineDo, mineEdit, mineSave, mineOpen, mineCloseEdit };
   function bpLogout(){ if(typeof sbSignOut==='function'){ sbSignOut(); } bmCloseProfile(); }
   window.bmToast = bmToast;
   window.bmPickAvatar = pickAvatar;
   window.bmPickCover  = pickCover;
-  window.bmOpenProfile = function(){ otherView=null; setBackFab(); document.body.classList.add('bm-profile'); bpLoadCard(); bpLedger=null; bpLoadLedger(); bpLoadSelfRec(); bpLoadMod(); editing=false; draft=null; ownerView=true; render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
+  window.bmOpenProfile = function(){ otherView=null; setBackFab(); document.body.classList.add('bm-profile'); bpLoadCard(); bpLedger=null; bpLoadLedger(); bpLoadSelfRec(); bpLoadMod(); bpLoadMine(); editing=false; draft=null; ownerView=true; render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
   window.bmCloseProfile = function(){
         const o=otherView;
         document.body.classList.remove('bm-profile');
@@ -10573,9 +10905,11 @@ function urfPost(){
   }
 
   // Load all live posts and hand them to the existing renderers.
-  var loading=false;
+  var loading=false, again=false;   // index v12: a refresh asked for mid-load runs right after
   async function loadPosts(){
-    if(!connected() || loading) return; loading=true;
+    if(!connected()) return;
+    if(loading){ again=true; return; }
+    loading=true;
     try{
       if(signedIn()){ try{ await sb.rpc('deals_tick'); }catch(e){} }   // index v11: close deals whose 24 hours ran out
       var out=await Promise.all([
@@ -10593,8 +10927,10 @@ function urfPost(){
       if(typeof renderAll==='function') renderAll();
       try{ if(typeof buildMarkers==='function') buildMarkers(); }catch(e){}
       try{ if(typeof renderLeftPanel==='function') renderLeftPanel(); if(typeof renderRightPanel==='function') renderRightPanel(); }catch(e){}
+      try{ if(typeof window.bmMineRefresh==='function') window.bmMineRefresh(); }catch(e){}   // index v12: keep the profile's My posts in step
     }catch(e){ console.warn('[BringMe] loadPosts', e); }
     loading=false;
+    if(again){ again=false; loadPosts(); }
   }
 
   // ── persistence hooks called right after each form adds its post locally ──
@@ -10915,11 +11251,12 @@ function urfPost(){
         U.n=Math.max(U.n, order.length);
         inner+=counterLine(U.n);
         if(order.length) inner+='<div class="bmu-status">Pick the person you trust. Open their full profile first. Only you see these offers.</div>';
-      } else inner+=dealPanel(d);
+      } else if(U.status==='assigned' || U.status==='done') inner+=dealPanel(d);
+      else inner+='<div class="bmu-status off">You closed this request, so nobody can offer. You can open it again from your profile: My Urgent Needs → History.</div>';
     }
     if(!order.length){ inner+='<div class="bmthread-empty"><div class="big">📭</div>No offers yet.<br>When someone offers to help, it shows here — privately.</div>'; }
     else inner+=order.map(function(hid){ return ownerGroup(d,U,hid,groups[hid]); }).join('');
-    paint(inner, (U && U.status!=='open') ? 'Your deal and your offers' : 'Your private offers'+(order.length?' ('+order.length+')':''), false);
+    paint(inner, (U && (U.status==='assigned' || U.status==='done')) ? 'Your deal and your offers' : 'Your private offers'+(order.length?' ('+order.length+')':''), false);
   }
   function ownerGroup(d,U,hid,msgs){
     var nm=d.nameMap[hid]||'Member', chosen=!!(U && U.chosen===hid);
