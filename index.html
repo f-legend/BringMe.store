@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v10 · 2026-11-18 ═══════ -->
-<script>window.BM_VERSION='index v10 · 2026-11-18';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v10.1 · 2026-11-18 ═══════ -->
+<script>window.BM_VERSION='index v10.1 · 2026-11-18';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -3160,6 +3160,8 @@ google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
 });
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// index v10.1: write a post's id into onclick="…" safely. Number ids stay numbers; uuid ids (your stores use them) get quotes.
+function jsId(v){ return (typeof v==='number') ? String(v) : "'"+String(v==null?'':v).replace(/[^A-Za-z0-9_-]/g,'')+"'"; }
 function stars(n){ return '★'.repeat(Math.round(n))+'☆'.repeat(5-Math.round(n)); }
 
 // ── LOCATE USER ────────────────────────────────────────────────────────────────
@@ -3386,7 +3388,7 @@ function buildMarkers() {
           <div class="popup-sub">📍 ${esc(l.location)}</div>
           <div class="popup-price">₱${l.price.toLocaleString()}</div>
           <div style="display:flex;gap:6px;margin-top:8px">
-            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${l.id},'listing');infoWindow.close()">View Details →</button>
+            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${jsId(l.id)},'listing');infoWindow.close()">View Details →</button>
             <button class="popup-btn" style="flex:1;margin-top:0;background:linear-gradient(135deg,var(--royal),var(--royal2));color:var(--gold)" onclick="navigateTo(${l.lat},${l.lng},'${esc(l.title)}','${esc(l.location)}');infoWindow.close()">🗺️ Navigate</button>
           </div>
         </div>
@@ -3426,7 +3428,7 @@ function buildMarkers() {
           <div class="popup-sub">⏰ ${esc(s.hours||'Open')}</div>
           <div class="popup-sub">📂 ${(s.categories||[]).join(', ')}</div>
           <div style="display:flex;gap:6px;margin-top:8px">
-            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${s.id},'store');infoWindow.close()">View →</button>
+            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectItem(${jsId(s.id)},'store');infoWindow.close()">View →</button>
             <button class="popup-btn" style="flex:1;margin-top:0;background:linear-gradient(135deg,var(--royal),var(--royal2));color:var(--gold)" onclick="navigateTo(${s.lat},${s.lng},'${esc(s.name)}','${esc(s.address)}');infoWindow.close()">🗺️ Navigate</button>
           </div>
         </div>
@@ -3466,7 +3468,7 @@ function buildMarkers() {
           ${offerTxt ? `<div class="popup-sub" style="color:var(--green);font-weight:700">💰 Offering: ${offerTxt}</div>` : ''}
           ${r.note ? `<div class="popup-sub" style="font-style:italic">"${esc(r.note)}"</div>` : ''}
           <div style="display:flex;gap:6px;margin-top:8px">
-            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectRequest(${r.id},'${r.reqType}');infoWindow.close()">Reply 💬</button>
+            <button class="popup-btn" style="flex:1;margin-top:0" onclick="selectRequest(${jsId(r.id)},'${r.reqType}');infoWindow.close()">Reply 💬</button>
           </div>
         </div>
       </div>`;
@@ -3602,7 +3604,7 @@ function renderSidebar() {
 
 function buildListingCard(l) {
   const sel = S.selectedId===l.id && S.selectedType==='listing';
-  return `<div class="list-card ${sel?'active-card':''} ${l.promoted?'promoted':''}" onclick="selectItem(${l.id},'listing')">
+  return `<div class="list-card ${sel?'active-card':''} ${l.promoted?'promoted':''}" onclick="selectItem(${jsId(l.id)},'listing')">
     <div class="card-row">
       <div class="c-emoji ${l.type==='sell'?'sell-bg':'buy-bg'}">${l.image}</div>
       <div class="c-body">
@@ -3613,7 +3615,7 @@ function buildListingCard(l) {
         <div class="c-title">${esc(l.title)}</div>
         <div class="c-foot">
           <span class="c-price">₱${l.price.toLocaleString()}</span>
-          <button class="save-btn" onclick="event.stopPropagation();toggleSave(${l.id})">${S.saved.includes(l.id)?'🔖':'🏷️'}</button>
+          <button class="save-btn" onclick="event.stopPropagation();toggleSave(${jsId(l.id)})">${S.saved.includes(l.id)?'🔖':'🏷️'}</button>
         </div>
         <div class="c-foot" style="margin-top:3px">
           <span class="c-loc">📍 ${esc(l.location)}</span>
@@ -3626,7 +3628,7 @@ function buildListingCard(l) {
 
 function buildStoreCard(s) {
   const sel = S.selectedId===s.id && S.selectedType==='store';
-  return `<div class="list-card store-c ${sel?'active-card':''} ${s.featured?'promoted':''}" onclick="selectItem(${s.id},'store')">
+  return `<div class="list-card store-c ${sel?'active-card':''} ${s.featured?'promoted':''}" onclick="selectItem(${jsId(s.id)},'store')">
     <div class="card-row">
       <div class="c-emoji store-bg">🏪</div>
       <div class="c-body">
@@ -3647,7 +3649,7 @@ function buildStoreCard(s) {
 
 function buildHelpCard(h) {
   const sel = S.selectedId===h.id && S.selectedType==='help';
-  return `<div class="list-card help-c ${sel?'active-card':''}" onclick="selectItem(${h.id},'help')">
+  return `<div class="list-card help-c ${sel?'active-card':''}" onclick="selectItem(${jsId(h.id)},'help')">
     <div class="card-row">
       <div class="c-emoji help-bg">🆘</div>
       <div class="c-body">
@@ -3680,7 +3682,7 @@ function buildStoreDetailPanel(s) {
     </div>
     <div class="store-btns" style="margin-top:6px">
       <button style="background:var(--purple);color:#fff" onclick="prefillHelpReply('${esc(s.name)}','${esc(s.address)}')">📤 Share</button>
-      ${!s.featured?'<button style="background:var(--gold);color:var(--navy)" onclick="openBoost('+s.id+',\'store\')">⭐ Boost</button>':'<span style="font-size:10px;color:var(--gold-dk);font-weight:700;padding:6px 4px">⭐ Featured</span>'}
+      ${!s.featured?'<button style="background:var(--gold);color:var(--navy)" onclick="openBoost('+jsId(s.id)+',\'store\')">⭐ Boost</button>':'<span style="font-size:10px;color:var(--gold-dk);font-weight:700;padding:6px 4px">⭐ Featured</span>'}
     </div>
   </div>`;
 }
@@ -4097,7 +4099,7 @@ function buildDetailModal() {
         <button class="btn-primary" onclick="showToast('📞 Contact: ${l.contact}');closeModal()">📞 View Contact Info</button>
         <button class="btn-red-full" onclick="setTab('stores');S.search='${esc(l.title.split(' ').slice(0,2).join(' '))}';closeModal();renderAll()">🚨 Find in a Nearby Store</button>
         <button style="width:100%;padding:13px;background:#173c88;color:var(--gold);border:2px solid var(--gold);border-radius:11px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px" onclick="closeModal();openBuiltInNav(${l.lat},${l.lng},'${esc(l.title)}','${esc(l.location)}')">🚶 Street View</button>
-        <button class="btn-outline" onclick="toggleSave(${l.id})">${S.saved.includes(l.id)?'🔖 Saved':'🏷️ Save Listing'}</button>
+        <button class="btn-outline" onclick="toggleSave(${jsId(l.id)})">${S.saved.includes(l.id)?'🔖 Saved':'🏷️ Save Listing'}</button>
       </div>
     </div>
   </div>`;
@@ -4668,15 +4670,15 @@ function buildHelpDetailModal() {
                     <div class="reply-actions">
                     ${r.confirmed
                       ?`<div class="confirmed-badge">✅ Confirmed helpful — ${esc(r.name)} earned ⭐1pt</div>`
-                      :`<button class="confirm-btn" onclick="confirmHelp(${h.id},${r.id},event)">✅ This helped me! (+⭐1 to ${esc(r.name)})</button>`}
-                    ${!r.tip && S.tipReplyId!==r.id ? `<button class="rtip-btn" onclick="openReplyTip(${r.id})">💵 Tip cash to say thanks</button>` : ''}
+                      :`<button class="confirm-btn" onclick="confirmHelp(${jsId(h.id)},${jsId(r.id)},event)">✅ This helped me! (+⭐1 to ${esc(r.name)})</button>`}
+                    ${!r.tip && S.tipReplyId!==r.id ? `<button class="rtip-btn" onclick="openReplyTip(${jsId(r.id)})">💵 Tip cash to say thanks</button>` : ''}
                     </div>
                     ${r.tip ? `<div class="rtip-done">💵 You tipped ₱${r.tip} — thank-you sent to ${esc(r.name)} 🙏</div>` : ''}
                     ${S.tipReplyId===r.id ? `
                       <div class="rtip-panel">
                         <div class="rtip-ttl">💵 Tip ${esc(r.name)} a cash thank-you</div>
                         <div class="rtip-chips">${[20,50,100].map(a=>`<span class="rtip-chip ${S.tipAmt===a?'on':''}" onclick="pickReplyTip(${a})">₱${a}</span>`).join('')}<span class="rtip-chip ${![20,50,100].includes(S.tipAmt)?'on':''}" onclick="pickReplyTip(0)">Custom</span></div>
-                        <div class="rtip-row"><input class="form-input" id="rtip-amt" type="number" min="1" placeholder="₱ amount" value="${S.tipAmt||''}" oninput="S.tipAmt=Number(this.value)||0"><button class="rtip-send" onclick="sendReplyTip(${h.id},${r.id})">Send</button><button class="rtip-cancel" onclick="cancelReplyTip()">Cancel</button></div>
+                        <div class="rtip-row"><input class="form-input" id="rtip-amt" type="number" min="1" placeholder="₱ amount" value="${S.tipAmt||''}" oninput="S.tipAmt=Number(this.value)||0"><button class="rtip-send" onclick="sendReplyTip(${jsId(h.id)},${jsId(r.id)})">Send</button><button class="rtip-cancel" onclick="cancelReplyTip()">Cancel</button></div>
                       </div>` : ''}
                   </div>
                 </div>
@@ -4698,7 +4700,7 @@ function buildHelpDetailModal() {
             <label class="form-label">Your Message *</label>
             <input class="form-input" type="text" placeholder='e.g. "Available here! ₱350 lang."' value="${esc(f.msg)}" oninput="S.helpReplyForm.msg=this.value">
           </div>
-          <button class="btn-primary reply-submit-btn" style="margin-top:0" onclick="submitHelpReply(${h.id})">📤 Send Reply & Earn ⭐</button>
+          <button class="btn-primary reply-submit-btn" style="margin-top:0" onclick="submitHelpReply(${jsId(h.id)})">📤 Send Reply & Earn ⭐</button>
         </div>
       </div>
     </div>
@@ -5054,7 +5056,7 @@ function renderFeaturedBanner() {
   el.innerHTML = `<div class="featured-scroll">
     <div class="featured-lbl">⭐ Featured</div>
     ${featured.map(s => `
-      <div class="feat-chip" onclick="selectItem(${s.id},'store')">
+      <div class="feat-chip" onclick="selectItem(${jsId(s.id)},'store')">
         <span class="feat-chip-icon">🏪</span>
         <div>
           <div class="feat-chip-name">${esc(s.name)}</div>
@@ -5111,7 +5113,7 @@ function buildBoostInfoModal() {
         <div style="font-weight:700;font-size:13px;color:var(--navy);margin-bottom:12px">Choose what to boost:</div>
         <div style="display:flex;gap:10px;margin-bottom:18px">
           ${stores.filter(s=>!s.featured).slice(0,3).map(s=>`
-            <div style="flex:1;background:var(--cream2);border-radius:10px;padding:11px;cursor:pointer;border:2px solid transparent;transition:all .15s" onclick="openBoost(${s.id},'store')" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='transparent'">
+            <div style="flex:1;background:var(--cream2);border-radius:10px;padding:11px;cursor:pointer;border:2px solid transparent;transition:all .15s" onclick="openBoost(${jsId(s.id)},'store')" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='transparent'">
               <div style="font-size:18px;margin-bottom:4px">🏪</div>
               <div style="font-weight:700;font-size:12px;color:var(--navy)">${esc(s.name)}</div>
               <div style="font-size:10px;color:var(--muted)">${s.categories[0]}</div>
@@ -5877,7 +5879,7 @@ function renderLeftPanel() {
   if (urgentList) {
     urgentList.innerHTML = urgentReqs.length ? urgentReqs.map(r => `
       <div class="req-card urgent-card ${selectedLF===String(r.id)?'active-req':''}"
-           onclick="selectRequest(${r.id},'urgent')">
+           onclick="selectRequest(${jsId(r.id)},'urgent')">
         <div class="req-card-top">
           <div class="req-emoji urgent-bg">🆘</div>
           <div class="req-info">
@@ -5909,7 +5911,7 @@ function renderLeftPanel() {
   if (findList) {
     let html = findReqs.map(r => `
       <div class="req-card find-card ${selectedLF===String(r.id)?'active-req':''}"
-           onclick="selectRequest(${r.id},'find')">
+           onclick="selectRequest(${jsId(r.id)},'find')">
         <div class="req-card-top">
           <div class="req-emoji find-bg">🔍</div>
           <div class="req-info">
@@ -5930,7 +5932,7 @@ function renderLeftPanel() {
       html += `<div style="font-size:9px;font-weight:700;color:rgba(227,168,16,0.5);letter-spacing:2px;text-transform:uppercase;padding:4px 10px 2px">Looking to Buy</div>`;
       html += buyListings.map(l => `
         <div class="req-card find-card ${selectedLF===String(l.id)+'-buy'?'active-req':''}"
-             onclick="selectRequest(${l.id},'buy')">
+             onclick="selectRequest(${jsId(l.id)},'buy')">
           <div class="req-card-top">
             <div class="req-emoji find-bg">${l.image}</div>
             <div class="req-info">
@@ -7033,7 +7035,7 @@ function renderRightPanel() {
     } else {
       storesList.innerHTML = filteredStores.map(s => {
         const distKm = haversine(USER.lat, USER.lng, s.lat, s.lng).toFixed(1);
-        return `<div class="store-card-sm ${s.featured?'featured-s':''}" onclick="map&&map.panTo({lat:${s.lat},lng:${s.lng}});selectItem(${s.id},'store')">
+        return `<div class="store-card-sm ${s.featured?'featured-s':''}" onclick="map&&map.panTo({lat:${s.lat},lng:${s.lng}});selectItem(${jsId(s.id)},'store')">
           <div class="sc-row">
             ${s.cover?`<div class="sc-emoji" style="background-image:url('${s.cover}');background-size:cover;background-position:center;font-size:0">${s.catEmoji||'🏪'}</div>`:`<div class="sc-emoji">${s.catEmoji||'🏪'}</div>`}
             <div class="sc-body">
@@ -7091,8 +7093,8 @@ function renderRightPanel() {
       listingsList.innerHTML = filteredListings.map(l => {
         const distKm = haversine(USER.lat, USER.lng, l.lat, l.lng).toFixed(1);
         const isSell = l.type==='sell';
-        return `<div class="listing-card-sm ${l.promoted?'promoted-l':''}" onclick="selectItem(${l.id},'listing')">
-          <button class="bm-heart ${BM_SAVED.has(String(l.id))?'on':''}" onclick="bmToggleSaved(event, ${l.id})" aria-label="Save item">${BM_SAVED.has(String(l.id))?'♥':'♡'}</button>
+        return `<div class="listing-card-sm ${l.promoted?'promoted-l':''}" onclick="selectItem(${jsId(l.id)},'listing')">
+          <button class="bm-heart ${BM_SAVED.has(String(l.id))?'on':''}" onclick="bmToggleSaved(event, ${jsId(l.id)})" aria-label="Save item">${BM_SAVED.has(String(l.id))?'♥':'♡'}</button>
           <div class="lc-row">
             <div class="lc-emoji ${isSell?'lc-sell':'lc-buy'}">${l.image||'📦'}</div>
             <div class="lc-body">
@@ -10722,8 +10724,10 @@ function urfPost(){
 .bmf-anon{font-size:11.5px;font-weight:700;color:#6b76a8}
 .bmf-post{border:none;border-radius:12px;padding:12px;background:linear-gradient(135deg,#FFD24A,#E3A810);color:#0a1f63;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}
 .bmf-post:disabled{opacity:.6}
-/* index v10: long pop-up messages wrap on phones instead of running off the screen */
-.toast{width:max-content;max-width:calc(100vw - 32px);white-space:normal;text-align:center;box-sizing:border-box;border-radius:22px;line-height:1.4}
+/* index v10: long pop-up messages wrap on phones instead of running off the screen,
+   and they slide in already centered (a second "fadeUp" animation was pushing them off to the right) */
+.toast{width:max-content;max-width:calc(100vw - 32px);white-space:normal;text-align:center;box-sizing:border-box;border-radius:22px;line-height:1.4;animation-name:bmToastIn}
+@keyframes bmToastIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 </style>
 <script>
 (function(){
@@ -10752,6 +10756,7 @@ function urfPost(){
   function boughtRow(){ var b=F && F.req && F.req.bought_reply_id; if(!b) return null; for(var i=0;i<F.rows.length;i++){ if(String(F.rows[i].id)===String(b)) return F.rows[i]; } return null; }
   function nextAlias(){ var mine=null, max=0; F.rows.forEach(function(r){ if(r.is_mine) mine=r.alias; if(r.alias>max) max=r.alias; }); return mine || max+1; }
   function placeText(r){ return r.source_kind==='mine' ? 'from a neighbor’s second-hand offer' : 'at '+(r.shop_name||'the shop'); }
+  function idv(x){ x=String(x==null?'':x); return /^[0-9]+$/.test(x) ? Number(x) : x; }   // "101" → 101, a uuid stays text
   function svUrl(lat,lng){ return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+encodeURIComponent(Number(lat).toFixed(6)+','+Number(lng).toFixed(6)); }
   function focusSel(sel){ var el=document.querySelector('#bmfind-back '+sel); if(el) el.focus(); }
 
@@ -10819,10 +10824,10 @@ function urfPost(){
   function repHTML(r){
     var owner=isOwner();
     if(r.flagged){
-      return '<div class="bmf-rep flag"><b>🚩 Flagged down after 10 reports</b><span>This reply is hidden from everyone.'+
+      return '<div class="bmf-rep flag"><b>🚩 '+(r.is_mine ? 'Your reply' : 'Neighbor '+esc(r.alias)+'’s reply')+' was taken down after 10 reports</b><span>It’s hidden from everyone.'+
         (r.is_mine ? ' You lost 20 XP'+(r.clawed?' and the ✨'+r.clawed+' it earned':'')+'.' : '')+'</span></div>';
     }
-    var h='<div class="bmf-rep'+(r.is_bought?' won':'')+'" data-rid="'+r.id+'">';
+    var h='<div class="bmf-rep'+(r.is_bought?' won':'')+'" data-rid="'+esc(r.id)+'">';
     h+='<div class="bmf-rh"><span class="bmf-av" aria-hidden="true">👤</span><b>Neighbor '+esc(r.alias)+'</b>'+(r.is_mine?'<span class="bmf-mine">Your reply</span>':'')+'<span class="bmf-tm">'+esc(rel(r.created_at))+'</span></div>';
     if(r.body) h+='<div class="bmf-tx">'+esc(r.body)+'</div>';
     h+=srcHTML(r);
@@ -10870,22 +10875,22 @@ function urfPost(){
     if(owner){   // the person who asked: mark where they bought it
       if(!open) return '';
       if(r.dupe==='public') return '<div class="bmf-note">An earlier reply named this shop first, so the reward would go to that reply.</div>';
-      if(F.ask && F.ask.kind==='buy' && F.ask.id===r.id){
+      if(F.ask && F.ask.kind==='buy' && String(F.ask.id)===String(r.id)){
         return '<div class="bmf-confirm"><span>Did you buy it '+esc(placeText(r))+'?'+(reward()?' The ✨'+reward()+' reward goes to whoever sent this reply.':'')+'</span>'+
-          '<button class="bmf-btn buy" type="button" data-f="buy-yes" data-rid="'+r.id+'">Yes, I bought it here</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
+          '<button class="bmf-btn buy" type="button" data-f="buy-yes" data-rid="'+esc(r.id)+'">Yes, I bought it here</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
       }
-      return '<div class="bmf-acts"><button class="bmf-btn buy" type="button" data-f="buy" data-rid="'+r.id+'">🛒 I bought it here</button></div>';
+      return '<div class="bmf-acts"><button class="bmf-btn buy" type="button" data-f="buy" data-rid="'+esc(r.id)+'">🛒 I bought it here</button></div>';
     }
     if(r.my_vote==='vouch') return '<div class="bmf-acts"><button class="bmf-btn vouch" type="button" disabled>✓ You vouched</button></div>';
     if(r.my_vote==='report') return '<div class="bmf-acts"><button class="bmf-btn report" type="button" disabled>Reported</button></div>';
-    if(F.ask && F.ask.kind==='report' && F.ask.id===r.id){
+    if(F.ask && F.ask.kind==='report' && String(F.ask.id)===String(r.id)){
       return '<div class="bmf-confirm"><span>Report this reply as wrong or fake? 10 reports take it down.</span>'+
-        '<button class="bmf-btn report" type="button" data-f="report-yes" data-rid="'+r.id+'">Yes, report</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
+        '<button class="bmf-btn report" type="button" data-f="report-yes" data-rid="'+esc(r.id)+'">Yes, report</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
     }
     var full=(r.vouch_points||0)>=10;
     return '<div class="bmf-acts">'+(full ? '<button class="bmf-btn vouch" type="button" disabled>Fully vouched</button>'
-                                          : '<button class="bmf-btn vouch" type="button" data-f="vouch" data-rid="'+r.id+'">✓ Vouch'+(F.power!=null?' · worth '+F.power:'')+'</button>')+
-      '<button class="bmf-btn report" type="button" data-f="report" data-rid="'+r.id+'">⚠ Report</button></div>';
+                                          : '<button class="bmf-btn vouch" type="button" data-f="vouch" data-rid="'+esc(r.id)+'">✓ Vouch'+(F.power!=null?' · worth '+F.power:'')+'</button>')+
+      '<button class="bmf-btn report" type="button" data-f="report" data-rid="'+esc(r.id)+'">⚠ Report</button></div>';
   }
 
   // BringMe shops nearest to you, for the reply form
@@ -10900,17 +10905,19 @@ function urfPost(){
     if(isShop && !d.shop) d.shop = list.length ? String(list[0].s._db.id) : '__new';
     if(isShop && d.shop!=='__new'){ list.forEach(function(x){ if(String(x.s._db.id)===String(d.shop)) sel=x; }); if(!sel) d.shop='__new'; }
     var isNew=isShop && d.shop==='__new';
+    var named={}; F.rows.forEach(function(r){ if(!r.flagged && r.source_kind==='shop' && r.source_store_id!=null) named[String(r.source_store_id)]=1; });
     var h='<div class="bmf-compose" id="bmf-compose"><div class="bmf-ch" id="bmf-ch">Your reply: where can they get it?</div>';
     h+='<div class="bmf-pick" role="group" aria-labelledby="bmf-ch"><button type="button" data-f="kind" data-k="shop" aria-pressed="'+isShop+'">🏪 At a shop</button><button type="button" data-f="kind" data-k="mine" aria-pressed="'+(!isShop)+'">🛍️ I’m selling mine</button></div>';
     if(isShop){
       h+='<div class="bmf-field"><label for="bmf-shop">Shop</label><select id="bmf-shop" data-d="shop">'+
-         list.map(function(x){ return '<option value="'+esc(x.s._db.id)+'"'+(String(x.s._db.id)===String(d.shop)?' selected':'')+'>'+esc(x.s.name)+(x.d!=null?' — '+esc(kmTx(x.d).replace(' away','')):'')+'</option>'; }).join('')+
+         list.map(function(x){ return '<option value="'+esc(x.s._db.id)+'"'+(String(x.s._db.id)===String(d.shop)?' selected':'')+'>'+esc(x.s.name)+(x.d!=null?' — '+esc(kmTx(x.d).replace(' away','')):'')+(named[String(x.s._db.id)]?' · already named':'')+'</option>'; }).join('')+
          '<option value="__new"'+(isNew?' selected':'')+'>➕ A shop not on BringMe yet</option></select></div>';
       if(isNew){
         h+='<div class="bmf-field"><label for="bmf-sname">Shop name</label><input id="bmf-sname" data-d="name" maxlength="60" autocomplete="off" placeholder="e.g. Aling Nena Sari-sari Store" value="'+esc(d.name)+'"></div>';
         h+='<div class="bmf-loc">📍 We save where you are now as the shop’s spot, so reply while you’re at the shop or close to it.</div>';
       } else {
         h+='<div class="bmf-loc">📍 '+(sel.s.address?esc(sel.s.address)+' · ':'')+esc(kmTx(sel.d))+(sel.s.contact?' · 📞 '+esc(sel.s.contact):'')+'</div>';
+        if(named[String(sel.s._db.id)]) h+='<div class="bmf-warn">⚠ Someone already named this shop here. You can still post, but the reward goes to the first reply.</div>';
       }
       if(isNew || !(sel && sel.s.contact)){
         h+='<div class="bmf-field"><label for="bmf-phone">Shop contact number (optional)</label><input id="bmf-phone" data-d="phone" type="tel" inputmode="tel" autocomplete="off" placeholder="09XX XXX XXXX" value="'+esc(d.phone)+'"></div>';
@@ -10948,13 +10955,13 @@ function urfPost(){
     if(f==='kind'){ var k=b.getAttribute('data-k'); if(F.draft.kind!==k){ F.draft.kind=k; F.draft.phone=''; } render(); focusSel('[data-f="kind"][data-k="'+k+'"]'); return; }
     if(f==='map'){ showOnMap(Number(b.getAttribute('data-lat')), Number(b.getAttribute('data-lng')), b.getAttribute('data-name')); return; }
     if(f==='ask-no'){ var prev=F.ask; F.ask=null; render(); if(prev) focusSel('[data-f="'+prev.kind+'"][data-rid="'+prev.id+'"]'); return; }
-    if(f==='buy' || f==='report'){ F.ask={ kind:f, id:Number(rid) }; render(); focusSel('[data-f="'+f+'-yes"]'); return; }
-    if(f==='vouch'){ act(b, 'vouch_reply', { p_reply_id:Number(rid) }, function(d){ var x=Array.isArray(d)?d[0]:d;
+    if(f==='buy' || f==='report'){ F.ask={ kind:f, id:rid }; render(); focusSel('[data-f="'+f+'-yes"]'); return; }
+    if(f==='vouch'){ act(b, 'vouch_reply', { p_reply_id:idv(rid) }, function(d){ var x=Array.isArray(d)?d[0]:d;
         if(x && x.my_power===0) return 'Your account is under 7 days old, so your vouch doesn’t count yet.';
         return x ? 'Vouched (worth '+x.my_power+'). The neighbor who wrote it earns ✨'+x.added_points+'.' : 'Vouched.'; }); return; }
-    if(f==='report-yes'){ act(b, 'report_reply', { p_reply_id:Number(rid) }, function(d){ var x=Array.isArray(d)?d[0]:d;
+    if(f==='report-yes'){ act(b, 'report_reply', { p_reply_id:idv(rid) }, function(d){ var x=Array.isArray(d)?d[0]:d;
         return (x && x.now_flagged) ? 'Reported. That was report 10, so the reply is now hidden.' : 'Reported'+(x?' ('+x.new_reports+' of 10).':'.'); }); return; }
-    if(f==='buy-yes'){ act(b, 'mark_bought', { p_request_id:F.id, p_reply_id:Number(rid) }, function(d){ var n=Number(d)||0;
+    if(f==='buy-yes'){ act(b, 'mark_bought', { p_request_id:F.id, p_reply_id:idv(rid) }, function(d){ var n=Number(d)||0;
         return n ? 'Marked as bought. The ✨'+n+' reward went to the neighbor who helped.' : 'Marked as bought. The request is now closed.'; }); return; }
     if(f==='post'){ post(b); return; }
   }
@@ -10986,7 +10993,7 @@ function urfPost(){
       if(!F || F.id!==reqId) return;
     }
     var args={ p_request_id:reqId, p_body:String(d.note||'').trim(), p_kind:kind,
-               p_store_id: kind==='shop' ? Number(d.shop) : null,
+               p_store_id: kind==='shop' ? idv(d.shop) : null,
                p_name: kind==='shop_text' ? String(d.name).trim() : null,
                p_lat: here ? here.lat : null, p_lng: here ? here.lng : null,
                p_price: (isNaN(price) || price<=0) ? null : price, p_phone: phone || null };
