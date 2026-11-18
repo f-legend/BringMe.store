@@ -85,9 +85,19 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v10.1 · 2026-11-18 ═══════ -->
-<script>window.BM_VERSION='index v10.1 · 2026-11-18';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v11 · 2026-11-18 ═══════ -->
+<script>window.BM_VERSION='index v11 · 2026-11-18';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
+    <script>
+    /* index v11: if Google Maps can't load (blocked, offline), keep the app running without the map */
+    if(!(window.google && window.google.maps)){ (function(){
+      var h={ get:function(t,k){ if(k===Symbol.toPrimitive) return function(){return 0;}; if(k==='then') return undefined; if(k===Symbol.iterator) return function*(){};
+              if(k==='toJSON') return function(){return null;}; if(k==='length') return 0; if(!(k in t.__c)) t.__c[k]=mk(); return t.__c[k]; },
+              set:function(t,k,v){ t.__c[k]=v; return true; }, apply:function(){ return mk(); }, construct:function(){ return mk(); } };
+      function mk(){ var f=function(){}; f.__c={}; return new Proxy(f,h); }
+      window.google={ maps:mk() }; window.BM_NO_MAP=true; console.warn('[BringMe] Google Maps did not load, so the map is blank.');
+    })(); }
+    </script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -3158,6 +3168,7 @@ if (mapOverlay) mapOverlay.classList.remove('hidden');
 google.maps.event.addListenerOnce(map, 'tilesloaded', () => {
   if (mapOverlay) mapOverlay.classList.add('hidden');
 });
+setTimeout(() => { if (mapOverlay) mapOverlay.classList.add('hidden'); }, window.BM_NO_MAP ? 0 : 8000);   // index v11: never stay stuck on "Loading map"
 
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 // index v10.1: write a post's id into onclick="…" safely. Number ids stay numbers; uuid ids (your stores use them) get quotes.
@@ -5815,14 +5826,14 @@ function renderOffer(req) {
   if (o.type === 'points') return `
     <div class="req-offer points-offer">
       <span class="offer-label">Offering:</span>
-      <span class="offer-points">🤝 ${o.points} Trust pts</span>
+      <span class="offer-points">✨ ${o.points} Credits</span>
     </div>`;
   return `
     <div class="req-offer both-offer">
       <span class="offer-label">Offering:</span>
       <span class="offer-cash">₱${o.cash}</span>
-      <span class="offer-or">or</span>
-      <span class="offer-points">🤝 ${o.points} Trust pts</span>
+      <span class="offer-or">+</span>
+      <span class="offer-points">✨ ${o.points} Credits</span>
     </div>`;
 }
 
@@ -5839,6 +5850,8 @@ function renderDelivery(delivery) {
 function bmReqBadge(r){
   var n = (r && r.replyCount) || (r && r.replies ? r.replies.length : 0) || 0;
   var done = 'background:#E6F4EA;color:#1A6B3A';
+  if (r && r.dispute) return '<span class="req-replies" style="background:#FFF6DA;color:#7a5a06">⚖️ Under review</span>';   // index v11
+  if (r && r.status === 'done') return '<span class="req-replies" style="' + done + '">🤝 Deal closed</span>';
   if (r && r.status === 'found') return '<span class="req-replies" style="' + done + '">✅ Found</span>';
   if (r && r.status === 'assigned') return '<span class="req-replies" style="' + done + '">✅ Helper chosen</span>';
   if (r && r.reqType === 'urgent') return n ? '<span class="req-replies">👥 ' + n + ' offered</span>' : '<span style="font-size:10px;color:var(--muted)">No offers yet</span>';
@@ -8710,6 +8723,7 @@ function onSignedIn() {
     setTimeout(showContactCapture, 500);
   }
   console.log('[BringMe] Signed in as', SB_PROFILE.nickname || SB_USER.email);
+  if (typeof window.bmFillBar === 'function') window.bmFillBar();   // index v11: real Level, Credits and helps on the bar
   if (typeof window.bmLoadPosts === 'function') setTimeout(window.bmLoadPosts, 200);  // reload posts so the user's own show as "You"
 }
 
@@ -8776,7 +8790,7 @@ async function sbLoadRequests() {
   if (!sb) return [];
   // index v10: everyone sees open + in-progress (helper chosen) requests; you also see all of your own (incl. Found)
   let q = sb.from('help_requests').select('*');
-  q = (SB_USER && SB_USER.id) ? q.or('status.in.(open,assigned),user_id.eq.' + SB_USER.id) : q.in('status', ['open','assigned']);
+  q = (SB_USER && SB_USER.id) ? q.or('status.in.(open,assigned),user_id.eq.' + SB_USER.id + ',chosen_helper.eq.' + SB_USER.id) : q.in('status', ['open','assigned']);   // index v11: + requests you're the helper on
   const { data, error } = await q.order('created_at',{ascending:false});
   if (error) { console.warn('load requests', error); return []; }
   return data || [];
@@ -9383,6 +9397,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   /* ---------- state ---------- */
   let card = blankCard();
   let editing=false, draft=null, nextId=100, ownerView=true, bpDocType='other', bpLedger=null;
+  let otherView=null, selfRec=null;   // index v11: someone else's public profile + your deal record
   const DOCT = { nbi:{l:'NBI Clearance',s:true}, gov_id:{l:'Government ID',s:true}, passport:{l:'Passport',s:true}, license:{l:"Driver's License",s:true}, prc:{l:'PRC License',s:false}, diploma:{l:'Diploma',s:false}, cert:{l:'Certificate',s:false}, permit:{l:'Business Permit',s:false}, other:{l:'Other',s:false} };
 
   /* placeholder gamification until the reputation system is wired */
@@ -9416,9 +9431,9 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   function txnRow(t){
     const ic=TXN_ICON[t.kind]||'✨';
     const c=Number(t.credits)||0, xp=Number(t.xp)||0;
-    const amt = c!==0 ? `<span class="txn-amt ${c>0?'pos':'neg'}">${c>0?'+':''}${c.toLocaleString()} ✨</span>` : (xp>0?`<span class="txn-amt pos">+${xp} XP</span>`:'');
+    const amt = c!==0 ? `<span class="txn-amt ${c>0?'pos':'neg'}">${c>0?'+':''}${c.toLocaleString()} ✨</span>` : (xp!==0?`<span class="txn-amt ${xp>0?'pos':'neg'}">${xp>0?'+':''}${xp} XP</span>`:'');
     let d=''; try{ d=t.created_at?new Date(t.created_at).toLocaleDateString(undefined,{month:'short',day:'numeric'}):''; }catch(_){}
-    const sub=[d,(c!==0&&xp>0?`+${xp} XP`:'')].filter(Boolean).join(' · ');
+    const sub=[d,(c!==0&&xp!==0?`${xp>0?'+':''}${xp} XP`:'')].filter(Boolean).join(' · ');
     return `<div class="txn"><span class="txn-ic">${ic}</span><div class="txn-main"><div class="txn-note">${esc(t.note||t.kind)}</div><div class="txn-date">${sub}</div></div>${amt}</div>`;
   }
   function txnListHTML(){
@@ -9479,8 +9494,8 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       xp:        (p.xp!=null?Number(p.xp):0),
       level:     levelFromXP(p.xp!=null?Number(p.xp):0).level,
       points:    (p.trust_points!=null?p.trust_points:0),
-      avatar:    p.avatar_url||null,
-      cover:     p.cover_url||null,
+      avatar:    safeUrl(p.avatar_url),
+      cover:     safeUrl(p.cover_url),
       address:   p.address||'',
       lat:       (p.lat!=null?Number(p.lat):null),
       lng:       (p.lng!=null?Number(p.lng):null),
@@ -9632,7 +9647,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
     return `<div class="bizcard vcard">
       <div class="bc-cover" style="${c.cover?`background-image:url('${c.cover}')`:''}">${c.cover?'':coverArt()}</div>
       <div class="vscrim"></div>
-      <div class="vtop"><button class="gold-btn" onclick="BP.startEdit()">✎ Edit</button><button onclick="BP.toast('Share your card — coming soon')">Share</button></div>
+      ${otherView?'':`<div class="vtop"><button class="gold-btn" onclick="BP.startEdit()">✎ Edit</button><button onclick="BP.toast('Share your card — coming soon')">Share</button></div>`}
       <div class="voverlay">
         <div class="vrow">
           <div class="vphoto">${avInner}</div>
@@ -9752,6 +9767,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
         <div class="dash-since">📅 Member since ${esc(card.memberSince)}</div>
         <div class="dash-hint"><b>Give-and-take:</b> you help so you can ask. Earn <b>Credits</b> by helping neighbors and closing deals — spend them on <b>Find&nbsp;Me</b> and <b>Urgent</b> requests. Your <b>Level</b> never gets spent, and climbing it <b>raises your Credit limit</b>.</div>
       </div>
+      ${modHTML()}
       <div class="cvsec"><div class="cvttl">Credit activity</div>${txnListHTML()}</div>
       <div class="cvsec"><div class="cvttl">Getting started</div>
         <div class="gs-list">${steps.map(s=>`<div class="gs-item" onclick="${s.act}"><span class="gs-ck">⬜</span><div class="gs-main"><div class="gs-t">${s.t}${s.once?' <span class="q-once">one-time</span>':''}</div><div class="gs-hint">${s.hint}</div></div><span class="gs-go">›</span></div>`).join('')}</div>
@@ -9764,13 +9780,14 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
     const edu = card.education.length ? card.education.map(e=>`<div class="cv-entry"><div class="ce-main">${esc(e.course)}</div><div class="ce-sub">${esc(e.school)}${e.year?` · ${esc(e.year)}`:''}</div></div>`).join('') : `<div class="cv-empty">Nothing added yet.</div>`;
     const jobs = card.jobs.length ? card.jobs.map(j=>`<div class="cv-entry"><div class="ce-main">${esc(j.role)}</div><div class="ce-sub">${esc(j.place)}${j.period?` · ${esc(j.period)}`:''}</div></div>`).join('') : `<div class="cv-empty">Nothing added yet.</div>`;
     const secs=[
+      !ownerView?recordSec():'',
       (v.verification && card.docs.some(d=>d.verified))?`<div class="cvsec"><div class="cvttl">Verified</div><div class="vbadges">${card.docs.filter(d=>d.verified).map(d=>`<span class="vbadge">✓ ${esc(d.label)}</span>`).join('')}</div></div>`:'',
       v.about?`<div class="cvsec"><div class="cvttl">Summary</div><p class="cvabout">${esc(card.about)||'<span style="color:var(--muted)">No summary yet.</span>'}</p></div>`:'',
       (v.address && (card.address||card.lat))?`<div class="cvsec"><div class="cvttl">Area</div><div class="cv-addr">📍 ${esc(card.address)||'Pinned location'}</div>${(card.lat&&MAPS_KEY)?`<iframe class="cv-map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed/v1/place?key=${MAPS_KEY}&q=${card.lat},${card.lng}&zoom=15"></iframe>`:''}${card.lat?`<a class="cv-nav" href="https://www.google.com/maps/dir/?api=1&destination=${card.lat},${card.lng}" target="_blank" rel="noopener">🧭 Navigate here</a>`:''}</div>`:'',
       v.services?`<div class="cvsec"><div class="cvttl">Skills / What I do</div><div class="cvtags">${card.services.length?card.services.map(x=>`<span class="cvtag">${esc(x)}</span>`).join(''):'<span class="cv-empty">Nothing added yet.</span>'}</div></div>`:'',
       v.education?`<div class="cvsec"><div class="cvttl">Education</div>${edu}</div>`:'',
       v.jobs?`<div class="cvsec"><div class="cvttl">Previous jobs</div>${jobs}</div>`:'',
-      v.references?`<div class="cvsec"><div class="cvttl">References</div>${cv.reviews.map(r=>`<div class="cvkudo"><div class="cvkudo-top"><span class="cvkudo-stars">${stars(r.st)}</span><span class="cvkudo-tag">${r.tag}</span></div><p class="cvkudo-tx">“${r.tx}”</p><div class="cvkudo-by">— ${r.n}, ${r.when}</div></div>`).join('')}</div>`:'',
+      v.references?(otherView?`<div class="cvsec"><div class="cvttl">References</div><div class="cv-empty">No reviews yet.</div></div>`:`<div class="cvsec"><div class="cvttl">References</div>${cv.reviews.map(r=>`<div class="cvkudo"><div class="cvkudo-top"><span class="cvkudo-stars">${stars(r.st)}</span><span class="cvkudo-tag">${r.tag}</span></div><p class="cvkudo-tx">“${r.tx}”</p><div class="cvkudo-by">— ${r.n}, ${r.when}</div></div>`).join('')}</div>`):'',
     ].filter(Boolean).join('');
     return `<div class="cvpanel">${secs || `<div class="cv-empty" style="padding:18px 22px">You've hidden everything on your public page. Open ✎ Edit to show sections.</div>`}</div>`;
   }
@@ -9809,19 +9826,183 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
         inner:SIDE.stores.length?SIDE.stores.map(estabCard).join(''):feedEmpty('No businesses yet. Register one below.'),saclass:'sa-store',act:"if(typeof openModal==='function')openModal('store-register')",btn:'🏪 Register a Store'});
   }
 
+  /* ---------- index v11: someone else's public profile + your deal record ---------- */
+  // photos only from a normal web address or an image file — anything else could carry code
+  function safeUrl(u){ u=String(u==null?'':u).trim(); if(/^https:\/\/[^\s"'<>()\\]+$/i.test(u)) return u; if(/^data:image\/(png|jpe?g|webp|gif);base64,[a-z0-9+\/=]+$/i.test(u)) return u; return null; }
+  function bpCardFrom(p){
+    const c=blankCard();
+    let since='—'; if(p.member_since){ try{ since=new Date(p.member_since).toLocaleDateString(undefined,{month:'long',year:'numeric'}); }catch(_){ } }
+    const contacts=[{id:1,type:'ingame',value:'Always on',locked:true}]; let idn=2;
+    if(p.contact) contacts.push({id:idn++,type:'phone',value:String(p.contact)});
+    if(Array.isArray(p.contacts)) p.contacts.forEach(x=>{ if(x&&x.type&&x.type!=='ingame'&&x.type!=='phone'&&CT[x.type]) contacts.push({id:idn++,type:x.type,value:x.value||''}); });
+    return Object.assign(c,{ handle:String(p.nickname||'member').replace(/[^a-z0-9_.]/gi,'').toLowerCase(), job:p.job||'', memberSince:since,
+      xp:Number(p.xp)||0, level:(p.lvl!=null?Number(p.lvl):levelFromXP(Number(p.xp)||0).level), points:(p.trust_points!=null?p.trust_points:0),
+      avatar:safeUrl(p.avatar_url), cover:safeUrl(p.cover_url), address:p.address||'', lat:(p.lat!=null?Number(p.lat):null), lng:(p.lng!=null?Number(p.lng):null),
+      contacts, about:p.about||'', services:Array.isArray(p.services)?p.services:[], education:Array.isArray(p.education)?p.education:[],
+      jobs:Array.isArray(p.jobs)?p.jobs:[], docs:Array.isArray(p.docs)?p.docs:[],
+      vis:Object.assign({}, c.vis, (p.visibility&&typeof p.visibility==='object')?p.visibility:{}) });
+  }
+  function otherHTML(){
+    const o=otherView;
+    if(o.loading) return `<div class="bmprof-msg">Loading profile…</div>`;
+    if(o.err) return `<div class="bmprof-msg">⚠️ ${esc(o.err)}</div>`;
+    return viewCardHTML() + `<div class="vbanner pub">🌐 @${esc(card.handle)}’s public profile. You see only what they chose to show.</div>` + cvBody();
+  }
+  function recordSec(){
+    const r=otherView ? otherView.rec : selfRec; if(!r) return '';
+    const marks=Array.isArray(r.marks)?r.marks:[], n=v=>(v==null?'—':Number(v).toLocaleString());
+    const day=s=>{ try{ return new Date(s).toLocaleDateString(undefined,{month:'short',day:'numeric'}); }catch(_){ return ''; } };
+    return `<div class="cvsec"><div class="cvttl">Deal record</div>
+      <div class="drec">
+        <div><b>${n(r.helps_done)}</b><span>helps done</span></div>
+        <div><b>${n(r.deals_closed)}</b><span>deals closed</span></div>
+        <div><b>${esc(card.level)}</b><span>level</span></div>
+        <div class="${marks.length?'bad':''}"><b>${marks.length}</b><span>${marks.length===1?'mark':'marks'}</span></div>
+      </div>
+      ${marks.length ? `<div class="drec-marks">${marks.map(m=>`<div class="drec-mark">🚩 ${esc(m.label)}${m.item?` · “${esc(m.item)}”`:''}${m.at?` · ${esc(day(m.at))}`:''}</div>`).join('')}</div>`
+                     : `<div class="drec-ok">🟢 No marks. No deal has been decided against ${otherView?'them':'you'}.</div>`}
+      <div class="drec-note">A mark shows only after a BringMe moderator looks at a reported deal and decides against the person. A report alone never shows here.</div>
+    </div>`;
+  }
+  function offerLabel(r){ const o=(r&&r.offer)||{}, a=[]; if(o.type!=='points'&&o.type!=='pts'&&Number(o.cash)) a.push('₱'+o.cash); if(o.type!=='cash'&&Number(o.points)) a.push('✨'+o.points); return a.join(' + '); }
+  function theirFeed(side){
+    const id=otherView&&otherView.id, h='@'+esc(card.handle||'member');
+    const theirs=a=>(Array.isArray(a)?a:[]).filter(x=>x&&x._ownerId===id);
+    const half=(tone,icon,title,sub,cards,empty)=>`<div class="fp-half t-${tone}"><div class="lp-section-hdr"><span class="lp-section-icon">${icon}</span><div class="lp-section-titlewrap"><span class="lp-section-title">${title}</span><span class="lp-section-sub">${sub}</span></div><span class="lp-section-count" style="${CS[tone]}">${cards.length}</span></div><div class="fp-half-body">${cards.length?cards.join(''):feedEmpty(empty)}</div></div>`;
+    const st=r=>r.status==='assigned'?'Helper chosen':'Open';
+    if(side==='left'){
+      const rq=theirs(typeof helpRequests!=='undefined'?helpRequests:[]);
+      const u=rq.filter(r=>r.reqType==='urgent').map(r=>postCard({em:'⚡',t:esc(r.item),m:esc(offerLabel(r)||'Urgent'),s:st(r),sc:'mp-active'}));
+      const f=rq.filter(r=>r.reqType!=='urgent').map(r=>postCard({em:'🔍',t:esc(r.item),m:'Find Me',s:st(r),sc:'mp-active'}));
+      return half('red','⚡',`${h}’s urgent needs`,'Open now',u,'No open urgent needs.') + half('gold','🔍',`${h}’s find requests`,'Open now',f,'No open find requests.');
+    }
+    const it=theirs(typeof listings!=='undefined'?listings:[]).map(l=>postCard({em:esc(l.emoji||'📦'),t:esc(l.title),m:'₱'+Number(l.price||0).toLocaleString(),s:'For sale',sc:'mp-active'}));
+    const sh=theirs(typeof stores!=='undefined'?stores:[]).map(s=>postCard({em:esc(s.emoji||'🏪'),t:esc(s.name),m:esc(s.address||''),s:'Shop',sc:'mp-active'}));
+    return half('blue','🏷️',`${h}’s items for sale`,'Listed now',it,'Nothing for sale right now.') + half('green','🏪',`${h}’s shops`,'Shops & services',sh,'No shops.');
+  }
+  async function bpLoadPublic(){
+    const o=otherView; if(!o) return;
+    try{
+      if(typeof sb==='undefined'||!sb) throw new Error('Not connected to the database.');
+      const r=await sb.rpc('public_profile',{p_user:o.id});
+      if(r.error) throw r.error;
+      const p=Array.isArray(r.data)?r.data[0]:r.data; if(!p) throw new Error('This profile isn’t available.');
+      if(otherView!==o) return;
+      o.rec=p; card=bpCardFrom(p); o.err=null;
+    }catch(e){ if(otherView===o) o.err=(e&&e.message)||String(e); }
+    if(otherView===o){ o.loading=false; render(); }
+  }
+  async function bpLoadSelfRec(){
+    if(typeof sb==='undefined'||!sb||!SB_USER){ selfRec=null; return; }
+    try{ const r=await sb.rpc('public_profile',{p_user:SB_USER.id}); selfRec=(r&&!r.error&&(Array.isArray(r.data)?r.data[0]:r.data))||null; }catch(_){ selfRec=null; }
+    if(!otherView && !editing && document.body.classList.contains('bm-profile')) render();
+  }
+  function setBackFab(){ const b=document.getElementById('bm-back-fab'); if(b) b.textContent=(otherView&&otherView.back)?'← Back to the request':'← Back to the map'; }
+  function bpRefresh(){
+    if(!document.body.classList.contains('bm-profile')) return;
+    if(otherView){ bpLoadPublic(); return; }
+    if(editing) return;
+    bpLoadCard(); bpLoadLedger(); bpLoadSelfRec(); bpLoadMod(); render();
+  }
+  /* ---------- index v11: moderators — reported deals to decide (shown on a moderator's Dashboard) ---------- */
+  let modState={ admin:false, list:null, err:null, open:null, chats:{}, ask:null, busy:false };
+  async function bpLoadMod(){
+    if(typeof sb==='undefined'||!sb||!SB_USER){ modState.admin=false; return; }
+    try{ const a=await sb.rpc('am_admin'); modState.admin = !!(a && !a.error && a.data===true); }catch(_){ modState.admin=false; }
+    if(!modState.admin) return;
+    try{ const r=await sb.rpc('admin_open_disputes'); modState.err = r.error ? (r.error.message||'Could not load') : null; modState.list = (!r.error && Array.isArray(r.data)) ? r.data : []; }
+    catch(e){ modState.err=(e&&e.message)||String(e); modState.list=[]; }
+    if(!editing && ownerView && !otherView && document.body.classList.contains('bm-profile')) render();
+  }
+  function modWhen(s){ try{ return s?new Date(s).toLocaleString(undefined,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):''; }catch(_){ return ''; } }
+  function modHTML(){
+    if(!modState.admin) return '';
+    const L=modState.list;
+    let h=`<div class="cvsec mod-sec"><div class="cvttl">⚖️ Problems to decide${L&&L.length?` <span class="mod-n">${L.length}</span>`:''}</div>`;
+    h+=`<div class="mod-help">You’re a BringMe moderator. Read the chat, check the code tries and the GPS stamp, then side with one person. The other loses 50 XP and gets a mark.</div>`;
+    if(L===null) return h+`<div class="cv-empty">Loading…</div></div>`;
+    if(modState.err) h+=`<div class="cv-empty">⚠️ ${esc(modState.err)}</div>`;
+    if(!L.length) return h+`<div class="cv-empty">No reported deals right now.</div></div>`;
+    return h+L.map(modCard).join('')+`</div>`;
+  }
+  function modCard(x){
+    const id=String(x.request_id), jid=id.replace(/[^A-Za-z0-9_-]/g,''), open=modState.open===id, ch=modState.chats[id];
+    const rep = x.by_role==='requester' ? x.requester_name : x.helper_name;
+    const gps = (x.delivered_lat!=null && x.delivered_lng!=null) ? ` · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(Number(x.delivered_lat).toFixed(6)+','+Number(x.delivered_lng).toFixed(6))}" target="_blank" rel="noopener">GPS ↗</a>` : '';
+    let h=`<div class="mod-card"><div class="mod-top"><b>${esc(x.item)}</b><span>${esc(modWhen(x.at))}</span></div>
+      <div class="mod-line">${esc(rep)} reported: <b>“${esc(x.reason_text)}”</b>${x.note?`<span class="mod-quote">“${esc(x.note)}”</span>`:''}</div>
+      <div class="mod-facts"><span>🙋 Asked: ${esc(x.requester_name)}</span><span>🤝 Helper: ${esc(x.helper_name)}</span>
+        ${Number(x.reward)?`<span>✨${esc(x.reward)} ${x.closed_at?'already paid out':'on hold'}</span>`:''}
+        ${Number(x.cash)?`<span>💵 ₱${esc(x.cash)}: ${x.cash_got_at?'helper got it':(x.cash_paid_at?'asker says paid':'not confirmed')}</span>`:''}
+        <span>Chosen ${esc(modWhen(x.chosen_at))}</span>${x.delivered_at?`<span>📦 Delivered ${esc(modWhen(x.delivered_at))}${gps}</span>`:''}
+        ${x.closed_at?`<span>✅ Closed (${esc(x.closed_by||'')})</span>`:''}<span>🔢 Wrong code tries: ${esc(x.tries||0)}</span></div>
+      <button class="mod-btn" onclick="BP.modChat('${jid}')">${open?'Hide the chat':'💬 Read the chat'}</button>`;
+    if(open){
+      if(!ch) h+=`<div class="cv-empty">Loading…</div>`;
+      else if(ch.err) h+=`<div class="cv-empty">⚠️ ${esc(ch.err)}</div>`;
+      else h+= ch.length ? `<div class="mod-chat">${ch.map(m=>`<div class="mod-msg ${m.from_role==='helper'?'h':'r'}"><b>${esc(m.from_name)}</b> <span>${esc(modWhen(m.created_at))}</span><div>${esc(m.body)}</div></div>`).join('')}</div>` : `<div class="cv-empty">No messages.</div>`;
+    }
+    if(x.mine) h+=`<div class="cv-empty">You’re part of this deal, so another moderator has to decide it.</div>`;
+    else if(modState.ask && modState.ask.id===id){
+      const side=modState.ask.side, nm=side==='helper'?x.helper_name:x.requester_name, other=side==='helper'?x.requester_name:x.helper_name;
+      h+=`<div class="mod-ask"><span>Side with <b>${esc(nm)}</b>? ${esc(other)} loses 50 XP and gets a mark. This can’t be undone.</span><div class="mod-acts"><button class="mod-btn yes" ${modState.busy?'disabled':''} onclick="BP.modDecide('${jid}','${side}')">Yes, side with ${esc(nm)}</button><button class="mod-btn" onclick="BP.modAsk(null)">Cancel</button></div></div>`;
+    } else h+=`<div class="mod-acts"><button class="mod-btn" onclick="BP.modAsk('${jid}','requester')">Side with ${esc(x.requester_name)}</button><button class="mod-btn" onclick="BP.modAsk('${jid}','helper')">Side with ${esc(x.helper_name)}</button></div>`;
+    return h+`</div>`;
+  }
+  function modFind(jid){ return (modState.list||[]).find(x=>String(x.request_id).replace(/[^A-Za-z0-9_-]/g,'')===jid); }
+  async function modChat(jid){
+    const x=modFind(jid); if(!x) return; const id=String(x.request_id);
+    if(modState.open===id){ modState.open=null; render(); return; }
+    modState.open=id; render();
+    try{ const r=await sb.rpc('admin_dispute_chat',{p_request_id:x.request_id}); modState.chats[id] = r.error ? {err:r.error.message} : (Array.isArray(r.data)?r.data:[]); }
+    catch(e){ modState.chats[id]={err:(e&&e.message)||String(e)}; }
+    render();
+  }
+  function modAsk(jid, side){ const x=jid?modFind(jid):null; modState.ask = x ? { id:String(x.request_id), side } : null; render(); }
+  async function modDecide(jid, side){
+    const x=modFind(jid); if(!x || modState.busy) return;
+    modState.busy=true; render();
+    try{
+      const r=await sb.rpc('deal_decide',{p_request_id:x.request_id, p_side:side});
+      if(r.error){ bmToast('⚠️ '+r.error.message); }
+      else { bmToast('⚖️ Decided. Both people see the result on the request.'); modState.ask=null; modState.open=null; }
+    }catch(e){ bmToast('⚠️ '+((e&&e.message)||e)); }
+    modState.busy=false;
+    await bpLoadMod(); render();
+  }
+  // the floating profile bar: real Level, Credits and helps (they were placeholders before)
+  async function bmFillBar(){
+    const p=(typeof SB_PROFILE==='object'&&SB_PROFILE)?SB_PROFILE:null; if(!p) return;
+    const L=levelFromXP(p.xp!=null?Number(p.xp):0).level, bal=Number(p.trust_points)||0;
+    const bands=[[86,'👑 Local Legend'],[61,'🏅 Community Guide'],[41,'⭐ Trusted Local'],[21,'🧭 Helper'],[0,'🌱 Newcomer']];
+    const band=(bands.find(b=>L>=b[0])||bands[bands.length-1])[1];
+    const lv=document.querySelector('#fp-member .fp-level'); if(lv) lv.textContent=L;
+    const rk=document.querySelector('#fp-member .fp-rank'); if(rk) rk.textContent=band;
+    const tp=document.getElementById('fpb-trust-pts');
+    if(tp){ tp.textContent=bal.toLocaleString(); const lb=tp.parentNode&&tp.parentNode.querySelector('.fp-stat-lbl'); if(lb) lb.textContent='✨ Credits'; }
+    try{ S_trustPoints=bal; }catch(_){}
+    try{
+      if(typeof sb!=='undefined'&&sb&&SB_USER){
+        const r=await sb.rpc('public_profile',{p_user:SB_USER.id}); const x=r&&!r.error&&(Array.isArray(r.data)?r.data[0]:r.data);
+        const nums=document.querySelectorAll('#fp-member .fp-stat .fp-stat-num'); if(x&&nums[1]) nums[1].textContent=Number(x.helps_done||0).toLocaleString();
+      }
+    }catch(_){}
+  }
+
   /* ---------- render ---------- */
   function footerHTML(){
     return ownerView ? `<div class="bp-foot"><button class="bp-foot-btn" onclick="BP.toast('Saved items — coming soon')">🔖 Saved</button><button class="bp-foot-btn danger" onclick="BP.logout()">Log out</button></div>` : '';
   }
   function centerHTML(){
+    if(otherView) return otherHTML();   // index v11
     return editing ? editCardHTML()
       : (viewCardHTML() + viewToggle() + viewBanner() + (ownerView ? ownerBody() : cvBody()) + footerHTML());
   }
   function render(){
     const pg=document.getElementById('profile-page'); if(!pg) return;
     pg.innerHTML = `<div class="bmprof">${centerHTML()}</div>`;
-    const lp=document.getElementById('left-profile');    if(lp) lp.innerHTML=leftFeed();
-    const rp=document.getElementById('sidebar-profile'); if(rp) rp.innerHTML=rightFeed();
+    const lp=document.getElementById('left-profile');    if(lp) lp.innerHTML=otherView?theirFeed('left'):leftFeed();
+    const rp=document.getElementById('sidebar-profile'); if(rp) rp.innerHTML=otherView?theirFeed('right'):rightFeed();
   }
 
   /* ---------- image upload (same behaviour as the demo) ---------- */
@@ -9843,13 +10024,28 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   }
 
   /* ---------- expose + open/close ---------- */
-  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, pinLocation, clearPin, pickDoc, removeDoc, openContact, toast:bmToast, logout:bpLogout };
+  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, pinLocation, clearPin, pickDoc, removeDoc, openContact, toast:bmToast, logout:bpLogout, refresh:bpRefresh, modChat, modAsk, modDecide };
   function bpLogout(){ if(typeof sbSignOut==='function'){ sbSignOut(); } bmCloseProfile(); }
   window.bmToast = bmToast;
   window.bmPickAvatar = pickAvatar;
   window.bmPickCover  = pickCover;
-  window.bmOpenProfile = function(){ document.body.classList.add('bm-profile'); bpLoadCard(); bpLedger=null; bpLoadLedger(); editing=false; draft=null; ownerView=true; render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
-  window.bmCloseProfile = function(){ document.body.classList.remove('bm-profile'); };
+  window.bmOpenProfile = function(){ otherView=null; setBackFab(); document.body.classList.add('bm-profile'); bpLoadCard(); bpLedger=null; bpLoadLedger(); bpLoadSelfRec(); bpLoadMod(); editing=false; draft=null; ownerView=true; render(); const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0; };
+  window.bmCloseProfile = function(){
+        const o=otherView;
+        document.body.classList.remove('bm-profile');
+        if(o){ otherView=null; bpLoadCard(); setBackFab(); if(o.back){ try{ o.back(); }catch(_){} } }
+      };
+      // index v11: open someone else's public profile (e.g. a helper's, from an Urgent offer)
+      window.bmOpenPublicProfile = function(uid, back){
+        if(!uid) return;
+        otherView={ id:uid, back:(typeof back==='function'?back:null), rec:null, err:null, loading:true };
+        editing=false; draft=null; ownerView=false;
+        document.body.classList.add('bm-profile');
+        setBackFab(); render();
+        const pg=document.getElementById('profile-page'); if(pg) pg.scrollTop=0;
+        bpLoadPublic();
+      };
+      window.bmFillBar = bmFillBar;
 
   if(document.readyState!=='loading'){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); wireDoc(); }
   else document.addEventListener('DOMContentLoaded',function(){ wireUpload('bm-av-in','avatar'); wireUpload('bm-cov-in','cover'); wireDoc(); });
@@ -10306,6 +10502,10 @@ function urfPost(){
 (function(){
   function connected(){ return (typeof sb!=='undefined' && sb); }
   function signedIn(){ return connected() && (typeof SB_USER!=='undefined') && SB_USER; }
+  // index v11: post text from the database can't carry code into the page — the 6 characters that
+  // could break out of it show as look-alikes (& < > " ' ` → ＆ ‹ › ” ’ ˋ)
+  function safe(s){ return String(s).replace(/[&<>"'`]/g, function(c){ return {'&':'＆','<':'‹','>':'›','"':'”',"'":'’','`':'ˋ'}[c]; }); }
+  function clean(row){ var o={}; for(var k in row){ if(Object.prototype.hasOwnProperty.call(row,k)){ var v=row[k]; o[k]=(typeof v==='string')?safe(v):v; } } return o; }
 
   // relative time from an ISO timestamp → "Just now / 5m / 2h / 3d"
   function relTime(iso){
@@ -10324,7 +10524,7 @@ function urfPost(){
     var map={}; if(!connected() || !ids.length) return map;
     try{
       var res=await sb.from('profiles').select('id,nickname,first_name').in('id', ids);
-      (res.data||[]).forEach(function(p){ map[p.id]= p.nickname?('@'+p.nickname):(p.first_name||'Member'); });
+      (res.data||[]).forEach(function(p){ map[p.id]= safe(p.nickname?('@'+p.nickname):(p.first_name||'Member')); });
     }catch(e){}
     return map;
   }
@@ -10332,6 +10532,7 @@ function urfPost(){
 
   // ── DB row → the shape the map/panels already render ──
   function mapReq(r, names, own){
+    r=clean(r);
     return {
       id:r.id, _db:{table:'help_requests', id:r.id}, _ownerId:r.user_id,
       reqType:r.type, item:r.item, details:r.note||'', note:r.note||'',
@@ -10342,10 +10543,11 @@ function urfPost(){
       delivery:r.delivery||'', when:'', cover:'back',
       lat:r.lat, lng:r.lng, replies:[],
       // index v10: status + counters from the database
-      status:r.status||'open', replyCount:r.reply_count||0, chosenHelper:r.chosen_helper||null, boughtReplyId:r.bought_reply_id||null
+      status:r.status||'open', replyCount:r.reply_count||0, chosenHelper:r.chosen_helper||null, boughtReplyId:r.bought_reply_id||null, dispute:!!r.dispute_open
     };
   }
   function mapListing(l, names, own){
+    l=clean(l);
     return {
       id:l.id, _db:{table:'listings', id:l.id}, _ownerId:l.user_id,
       type:l.type||'sell', title:l.title, category:'', catTop:'', catSub:'',
@@ -10359,6 +10561,7 @@ function urfPost(){
     };
   }
   function mapStore(s, names, own){
+    s=clean(s);
     return {
       id:s.id, _db:{table:'stores', id:s.id}, _ownerId:s.owner_id,
       name:s.name, address:s.address||'Nearby', contact:s.contact||'', hours:s.hours||'',
@@ -10374,6 +10577,7 @@ function urfPost(){
   async function loadPosts(){
     if(!connected() || loading) return; loading=true;
     try{
+      if(signedIn()){ try{ await sb.rpc('deals_tick'); }catch(e){} }   // index v11: close deals whose 24 hours ran out
       var out=await Promise.all([
         (typeof sbLoadRequests==='function'?sbLoadRequests():[]),
         (typeof sbLoadListings==='function'?sbLoadListings():[]),
@@ -10482,55 +10686,207 @@ function urfPost(){
 .bmu-since{font-weight:700}
 .bmthr.dim{opacity:.6}
 </style>
+<!-- ══════════ index v11: URGENT DEALS (hold, hand-over code, closing, cash, problems, full profile) ══════════ -->
+<style>
+/* index v11: Urgent deals — quick facts, safety notes, the deal (hold, hand-over code, closing, cash, problems) */
+.bmu-facts{display:flex;flex-wrap:wrap;gap:5px;margin:-2px 0 8px}
+.bmu-facts span{font-size:11px;font-weight:700;color:#334a66;background:#F2F5FC;border:1px solid #e3e7f4;border-radius:100px;padding:2px 8px;white-space:nowrap}
+.bmu-facts span.ok{background:#E6F4EA;border-color:#BFE0C9;color:#1A6B3A}
+.bmu-facts span.bad{background:#FBEDEA;border-color:#EDC4BC;color:#9B2D1F}
+.bmu-poster{display:flex;align-items:flex-start;gap:9px;background:#fff;border:1px solid #e3e7f4;border-radius:12px;padding:9px 10px;margin-bottom:10px}
+.bmu-poster .av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FFD24A,#E3A810);color:#0a1f63;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;flex-shrink:0}
+.bmu-poster .t{flex:1;min-width:0}
+.bmu-poster .t b{display:block;font-size:12.5px;color:#0a1f63;margin:4px 0 6px}
+.bmu-poster .bmu-facts{margin:0}
+.bmu-safe{font-size:11.5px;line-height:1.45;color:#5a4a12;background:#FFF8E1;border:1px solid #F1D27A;border-radius:10px;padding:8px 10px;margin:0 0 10px}
+.bmu-safe b{color:#7a5a06}
+.bmd .bmu-safe{margin:0}
+.bmu-confirm.col{flex-direction:column;align-items:stretch;gap:6px;font-weight:600}
+.bmu-confirm.col b{font-weight:800}
+.bmu-confirm.col>span{font-weight:600;color:#334a66;line-height:1.45}
+.bmu-confirm .row,.bmd-report .row{display:flex;gap:7px;flex-wrap:wrap}
+.bmu-confirm .bmu-safe{margin:0}
+.bmu-btn.danger{color:#9B2D1F;border-color:#EDC4BC;background:#fff}
+.bmd{background:#fff;border:1px solid #d9e0f2;border-radius:14px;padding:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 10px rgba(10,31,99,.06)}
+.bmd-steps{display:flex;list-style:none;margin:0;padding:0;gap:5px}
+.bmd-steps li{flex:1;min-width:0;text-align:center;font-size:11px;font-weight:800;color:#8a94b8;border-top:3px solid #dfe4f2;padding-top:6px;line-height:1.25}
+.bmd-steps li.done{color:#1A6B3A;border-color:#1A6B3A}
+.bmd-steps li.now{color:#173c88;border-color:#E3A810}
+.bmd-steps li.warn{color:#8a5a06;border-color:#E3A810}
+.bmd-line{font-size:12.5px;line-height:1.5;color:#334a66}
+.bmd-line b{color:#0a1f63}
+.bmd-hold{font-size:12.5px;line-height:1.5;color:#5a4400;background:#FFF6DA;border:1px solid #F1D27A;border-radius:10px;padding:8px 10px}
+.bmd-code{text-align:center;background:linear-gradient(135deg,#0a1f63,#173c88);color:#fff;border-radius:12px;padding:12px 12px 13px}
+.bmd-code .lbl{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#CFE0FF}
+.bmd-code b{display:block;font-family:'Poppins',sans-serif;font-size:32px;letter-spacing:.34em;padding-left:.34em;color:#FFD24A;margin:2px 0 4px;line-height:1.2}
+.bmd-code span{font-size:11.5px;color:#E3EBFF;line-height:1.45;display:block}
+.bmd-enter{display:flex;flex-direction:column;gap:6px}
+.bmd-enter label{font-size:12.5px;font-weight:800;color:#0a1f63;line-height:1.4}
+.bmd-enter .row{display:flex;gap:7px;align-items:stretch}
+.bmd-enter input{width:118px;font-size:22px;letter-spacing:.3em;text-align:center;border:1.5px solid #cdd4ea;border-radius:10px;padding:6px 8px;font-family:'Poppins',sans-serif;color:#0a1f63;background:#fff}
+.bmd-enter input:focus{outline:none;border-color:#2550b8;box-shadow:0 0 0 3px rgba(37,80,184,.15)}
+.bmd-msg{font-size:12px;font-weight:800;color:#9B2D1F}
+.bmd-acts{display:flex;gap:7px;flex-wrap:wrap}
+.bmd-small{font-size:11.5px;color:#6b76a8;line-height:1.45}
+.bmd-note{font-size:12.5px;line-height:1.5;border-radius:10px;padding:9px 11px;background:#F2F5FC;color:#334a66;border:1px solid #e3e7f4}
+.bmd-note.ok{background:#E6F4EA;border-color:#BFE0C9;color:#145530}
+.bmd-note.warn{background:#FFF6DA;border-color:#F1D27A;color:#5a4400}
+.bmd-note.bad{background:#FBEDEA;border-color:#EDC4BC;color:#8a2a1c}
+.bmd-quote{display:block;margin:5px 0;padding-left:9px;border-left:3px solid #E3A810;font-style:italic}
+.bmd-cashq{display:flex;flex-wrap:wrap;gap:7px;align-items:center;font-size:12.5px;font-weight:800;color:#0a1f63;background:#F7F9FF;border:1px solid #e3e7f4;border-radius:10px;padding:9px 10px}
+.bmd-cashq span{flex:1 1 100%;line-height:1.45}
+.bmd-report{display:flex;flex-direction:column;gap:8px;background:#FFF8F6;border:1px solid #EDC4BC;border-radius:12px;padding:10px}
+.bmd-report>b{font-size:13px;color:#8a2a1c}
+.bmd-reasons{display:flex;flex-wrap:wrap;gap:6px}
+.bmd-reasons button{border:1px solid #EDC4BC;background:#fff;color:#8a2a1c;border-radius:100px;padding:6px 11px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit}
+.bmd-reasons button[aria-pressed="true"]{background:#9B2D1F;border-color:#9B2D1F;color:#fff}
+.bmd-report textarea{border:1px solid #e3c9c2;border-radius:10px;padding:8px 10px;font:inherit;font-size:13px;min-height:52px;resize:vertical;background:#fff}
+/* demo-only controls are purple + dashed so they never look like part of the real app */
+.bmd-demo{display:flex;flex-wrap:wrap;gap:7px;align-items:center;border:1.5px dashed #a58be0;border-radius:10px;padding:8px 10px;background:#F6F2FF}
+.bmd-demo span{font-size:11px;font-weight:800;color:#5b3fa0;flex-basis:100%}
+.bmd-demo button{border:1px solid #a58be0;background:#fff;color:#4a2f8f;border-radius:9px;padding:7px 11px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit}
+/* public profile: deal record */
+#profile-page .drec{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:2px 0 10px}
+#profile-page .drec div{background:#F7F9FF;border:1px solid #e3e7f4;border-radius:11px;padding:9px 4px;text-align:center}
+#profile-page .drec b{display:block;font-family:'Poppins',sans-serif;font-size:18px;color:#0a1f63}
+#profile-page .drec span{font-size:11px;font-weight:700;color:#5a6690}
+#profile-page .drec div.bad{background:#FBEDEA;border-color:#EDC4BC}
+#profile-page .drec div.bad b{color:#9B2D1F}
+#profile-page .drec-marks{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+#profile-page .drec-mark{font-size:12.5px;font-weight:700;color:#8a2a1c;background:#FBEDEA;border:1px solid #EDC4BC;border-radius:10px;padding:7px 10px}
+#profile-page .drec-ok{font-size:12.5px;font-weight:700;color:#1A6B3A;background:#E6F4EA;border:1px solid #BFE0C9;border-radius:10px;padding:7px 10px;margin-bottom:8px}
+#profile-page .drec-note{font-size:11.5px;color:#6b76a8;line-height:1.45}
+#profile-page .bmprof-msg{color:#fff;text-align:center;padding:60px 20px;font-weight:700}
+@media(max-width:440px){#profile-page .drec{grid-template-columns:repeat(2,1fr)}}
+/* moderators: reported deals on the Dashboard (only moderators see it) */
+#profile-page .mod-sec .mod-n{display:inline-block;min-width:20px;padding:1px 7px;border-radius:100px;background:#C0392B;color:#fff;font-size:12px;margin-left:6px;vertical-align:2px;text-align:center}
+#profile-page .mod-help{font-size:12px;color:#5a6690;line-height:1.45;margin:-4px 0 12px}
+#profile-page .mod-card{border:1px solid #EDC4BC;background:#FFFBFA;border-radius:13px;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
+#profile-page .mod-top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13.5px;color:#0a1f63}
+#profile-page .mod-top span{font-size:11.5px;color:#8a94b8;font-weight:700}
+#profile-page .mod-line{font-size:12.5px;color:#334a66;line-height:1.5}
+#profile-page .mod-quote{display:block;margin-top:4px;padding-left:9px;border-left:3px solid #E3A810;font-style:italic}
+#profile-page .mod-facts{display:flex;flex-wrap:wrap;gap:5px}
+#profile-page .mod-facts span{font-size:11px;font-weight:700;color:#334a66;background:#fff;border:1px solid #e3e7f4;border-radius:100px;padding:2px 8px}
+#profile-page .mod-facts a{color:#2550b8}
+#profile-page .mod-btn{align-self:flex-start;border:1px solid #cdd4ea;background:#fff;color:#173c88;border-radius:9px;padding:7px 11px;font-weight:800;font-size:12px;cursor:pointer;font-family:inherit}
+#profile-page .mod-btn.yes{background:linear-gradient(135deg,#9B2D1F,#7a2318);border-color:#7a2318;color:#fff}
+#profile-page .mod-btn:disabled{opacity:.55}
+#profile-page .mod-acts{display:flex;gap:7px;flex-wrap:wrap}
+#profile-page .mod-ask{font-size:12.5px;color:#8a2a1c;background:#FBEDEA;border:1px solid #EDC4BC;border-radius:10px;padding:9px 10px;display:flex;flex-direction:column;gap:8px}
+#profile-page .mod-chat{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;background:#F7F9FF;border:1px solid #e3e7f4;border-radius:10px;padding:8px}
+#profile-page .mod-msg{font-size:12.5px;color:#1a2550;background:#fff;border:1px solid #e3e7f4;border-radius:9px;padding:6px 9px;line-height:1.4}
+#profile-page .mod-msg.h{border-left:3px solid #1A6B3A}
+#profile-page .mod-msg.r{border-left:3px solid #C0392B}
+#profile-page .mod-msg span{font-size:10.5px;color:#8a94b8}
+</style>
 <script>
 (function(){
   var cur=null; // { table, id, post }
+  var DEMO=!!window.BM_DEMO;   // the 2-account demo shows extra 🧪 buttons; the real app never does
   function esc(s){ try{ if(typeof window.esc==='function') return window.esc(s); }catch(e){} return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function me(){ return (typeof SB_USER!=='undefined' && SB_USER)?SB_USER.id:null; }
   function connected(){ return (typeof sb!=='undefined' && sb); }
   function rel(iso){ if(!iso) return ''; var t=new Date(iso).getTime(); if(isNaN(t)) return ''; var s=Math.floor((Date.now()-t)/1000); if(s<60) return 'just now'; var m=Math.floor(s/60); if(m<60) return m+'m'; var h=Math.floor(m/60); if(h<24) return h+'h'; return Math.floor(h/24)+'d'; }
   function initials(nm){ return String(nm||'').replace('@','').slice(0,2).toUpperCase()||'?'; }
+  function toast(m,t){ try{ if(typeof showToast==='function') showToast(m, t||'info', Math.max(2800, String(m).length*55)); }catch(e){} }
 
   async function fetchNames(ids){ var map={}; ids=(ids||[]).filter(Boolean); if(!connected()||!ids.length) return map;
     try{ var r=await sb.from('profiles').select('id,nickname,first_name').in('id', ids); (r.data||[]).forEach(function(p){ map[p.id]= p.nickname?('@'+p.nickname):(p.first_name||'Member'); }); }catch(e){}
     return map; }
 
   function postTitle(p){ return (p && (p.item||p.title||p.name)) || 'Post'; }
+  function offerText(p){ var o=(p&&p.offer)||{}, a=[]; if(o.type!=='points' && o.type!=='pts' && Number(o.cash)) a.push('₱'+o.cash+' cash'); if(o.type!=='cash' && Number(o.points)) a.push('✨'+o.points+' Credits'); return a.join(' + '); }
   function postSummary(p){
     if(!p) return '';
-    if(p.item){ var off=''; if(p.offer){ if(p.offer.cash) off+='₱'+p.offer.cash+' '; if(p.offer.points) off+='✨'+p.offer.points+' Credits'; }
-      return '<b>'+esc(p.item)+'</b>'+(p.note?'<br>“'+esc(p.note)+'”':'')+(off.trim()?'<br>Reward offered: '+esc(off.trim()):''); }
+    if(p.item){ var off=offerText(p);
+      return '<b>'+esc(p.item)+'</b>'+(p.note?'<br>“'+esc(p.note)+'”':'')+(off?'<br>Reward offered: '+esc(off):''); }
     if(p.title){ return '<b>'+esc(p.title)+'</b>'+(p.price?' — ₱'+esc(p.price):''); }
     if(p.name){ return '<b>'+esc(p.name)+'</b>'+(p.address?' — '+esc(p.address):''); }
     return '';
   }
 
+  // screen state (kept while the thread is open)
+  var lastD=null, confirmHid=null, cards={}, posterCard=null, stickBottom=true, ui={};
+
   window.bmOpenThread = async function(table, id, post){
-    cur={ table:table, id:id, post:post }; openCard=null; confirmHid=null; cards={}; lastD=null; stickBottom=true;
+    cur={ table:table, id:id, post:post }; confirmHid=null; cards={}; posterCard=null; lastD=null; stickBottom=true; ui={};
     var back=document.getElementById('bmthread-back');
     if(!back){ back=document.createElement('div'); back.id='bmthread-back'; back.className='bmthread-back';
       back.addEventListener('click', function(e){ if(e.target===back) window.bmCloseThread(); }); document.body.appendChild(back); }
     back.style.display='flex';
     paint('<div class="bmthread-empty"><div class="big">⏳</div>Loading…</div>', 'Loading…', false);
     render(await load());
+    startPoll();
   };
-  window.bmCloseThread = function(){ var b=document.getElementById('bmthread-back'); if(b){ b.style.display='none'; b.innerHTML=''; } cur=null; };
+  window.bmCloseThread = function(){ var b=document.getElementById('bmthread-back'); if(b){ b.style.display='none'; b.innerHTML=''; } cur=null; stopPoll(); };
+  // index v11: while a thread is open, check for the other person's news every 15 seconds
+  // (skipped while you're typing, so nothing you type gets interrupted)
+  var poll=null;
+  function startPoll(){ stopPoll(); poll=setInterval(function(){
+    if(!cur || document.visibilityState==='hidden') return;
+    var a=document.activeElement; if(a && a.closest && a.closest('#bmthread-back') && /^(TEXTAREA|INPUT)$/.test(a.tagName)) return;
+    window.bmThreadRefresh();
+  }, 15000); }
+  function stopPoll(){ if(poll){ clearInterval(poll); poll=null; } }
+  // index v11: reload what's on screen (used after the other person acts)
+  window.bmThreadRefresh = async function(){
+    if(!cur) return;
+    var b=document.querySelector('#bmthread-back .bmthread-body');
+    stickBottom = !!(b && (b.scrollHeight - b.scrollTop - b.clientHeight) < 40);
+    var c=cur, before=dealKey(lastD), d=await load(); if(cur!==c) return;
+    var changed = dealKey(d)!==before && !!(d && d.deal);
+    if(changed){ stickBottom=false; ui={}; }
+    render(d);
+    if(changed) showDeal();
+  };
+  function dealKey(d){ var D=d&&d.deal, q=(d&&d.req)||{}; return [q.status, q.chosen_helper, D&&D.stage, D&&D.cash_paid_at, D&&D.cash_got_at, D&&D.locked].join('|'); }
+  // bring the deal into view; a hidden screen (a phone tab) does it as soon as it's shown
+  var showTimer=null;
+  function showDeal(tries){
+    clearTimeout(showTimer);
+    var b=document.querySelector('#bmthread-back .bmthread-body'), el=document.getElementById('bmd');
+    if(!b || !el) return;
+    if(!b.clientHeight){ tries=(tries||0)+1; if(tries<480) showTimer=setTimeout(function(){ showDeal(tries); }, 250); return; }   // hidden: check again soon
+    b.scrollTop=Math.max(0, b.scrollTop + el.getBoundingClientRect().top - b.getBoundingClientRect().top - 8);
+  }
 
   async function load(){
     if(!cur) return null;
-    var out={ replies:[], nameMap:{}, me:me(), isOwner:false, signedIn:!!me(), req:null };
-    out.isOwner = !!(out.me && cur.post && cur.post._ownerId===out.me);
-    if(connected() && cur.table==='help_requests'){   // index v10: fresh counter + status (public)
-      try{ var q=await sb.from('help_requests').select('id,status,chosen_helper,reply_count').eq('id',cur.id).maybeSingle(); if(q && !q.error && q.data) out.req=q.data; }catch(e){}
+    var c=cur, out={ replies:[], nameMap:{}, me:me(), isOwner:false, signedIn:!!me(), req:null, deal:null, dealErr:null };
+    out.isOwner = !!(out.me && c.post && c.post._ownerId===out.me);
+    if(connected() && c.table==='help_requests'){   // fresh counter + status (public)
+      try{ var q=await sb.from('help_requests').select('id,user_id,status,chosen_helper,reply_count,dispute_open').eq('id',c.id).maybeSingle(); if(q && !q.error && q.data) out.req=q.data; }catch(e){}
     }
     if(!connected() || !out.signedIn) return out;
     try{
-      var r=await sb.from('post_replies').select('*').eq('post_table',cur.table).eq('post_id',cur.id).order('created_at',{ascending:true});
+      var r=await sb.from('post_replies').select('*').eq('post_table',c.table).eq('post_id',c.id).order('created_at',{ascending:true});
       out.replies=(r.data||[]).filter(function(x){ return !x.is_public; });
       var ids={}; out.replies.forEach(function(x){ ids[x.helper_id]=1; ids[x.poster_id]=1; ids[x.sender_id]=1; });
+      if(c.post && c.post._ownerId) ids[c.post._ownerId]=1;
       out.nameMap=await fetchNames(Object.keys(ids));
     }catch(e){ console.warn('[BringMe] thread load', e); }
+    if(isUrgent()){
+      var rq=out.req||{};
+      // index v11: the deal (only the two people in it can read it)
+      if(rq.chosen_helper && (out.isOwner || rq.chosen_helper===out.me)){
+        try{ var ds=await sb.rpc('deal_state',{ p_request_id:c.id }); if(ds.error) out.dealErr=dbErr(ds.error); else out.deal=(Array.isArray(ds.data)?ds.data[0]:ds.data)||null; }
+        catch(e){ out.dealErr=dbErr(e); }
+      }
+      // index v11: quick facts — each helper for the poster, the poster for a helper
+      if(out.isOwner){
+        var hs={}; out.replies.forEach(function(m){ hs[m.helper_id]=1; });
+        await Promise.all(Object.keys(hs).filter(function(h){ return !cards[h] || cards[h].err; }).map(loadCard));
+      } else if(c.post && c.post._ownerId && (!posterCard || posterCard.err)){
+        try{ var pr=await sb.rpc('public_profile',{ p_user:c.post._ownerId }); posterCard = pr.error ? {err:dbErr(pr.error)} : ((Array.isArray(pr.data)?pr.data[0]:pr.data) || {err:'Profile not available.'}); }
+        catch(e){ posterCard={err:dbErr(e)}; }
+      }
+    }
     return out;
+  }
+  async function loadCard(hid){
+    try{ var r=await sb.rpc('helper_card',{ p_helper:hid }); cards[hid] = r.error ? {err:dbErr(r.error)} : ((Array.isArray(r.data)?r.data[0]:r.data) || {err:'Profile not available.'}); }
+    catch(e){ cards[hid]={err:dbErr(e)}; }
   }
 
   function bubble(m, mine, nm){
@@ -10546,57 +10902,64 @@ function urfPost(){
         'Private messaging', false);
       return;
     }
-    if(d.isOwner){
-      var groups={}, order=[];
-      d.replies.forEach(function(m){ if(!groups[m.helper_id]){ groups[m.helper_id]=[]; order.push(m.helper_id); } groups[m.helper_id].push(m); });
-      if(U) U.n=Math.max(U.n, order.length);
-      var inner='<div class="bmpost-sum">'+postSummary(p)+'</div>';
-      if(U){   // index v10: counter + choose one helper
+    if(d.isOwner) renderOwner(d,p,U); else renderHelper(d,p,U);
+  }
+
+  function renderOwner(d,p,U){
+    var groups={}, order=[];
+    d.replies.forEach(function(m){ if(!groups[m.helper_id]){ groups[m.helper_id]=[]; order.push(m.helper_id); } groups[m.helper_id].push(m); });
+    var inner='<div class="bmpost-sum">'+postSummary(p)+'</div>';
+    if(U){
+      if(U.chosen && order.indexOf(U.chosen)>0){ order.splice(order.indexOf(U.chosen),1); order.unshift(U.chosen); }   // your helper first
+      if(U.status==='open'){
+        U.n=Math.max(U.n, order.length);
         inner+=counterLine(U.n);
-        if(U.status==='assigned') inner+='<div class="bmu-status ok">✅ You chose '+esc(d.nameMap[U.chosen]||'a helper')+'. Offers from others are closed.</div>';
-        else if(order.length) inner+='<div class="bmu-status">Pick the person you trust. You can open each profile first. Only you see these offers.</div>';
-      }
-      if(!order.length){ inner+='<div class="bmthread-empty"><div class="big">📭</div>No offers yet.<br>When someone offers to help, it shows here — privately.</div>'; }
-      else { inner+=order.map(function(hid){
-          var nm=d.nameMap[hid]||'Member', chosen=!!(U && U.chosen===hid);
-          var msgs=groups[hid].map(function(m){ return bubble(m, m.sender_id===d.me, ''); }).join('');
-          var tools='';
-          if(U){
-            tools+='<div class="bmu-tools"><button class="bmu-btn" aria-expanded="'+(openCard===hid)+'" onclick="bmThreadCard(\''+esc(hid)+'\')">'+(openCard===hid?'✕ Hide profile':'👤 View profile')+'</button>'+
-              (U.status==='open' && confirmHid!==hid ? '<button class="bmu-btn choose" onclick="bmThreadChoose(\''+esc(hid)+'\')">Choose '+esc(nm)+'</button>' : '')+'</div>';
-            if(openCard===hid) tools+=cardHTML(hid);
-            if(U.status==='open' && confirmHid===hid) tools+='<div class="bmu-confirm"><span>Choose '+esc(nm)+' to help? Offers from others will close.</span><button class="bmu-btn choose" onclick="bmThreadChooseYes(\''+esc(hid)+'\')">Yes, choose</button><button class="bmu-btn" onclick="bmThreadChoose(null)">Cancel</button></div>';
-          }
-          return '<div class="bmthr'+(U && U.status==='assigned' && !chosen?' dim':'')+'"><div class="bmthr-h"><span class="av">'+esc(initials(nm))+'</span>'+esc(nm)+(chosen?' <span class="bmu-tag">✅ Chosen</span>':'')+'</div>'+tools+msgs+
-                 '<div class="bmcompose"><textarea id="bmreply-'+esc(hid)+'" rows="1" placeholder="Reply to '+esc(nm)+'…"></textarea><button class="bmsend" onclick="bmThreadSend(\''+esc(hid)+'\')">Send</button></div></div>';
-        }).join(''); }
-      paint(inner, 'Your private offers'+(order.length?' ('+order.length+')':''), false);
-    } else {
-      var inner2='<div class="bmpost-sum">'+postSummary(p)+'</div>', canSend=true;
-      if(U){   // index v10: counter + closed offers once the poster chose someone
-        var mineOffered=d.replies.some(function(m){ return m.sender_id===d.me; });
-        U.n=Math.max(U.n, mineOffered?1:0);
-        inner2+=counterLine(U.n);
-        if(U.status==='assigned'){
-          if(U.chosen===d.me) inner2+='<div class="bmu-status ok">✅ You were chosen to help. Keep chatting with the poster here.</div>';
-          else { inner2+='<div class="bmu-status off">The poster chose another helper, so offers are closed.</div>'; canSend=false; }
-        } else if(U.status!=='open'){ inner2+='<div class="bmu-status off">This request is closed.</div>'; canSend=false; }
-      }
-      if(!d.replies.length){ if(canSend) inner2+='<div class="bmthread-empty"><div class="big">🤝</div>Offer to help — your message goes privately to the poster.'+(U?'<br>They’ll see your name and can open your profile.':'')+'</div>'; }
-      else { inner2+=d.replies.map(function(m){ var mine=m.sender_id===d.me; return bubble(m, mine, mine?'':(d.nameMap[m.poster_id]||'Poster')); }).join(''); }
-      paint(inner2, 'Private — only the poster sees this', canSend);
+        if(order.length) inner+='<div class="bmu-status">Pick the person you trust. Open their full profile first. Only you see these offers.</div>';
+      } else inner+=dealPanel(d);
     }
+    if(!order.length){ inner+='<div class="bmthread-empty"><div class="big">📭</div>No offers yet.<br>When someone offers to help, it shows here — privately.</div>'; }
+    else inner+=order.map(function(hid){ return ownerGroup(d,U,hid,groups[hid]); }).join('');
+    paint(inner, (U && U.status!=='open') ? 'Your deal and your offers' : 'Your private offers'+(order.length?' ('+order.length+')':''), false);
+  }
+  function ownerGroup(d,U,hid,msgs){
+    var nm=d.nameMap[hid]||'Member', chosen=!!(U && U.chosen===hid);
+    var h='<div class="bmthr'+(U && U.status!=='open' && !chosen?' dim':'')+'"><div class="bmthr-h"><span class="av">'+esc(initials(nm))+'</span>'+esc(nm)+(chosen?' <span class="bmu-tag">✅ Chosen</span>':'')+'</div>';
+    if(U){
+      h+=factsHTML(cards[hid]);
+      h+='<div class="bmu-tools"><button class="bmu-btn" onclick="bmThreadProfile(\''+esc(hid)+'\')">👤 View full profile</button>'+
+         (U.status==='open' && confirmHid!==hid ? '<button class="bmu-btn choose" onclick="bmThreadChoose(\''+esc(hid)+'\')">Choose '+esc(nm)+'</button>' : '')+'</div>';
+      if(U.status==='open' && confirmHid===hid) h+=chooseConfirm(hid,nm);
+    }
+    h+=msgs.map(function(m){ return bubble(m, m.sender_id===d.me, ''); }).join('');
+    return h+'<div class="bmcompose"><textarea id="bmreply-'+esc(hid)+'" rows="1" placeholder="Reply to '+esc(nm)+'…"></textarea><button class="bmsend" onclick="bmThreadSend(\''+esc(hid)+'\')">Send</button></div></div>';
+  }
+  function renderHelper(d,p,U){
+    var inner='<div class="bmpost-sum">'+postSummary(p)+'</div>', canSend=true, mine=false, sub='Private — only the poster sees this';
+    if(U){
+      inner+=posterHTML(d);
+      mine = U.chosen===d.me;
+      var offered=d.replies.some(function(m){ return m.sender_id===d.me; });
+      if(U.status==='open'){
+        U.n=Math.max(U.n, offered?1:0);
+        inner+=counterLine(U.n);
+        if(!offered) inner+=safetyHTML('helper');
+      } else if(mine){ inner+=dealPanel(d); sub='Your deal with '+(d.nameMap[cur.post._ownerId]||'the poster'); }
+      else { inner+='<div class="bmu-status off">'+(U.status==='assigned'?'The poster chose another helper, so offers are closed.':'This request is closed.')+'</div>'; canSend=false; }
+    }
+    if(!d.replies.length){ if(canSend) inner+='<div class="bmthread-empty"><div class="big">🤝</div>Offer to help — your message goes privately to the poster.'+(U?'<br>They’ll see your name and can open your profile.':'')+'</div>'; }
+    else { inner+=d.replies.map(function(m){ var own=m.sender_id===d.me; return bubble(m, own, own?'':(d.nameMap[m.poster_id]||'Poster')); }).join(''); }
+    paint(inner, sub, canSend);
   }
 
   function paint(bodyHTML, sub, helperCompose){
     var back=document.getElementById('bmthread-back'); if(!back || !cur) return;
     var note = isUrgent() ? '🔒 Only the poster reads this, and sees your name and profile' : '🔒 Private — only you and the poster';
-    var foot = helperCompose ? '<div class="bmthread-foot"><div class="bmcompose"><textarea id="bmreply-new" rows="1" placeholder="Offer to help privately…"></textarea><button class="bmsend" onclick="bmThreadSend(null)">Send</button></div><div class="bmprivnote">'+note+'</div></div>' : '';
-    // index v10: keep typed text and the scroll position when only part of the screen changes
-    var keep={}; Array.prototype.forEach.call(back.querySelectorAll('textarea[id]'), function(t){ if(t.value) keep[t.id]=t.value; });
+    var foot = helperCompose ? '<div class="bmthread-foot"><div class="bmcompose"><textarea id="bmreply-new" rows="1" placeholder="'+(lastD && lastD.replies && lastD.replies.length?'Message the poster…':'Offer to help privately…')+'"></textarea><button class="bmsend" onclick="bmThreadSend(null)">Send</button></div><div class="bmprivnote">'+note+'</div></div>' : '';
+    // keep typed text and the scroll position when only part of the screen changes
+    var keep={}; Array.prototype.forEach.call(back.querySelectorAll('textarea[id],input[id]'), function(t){ if(t.value) keep[t.id]=t.value; });
     var b0=back.querySelector('.bmthread-body'), prevTop=(b0 && !stickBottom) ? b0.scrollTop : null;
     back.innerHTML='<div class="bmthread"><div class="bmthread-hd"><span class="ic">💬</span><div class="t"><b>'+esc(postTitle(cur.post))+'</b><span>'+esc(sub)+'</span></div><button class="bmthread-x" onclick="bmCloseThread()">✕</button></div><div class="bmthread-body">'+bodyHTML+'</div>'+foot+'</div>';
-    Array.prototype.forEach.call(back.querySelectorAll('textarea'), function(t){ if(keep[t.id]) t.value=keep[t.id]; t.addEventListener('input', function(){ t.style.height='auto'; t.style.height=Math.min(90,t.scrollHeight)+'px'; }); });
+    Array.prototype.forEach.call(back.querySelectorAll('textarea[id],input[id]'), function(t){ if(keep[t.id]) t.value=keep[t.id]; if(t.tagName==='TEXTAREA') t.addEventListener('input', function(){ t.style.height='auto'; t.style.height=Math.min(90,t.scrollHeight)+'px'; }); });
     var b=back.querySelector('.bmthread-body'); if(b) b.scrollTop = (prevTop!=null) ? prevTop : b.scrollHeight;
   }
 
@@ -10604,23 +10967,23 @@ function urfPost(){
     if(!cur) return;
     var ta=document.getElementById(helperId? ('bmreply-'+helperId) : 'bmreply-new');
     var body=ta? ta.value.trim() : '';
-    if(!body){ if(typeof showToast==='function') showToast('Type a message first'); return; }
-    if(!connected() || !me()){ if(typeof showToast==='function') showToast('Please sign in first'); return; }
+    if(!body){ toast('Type a message first'); return; }
+    if(!connected() || !me()){ toast('Please sign in first'); return; }
     var btn = ta && ta.parentNode ? ta.parentNode.querySelector('.bmsend') : null; if(btn){ btn.disabled=true; btn.textContent='…'; }
     try{
       var args={ p_table:cur.table, p_post_id:cur.id, p_body:body }; if(helperId) args.p_helper=helperId;
       var r=await sb.rpc('send_reply', args);
-      if(r && r.error){ if(typeof showToast==='function') showToast('Could not send: '+r.error.message); if(btn){ btn.disabled=false; btn.textContent='Send'; } return; }
+      if(r && r.error){ toast('Could not send: '+r.error.message,'error'); if(btn){ btn.disabled=false; btn.textContent='Send'; } return; }
       if(ta) ta.value='';
       stickBottom=true;
       render(await load());
-      if(typeof showToast==='function') showToast('✅ Sent privately','success');
-    }catch(e){ if(typeof showToast==='function') showToast('Could not send'); if(btn){ btn.disabled=false; btn.textContent='Send'; } }
+      toast('✅ Sent privately','success');
+      try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(e){}
+    }catch(e){ toast('Could not send','error'); if(btn){ btn.disabled=false; btn.textContent='Send'; } }
   };
 
-  // ── index v10: Urgent — public counter, view a helper's profile, choose one helper ──
-  var lastD=null, openCard=null, confirmHid=null, cards={}, stickBottom=true;
-  function dbErr(e){ var m=(e&&e.message)||String(e||''); if(/Could not find the function|PGRST202|schema cache|does not exist/i.test(m)) return 'The database update for this version (db posts v2) hasn’t been run yet.'; return m; }
+  // ── Urgent: public counter, quick facts, full profile, choose one helper ──
+  function dbErr(e){ var m=(e&&e.message)||String(e||''); if(/Could not find the function|PGRST202|schema cache|does not exist/i.test(m)) return 'The database update for this version hasn’t been run yet.'; return m; }
   function isUrgent(){ return !!(cur && cur.table==='help_requests' && cur.post && cur.post.reqType==='urgent'); }
   function urgentInfo(d){
     var rq=(d&&d.req)||{}, p=(cur&&cur.post)||{};
@@ -10628,28 +10991,41 @@ function urfPost(){
   }
   function counterLine(n){ return '<div class="bmu-count">👥 '+(n===1?'1 person has':n+' people have')+' offered to help</div>'; }
   function since(iso){ try{ return new Date(iso).toLocaleDateString('en-PH',{month:'short',year:'numeric'}); }catch(e){ return '—'; } }
-  function cardHTML(hid){
-    var c=cards[hid];
-    if(!c || c==='loading') return '<div class="bmu-card">Loading profile…</div>';
-    if(c.err) return '<div class="bmu-card">'+esc(c.err)+'</div>';
-    function num(v){ return (v==null || v==='') ? '—' : String(v); }   // keeps a real 0 visible
-    return '<div class="bmu-card"><div class="bmu-stats">'+
-      '<div><b>'+esc(num(c.lvl))+'</b><span>level</span></div>'+
-      '<div><b>'+esc(num(c.helps_done))+'</b><span>helps done</span></div>'+
-      '<div><b>'+esc(num(c.flagged_posts))+'</b><span>posts flagged</span></div></div>'+
-      '<div class="bmu-since">Member since '+esc(since(c.member_since))+'</div></div>';
+  function num(v){ return (v==null || v==='') ? '—' : String(v); }   // keeps a real 0 visible
+  function factsHTML(c){
+    if(!c) return '<div class="bmu-facts"><span>Loading profile…</span></div>';
+    if(c.err) return '<div class="bmu-facts"><span>'+esc(c.err)+'</span></div>';
+    var marks=Array.isArray(c.marks)?c.marks.length:(Number(c.marks)||0), h=Number(c.helps_done)||0, dl=Number(c.deals_closed)||0;
+    return '<div class="bmu-facts"><span>⭐ Level '+esc(num(c.lvl))+'</span><span>🤝 '+h+(h===1?' help':' helps')+'</span><span>✅ '+dl+(dl===1?' deal':' deals')+'</span>'+
+      (marks?'<span class="bad">🚩 '+marks+(marks===1?' mark':' marks')+'</span>':'<span class="ok">No marks</span>')+
+      (c.id_verified?'<span class="ok">✓ ID verified</span>':'')+'<span>Since '+esc(since(c.member_since))+'</span></div>';
   }
-  window.bmThreadCard = async function(hid){
-    if(!lastD || !connected()) return;
-    stickBottom=false;
-    if(openCard===hid){ openCard=null; render(lastD); return; }
-    openCard=hid; confirmHid=null;
-    if(!cards[hid] || cards[hid].err){
-      cards[hid]='loading'; render(lastD);
-      try{ var r=await sb.rpc('helper_card',{ p_helper:hid }); cards[hid] = r.error ? {err:dbErr(r.error)} : ((r.data&&r.data[0]) || {err:'Profile not available.'}); }
-      catch(e){ cards[hid]={err:dbErr(e)}; }
-    }
-    if(lastD) render(lastD);
+  function posterHTML(d){
+    var oid=cur.post._ownerId, nm=d.nameMap[oid]||'the poster';
+    return '<div class="bmu-poster"><span class="av">'+esc(initials(nm))+'</span><div class="t"><b>Posted by '+esc(nm)+'</b>'+factsHTML(posterCard)+'</div>'+
+      '<button class="bmu-btn" onclick="bmThreadProfile(\''+esc(oid)+'\')">👤 Profile</button></div>';
+  }
+  function reward(){ var o=(cur&&cur.post&&cur.post.offer)||{}; return o.type==='cash' ? 0 : (Number(o.points)||0); }
+  function cashAmt(){ var o=(cur&&cur.post&&cur.post.offer)||{}; return (o.type==='points'||o.type==='pts') ? 0 : (Number(o.cash)||0); }
+  function safetyHTML(kind){
+    if(kind==='choose') return '<div class="bmu-safe"><b>⚠️ Be careful.</b> Meet in a public place, check their profile, and never send money before you have the item. Every deal is between you and your helper. BringMe doesn’t guarantee deals.</div>';
+    if(kind==='helper') return '<div class="bmu-safe"><b>🛡️ Helping is your choice.</b> Only take a job you’re comfortable with, and check the poster’s profile first. Meet in a public place, and agree on how you get paid back for the item before you buy it. Every deal is up to you. BringMe doesn’t guarantee deals.</div>';
+    if(kind==='deal-r') return '<div class="bmu-safe">🛡️ Meet in a public place. Give the code only when the item is in your hands, and never pay before the hand-over. BringMe doesn’t guarantee deals.</div>';
+    return '<div class="bmu-safe">🛡️ Meet in a public place. Hand over the item only when you get the code, or mark it as delivered. You decide whether to go ahead. BringMe doesn’t guarantee deals.</div>';
+  }
+  function chooseConfirm(hid,nm){
+    var rw=reward(), cash=cashAmt();
+    return '<div class="bmu-confirm col"><b>Choose '+esc(nm)+' to help?</b><span>Offers from others close.'+
+      (rw?' Your ✨'+rw+' Credits reward goes <b>on hold</b> now and goes to '+esc(nm)+' when the deal closes.':'')+
+      (cash?' You pay the ₱'+cash+' cash by hand at the hand-over.':'')+'</span>'+safetyHTML('choose')+
+      '<div class="row"><button class="bmu-btn choose" onclick="bmThreadChooseYes(\''+esc(hid)+'\')">Yes, choose '+esc(nm)+'</button><button class="bmu-btn" onclick="bmThreadChoose(null)">Cancel</button></div></div>';
+  }
+  window.bmThreadProfile = function(uid){
+    if(!cur || !uid) return;
+    if(typeof window.bmOpenPublicProfile!=='function'){ toast('Profiles open in the next version'); return; }
+    var back={ table:cur.table, id:cur.id, post:cur.post };
+    window.bmCloseThread();
+    window.bmOpenPublicProfile(uid, function(){ window.bmOpenThread(back.table, back.id, back.post); });
   };
   window.bmThreadChoose = function(hid){ stickBottom=false; confirmHid=hid; if(lastD) render(lastD); };
   window.bmThreadChooseYes = async function(hid){
@@ -10657,13 +11033,177 @@ function urfPost(){
     stickBottom=false;
     try{
       var r=await sb.rpc('choose_helper',{ p_request_id:cur.id, p_helper:hid });
-      if(r.error){ if(typeof showToast==='function') showToast(dbErr(r.error),'error'); return; }
+      if(r.error){ toast(dbErr(r.error),'error'); return; }
       confirmHid=null;
       if(cur.post){ cur.post.status='assigned'; cur.post.chosenHelper=hid; }
-      if(typeof showToast==='function') showToast('✅ Helper chosen. Offers from others are now closed.','success');
-      render(await load());
+      toast('✅ Helper chosen. Your hand-over code is ready.','success');
+      stickBottom=false; render(await load()); showDeal();
       try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(e){}
-    }catch(e){ if(typeof showToast==='function') showToast(dbErr(e),'error'); }
+    }catch(e){ toast(dbErr(e),'error'); }
+  };
+
+  // ── index v11: the deal — hold, hand-over code, closing, cash, problems ──
+  var RSN={ requester:[['no_show','Didn’t show up'],['pay_first','Asked to be paid first'],['not_agreed','Not what we agreed'],['unsafe','Rude or unsafe']],
+            helper_open:[['no_show','Wasn’t there for the hand-over'],['held_code','Didn’t give the code'],['unsafe','Rude or unsafe']],
+            helper_closed:[['unpaid','Didn’t pay the cash'],['unsafe','Rude or unsafe']] };
+  function at(iso){ try{ return new Date(iso).toLocaleTimeString('en-PH',{hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; } }
+  function left(iso){ var ms=new Date(iso).getTime()-Date.now(); if(!(ms>0)) return 'a moment'; var h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000); return (h?h+' h ':'')+m+' min'; }
+  function dealPanel(d){
+    var D=d.deal;
+    if(!D) return '<div class="bmu-status'+(d.dealErr?' off':'')+'">'+(d.dealErr?'⚠️ '+esc(d.dealErr):'Loading the deal…')+'</div>';
+    var h='<div class="bmd" id="bmd">'+stepsHTML(D)+(D.role==='requester'?requesterHTML(D):helperHTML(D));
+    if(D.stage==='chosen' || D.stage==='delivered') h+=safetyHTML(D.role==='requester'?'deal-r':'deal-h');
+    return h+'</div>';
+  }
+  function stepsHTML(D){
+    var s=D.stage, closed=!!D.closed_at, li=function(cls,txt){ return '<li class="'+cls+'">'+txt+'</li>'; };
+    var two = closed ? li('done','✓ Hand-over') : (s==='dispute' ? li('warn','⚖️ Under review') : li('now', s==='delivered'?'📦 Delivered':'Hand-over'));
+    var three = (s==='dispute' && closed) ? li('warn','⚖️ Under review') : (closed ? li('done','✓ Deal closed') : li('','Deal closed'));
+    return '<ol class="bmd-steps" aria-label="Deal progress">'+li('done','✓ Helper chosen')+two+three+'</ol>';
+  }
+  function holdLine(D, who){
+    var a=[];
+    if(D.reward) a.push(who==='requester' ? '✨'+D.reward+' Credits are <b>on hold</b>. They left your balance and go to '+esc(D.helper_name)+' when the deal closes.'
+                                          : '✨'+D.reward+' Credits are <b>on hold for you</b>. They’re yours when the deal closes.');
+    if(D.cash) a.push(who==='requester' ? '💵 Pay the ₱'+D.cash+' cash by hand at the hand-over.' : '💵 '+esc(D.requester_name)+' pays you ₱'+D.cash+' cash by hand at the hand-over.');
+    return a.length ? '<div class="bmd-hold">'+a.join('<br>')+'</div>' : '';
+  }
+  function demoBox(label, btns){ return DEMO ? '<div class="bmd-demo"><span>🧪 Demo only · '+label+'</span>'+btns+'</div>' : ''; }
+  function closeWhy(D){ return D.closed_by==='code' ? 'with the hand-over code' : D.closed_by==='requester' ? 'by '+esc(D.requester_name) : D.closed_by==='auto' ? 'by itself after 24 hours' : 'by a moderator’s decision'; }
+
+  function requesterHTML(D){
+    var s=D.stage, h='';
+    if(s==='chosen' || s==='delivered'){
+      if(s==='delivered') h+='<div class="bmd-note warn">📦 <b>'+esc(D.helper_name)+' marked it as delivered</b> at '+esc(at(D.delivered_at))+(D.gps?' (📍 GPS saved)':'')+'. Got it? Close the deal. Something wrong? Report a problem. If you do neither, the deal closes by itself in '+esc(left(D.auto_close_at))+'.</div>';
+      else h+='<div class="bmd-line">You chose <b>'+esc(D.helper_name)+'</b>. Chat below to agree on the hand-over.</div>';
+      h+=holdLine(D,'requester');
+      h+='<div class="bmd-code"><span class="lbl">Your hand-over code</span><b>'+esc(D.code||'····')+'</b><span>Give it to '+esc(D.helper_name)+' only when the item is in your hands. When they type it in, the deal closes and the Credits go to them.</span></div>';
+      if(ui.ask==='close') h+='<div class="bmu-confirm col"><b>Close the deal now?</b><span>'+(D.reward?'The ✨'+D.reward+' Credits go to '+esc(D.helper_name)+'. ':'')+'Only do this if you have the item.</span><div class="row"><button class="bmu-btn choose" onclick="bmDealDo(\'close\')">Yes, I have it — close</button><button class="bmu-btn" onclick="bmDealAsk(null)">Not yet</button></div></div>';
+      else if(ui.ask==='cancel') h+='<div class="bmu-confirm col"><b>Cancel '+esc(D.helper_name)+'?</b><span>'+(D.reward?'Your ✨'+D.reward+' Credits come back to you, and ':'')+'the request opens for offers again.</span><div class="row"><button class="bmu-btn danger" onclick="bmDealDo(\'cancel\')">Yes, cancel</button><button class="bmu-btn" onclick="bmDealAsk(null)">Keep '+esc(D.helper_name)+'</button></div></div>';
+      else if(ui.ask==='report') h+=reportForm(RSN.requester);
+      else h+='<div class="bmd-acts"><button class="bmu-btn choose" onclick="bmDealAsk(\'close\')">✅ I got it, close the deal</button><button class="bmu-btn danger" onclick="bmDealAsk(\'report\')">⚠️ Report a problem</button>'+(s==='chosen'?'<button class="bmu-btn" onclick="bmDealAsk(\'cancel\')">Cancel '+esc(D.helper_name)+'</button>':'')+'</div>';
+      if(s==='delivered' && !ui.ask) h+=demoBox('in the real app this waits 24 hours', '<button onclick="bmDealDo(\'skip\')">⏩ Skip the 24 hours</button>');
+      return h;
+    }
+    if(s==='dispute') return disputeHTML(D);
+    if(s==='decided') return decidedHTML(D);
+    h+='<div class="bmd-note ok">✅ <b>Deal closed</b> '+closeWhy(D)+'.'+(D.reward?' The ✨'+D.reward+' Credits went to '+esc(D.helper_name)+'.':'')+' You earned +'+D.xp_requester+' XP.</div>';
+    if(D.cash){
+      if(D.cash_got_at) h+='<div class="bmd-note ok">💵 '+esc(D.helper_name)+' confirmed they got the ₱'+D.cash+'. All settled.</div>';
+      else if(D.cash_paid_at) h+='<div class="bmd-line">💵 You said you paid the ₱'+D.cash+'. Waiting for '+esc(D.helper_name)+' to confirm.</div>';
+      else h+='<div class="bmd-cashq"><span>💵 Did you pay '+esc(D.helper_name)+' the ₱'+D.cash+' cash?</span><button class="bmu-btn choose" onclick="bmDealDo(\'paid\')">I paid</button></div>';
+    }
+    return h;
+  }
+  function helperHTML(D){
+    var s=D.stage, h='';
+    if(s==='chosen' || s==='delivered'){
+      if(s==='delivered') h+='<div class="bmd-note warn">📦 You marked it as delivered at '+esc(at(D.delivered_at))+(D.gps?' (📍 GPS saved)':'')+'. '+esc(D.requester_name)+' has '+esc(left(D.auto_close_at))+' to close the deal or report a problem. If they do neither, it closes by itself'+(D.reward?' and the ✨'+D.reward+' Credits come to you':'')+'.</div>';
+      else h+='<div class="bmd-line"><b>'+esc(D.requester_name)+' chose you.</b> Chat below to agree on the hand-over.</div>';
+      h+=holdLine(D,'helper');
+      if(D.locked) h+='<div class="bmd-note bad">🔒 The code box is locked after 5 wrong tries. Ask '+esc(D.requester_name)+' to close the deal from their side'+(s==='chosen'?', or mark it as delivered':'')+'.</div>';
+      else h+='<div class="bmd-enter"><label for="bmd-code">At the hand-over, ask '+esc(D.requester_name)+' for the 4-digit code and type it here:</label><div class="row"><input id="bmd-code" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••" onkeydown="if(event.key===\'Enter\'){bmDealCode();}"><button class="bmu-btn choose" onclick="bmDealCode()">Close the deal</button></div>'+(ui.msg?'<div class="bmd-msg" role="alert">'+esc(ui.msg)+'</div>':'')+'</div>';
+      if(ui.ask==='withdraw') h+='<div class="bmu-confirm col"><b>Step back from this job?</b><span>'+(D.reward?'The ✨'+D.reward+' Credits go back to '+esc(D.requester_name)+', and ':'')+'the request opens for offers again.</span><div class="row"><button class="bmu-btn danger" onclick="bmDealDo(\'withdraw\')">Yes, I can’t make it</button><button class="bmu-btn" onclick="bmDealAsk(null)">Keep the job</button></div></div>';
+      else if(ui.ask==='report') h+=reportForm(RSN.helper_open);
+      else {
+        h+='<div class="bmd-acts">'+(s==='chosen'?'<button class="bmu-btn" onclick="bmDealDo(\'deliver\')">📦 Mark as delivered</button>':'')+'<button class="bmu-btn danger" onclick="bmDealAsk(\'report\')">⚠️ Report a problem</button>'+(s==='chosen'?'<button class="bmu-btn" onclick="bmDealAsk(\'withdraw\')">I can’t make it</button>':'')+'</div>';
+        if(s==='chosen') h+='<div class="bmd-small">No code? Tap <b>Mark as delivered</b> after the hand-over. '+esc(D.requester_name)+' then has 24 hours to close the deal or report a problem. If they do neither, it closes by itself.</div>';
+      }
+      if(s==='delivered' && !ui.ask) h+=demoBox('in the real app this waits 24 hours', '<button onclick="bmDealDo(\'skip\')">⏩ Skip the 24 hours</button>');
+      return h;
+    }
+    if(s==='dispute') return disputeHTML(D);
+    if(s==='decided') return decidedHTML(D);
+    h+='<div class="bmd-note ok">🎉 <b>Deal closed</b> '+closeWhy(D)+'.'+(D.reward?' The ✨'+D.reward+' Credits are yours,':'')+' plus '+D.xp_helper+' XP.</div>';
+    if(D.cash){
+      if(D.cash_got_at) h+='<div class="bmd-note ok">💵 You confirmed you got the ₱'+D.cash+'. All settled.</div>';
+      else if(ui.ask==='report') h+=reportForm(RSN.helper_closed);
+      else h+='<div class="bmd-cashq"><span>💵 Did you get the ₱'+D.cash+' cash from '+esc(D.requester_name)+'?'+(D.cash_paid_at?' They say they paid.':'')+'</span><button class="bmu-btn choose" onclick="bmDealDo(\'got\')">Yes, I got it</button><button class="bmu-btn danger" onclick="bmDealAsk(\'report\',\'unpaid\')">I wasn’t paid</button></div>';
+    }
+    return h;
+  }
+  function reportForm(list){
+    var h='<div class="bmd-report"><b>Report a problem</b><div class="bmd-reasons" role="group" aria-label="What went wrong?">'+
+      list.map(function(x){ return '<button type="button" aria-pressed="'+(ui.reason===x[0])+'" onclick="bmDealReason(\''+x[0]+'\')">'+esc(x[1])+'</button>'; }).join('')+'</div>'+
+      '<textarea id="bmd-note" rows="2" maxlength="300" placeholder="What happened? (optional)"></textarea>'+
+      '<div class="bmd-small">A BringMe moderator reads this chat and checks the code and the GPS stamps before anyone gets a mark. A report alone never marks anyone, and a false report gets a mark of its own.</div>'+
+      (ui.msg?'<div class="bmd-msg" role="alert">'+esc(ui.msg)+'</div>':'')+
+      '<div class="row"><button class="bmu-btn danger" onclick="bmDealReportSend()">Send report</button><button class="bmu-btn" onclick="bmDealAsk(null)">Cancel</button></div></div>';
+    return h;
+  }
+  function who(D, role){ return role===D.role ? 'you' : esc(role==='requester'?D.requester_name:D.helper_name); }
+  function Who(D, role){ var w=who(D,role); return w==='you' ? 'You' : w; }
+  function disputeHTML(D){
+    var x=D.dispute;
+    var h='<div class="bmd-note warn">⚖️ <b>Under review.</b> '+Who(D,x.by_role)+' reported a problem: “'+esc(x.reason_text)+'”.'+(x.note?'<span class="bmd-quote">“'+esc(x.note)+'”</span>':' ')+'A BringMe moderator reads this chat, checks the code and the GPS stamps, and decides within 48 hours.'+
+      (D.closed_at?'':(D.reward?' The ✨'+D.reward+' Credits stay on hold until then.':''))+'</div>';
+    h+=demoBox('play the moderator’s decision', '<button onclick="bmDealDecide(\'requester\')">Side with '+esc(D.requester_name)+'</button><button onclick="bmDealDecide(\'helper\')">Side with '+esc(D.helper_name)+'</button>');
+    return h;
+  }
+  function decidedHTML(D){
+    var x=D.dispute, w=x.winner_role, l=x.loser_role;
+    var h='<div class="bmd-note '+(l===D.role?'bad':'ok')+'">⚖️ <b>A moderator sided with '+who(D,w)+'.</b> '+Who(D,l)+' lost '+D.xp_penalty+' XP and got a “'+esc(x.mark)+'” mark on '+(l===D.role?'your':'their')+' profile.'+
+      (x.false_report?' The report was found to be false.':'')+'</div>';
+    if((D.closed_by==='moderator' || D.closed_by==='neighbors') && D.reward) h+='<div class="bmd-line">'+(D.credits_to==='helper' ? 'The ✨'+D.reward+' Credits went to '+who(D,'helper')+'.' : 'The ✨'+D.reward+' Credits went back to '+who(D,'requester')+'.')+'</div>';
+    return h;
+  }
+
+  window.bmDealAsk = function(k, reason){ stickBottom=false; ui={ ask:k||null, reason:reason||null, msg:'' }; if(lastD) render(lastD); };
+  window.bmDealReason = function(r){ stickBottom=false; ui.reason=r; ui.msg=''; if(lastD) render(lastD); };
+  function here(){ return new Promise(function(res){ if(!navigator.geolocation){ res(null); return; }
+    var done=false, t=setTimeout(function(){ if(!done){ done=true; res(null); } }, 5000);
+    navigator.geolocation.getCurrentPosition(function(p){ if(!done){ done=true; clearTimeout(t); res({ lat:p.coords.latitude, lng:p.coords.longitude }); } },
+      function(){ if(!done){ done=true; clearTimeout(t); res(null); } }, { enableHighAccuracy:true, timeout:5000, maximumAge:60000 }); }); }
+  async function dealCall(fn, args){
+    if(!cur || !connected()) return null;
+    var r=await sb.rpc(fn, Object.assign({ p_request_id:cur.id }, args||{}));
+    if(r.error){ toast(dbErr(r.error),'error'); return null; }
+    return r;
+  }
+  async function after(){ stickBottom=false; if(!cur) return; render(await load()); try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(e){} }
+  window.bmDealDo = async function(k){
+    var D=lastD && lastD.deal; if(!D) return;
+    var MSG={ close:'🎉 Deal closed. The Credits went to '+D.helper_name+'.', cancel:'Helper cancelled. Your Credits are back, and offers are open again.',
+              withdraw:'You stepped back. The request is open for offers again.', paid:'Thanks. '+D.helper_name+' will confirm they got it.',
+              got:'✅ All settled. Thanks for helping!', skip:'⏩ 24 hours skipped (demo).' };
+    var r=null;
+    if(k==='close') r=await dealCall('deal_confirm');
+    else if(k==='cancel') r=await dealCall('deal_cancel');
+    else if(k==='withdraw') r=await dealCall('deal_withdraw');
+    else if(k==='paid') r=await dealCall('deal_cash',{ p_state:'paid' });
+    else if(k==='got') r=await dealCall('deal_cash',{ p_state:'got' });
+    else if(k==='skip') r=await dealCall('demo_skip24');
+    else if(k==='deliver'){
+      toast('📍 Saving where you are…');
+      var g=await here();
+      r=await dealCall('deal_delivered',{ p_lat:g?g.lat:null, p_lng:g?g.lng:null });
+      MSG.deliver='📦 Marked as delivered'+(g?' with your GPS':'')+'. '+D.requester_name+' has 24 hours to close the deal or report a problem.';
+    }
+    if(!r) return;
+    ui={}; toast(MSG[k]||'Done','success');
+    await after();
+  };
+  window.bmDealCode = async function(){
+    var D=lastD && lastD.deal, el=document.getElementById('bmd-code'); if(!D || !el) return;
+    var code=String(el.value||'').replace(/\D/g,'');
+    if(code.length!==4){ ui.msg='Type all 4 digits.'; stickBottom=false; render(lastD); return; }
+    var r=await dealCall('deal_close_code',{ p_code:code }); if(!r) return;
+    var x=Array.isArray(r.data)?r.data[0]:r.data; el.value='';
+    if(x && x.closed){ ui={}; toast('🎉 Deal closed.'+(D.reward?' The ✨'+D.reward+' Credits are yours.':''),'success'); }
+    else ui.msg = (x && x.locked) ? 'Wrong code. The code box is now locked. Ask '+D.requester_name+' to close the deal from their side.' : 'Wrong code. '+((x&&x.tries_left)||0)+' '+(((x&&x.tries_left)===1)?'try':'tries')+' left.';
+    await after();
+  };
+  window.bmDealReportSend = async function(){
+    if(!ui.reason){ ui.msg='Pick what went wrong.'; stickBottom=false; if(lastD) render(lastD); return; }
+    var note=(document.getElementById('bmd-note')||{}).value||'';
+    var r=await dealCall('deal_report',{ p_reason:ui.reason, p_note:note.trim() }); if(!r) return;
+    ui={}; toast('Report sent. A BringMe moderator will look at it.','success');
+    await after();
+  };
+  window.bmDealDecide = async function(side){
+    var r=await dealCall('deal_decide',{ p_side:side }); if(!r) return;
+    ui={}; toast('⚖️ Decision recorded (demo).','success');
+    await after();
   };
 })();
 </script>
@@ -10768,6 +11308,7 @@ function urfPost(){
     await reload();
   };
   window.bmCloseFind = function(){ var b=document.getElementById('bmfind-back'); if(b){ b.style.display='none'; b.innerHTML=''; } F=null; };
+  window.bmFindRefresh = function(){ if(F) reload(); };   // index v11
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && F) window.bmCloseFind(); });
 
   function ensureBack(){
