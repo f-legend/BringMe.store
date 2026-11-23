@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v12.1 · 2026-11-18 ═══════ -->
-<script>window.BM_VERSION='index v12.1 · 2026-11-18';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v13 · 2026-11-23 ═══════ -->
+<script>window.BM_VERSION='index v13 · 2026-11-23';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
     <script>
     /* index v11: if Google Maps can't load (blocked, offline), keep the app running without the map */
@@ -2714,6 +2714,159 @@ body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
 .me-foot .bmsend{flex:1;padding:12px 15px;font-size:14px}
 </style>
 <style>@media(max-width:768px){.mine-q{font-size:16px !important}}</style>
+<style>
+/* ═══ index v13: pin labels + Map switches, shop page, the Finder ═══ */
+/* index v13 · readable pin labels: white with dark text, a colored edge for each kind */
+.map-pin-label{background:#fff !important;color:#14214d !important;border:1.5px solid #cdd4ea !important;border-left-width:4px !important;border-radius:8px !important;padding:3px 8px !important;font-weight:700 !important;box-shadow:0 2px 8px rgba(0,0,40,.25) !important;backdrop-filter:none !important;text-shadow:none !important}
+.map-pin-label.sell{border-color:#2550b8 !important}
+.map-pin-label.buy,.map-pin-label.find{border-color:#E3A810 !important}
+.map-pin-label.store{border-color:#1A6B3A !important}
+.map-pin-label.urgent{border-color:#E05A4E !important}
+
+/* index v13 · "Map" switch on each panel header (gold = pins shown) */
+.bmm-tog{display:inline-flex;align-items:center;gap:5px;margin-left:auto;margin-right:6px;padding:3px 9px 3px 4px;border-radius:100px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:rgba(255,255,255,.78);font-family:'Nunito',sans-serif;font-weight:800;font-size:10.5px;line-height:1;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.bmm-tog:hover{border-color:rgba(255,210,74,.7)}
+.bmm-sw{position:relative;display:inline-block;width:24px;height:14px;border-radius:100px;background:rgba(255,255,255,.28);transition:background .2s}
+.bmm-dot{position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:#fff;transition:transform .2s}
+.bmm-tog.on{border-color:rgba(255,210,74,.65);color:#FFD24A}
+.bmm-tog.on .bmm-sw{background:#FFD24A}
+.bmm-tog.on .bmm-dot{transform:translateX(10px);background:#0a1f63}
+/* the chip on the map while some pins are hidden */
+.bmm-chip{position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:398;display:flex;align-items:center;gap:8px;background:#fff;color:#14214d;border:1px solid #cdd4ea;border-radius:100px;padding:5px 6px 5px 12px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,40,.25);max-width:calc(100vw - 24px)}
+.bmm-chip[hidden]{display:none !important}
+.bmm-chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.bmm-chip button{border:none;border-radius:100px;padding:5px 10px;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810);color:#0a1f63;font-weight:800;font-size:11.5px;cursor:pointer;font-family:inherit;flex-shrink:0}
+body.bm-profile .bmm-chip,body.bsp-open .bmm-chip{display:none !important}
+/* index v13 · shop page (green = shops; headers = the same navy bar + gold title as the panels) */
+.bsp{position:fixed;inset:0;z-index:1500;background:var(--cream,#F5F7FD);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;font-family:'Nunito',sans-serif;color:#1a2550}
+.bsp[hidden]{display:none !important}
+body.bsp-open .bmf{display:none !important}
+.bsp-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 10px max(14px, env(safe-area-inset-left, 0px));background:linear-gradient(135deg,#0a1f63,#173c88);box-shadow:0 2px 12px rgba(0,0,40,.3)}
+.bsp-back{border:1px solid rgba(255,200,60,.55);background:rgba(255,255,255,.06);color:#FFD24A;font-family:inherit;font-weight:800;font-size:13px;border-radius:100px;padding:7px 14px;cursor:pointer}
+.bsp-back:hover{background:rgba(255,210,74,.14)}
+.bsp-top-t{font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;color:#fff;opacity:.85}
+.bsp-wrap{max-width:760px;margin:0 auto;padding:14px 14px 40px;display:flex;flex-direction:column;gap:12px}
+.bsp-hero{display:flex;align-items:center;gap:14px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#2E9E5B,#1A6B3A 55%,#0d4423);color:#fff;box-shadow:0 8px 26px rgba(13,68,35,.3)}
+.bsp-em{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0}
+.bsp-hero-main{min-width:0}
+.bsp-name{margin:0;font-family:'Poppins',sans-serif;font-size:22px;line-height:1.2;font-weight:800;color:#fff;overflow-wrap:anywhere}
+.bsp-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bsp-badge{font-size:11px;font-weight:800;border-radius:100px;padding:3px 9px;background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.28)}
+.bsp-badge.ok{background:#FFD24A;color:#0a1f63;border-color:#FFD24A}
+.bsp-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.bsp-act{display:flex;align-items:center;justify-content:center;gap:5px;min-height:44px;border-radius:12px;border:1px solid #cdd4ea;background:#fff;color:#173c88;font-family:inherit;font-weight:800;font-size:12.5px;text-decoration:none;cursor:pointer;text-align:center;padding:6px}
+.bsp-act:hover{border-color:#173c88}
+.bsp-act.call{background:linear-gradient(135deg,#2E9E5B,#1A6B3A);color:#fff;border-color:#1A6B3A}
+.bsp-act.call[disabled]{background:#EEF1F8;color:#8a94b0;border-color:#e3e7f4;cursor:default}
+.bsp-act.go{background:linear-gradient(135deg,#0a1f63,#173c88);color:#FFD24A;border-color:#173c88}
+@media (max-width:520px){ .bsp-acts{grid-template-columns:repeat(2,minmax(0,1fr))} .bsp-name{font-size:20px} }
+.bsp-card{background:#fff;border:1px solid #e3e7f4;border-radius:14px;overflow:hidden}
+.bsp-sh{display:flex;align-items:center;gap:8px;padding:9px 12px;background:linear-gradient(135deg,#0a1f63,#173c88)}
+.bsp-st{font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#FFD24A}
+.bsp-rows{display:flex;flex-direction:column}
+.bsp-row{display:flex;gap:10px;padding:10px 12px;border-top:1px solid #eef1f8;align-items:flex-start}
+.bsp-row:first-child{border-top:none}
+.bsp-ri{font-size:16px;width:22px;text-align:center;flex-shrink:0;line-height:1.3}
+.bsp-rm{min-width:0}
+.bsp-rl{font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#5a6690}
+.bsp-rv{font-size:13.5px;color:#1a2550;line-height:1.45;overflow-wrap:anywhere;margin-top:1px}
+.bsp-rv i{color:#8a94b0}
+.bsp-dim{color:#8a94b0;font-size:12px}
+.bsp-sel{user-select:all}
+.bsp-owner{display:flex;align-items:center;gap:10px;padding:12px;flex-wrap:wrap}
+.bsp-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810);color:#0a1f63;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bsp-own-name{flex:1;min-width:0;font-weight:800;font-size:14px;overflow-wrap:anywhere}
+.bsp-btn{border:1px solid #cdd4ea;background:#fff;color:#173c88;border-radius:10px;padding:7px 11px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer}
+.bsp-btn:hover{border-color:#173c88}
+.bsp-empty{padding:16px 12px;text-align:center;color:#5a6690;font-size:12.5px}
+.bsp-safe{font-size:11.5px;color:#7a5a00;background:#FFF6DA;border:1px solid #F1D27A;border-radius:10px;padding:8px 10px;line-height:1.45}
+/* index v13 · the Finder: search bar just above the profile bar, results slide up above it */
+.nm-center .nm-search{display:none !important}            /* the old box in the middle of the map */
+.bmf{position:fixed;z-index:399;display:flex;flex-direction:column;gap:8px;font-family:'Nunito',sans-serif;pointer-events:none}
+.bmf>*{pointer-events:auto}
+.bmf [hidden]{display:none !important}   /* a folded panel really disappears */
+body.bm-profile .bmf{display:none !important}
+.bmf-bar{display:flex;align-items:center;background:#fff;border:1.5px solid rgba(255,200,60,.45);border-radius:14px;box-shadow:0 6px 26px rgba(0,0,51,.28);overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.bmf-bar:focus-within{border-color:var(--gold,#E3A810);box-shadow:0 8px 32px rgba(255,200,60,.3)}
+.bmf-ic{padding:0 4px 0 13px;font-size:15px;opacity:.65}
+.bmf-bar input{flex:1;min-width:0;border:none;outline:none;background:transparent;padding:12px 8px;font-family:inherit;font-size:15px;color:var(--text,#1a2550);-webkit-appearance:none;appearance:none}
+.bmf-bar input::-webkit-search-cancel-button{display:none}
+.bmf-x{border:none;background:none;color:var(--muted,#6b7a99);font-size:14px;padding:0 8px;cursor:pointer}
+.bmf-go{border:none;align-self:stretch;padding:0 15px;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;cursor:pointer;color:#0a1f63;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810)}
+.bmf-pill{align-self:center;border:1px solid rgba(255,200,60,.5);background:linear-gradient(135deg,#0a1f63,#173c88);color:#FFD24A;font-family:inherit;font-weight:800;font-size:12.5px;border-radius:100px;padding:7px 14px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,40,.35);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmf-panel{background:var(--cream,#F5F7FD);border:1px solid rgba(10,31,99,.14);border-radius:16px;box-shadow:0 14px 44px rgba(0,0,40,.38);overflow:hidden;display:flex;flex-direction:column;max-height:var(--bmf-max,460px)}
+.bmf-body{overflow-y:auto;overscroll-behavior:contain;padding:0 0 10px;-webkit-overflow-scrolling:touch}
+/* phones: while typing, the bar moves to the top so the keyboard never covers it */
+.bmf.bmf-top{flex-direction:column-reverse;z-index:1260}   /* above the side tabs while searching */
+.bmf.bmf-top .bmf-pill{display:none}
+
+.bmf-head{display:flex;align-items:center;gap:8px;padding:11px 12px 2px}
+.bmf-ttl{flex:1;min-width:0;font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;color:#0a1f63;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmf-close{border:none;background:#E8ECF7;color:#334a66;width:28px;height:28px;border-radius:50%;font-size:13px;cursor:pointer;flex-shrink:0}
+.bmf-about{padding:0 12px;font-size:12px;font-weight:700;color:#7a5a00}
+.bmf-chips{padding:7px 12px 4px !important;flex-wrap:wrap;overflow:visible !important}
+
+/* section headers = the same navy bar + gold title as the map and profile panels */
+.bmf-sec{margin:10px 10px 0;border-radius:12px;overflow:hidden;background:#fff;border:1px solid #e3e7f4}
+.bmf-sh{display:flex;align-items:center;gap:8px;padding:8px 11px;background:linear-gradient(135deg,#0a1f63,#173c88)}
+.bmf-si{font-size:14px}
+.bmf-st{flex:1;min-width:0;font-family:'Poppins',sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;color:#FFD24A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bmf-sc{font-size:10px;font-weight:800;color:#0a1f63;background:rgba(255,255,255,.92);border-radius:100px;padding:2px 8px}
+.bmf-list{display:flex;flex-direction:column}
+.bmf-row{display:flex;align-items:stretch;border-top:1px solid #eef1f8}
+.bmf-row:first-child{border-top:none}
+.bmf-hit{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border:none;background:none;text-align:left;padding:9px 11px;cursor:pointer;font-family:inherit;color:inherit}
+.bmf-hit:hover,.bmf-hit:focus-visible{background:#FFF8E1}
+.bmf-em{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.bmf-tone-green{background:#E3F2E8}.bmf-tone-blue{background:#E6EDFB}.bmf-tone-red{background:#FDE7E3}.bmf-tone-gold{background:#FBF0C0}.bmf-tone-gray{background:#EEF0F3}
+.bmf-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.bmf-name{font-weight:800;font-size:13px;color:#1a2550;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bmf-meta{font-size:11px;color:#5a6690;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bmf-tag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;border-radius:100px;padding:1px 7px;margin-right:5px;vertical-align:1px}
+.bmf-t-cm{background:rgba(176,122,20,.12);color:#9a6b12}.bmf-t-ok{background:rgba(26,107,58,.14);color:#1A6B3A}
+.bmf-t-sell{background:#E6EDFB;color:#2550b8}.bmf-t-urg{background:#FDE7E3;color:#9B2D1F}.bmf-t-find{background:#FBF0C0;color:#7a5a00}
+.bmf-t-g{background:#EEF0F3;color:#3c4350;text-transform:none;letter-spacing:0}
+.bmf-side{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+.bmf-dist{font-size:10.5px;font-weight:800;color:var(--green,#1A6B3A);white-space:nowrap}
+.bmf-price{font-family:'Poppins',sans-serif;font-size:12.5px;font-weight:700;color:var(--gold-dk,#9a6b12);white-space:nowrap}
+.bmf-act{border:none;border-left:1px solid #eef1f8;background:none;width:46px;font-size:17px;cursor:pointer;flex-shrink:0}
+.bmf-act:hover{background:#FFF8E1}
+.bmf-more{display:block;width:100%;border:none;border-top:1px solid #eef1f8;background:#FAFBFE;color:#173c88;font-family:inherit;font-weight:800;font-size:12px;padding:8px;cursor:pointer}
+.bmf-note{font-size:12px;color:#5a6690;padding:10px 12px;line-height:1.5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bmf-link{border:none;background:none;color:#173c88;font-family:inherit;font-weight:800;font-size:12px;text-decoration:underline;cursor:pointer;padding:0}
+/* Google Maps shops: their own box, with the Google Maps credit (Google's display rules) */
+.bmf-g .bmf-gwrap{background:#fff}
+.bmf-attr{font-family:Roboto,Arial,sans-serif;font-size:11px;font-weight:500;color:#5E5E5E;padding:6px 11px 0;letter-spacing:.1px}
+.bmf-demo{margin:0 10px 10px;padding:9px 10px;border:1px dashed #b9a3e3;background:#F5F0FF;color:#3b2380;border-radius:10px;font-size:11.5px;line-height:1.5}
+.bmf-demo code{font-size:10.5px;word-break:break-word;background:rgba(255,255,255,.7);padding:1px 3px;border-radius:4px}
+.bmf-empty{margin:10px 10px 0;padding:12px;border-radius:12px;background:#fff;border:1px dashed #cdd4ea;text-align:center}
+.bmf-empty-t{font-weight:800;font-size:13px;color:#1a2550}
+.bmf-empty-s{font-size:11.5px;color:#5a6690;margin-top:3px}
+.bmf-empty-acts{display:flex;gap:8px;justify-content:center;margin-top:9px;flex-wrap:wrap}
+.bmf .bmf-btn{border:none;border-radius:10px;padding:8px 12px;font-family:inherit;font-weight:800;font-size:12px;color:#fff !important;cursor:pointer}
+.bmf .bmf-btn-sell{background:linear-gradient(135deg,#2550b8,#173c88)}.bmf .bmf-btn-store{background:linear-gradient(135deg,#1A6B3A,#0d4423)}
+.bmf-foot{margin:12px 10px 0;display:flex;flex-direction:column;gap:7px}
+.bmf-foot-t{font-size:11.5px;font-weight:800;color:#5a6690;text-align:center}
+.bmf-foot .sec-action{margin:0 !important;width:100%}
+.bmf-start{padding:12px}
+.bmf-label{font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#5a6690;margin:4px 0 6px}
+.bmf-tries{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;align-items:center}
+.bmf-hint{font-size:11.5px;color:#5a6690;line-height:1.5;margin-top:4px}
+/* the card on the map when a Google shop is tapped */
+.bmf-iw{font-family:'Nunito',sans-serif;max-width:250px;padding:2px 2px 0}
+.bmf-iw-name{font-weight:800;font-size:14px;color:#1a2550;line-height:1.3}
+.bmf-iw-kind{font-size:11.5px;color:#3c4350;margin-top:2px}
+.bmf-iw-addr{font-size:11.5px;color:#5a6690;margin-top:4px;line-height:1.4}
+.bmf-iw-note{font-size:11px;color:#7a5a00;background:#FFF6DA;border-radius:7px;padding:4px 7px;margin-top:6px}
+.bmf-iw-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.bmf-iw-acts button,.bmf-iw-acts a{border:1px solid #cdd4ea;background:#fff;color:#173c88;border-radius:8px;padding:5px 9px;font-weight:800;font-size:11.5px;cursor:pointer;text-decoration:none;font-family:inherit}
+.bmf-iw-acts button{background:linear-gradient(135deg,#0a1f63,#173c88);color:#FFD24A;border-color:#173c88}
+.bmf-iw .bmf-attr{padding:6px 0 0}
+@media(max-width:768px){
+  .bmf-bar input{font-size:16px}   /* no zoom-in on iPhones */
+  .bmf-sec,.bmf-empty,.bmf-foot{margin-left:8px;margin-right:8px}
+}
+</style>
 </head>
 <body>
 <!-- ONBOARDING / WELCOME FLOW -->
@@ -3127,12 +3280,6 @@ body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
       <button class="bm-chip" onclick="setStoreSort('open',this)">🟢 Open Now</button>
     </div>
     <div class="feat-strip" id="featured-banner"></div>
-    <div class="stores-search">
-      <div class="stores-search-inner">
-        <span class="si">🔍</span>
-        <input type="text" id="store-search" placeholder="Search shops & services..." oninput="renderRightPanel()">
-      </div>
-    </div>
     <div class="stores-list" id="stores-list"></div>
     <button class="sec-action sa-store" onclick="openModal('store-register')">🏪 Post a Shop/Service</button>
   </div>
@@ -3404,7 +3551,7 @@ function buildMarkers() {
             <path d="M20 2 C10 2 2 10 2 20 C2 32 20 46 20 46 C20 46 38 32 38 20 C38 10 30 2 20 2Z"
               fill="url(#pg)" stroke="white" stroke-width="2.5"/>
             <circle cx="20" cy="20" r="11" fill="rgba(0,0,0,0.2)"/>
-            <text x="20" y="25" font-family="Arial" font-size="13" font-weight="bold"
+            <text x="20" y="${opts.iconSize ? 24 : 25}" font-family="Arial" font-size="${opts.iconSize||13}" font-weight="bold"
               fill="white" text-anchor="middle">${opts.icon}</text>
           </svg>`),
         scaledSize: new google.maps.Size(40, 48),
@@ -3416,7 +3563,8 @@ function buildMarkers() {
         className: 'map-pin-label ' + (opts.labelClass||''),
         fontSize: '11px',
         fontFamily: "'Nunito', sans-serif",
-        fontWeight: '600',
+        fontWeight: '700',
+        color: '#14214d',   // index v13: readable on the white label
       } : null,
       animation: opts.animate ? google.maps.Animation.DROP : null,
     });
@@ -3433,7 +3581,7 @@ function buildMarkers() {
 
   // ── LISTINGS (plotted when in the map's current view, nearest first, capped) ──
   {
-    capNearest(listings, FEED_CAP).forEach(l => {
+    capNearest(listings, FEED_CAP).filter(() => typeof bmMapShow !== 'function' || bmMapShow('sell')).forEach(l => {
       const isSell = l.type === 'sell';
       const pinImg = l.images?.[0]
         ? `<img src="${l.images[0]}" style="width:100%;height:80px;object-fit:cover;border-radius:10px 10px 0 0">`
@@ -3476,7 +3624,7 @@ function buildMarkers() {
 
   // ── STORES / PLACES ──
   {
-    capNearest(stores, FEED_CAP).forEach(s => {
+    capNearest(stores, FEED_CAP).filter(() => typeof bmMapShow !== 'function' || bmMapShow('store')).forEach(s => {
       const popupHtml = `<div class="popup-box">
         <div style="padding:10px">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
@@ -3512,7 +3660,7 @@ function buildMarkers() {
 
   // ── HELP REQUESTS ──
   {
-    capNearest(helpRequests, FEED_CAP).forEach(r => {
+    capNearest(helpRequests, FEED_CAP).filter(r => typeof bmMapShow !== 'function' || bmMapShow(r.reqType === 'urgent' ? 'urgent' : 'find')).forEach(r => {
       const isUrgent = r.reqType === 'urgent';
       const offerTxt = r.offer?.type==='cash' ? `₱${r.offer.cash}`
                      : r.offer?.type==='points' ? `🤝${r.offer.points}pts`
@@ -3520,7 +3668,7 @@ function buildMarkers() {
       const popupHtml = `<div class="popup-box">
         <div style="padding:10px">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-            <span style="font-size:24px">${isUrgent?'🆘':'🔍'}</span>
+            ${isUrgent?'<span class="sos-pill">SOS</span>':'<span style="font-size:24px">🔍</span>'}
             <div>
               <div class="popup-title">${esc(r.item)}</div>
               <span class="badge ${isUrgent?'b-urgent':'b-help'}">${isUrgent?'URGENT':'FIND ME'}</span>
@@ -3539,7 +3687,7 @@ function buildMarkers() {
                   : isUrgent ? (r.item.length>16 ? r.item.slice(0,16)+'…' : r.item)
                   : r.item;
       const m = makeMarker(r.lat, r.lng, {
-        icon: isUrgent ? '🆘' : '🔍',
+        icon: isUrgent ? 'SOS' : '🔍', iconSize: isUrgent ? 10 : 0,
         label,
         labelClass: isUrgent ? 'urgent' : 'find',
         color: isUrgent ? '#E05A4E' : '#C8860B',
@@ -3764,6 +3912,7 @@ function onRadius(v) {
 }
 
 function selectItem(id, type) {
+  if (type==='store' && typeof window.bmOpenStorePage==='function') { window.bmOpenStorePage(id); return; }   // index v13: a shop opens its own page
   S.selectedId=id; S.selectedType=type;
   if (type==='listing') openModal('detail');
   else if (type==='help') {
@@ -10899,7 +11048,7 @@ function urfPost(){
       name:s.name, address:s.address||'Nearby', contact:s.contact||'', hours:s.hours||'',
       official:!!s.featured, pending:false, unofficial:!s.featured,
       categories:['Shop'], catEmoji:s.emoji||'🏪', emoji:s.emoji||'🏪',
-      products:[], items:[], photos:[], cover:null, docs:[],
+      products:[], items:[], photos:[], cover:null, docs:[], sells:s.description||'',   // index v13
       seller: who(s.owner_id,names,own), rating:5.0, lat:s.lat, lng:s.lng
     };
   }
@@ -11900,6 +12049,809 @@ function urfPost(){
     toast('📍 '+(name||'The shop')+' is in the middle of the map.');
   }
 })();
+</script>
+<script>
+/* ═══ index v13 ═══ */
+/* ═══════════════════════════════════════════════════════════════════
+   index v13 · MAP PIN SWITCHES
+   A small "Map" switch on each of the four panel headers shows or hides
+   that kind of pin (Urgent, Find Me, Items, Shops). Remembered on this
+   device. While something is hidden, a chip on the map says so.
+   ═══════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+  if (window.bmMapShow) return;
+  var KINDS = {
+    urgent:{ label:'Urgent',  sel:'.lp-urgent-section .lp-section-hdr' },
+    find:  { label:'Find Me', sel:'.lp-find-section .lp-section-hdr' },
+    sell:  { label:'Items',   sel:'#listings-section .rp-section-hdr' },
+    store: { label:'Shops',   sel:'#stores-section .rp-section-hdr' }
+  };
+  var KEY = 'bm_map_show';
+  var show = { urgent:true, find:true, sell:true, store:true };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (saved && typeof saved === 'object') Object.keys(show).forEach(function(k){ if (saved[k] === false) show[k] = false; });
+  } catch(e){}
+  window.bmMapShow = function(k){ return show[k] !== false; };
+
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(show)); } catch(e){} }
+  function redraw(){ try { if (typeof buildMarkers === 'function') buildMarkers(); } catch(e){ console.warn('[BringMe] redraw pins', e); } }
+  function paint(){
+    Object.keys(KINDS).forEach(function(k){
+      document.querySelectorAll('.bmm-tog[data-kind="' + k + '"]').forEach(function(b){
+        b.classList.toggle('on', show[k]);
+        b.setAttribute('aria-pressed', String(show[k]));
+        b.title = (show[k] ? 'Hide ' : 'Show ') + KINDS[k].label + ' pins on the map';
+      });
+    });
+    var hidden = Object.keys(KINDS).filter(function(k){ return !show[k]; });
+    var chip = document.getElementById('bmm-chip');
+    if (!chip) {
+      chip = document.createElement('div'); chip.id = 'bmm-chip'; chip.className = 'bmm-chip';
+      document.body.appendChild(chip);
+      chip.addEventListener('click', function(e){
+        if (!e.target.closest('button')) return;
+        Object.keys(show).forEach(function(k){ show[k] = true; });
+        save(); paint(); redraw();
+      });
+    }
+    chip.hidden = !hidden.length;
+    chip.innerHTML = hidden.length ? '<span>Hidden on the map: ' + hidden.map(function(k){ return KINDS[k].label; }).join(', ') + '</span><button type="button">Show all</button>' : '';
+  }
+  function add(){
+    Object.keys(KINDS).forEach(function(k){
+      document.querySelectorAll(KINDS[k].sel).forEach(function(h){
+        if (h.querySelector('.bmm-tog')) return;
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'bmm-tog'; b.setAttribute('data-kind', k);
+        b.innerHTML = '<span class="bmm-sw" aria-hidden="true"><span class="bmm-dot"></span></span><span class="bmm-t">Map</span>';
+        b.addEventListener('click', function(e){ e.stopPropagation(); show[k] = !show[k]; save(); paint(); redraw(); });
+        var count = h.querySelector('.lp-section-count, .rp-section-count');
+        if (count) h.insertBefore(b, count); else h.appendChild(b);
+      });
+    });
+    paint();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+})();
+
+/* ═══════════════════════════════════════════════════════════════════
+   index v13 · SHOP PAGE
+   Tapping a shop (side panel card, map pin, search result, profile)
+   opens the shop's own page instead of a small box in the Items panel.
+   A shared link like bringme.store/?shop=<id> opens it directly.
+   ═══════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+  if (window.bmOpenStorePage) return;
+  var root = null, cur = null, deepDone = false;
+
+  function E(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function all(){ try { return (typeof stores !== 'undefined' && Array.isArray(stores)) ? stores : []; } catch(e){ return []; } }
+  function byId(id){ return all().find(function(x){ return String(x.id) === String(id); }) || null; }
+  function me(){ try { return (typeof USER === 'object' && USER && USER.lat != null) ? { lat:Number(USER.lat), lng:Number(USER.lng) } : null; } catch(e){ return null; } }
+  function away(s){
+    var a = me(); if (!a || s.lat == null) return '';
+    try { var d = haversine(a.lat, a.lng, Number(s.lat), Number(s.lng));
+          return (d < 1 ? Math.max(0.1, Math.round(d * 10) / 10).toFixed(1) : (d < 10 ? d.toFixed(1) : String(Math.round(d)))) + ' km away'; } catch(e){ return ''; }
+  }
+  function isCoords(a){ return /^\s*-?\d{1,3}\.\d+\s*,\s*-?\d{1,3}\.\d+\s*$/.test(String(a || '')); }
+  function telOf(c){ var t = String(c || '').replace(/[^\d+]/g, ''); return t.replace(/\D/g, '').length >= 7 ? t : ''; }
+  function svUrl(s){ return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + Number(s.lat) + '%2C' + Number(s.lng); }
+  function link(s){ return location.origin + location.pathname + '?shop=' + encodeURIComponent(String(s.id)); }
+  function toast(m){ try { showToast(m, 'info', 3200); } catch(e){} }
+  function addrOf(s){ var a = s.address && s.address !== 'Nearby' ? s.address : ''; return a && !isCoords(a) ? a : ''; }
+
+  function card(icon, title, inner){
+    return '<section class="bsp-card"><div class="bsp-sh"><span>' + icon + '</span><span class="bsp-st">' + title + '</span></div>' + inner + '</section>';
+  }
+  function row(icon, label, value){
+    return '<div class="bsp-row"><span class="bsp-ri">' + icon + '</span><div class="bsp-rm"><div class="bsp-rl">' + label + '</div><div class="bsp-rv">' + value + '</div></div></div>';
+  }
+  var NONE = '<i>Not added yet</i>';
+
+  function render(){
+    var s = cur; if (!s || !root) return;
+    var mine = s.seller === 'You';
+    var tel = telOf(s.contact), addr = addrOf(s), dist = away(s);
+    var owner = mine ? 'You' : (s.seller || 'Member');
+    root.innerHTML =
+      '<div class="bsp-top"><button type="button" class="bsp-back" data-act="back">← Back to map</button><span class="bsp-top-t">Shop</span></div>' +
+      '<div class="bsp-wrap">' +
+        '<section class="bsp-hero">' +
+          '<div class="bsp-em">' + E(s.catEmoji || s.emoji || '🏪') + '</div>' +
+          '<div class="bsp-hero-main"><h1 class="bsp-name">' + E(s.name) + '</h1>' +
+            '<div class="bsp-badges"><span class="bsp-badge' + (s.official ? ' ok' : '') + '">' + (s.official ? '✅ Official shop' : '👥 Community listing') + '</span>' +
+            (dist ? '<span class="bsp-badge">📍 ' + E(dist) + '</span>' : '') + '</div></div>' +
+        '</section>' +
+        '<div class="bsp-acts">' +
+          (tel ? '<a class="bsp-act call" href="tel:' + E(tel) + '">📞 Call</a>' : '<button type="button" class="bsp-act call" disabled>📞 No number yet</button>') +
+          '<button type="button" class="bsp-act go" data-act="dir">🧭 Directions</button>' +
+          '<a class="bsp-act" href="' + E(svUrl(s)) + '" target="_blank" rel="noopener">🚶 Street View ↗</a>' +
+          '<button type="button" class="bsp-act" data-act="share">📤 Share</button>' +
+        '</div>' +
+        card('🏪', 'About this shop', '<div class="bsp-rows">' +
+          row('🛍️', 'What it sells', s.sells ? E(s.sells) : NONE) +
+          row('📍', 'Address', addr ? E(addr) : 'Pinned on the map' + (isCoords(s.address) ? ' <span class="bsp-dim">(' + E(s.address) + ')</span>' : '')) +
+          row('⏰', 'Hours', s.hours ? E(s.hours) : NONE) +
+          row('📞', 'Contact number', s.contact ? '<span class="bsp-sel">' + E(s.contact) + '</span>' : NONE) + '</div>') +
+        card('👤', 'Posted by', '<div class="bsp-owner"><span class="bsp-av">' + E(String(owner).replace(/^@/, '').charAt(0).toUpperCase() || '?') + '</span>' +
+          '<span class="bsp-own-name">' + E(owner) + '</span>' +
+          (mine ? '<button type="button" class="bsp-btn" data-act="mine">✏️ Manage in your profile</button>'
+                : (s._ownerId ? '<button type="button" class="bsp-btn" data-act="owner">👤 View profile</button>' : '')) + '</div>') +
+        card('📦', 'Items at this shop', '<div class="bsp-empty">No items listed yet.</div>') +
+        '<div class="bsp-safe">Shops on BringMe are posted by the community. Call or check before you go.</div>' +
+      '</div>';
+  }
+
+  function build(){
+    root = document.createElement('div');
+    root.id = 'bm-store-page'; root.className = 'bsp'; root.hidden = true;
+    root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Shop');
+    document.body.appendChild(root);
+    root.addEventListener('click', onClick);
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && root && !root.hidden) close(); });
+  }
+  function open(id){
+    var s = byId(id);
+    if (!s) { toast('This shop isn’t on the map any more'); return; }
+    if (!root) build();
+    cur = s; render();
+    root.hidden = false; root.scrollTop = 0;
+    document.body.classList.add('bsp-open');
+    try { if (!window.BM_NO_MAP && typeof map !== 'undefined' && map) map.panTo({ lat:Number(s.lat), lng:Number(s.lng) }); } catch(e){}
+    setTimeout(function(){ var b = root.querySelector('.bsp-back'); if (b) b.focus(); }, 30);
+  }
+  function close(){
+    if (!root) return;
+    root.hidden = true;
+    document.body.classList.remove('bsp-open');
+  }
+  function share(s){
+    var url = link(s);
+    if (navigator.share) { navigator.share({ title:s.name, text:'Found this shop on BringMe', url:url }).catch(function(){}); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function(){ toast('🔗 Link copied. Paste it anywhere to share this shop.'); },
+        function(){ toast('Share this link: ' + url); });
+    } else toast('Share this link: ' + url);
+  }
+  function onClick(e){
+    var b = e.target.closest('[data-act]'); if (!b || !cur) return;
+    var s = cur, act = b.getAttribute('data-act');
+    if (act === 'back') return close();
+    if (act === 'dir') { close(); try { navigateTo(Number(s.lat), Number(s.lng), s.name, addrOf(s) || 'Pinned on the map'); } catch(err){} return; }
+    if (act === 'share') return share(s);
+    if (act === 'mine') { close(); try { openProfile(); } catch(err){} return; }
+    if (act === 'owner') {
+      if (typeof window.bmOpenPublicProfile !== 'function') return;
+      var id = s.id; close();
+      window.bmOpenPublicProfile(s._ownerId, function(){ open(id); });
+    }
+  }
+  /* a shared link bringme.store/?shop=<id> opens the shop once its posts have loaded */
+  function deep(){
+    if (deepDone) return;
+    var m = /[?&]shop=([^&#]+)/.exec(location.search);
+    if (!m) { deepDone = true; return; }
+    var id = decodeURIComponent(m[1]);
+    if (byId(id)) { deepDone = true; open(id); }
+  }
+  var _ra = window.renderAll;
+  if (typeof _ra === 'function') window.renderAll = function(){ var r = _ra.apply(this, arguments); try { deep(); } catch(e){} return r; };
+
+  window.bmOpenStorePage = open;
+  window.bmCloseStorePage = close;
+})();
+
+/* ═══════════════════════════════════════════════════════════════════
+   index v13 · THE FINDER
+   One search for BringMe posts (shops, items for sale, neighbors asking)
+   and nearby shops on Google Maps.
+     • "bread"    → bakeries, shops that sell bread, every post with bread
+     • "computer" → computer shops, laptops for sale, …
+   BringMe results always come first (the community is the advantage);
+   Google Maps fills the gap while the community is still small.
+   Google charges per search, so: one search per word group and area
+   (results kept 10 min), a short wait while typing, and a daily limit
+   per device.
+   ═══════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+  if (window.bmFinder) return;
+  var DEMO = !!window.BM_DEMO;
+  var PREVIEW = !!window.BM_PREVIEW;
+
+  /* ---------- settings ---------- */
+  var KM_CHOICES = [1, 3, 5, 10, 20];
+  var KM_DEFAULT = 5;
+  var G_MAX = 12;                 // shops asked from Google per search (same price for 1 or 20)
+  var G_TTL = 10 * 60 * 1000;     // reuse a Google search for 10 minutes
+  var G_DAILY_CAP = 40;           // Google searches per device per day
+  var G_WAIT_KNOWN = 450;         // ms after typing stops, for words we know ("bread")
+  var G_WAIT_OTHER = 1100;        // ms after typing stops, for other words (4+ letters)
+  var G_AUTO_MAX_BM_SHOPS = 5;    // once BringMe has this many matching shops, Google waits for a tap
+  var G_FIELDS = ['id','displayName','location','formattedAddress','shortFormattedAddress',
+                  'primaryTypeDisplayName','googleMapsURI','businessStatus'];   // all "Text Search Pro" fields
+
+  /* ---------- what a search word is about (English + Filipino) ----------
+     g = what we ask Google for · words = phrases that mean the same kind of shop */
+  var GROUPS = [
+    { k:'bakery',   em:'🥖', label:'bakeries',              g:'bakery',
+      words:'bread, tinapay, pandesal, pan de sal, bakery, bakeshop, bake shop, panaderya, cake, cakes, pastry, pastries, ensaymada, monay, loaf, toast, sourdough, croissant, donut, donuts, doughnut, hopia, mamon, cupcake, cookies, brownies' },
+    { k:'computer', em:'💻', label:'computer shops',        g:'computer shop',
+      words:'computer, computers, kompyuter, pc, laptop, laptops, desktop, monitor, keyboard, mouse, printer, ink, toner, ssd, hdd, ram, gpu, graphics card, rtx, gtx, processor, cpu, motherboard, router, modem, wifi, flash drive, usb drive, webcam, headset, computer shop, laptop charger, laptop battery' },
+    { k:'phone',    em:'📱', label:'cellphone shops',       g:'cellphone shop',
+      words:'phone, phones, cellphone, cellphones, cp, mobile phone, smartphone, iphone, samsung, oppo, vivo, xiaomi, realme, infinix, charger, phone charger, usb c, type c, cable, powerbank, power bank, earphones, earbuds, sim, sim card, load, phone case, tempered glass, screen protector' },
+    { k:'pharmacy', em:'💊', label:'pharmacies',            g:'pharmacy',
+      words:'medicine, medicines, gamot, pharmacy, botika, drugstore, paracetamol, biogesic, neozep, bioflu, ibuprofen, vitamins, vitamin, antibiotic, amoxicillin, mask, face mask, alcohol, bandage, first aid, betadine, cough syrup, thermometer' },
+    { k:'grocery',  em:'🛒', label:'groceries',             g:'grocery store',
+      words:'grocery, groceries, supermarket, rice, bigas, milk, gatas, eggs, egg, itlog, sugar, asukal, flour, harina, canned goods, sardines, corned beef, cooking oil, mantika, soy sauce, toyo, vinegar, suka, instant noodles, milo, coffee 3in1' },
+    { k:'hardware', em:'🔨', label:'hardware stores',       g:'hardware store',
+      words:'hardware, cement, semento, paint, pintura, nails, pako, screw, screws, tools, plywood, lumber, pipe, pvc, electrical wire, light bulb, bulb, switch, outlet, extension cord, tape, glue, hammer, martilyo, shovel, padlock' },
+    { k:'food',     em:'🍽️', label:'places to eat',         g:'restaurant',
+      words:'food, pagkain, restaurant, karinderya, carinderia, eatery, ulam, lunch, dinner, breakfast, pizza, burger, fried chicken, lechon, barbecue, bbq, inasal, sisig, pancit, ramen, siomai, shawarma, fast food' },
+    { k:'coffee',   em:'☕', label:'coffee shops',          g:'coffee shop',
+      words:'coffee, kape, cafe, coffee shop, milk tea, milktea, frappe, latte' },
+    { k:'appliance',em:'🔌', label:'appliance stores',      g:'appliance store',
+      words:'appliance, appliances, electric fan, aircon, air conditioner, refrigerator, ref, fridge, tv, television, rice cooker, air fryer, airfryer, microwave, oven, washing machine, flat iron, blender, water heater' },
+    { k:'clothes',  em:'👕', label:'clothing stores',       g:'clothing store',
+      words:'clothes, clothing, damit, shirt, t shirt, tshirt, pants, shorts, dress, uniform, jacket, underwear, socks, medyas, ukay, ukay ukay' },
+    { k:'shoes',    em:'👟', label:'shoe stores',           g:'shoe store',
+      words:'shoes, shoe, sapatos, sneakers, rubber shoes, slippers, tsinelas, sandals, boots' },
+    { k:'motor',    em:'🏍️', label:'motorcycle shops',      g:'motorcycle parts shop',
+      words:'motorcycle, motor, motorbike, scooter, helmet, motor oil, oil change, spark plug, chain, sprocket, motor parts' },
+    { k:'vulcanizing', em:'🛞', label:'vulcanizing shops',  g:'vulcanizing shop',
+      words:'vulcanizing, vulcanize, flat tire, tire, tires, gulong, interior, tire repair' },
+    { k:'auto',     em:'🚗', label:'auto parts stores',     g:'auto parts store',
+      words:'car battery, auto parts, car parts, wiper, brake pads, car accessories' },
+    { k:'bike',     em:'🚲', label:'bike shops',            g:'bicycle shop',
+      words:'bike, bicycle, bisikleta, bike parts' },
+    { k:'water',    em:'💧', label:'water refilling stations', g:'water refilling station',
+      words:'water, tubig, mineral water, purified water, water refill, refilling, gallon, distilled water' },
+    { k:'lpg',      em:'🔥', label:'LPG dealers',           g:'LPG dealer',
+      words:'lpg, gas tank, gasul, cooking gas, solane, petron gasul' },
+    { k:'pet',      em:'🐾', label:'pet shops',             g:'pet shop',
+      words:'pet, pets, dog food, cat food, pet food, aso, pusa, leash, cat litter, vet supplies' },
+    { k:'school',   em:'✏️', label:'school supplies stores', g:'school supplies store',
+      words:'school supplies, notebook, notebooks, ballpen, pen, pencil, bond paper, crayons, folder, envelope, art materials' },
+    { k:'books',    em:'📚', label:'bookstores',            g:'bookstore',
+      words:'book, books, libro, bookstore, novel' },
+    { k:'flowers',  em:'💐', label:'flower shops',          g:'flower shop',
+      words:'flower, flowers, bulaklak, bouquet, roses' },
+    { k:'laundry',  em:'🧺', label:'laundry shops',         g:'laundry shop',
+      words:'laundry, labada, laundromat, dry clean' },
+    { k:'barber',   em:'💈', label:'barbershops and salons', g:'barbershop',
+      words:'haircut, gupit, barber, barbershop, salon, hair salon' },
+    { k:'meat',     em:'🥩', label:'meat shops',            g:'meat shop',
+      words:'meat, karne, pork, baboy, beef, baka, chicken, manok, liempo' },
+    { k:'fish',     em:'🐟', label:'fish and seafood',      g:'seafood market',
+      words:'fish, isda, seafood, shrimp, hipon, bangus, tilapia' },
+    { k:'fruits',   em:'🍎', label:'fruit and vegetable stands', g:'fruit and vegetable store',
+      words:'fruit, fruits, prutas, vegetables, gulay, banana, saging, mango, mangga, apple' },
+    { k:'repair',   em:'🛠️', label:'repair shops',          g:'electronics repair shop',
+      words:'repair, ayos, fix, broken, sira, phone repair, laptop repair, tv repair' },
+    { k:'print',    em:'🖨️', label:'printing shops',        g:'printing shop',
+      words:'print, printing, photocopy, xerox, tarpaulin, id picture, lamination' },
+    { k:'convenience', em:'🏪', label:'convenience stores', g:'convenience store',
+      words:'convenience store, sari sari, sari sari store, snacks, chips, softdrinks, ice' }
+  ];
+  /* words that don't change what you're looking for */
+  var FILLER = ' shop shops store stores near nearby me around here where can i get find need want buy sell cheap murang saan bili bilihan tindahan may meron kailangan ko ako the a an for in of at to sa ng na po '.split(' ');
+
+  function norm(s){
+    return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+      .replace(/[’‘`']/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+  }
+  GROUPS.forEach(function(g){ g.ph = g.words.split(',').map(norm).filter(Boolean); });
+  // does text (normalized, padded) contain phrase p as whole words (allowing a plural s/es)?
+  function hasPh(padded, p){
+    return padded.indexOf(' ' + p + ' ') >= 0 || padded.indexOf(' ' + p + 's ') >= 0 || padded.indexOf(' ' + p + 'es ') >= 0;
+  }
+  function meaningful(nq){ return nq.split(' ').filter(function(t){ return t && FILLER.indexOf(t) < 0; }); }
+
+  /* which group a search is about: whole phrases first, the last word counts most ("banana bread" → bakery) */
+  function aboutOf(nq){
+    if (!nq) return null;
+    var padded = ' ' + nq + ' ', toks = nq.split(' '), last = toks[toks.length - 1], best = null, bestScore = 0;
+    GROUPS.forEach(function(g){
+      var sc = 0;
+      g.ph.forEach(function(p){
+        if (hasPh(padded, p)) {
+          var s = 10 + p.length;
+          var end = padded.lastIndexOf(' ' + p) + p.length + 1;   // phrase ends at the last word?
+          if (padded.slice(end).replace(/^(s|es)/,'').trim() === '') s += 6;
+          if (s > sc) sc = s;
+        } else if (last.length >= 4 && p.split(' ').some(function(w){ return w.indexOf(last) === 0; })) {
+          if (last.length > sc) sc = last.length;                // still typing: "compu" → computer
+        }
+      });
+      if (sc > bestScore) { bestScore = sc; best = g; }
+    });
+    return best;
+  }
+  /* broad = one kind of thing ("bread", "computer shop"), not a specific item ("banana bread", "rtx 3060") */
+  function isBroad(nq, grp){
+    if (!grp) return false;
+    var m = meaningful(nq);
+    if (!m.length) return true;
+    if (m.length === 1) return grp.ph.some(function(p){ return p === m[0] || p + 's' === m[0] || p === m[0] + 's'; });
+    var joined = m.join(' ');
+    return grp.ph.indexOf(joined) >= 0 || norm(grp.g) === joined;
+  }
+
+  /* ---------- small helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function E(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function km(d){ return d < 1 ? Math.max(0.1, Math.round(d * 10) / 10).toFixed(1) + ' km' : (d < 10 ? d.toFixed(1) : Math.round(d)) + ' km'; }
+  function me(){ try { return (typeof USER === 'object' && USER && USER.lat != null) ? { lat:Number(USER.lat), lng:Number(USER.lng) } : null; } catch(e){ return null; } }
+  function dist(a, lat, lng){ try { return haversine(a.lat, a.lng, Number(lat), Number(lng)); } catch(e){ return 999; } }
+  function arr(name){ try { var v = { stores: typeof stores !== 'undefined' ? stores : null, listings: typeof listings !== 'undefined' ? listings : null, helpRequests: typeof helpRequests !== 'undefined' ? helpRequests : null }[name]; return Array.isArray(v) ? v : []; } catch(e){ return []; } }
+  function today(){ var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function snippet(text, nq, grp){
+    var t = String(text || ''); if (!t) return '';
+    var low = t.toLowerCase(), words = meaningful(nq).concat(grp ? grp.ph : []), at = -1;
+    for (var i = 0; i < words.length && at < 0; i++) { var w = words[i]; if (w.length >= 3) at = low.indexOf(w); }
+    if (at < 0 || t.length <= 70) return t.length > 70 ? t.slice(0, 68) + '…' : t;
+    var s = Math.max(0, at - 24); return (s ? '…' : '') + t.slice(s, s + 66) + (s + 66 < t.length ? '…' : '');
+  }
+
+  /* ---------- state ---------- */
+  var F = { q:'', nq:'', grp:null, broad:false, km:KM_DEFAULT, open:false, panel:false, top:false, more:{},
+            bm:{ shops:[], items:[], asks:[] },
+            g:{ state:'idle', list:[], far:[], err:'', phrase:'', sample:false } };
+  var QKEY = DEMO ? 'bmdemo_gq' : 'bm_gq';   // today's Google searches on this device
+  var gCache = new Map(), gSeq = 0, tG = 0, tB = 0, pins = [];
+
+  /* ---------- BringMe results (already loaded nearby posts, free) ---------- */
+  function score(text, title, nq, grp){
+    var pt = ' ' + norm(text) + ' ', tt = ' ' + norm(title) + ' ', m = meaningful(nq);
+    if (!m.length) return 0;
+    var all = m.every(function(w, i){
+      if (hasPh(pt, w)) return true;
+      return i === m.length - 1 && w.length >= 3 && pt.indexOf(' ' + w) >= 0;   // the word still being typed
+    });
+    if (all) return 3 + (m.every(function(w){ return hasPh(tt, w) || tt.indexOf(' ' + w) >= 0; }) ? 1 : 0);
+    if (grp && grp.ph.some(function(p){ return hasPh(pt, p); })) return 1;          // same kind of thing ("pandesal" for "bread")
+    return 0;
+  }
+  function bmSearch(){
+    var at = me(), nq = F.nq, grp = F.grp, lim = F.km;
+    var out = { shops:[], items:[], asks:[] };
+    if (!nq || !at) { F.bm = out; return; }
+    arr('stores').forEach(function(s){
+      var sells = s.sells || s.desc || '';
+      var sc = score([s.name, sells].join(' '), s.name, nq, grp); if (!sc) return;
+      var d = dist(at, s.lat, s.lng); if (d > lim) return;
+      out.shops.push({ x:s, sc:sc, d:d, why:sells });
+    });
+    arr('listings').forEach(function(l){
+      if (l.type && l.type !== 'sell') return;
+      var sc = score([l.title, l.desc].join(' '), l.title, nq, grp); if (!sc) return;
+      var d = dist(at, l.lat, l.lng); if (d > lim) return;
+      out.items.push({ x:l, sc:sc, d:d });
+    });
+    arr('helpRequests').forEach(function(r){
+      if (r.status && ['open','assigned'].indexOf(r.status) < 0) return;
+      var sc = score([r.item, r.note || r.details].join(' '), r.item, nq, grp); if (!sc) return;
+      var d = dist(at, r.lat, r.lng); if (d > lim) return;
+      out.asks.push({ x:r, sc:sc, d:d });
+    });
+    var by = function(a, b){ return (b.sc - a.sc) || (a.d - b.d); };
+    out.shops.sort(by); out.items.sort(by); out.asks.sort(by);
+    F.bm = out;
+  }
+
+  /* ---------- Google Maps shops (charged per search) ---------- */
+  function gPhrase(){ return F.grp ? F.grp.g : F.q.trim().slice(0, 60); }
+  function gKey(phrase, at){ return [norm(phrase), at.lat.toFixed(2), at.lng.toFixed(2), F.km, F.open ? 1 : 0].join('|'); }
+  function capUsed(){ try { var c = JSON.parse(localStorage.getItem(QKEY) || 'null'); return (c && c.d === today()) ? c.n : 0; } catch(e){ return 0; } }
+  function capAdd(){ try { localStorage.setItem(QKEY, JSON.stringify({ d:today(), n:capUsed() + 1 })); } catch(e){} }
+  function placesReady(){
+    try { return !window.BM_NO_MAP && window.google && google.maps && google.maps.places && google.maps.places.Place &&
+                 typeof google.maps.places.Place.searchByText === 'function'; } catch(e){ return false; }
+  }
+  function toPlace(p, at){
+    var lat = null, lng = null, loc = p && p.location;
+    try { lat = typeof loc.lat === 'function' ? loc.lat() : loc.lat; lng = typeof loc.lng === 'function' ? loc.lng() : loc.lng; } catch(e){}
+    if (lat == null || lng == null || isNaN(lat) || isNaN(lng)) return null;
+    var url = String(p.googleMapsURI || '');
+    return { id:String(p.id || ''), name:String(p.displayName || 'Shop'), addr:String(p.shortFormattedAddress || p.formattedAddress || ''),
+             kind:String(p.primaryTypeDisplayName || ''), url:/^https:\/\//.test(url) ? url : '',
+             status:String(p.businessStatus || ''), lat:Number(lat), lng:Number(lng), d:dist(at, lat, lng) };
+  }
+  function setG(list){
+    var keep = list.filter(function(p){ return p && p.status !== 'CLOSED_PERMANENTLY'; });
+    keep.sort(function(a, b){ return a.d - b.d; });
+    F.g.list = keep.filter(function(p){ return p.d <= F.km; });
+    F.g.far = F.g.list.length ? [] : keep.slice(0, 3);       // nothing in range: show the nearest few, marked farther
+    drawPins();
+  }
+  function gRun(force){
+    clearTimeout(tG);
+    var at = me(), phrase = gPhrase();
+    F.g.sample = false;
+    if (!F.nq) { F.g.state = 'idle'; F.g.list = []; F.g.far = []; clearPins(); return render(); }
+    if (!at) { F.g.state = 'noloc'; return render(); }
+    if (!force && F.bm.shops.length >= G_AUTO_MAX_BM_SHOPS) { F.g.state = 'skip'; return render(); }
+    var key = gKey(phrase, at), hit = gCache.get(key);
+    F.g.phrase = phrase;
+    if (hit && Date.now() - hit.t < G_TTL) { F.g.state = 'ok'; setG(hit.list.map(function(p){ p.d = dist(at, p.lat, p.lng); return p; })); return render(); }
+    if (!placesReady()) { F.g.state = 'nomap'; F.g.list = []; F.g.far = []; clearPins(); return render(); }
+    if (capUsed() >= G_DAILY_CAP) { F.g.state = 'cap'; return render(); }
+    var seq = ++gSeq;
+    F.g.state = 'loading'; render();
+    var req = { textQuery:phrase, fields:G_FIELDS, maxResultCount:G_MAX, language:'en', region:'ph',
+                locationBias:{ center:{ lat:at.lat, lng:at.lng }, radius:Math.min(F.km * 1000, 50000) } };
+    if (F.open) req.isOpenNow = true;
+    capAdd();
+    var p;
+    try { p = google.maps.places.Place.searchByText(req); } catch(e){ p = Promise.reject(e); }
+    Promise.resolve(p).then(function(res){
+      if (seq !== gSeq) return;
+      var list = ((res && res.places) || []).map(function(x){ return toPlace(x, at); }).filter(Boolean);
+      gCache.set(key, { t:Date.now(), list:list });
+      F.g.state = 'ok'; setG(list); render();
+    }).catch(function(e){
+      if (seq !== gSeq) return;
+      F.g.state = 'err'; F.g.err = String((e && (e.message || e.code)) || e || 'error').slice(0, 220);
+      F.g.list = []; F.g.far = []; clearPins(); render();
+      console.warn('[BringMe] Google Maps shop search failed:', e);
+    });
+  }
+  function gSchedule(){
+    clearTimeout(tG);
+    if (!F.nq) return gRun();
+    var known = !!F.grp, len = F.nq.replace(/ /g,'').length;
+    if (!known && len < 4) { F.g.state = 'type'; return; }
+    F.g.state = 'wait';
+    tG = setTimeout(function(){ gRun(false); }, known ? G_WAIT_KNOWN : G_WAIT_OTHER);
+  }
+
+  /* demo only: clearly labeled pretend shops, so the design can be judged before Places API is on */
+  function sampleG(){
+    var at = me(); if (!at) return;
+    var names = { bakery:['Golden Crust Bakeshop','Panaderya sa Kanto','Sunrise Bread House','Lola Ising’s Bakery','Morning Loaf Bakeshop'],
+                  computer:['Bit & Byte Computer Center','PC Corner IT Shop','Circuit Computer Supply','Megabit Computers','NetPoint PC & Laptop'],
+                  phone:['Signal Cellphone Center','Load Up Mobile Shop','Celltech Accessories','Pocket Phone Store'],
+                  pharmacy:['Lunas Pharmacy','Health First Drugstore','Kalinga Drugstore','Sigla Botika'] };
+    var list = (names[F.grp && F.grp.k] || ['Shop that may sell “' + F.q.trim().slice(0, 30) + '”', 'Second sample shop', 'Third sample shop']).map(function(n, i){
+      var ang = (i * 73 + 20) * Math.PI / 180, r = 0.004 + i * 0.006;
+      var lat = at.lat + r * Math.sin(ang), lng = at.lng + r * Math.cos(ang);
+      return { id:'sample' + i, name:'Sample · ' + n, addr:'Sample address — not a real shop', kind:F.grp ? F.grp.g.charAt(0).toUpperCase() + F.grp.g.slice(1) : 'Shop',
+               url:'', status:'OPERATIONAL', lat:lat, lng:lng, d:dist(at, lat, lng) };
+    });
+    F.g.sample = true; F.g.state = 'ok'; setG(list); render();
+  }
+
+  /* ---------- map pins for Google shops ---------- */
+  function clearPins(){ pins.forEach(function(m){ try { m.setMap(null); } catch(e){} }); pins = []; }
+  function pinIcon(){
+    return { url:'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="38" viewBox="0 0 30 38"><path d="M15 2C8 2 2 8 2 15c0 9 13 21 13 21s13-12 13-21C28 8 22 2 15 2z" fill="#ffffff" stroke="#4b5563" stroke-width="2.5"/>' +
+      '<circle cx="15" cy="15" r="6.5" fill="#4b5563"/></svg>'),
+      scaledSize:new google.maps.Size(30, 38), anchor:new google.maps.Point(15, 36) };
+  }
+  function drawPins(){
+    clearPins();
+    if (window.BM_NO_MAP || typeof map === 'undefined' || !map) return;
+    var list = F.g.list.length ? F.g.list : F.g.far;
+    try {
+      list.forEach(function(p, i){
+        var m = new google.maps.Marker({ position:{ lat:p.lat, lng:p.lng }, map:map, title:p.name, zIndex:600, icon:pinIcon() });
+        m.addListener('click', function(){ showG(i); });
+        pins.push(m);
+      });
+    } catch(e){ console.warn('[BringMe] could not draw shop pins', e); }
+  }
+  function gAt(i){ var l = F.g.list.length ? F.g.list : F.g.far; return l[i]; }
+  function showG(i){
+    var p = gAt(i); if (!p) return;
+    collapse();
+    try {
+      if (!window.BM_NO_MAP && map) {
+        map.panTo({ lat:p.lat, lng:p.lng });
+        if ((map.getZoom && map.getZoom() || 0) < 16) map.setZoom(16);
+        if (typeof infoWindow !== 'undefined' && infoWindow) {
+          infoWindow.setContent(gCard(p, i));
+          if (pins[i]) infoWindow.open(map, pins[i]); else infoWindow.open(map);
+        }
+      }
+    } catch(e){}
+  }
+  function gCard(p, i){
+    return '<div class="bmf-iw"><div class="bmf-iw-name">' + E(p.name) + '</div>' +
+      (p.kind ? '<div class="bmf-iw-kind">' + E(p.kind) + (p.status === 'CLOSED_TEMPORARILY' ? ' · <b>Temporarily closed</b>' : '') + '</div>' : '') +
+      '<div class="bmf-iw-addr">📍 ' + E(p.addr || 'No address') + ' · ' + km(p.d) + '</div>' +
+      '<div class="bmf-iw-note">Not on BringMe yet. Call or check before you go.</div>' +
+      '<div class="bmf-iw-acts"><button type="button" onclick="bmFinder.dir(' + i + ')">🧭 Directions</button>' +
+      (p.url ? '<a href="' + E(p.url) + '" target="_blank" rel="noopener">Google Maps ↗</a>' : '') + '</div>' +
+      '<div class="bmf-attr">' + (F.g.sample ? 'Sample — not from Google' : 'Google Maps') + '</div></div>';
+  }
+
+  /* ---------- the bar, the panel, the pill ---------- */
+  var root, inp, panel, pill, body, xbtn;
+  function build(){
+    root = document.createElement('div');
+    root.id = 'bm-finder'; root.className = 'bmf'; root.setAttribute('role', 'search');
+    root.innerHTML =
+      '<button type="button" class="bmf-pill" id="bmf-pill" hidden></button>' +
+      '<div class="bmf-panel" id="bmf-panel" hidden><div class="bmf-body" id="bmf-body"></div></div>' +
+      '<div class="bmf-bar"><span class="bmf-ic" aria-hidden="true">🔍</span>' +
+      '<input id="bmf-q" type="search" enterkeyhint="search" autocomplete="off" spellcheck="false" maxlength="80" placeholder="Search shops, items, food…" aria-label="Search BringMe and nearby shops" aria-controls="bmf-panel">' +
+      '<button type="button" class="bmf-x" id="bmf-x" hidden aria-label="Clear the search">✕</button>' +
+      '<button type="button" class="bmf-go" id="bmf-go">Search</button></div>';
+    document.body.appendChild(root);
+    inp = $('bmf-q'); panel = $('bmf-panel'); pill = $('bmf-pill'); body = $('bmf-body'); xbtn = $('bmf-x');
+    inp.addEventListener('input', onType);
+    inp.addEventListener('focus', onFocus);
+    inp.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') { e.preventDefault(); runNow(); }
+      else if (e.key === 'Escape') { collapse(); inp.blur(); }
+    });
+    $('bmf-go').addEventListener('click', runNow);
+    xbtn.addEventListener('click', clearAll);
+    pill.addEventListener('click', function(){ expand(); });
+    body.addEventListener('click', onPanelClick);
+    document.addEventListener('pointerdown', function(e){
+      if (!F.panel) return;
+      var t = e.target;
+      if (root.contains(t) || (t.closest && (t.closest('.gm-style-iw') || t.closest('.overlay') || t.closest('.modal')))) return;
+      collapse();
+    }, true);
+    window.addEventListener('resize', place);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', place);
+    setInterval(place, 1500);   // the profile bar changes size after sign-in; keep the Finder just above it
+    place();
+  }
+  function narrow(){ return window.matchMedia && window.matchMedia('(max-width: 768px)').matches; }
+  function place(){
+    if (!root) return;
+    var pb = $('float-profile-bar'), mp = $('map'), vh = window.innerHeight;
+    var bottom = 16;
+    if (pb) { var r = pb.getBoundingClientRect(); if (r.height > 0 && r.top < vh) bottom = Math.round(vh - r.top + 10); }
+    var w = Math.min(560, window.innerWidth - 24), left = (window.innerWidth - w) / 2;
+    if (mp && !narrow()) { var m = mp.getBoundingClientRect(); if (m.width > 200) { w = Math.min(560, m.width - 32); left = m.left + (m.width - w) / 2; } }
+    root.style.left = Math.round(left) + 'px'; root.style.width = Math.round(w) + 'px';
+    if (F.top) {
+      root.style.bottom = 'auto';
+      var top = 54; var hdr = document.querySelector('.nm-header'); if (hdr) { var hr = hdr.getBoundingClientRect(); if (hr.height) top = Math.round(hr.bottom + 8); }
+      root.style.top = top + 'px';
+      var vv = window.visualViewport ? window.visualViewport.height : vh, floor = vv;
+      if (pb) { var pr = pb.getBoundingClientRect(); if (pr.height > 0 && pr.top < floor) floor = pr.top; }
+      root.style.setProperty('--bmf-max', Math.max(160, Math.round(floor - top - 66)) + 'px');
+    } else {
+      root.style.top = 'auto'; root.style.bottom = bottom + 'px';
+      root.style.setProperty('--bmf-max', Math.max(180, Math.min(560, vh - bottom - 140)) + 'px');
+    }
+  }
+  function setTop(on){ if (F.top === !!on) return; F.top = !!on; root.classList.toggle('bmf-top', F.top); place(); }
+  function expand(){
+    F.panel = true; panel.hidden = false; pill.hidden = true;
+    if (narrow() && document.activeElement === inp) setTop(true);
+    render();
+  }
+  function collapse(){
+    F.panel = false; panel.hidden = true; setTop(false);
+    pill.hidden = !F.nq;
+    if (F.nq) pill.innerHTML = '☰ Results for “' + E(F.q.trim().slice(0, 28)) + '”' + (total() ? ' · ' + total() : '');
+  }
+  function total(){ return F.bm.shops.length + F.bm.items.length + F.bm.asks.length + F.g.list.length; }
+  function onFocus(){
+    if (narrow()) setTop(true);
+    F.panel = true; panel.hidden = false; pill.hidden = true;
+    render();
+  }
+  function onType(){
+    F.q = inp.value; F.nq = norm(F.q);
+    xbtn.hidden = !F.q;
+    F.grp = aboutOf(F.nq); F.broad = isBroad(F.nq, F.grp); F.more = {};
+    if (!F.panel) expand();
+    clearTimeout(tB);
+    tB = setTimeout(function(){ bmSearch(); gSchedule(); render(); }, 120);
+  }
+  function runNow(){
+    if (!inp.value.trim()) { inp.focus(); return; }
+    F.q = inp.value; F.nq = norm(F.q); F.grp = aboutOf(F.nq); F.broad = isBroad(F.nq, F.grp);
+    remember(F.q.trim());
+    bmSearch(); expand(); gRun(true);
+  }
+  function clearAll(){
+    inp.value = ''; F.q = ''; F.nq = ''; F.grp = null; xbtn.hidden = true;
+    F.bm = { shops:[], items:[], asks:[] }; F.g = { state:'idle', list:[], far:[], err:'', phrase:'', sample:false };
+    clearPins(); try { if (typeof infoWindow !== 'undefined' && infoWindow) infoWindow.close(); } catch(e){}
+    gSeq++; clearTimeout(tG);
+    pill.hidden = true; inp.focus(); render();
+  }
+  function setQuery(q){ inp.value = q; onType(); clearTimeout(tB); bmSearch(); remember(q); gRun(false); render(); }
+
+  /* recent searches (this device only) */
+  var HKEY = DEMO ? 'bmdemo_search_history' : 'bm_search_history';
+  function history(){ try { var h = JSON.parse(localStorage.getItem(HKEY) || '[]'); return Array.isArray(h) ? h.filter(function(x){ return typeof x === 'string'; }).slice(0, 6) : []; } catch(e){ return []; } }
+  function remember(q){ if (!q || q.length < 2) return; try { var h = history().filter(function(x){ return x.toLowerCase() !== q.toLowerCase(); }); h.unshift(q.slice(0, 60)); localStorage.setItem(HKEY, JSON.stringify(h.slice(0, 8))); } catch(e){} }
+
+  /* ---------- drawing the panel ---------- */
+  function sec(icon, title, count, inner, extra){
+    return '<section class="bmf-sec' + (extra || '') + '"><div class="bmf-sh"><span class="bmf-si">' + icon + '</span><span class="bmf-st">' + title + '</span>' +
+           (count != null ? '<span class="bmf-sc">' + count + '</span>' : '') + '</div>' + inner + '</section>';
+  }
+  function row(kind, i, em, tone, name, meta, side){
+    return '<div class="bmf-row"><button type="button" class="bmf-hit" data-k="' + kind + '" data-i="' + i + '">' +
+      '<span class="bmf-em ' + tone + '">' + em + '</span><span class="bmf-main"><span class="bmf-name">' + name + '</span>' +
+      (meta ? '<span class="bmf-meta">' + meta + '</span>' : '') + '</span>' + (side ? '<span class="bmf-side">' + side + '</span>' : '') + '</button></div>';
+  }
+  function moreBtn(k, n){ return n > 0 ? '<button type="button" class="bmf-more" data-more="' + k + '">Show ' + n + ' more</button>' : ''; }
+  function listOf(k, all, lim, fn){
+    var open = !!F.more[k], show = open ? all : all.slice(0, lim);
+    return '<div class="bmf-list">' + show.map(fn).join('') + moreBtn(k, open ? 0 : all.length - show.length) + '</div>';
+  }
+  function shopsHTML(){
+    var a = F.bm.shops; if (!a.length) return '';
+    return sec('🏪', 'Shops on BringMe', a.length, listOf('shops', a, 4, function(r, i){
+      var s = r.x;
+      var meta = '<span class="bmf-tag ' + (s.official ? 'bmf-t-ok' : 'bmf-t-cm') + '">' + (s.official ? '✅ Official' : '👥 Community') + '</span>' +
+                 E(snippet(r.why, F.nq, F.grp) || s.address || '');
+      return row('s', i, E(s.catEmoji || s.emoji || '🏪'), 'bmf-tone-green', E(s.name), meta, '<span class="bmf-dist">' + km(r.d) + '</span>');
+    }));
+  }
+  function itemsHTML(){
+    var a = F.bm.items; if (!a.length) return '';
+    return sec('🛍️', 'Items for sale', a.length, listOf('items', a, 4, function(r, i){
+      var l = r.x, price = Number(l.price) || 0;
+      return row('l', i, E(l.image || l.emoji || '📦'), 'bmf-tone-blue', E(l.title),
+        '<span class="bmf-tag bmf-t-sell">For sale</span>' + E(l.location || ''),
+        (price ? '<span class="bmf-price">₱' + price.toLocaleString() + '</span>' : '') + '<span class="bmf-dist">' + km(r.d) + '</span>');
+    }));
+  }
+  function asksHTML(){
+    var a = F.bm.asks; if (!a.length) return '';
+    return sec('🙋', 'Neighbors asking for it', a.length, listOf('asks', a, 3, function(r, i){
+      var x = r.x, urgent = x.reqType === 'urgent';
+      return row('r', i, urgent ? '<span class="sos-pill">SOS</span>' : '🔍', urgent ? 'bmf-tone-red' : 'bmf-tone-gold', E(x.item),
+        '<span class="bmf-tag ' + (urgent ? 'bmf-t-urg' : 'bmf-t-find') + '">' + (urgent ? 'Urgent' : 'Find Me') + '</span>' + E((x.user ? x.user + ' · ' : '') + (x.time || '')),
+        '<span class="bmf-dist">' + km(r.d) + '</span>');
+    }));
+  }
+  function gHTML(){
+    var g = F.g, st = g.state, inner = '', label = F.grp ? F.grp.label : 'shops';
+    if (st === 'idle' || st === 'type') return '';
+    if (st === 'wait' || st === 'loading') inner = '<div class="bmf-note"><span class="spinner spinner-sm"></span> Looking for ' + E(label) + ' on Google Maps…</div>';
+    else if (st === 'skip') inner = '<div class="bmf-note">BringMe already has shops for this. <button type="button" class="bmf-link" data-act="g">Also show Google Maps shops</button></div>';
+    else if (st === 'noloc') inner = '<div class="bmf-note">Turn on your location to see shops near you.</div>';
+    else if (st === 'cap') inner = '<div class="bmf-note">You’ve reached today’s Google Maps searches on this device. BringMe results still work.</div>';
+    else if (st === 'nomap' || st === 'err') {
+      inner = '<div class="bmf-note">Shops from Google Maps couldn’t load right now.</div>';
+      if (DEMO || PREVIEW) inner += '<div class="bmf-demo"><b>' + (DEMO ? 'Demo' : 'Preview') + ' note for Neil:</b> ' + (st === 'nomap' ? 'Google Maps didn’t load on this page.' :
+        'Google answered: <code>' + E(g.err) + '</code>') +
+        '<br>Google Maps needs <b>billing linked to the project</b> and <b>Places API (New)</b> turned on for the BringMe key.' +
+        (DEMO ? '<br><button type="button" class="bmf-link" data-act="sample">Show sample results (pretend shops)</button>' : '') + '</div>';
+    } else if (st === 'ok') {
+      var list = g.list.length ? g.list : g.far;
+      if (!list.length) inner = '<div class="bmf-note">Google Maps found no ' + E(label) + ' within ' + F.km + ' km.</div>';
+      else {
+        if (!g.list.length) inner += '<div class="bmf-note">None within ' + F.km + ' km. The nearest ones:</div>';
+        inner += '<div class="bmf-list">' + list.map(function(p, i){
+          return '<div class="bmf-row"><button type="button" class="bmf-hit" data-k="g" data-i="' + i + '">' +
+            '<span class="bmf-em bmf-tone-gray">📍</span><span class="bmf-main"><span class="bmf-name">' + E(p.name) + '</span>' +
+            '<span class="bmf-meta">' + (p.kind ? '<span class="bmf-tag bmf-t-g">' + E(p.kind) + '</span>' : '') +
+            (p.status === 'CLOSED_TEMPORARILY' ? '<span class="bmf-tag bmf-t-urg">Temporarily closed</span>' : '') + E(p.addr) + '</span></span>' +
+            '<span class="bmf-side"><span class="bmf-dist">' + km(p.d) + '</span></span></button>' +
+            '<button type="button" class="bmf-act" data-dir="' + i + '" aria-label="Directions to ' + E(p.name) + '">🧭</button></div>';
+        }).join('') + '</div>';
+        if (list.length > 1) inner += '<button type="button" class="bmf-more" data-act="all">📍 Show them all on the map</button>';
+      }
+    }
+    var title = F.g.sample ? 'Sample shops (not real)' : (F.bm.shops.length ? 'More shops near you' : 'Shops near you');
+    var count = st === 'ok' ? (g.list.length || g.far.length) : null;
+    return sec('🗺️', E(title), count, '<div class="bmf-gwrap"><div class="bmf-attr">' + (F.g.sample ? 'Sample — not from Google' : 'Google Maps') + '</div>' + inner + '</div>', ' bmf-g');
+  }
+  function emptyHTML(){
+    if (F.bm.shops.length || F.bm.items.length || F.bm.asks.length) return '';
+    return '<div class="bmf-empty"><div class="bmf-empty-t">Nobody on BringMe has posted “' + E(F.q.trim().slice(0, 40)) + '” nearby yet.</div>' +
+      '<div class="bmf-empty-s">Have it, or know a shop that sells it? Be the first to post it.</div>' +
+      '<div class="bmf-empty-acts"><button type="button" class="bmf-btn bmf-btn-sell" data-act="sell">🏷️ List an item</button>' +
+      '<button type="button" class="bmf-btn bmf-btn-store" data-act="store">🏪 Post a shop</button></div></div>';
+  }
+  function chipsHTML(){
+    return '<div class="bm-tools bmf-chips" role="group" aria-label="Search area">' +
+      KM_CHOICES.map(function(k){ return '<button type="button" class="bm-chip' + (F.km === k ? ' active' : '') + '" data-km="' + k + '" aria-pressed="' + (F.km === k) + '">' + k + ' km</button>'; }).join('') +
+      '<button type="button" class="bm-chip' + (F.open ? ' active' : '') + '" data-open="1" aria-pressed="' + F.open + '">🟢 Open now</button></div>';
+  }
+  function startHTML(){
+    var h = history(), tries = [['🥖','bread'],['💊','medicine'],['💻','computer'],['📱','phone charger'],['💧','water refill'],['🔨','hardware']];
+    var out = '<div class="bmf-start">';
+    if (h.length) out += '<div class="bmf-label">Recent</div><div class="bmf-tries">' + h.map(function(q){ return '<button type="button" class="bm-chip bmf-try" data-q="' + E(q) + '">🕘 ' + E(q) + '</button>'; }).join('') +
+      '<button type="button" class="bmf-link" data-act="clearhist">Clear</button></div>';
+    out += '<div class="bmf-label">Try</div><div class="bmf-tries">' + tries.map(function(t){ return '<button type="button" class="bm-chip bmf-try" data-q="' + E(t[1]) + '">' + t[0] + ' ' + E(t[1]) + '</button>'; }).join('') + '</div>';
+    out += '<div class="bmf-hint">Finds shops and posts on BringMe first, then shops on Google Maps near you.</div></div>';
+    return out;
+  }
+  function render(){
+    if (!body) return;
+    if (!F.panel) { if (F.nq) collapse(); return; }
+    if (!F.nq) { body.innerHTML = startHTML(); return; }
+    var head = '<div class="bmf-head"><div class="bmf-ttl">Near you · “' + E(F.q.trim().slice(0, 40)) + '”</div>' +
+      '<button type="button" class="bmf-close" data-act="close" aria-label="Hide results">✕</button></div>' +
+      (F.grp ? '<div class="bmf-about">' + F.grp.em + ' Showing ' + E(F.grp.label) + ' too</div>' : '') + chipsHTML();
+    if (!me()) { body.innerHTML = head + '<div class="bmf-note">Getting your location…</div>'; return; }
+    var parts = F.broad ? [shopsHTML(), itemsHTML()] : [itemsHTML(), shopsHTML()];
+    var foot = '<div class="bmf-foot"><div class="bmf-foot-t">Can’t find it?</div>' +
+      '<button type="button" class="sec-action sa-find" data-act="find">🔍 Ask neighbors (Find Me)</button>' +
+      '<button type="button" class="sec-action sa-urgent" data-act="urgent">⚡ Need it now? Post Urgent</button></div>';
+    body.innerHTML = head + emptyHTML() + parts.join('') + gHTML() + asksHTML() + foot;
+  }
+
+  /* ---------- taps inside the panel ---------- */
+  function onPanelClick(e){
+    var b = e.target.closest('button'); if (!b || !body.contains(b)) return;
+    if (b.hasAttribute('data-q')) { setQuery(b.getAttribute('data-q')); return; }
+    if (b.hasAttribute('data-km')) { F.km = Number(b.getAttribute('data-km')) || KM_DEFAULT; bmSearch(); gRun(F.g.state === 'skip' ? false : true); render(); return; }
+    if (b.hasAttribute('data-open')) { F.open = !F.open; gRun(true); render(); return; }
+    if (b.hasAttribute('data-more')) { F.more[b.getAttribute('data-more')] = true; render(); return; }
+    if (b.hasAttribute('data-dir')) { dir(Number(b.getAttribute('data-dir'))); return; }
+    var act = b.getAttribute('data-act');
+    if (act) {
+      if (act === 'close') return collapse();
+      if (act === 'g') return gRun(true);
+      if (act === 'sample') return sampleG();
+      if (act === 'all') return showAll();
+      if (act === 'clearhist') { try { localStorage.removeItem(HKEY); } catch(_){ } return render(); }
+      if (act === 'find') return askNeighbors('find');
+      if (act === 'urgent') return askNeighbors('urgent');
+      if (act === 'sell') { collapse(); try { resetPostForm(); } catch(_){ } return openModal('post'); }
+      if (act === 'store') { collapse(); return openModal('store-register'); }
+      return;
+    }
+    var k = b.getAttribute('data-k'), i = Number(b.getAttribute('data-i'));
+    if (k == null) return;
+    remember(F.q.trim());
+    if (k === 'g') return showG(i);
+    var r = k === 's' ? F.bm.shops[i] : k === 'l' ? F.bm.items[i] : F.bm.asks[i];
+    if (!r) return;
+    collapse(); inp.blur();
+    if (k === 's') selectItem(r.x.id, 'store');
+    else if (k === 'l') selectItem(r.x.id, 'listing');
+    else selectRequest(r.x.id, r.x.reqType === 'find' ? 'find' : 'urgent');
+  }
+  function dir(i){
+    var p = gAt(i); if (!p) return;
+    try { if (typeof infoWindow !== 'undefined' && infoWindow) infoWindow.close(); } catch(e){}
+    collapse(); inp.blur();
+    navigateTo(p.lat, p.lng, p.name, p.addr);
+  }
+  function showAll(){
+    var list = F.g.list.length ? F.g.list : F.g.far, at = me();
+    collapse(); inp.blur();
+    try {
+      if (window.BM_NO_MAP || !map || !list.length) return;
+      var b = new google.maps.LatLngBounds();
+      if (at) b.extend(at);
+      list.forEach(function(p){ b.extend({ lat:p.lat, lng:p.lng }); });
+      map.fitBounds(b, 60);
+    } catch(e){}
+  }
+  function askNeighbors(type){
+    var q = F.q.trim();
+    collapse(); inp.blur();
+    if (type === 'find') {
+      S._reqForm = Object.assign(S._reqForm || { item:'', details:'', cat:null, catUI:null, points:'', location:'', images:[] }, { item:q });
+      openPostRequest('find');
+    } else {
+      openPostRequest('urgent');
+      setTimeout(function(){ var t = $('urf-title'); if (t && !t.value) { t.value = q; try { urfCatRender(); } catch(e){} } }, 60);
+    }
+  }
+
+  /* keep BringMe results fresh when posts reload (the map moved, someone posted) */
+  function refresh(){ if (F.nq) { bmSearch(); render(); } }
+  var _ra = window.renderAll;
+  if (typeof _ra === 'function') window.renderAll = function(){ var r = _ra.apply(this, arguments); try { refresh(); } catch(e){} return r; };
+
+  window.bmFinder = { dir:dir, show:showG, refresh:refresh, search:setQuery, _state:F, _aboutOf:function(q){ var g = aboutOf(norm(q)); return g ? g.k : null; },
+                      _isBroad:function(q){ var n = norm(q); return isBroad(n, aboutOf(n)); } };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build); else build();
+})();
+
 </script>
 </body>
 </html>
