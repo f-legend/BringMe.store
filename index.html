@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v13 · 2026-11-23 ═══════ -->
-<script>window.BM_VERSION='index v13 · 2026-11-23';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v14 · 2026-11-26 ═══════ -->
+<script>window.BM_VERSION='index v14 · 2026-11-26';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
     <script>
     /* index v11: if Google Maps can't load (blocked, offline), keep the app running without the map */
@@ -2737,49 +2737,6 @@ body.bm-profile .app-body{max-width:1440px;margin-left:auto;margin-right:auto}
 .bmm-chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .bmm-chip button{border:none;border-radius:100px;padding:5px 10px;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810);color:#0a1f63;font-weight:800;font-size:11.5px;cursor:pointer;font-family:inherit;flex-shrink:0}
 body.bm-profile .bmm-chip,body.bsp-open .bmm-chip{display:none !important}
-/* index v13 · shop page (green = shops; headers = the same navy bar + gold title as the panels) */
-.bsp{position:fixed;inset:0;z-index:1500;background:var(--cream,#F5F7FD);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;font-family:'Nunito',sans-serif;color:#1a2550}
-.bsp[hidden]{display:none !important}
-body.bsp-open .bmf{display:none !important}
-.bsp-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 10px max(14px, env(safe-area-inset-left, 0px));background:linear-gradient(135deg,#0a1f63,#173c88);box-shadow:0 2px 12px rgba(0,0,40,.3)}
-.bsp-back{border:1px solid rgba(255,200,60,.55);background:rgba(255,255,255,.06);color:#FFD24A;font-family:inherit;font-weight:800;font-size:13px;border-radius:100px;padding:7px 14px;cursor:pointer}
-.bsp-back:hover{background:rgba(255,210,74,.14)}
-.bsp-top-t{font-family:'Poppins',sans-serif;font-weight:700;font-size:14px;color:#fff;opacity:.85}
-.bsp-wrap{max-width:760px;margin:0 auto;padding:14px 14px 40px;display:flex;flex-direction:column;gap:12px}
-.bsp-hero{display:flex;align-items:center;gap:14px;padding:18px;border-radius:18px;background:linear-gradient(135deg,#2E9E5B,#1A6B3A 55%,#0d4423);color:#fff;box-shadow:0 8px 26px rgba(13,68,35,.3)}
-.bsp-em{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0}
-.bsp-hero-main{min-width:0}
-.bsp-name{margin:0;font-family:'Poppins',sans-serif;font-size:22px;line-height:1.2;font-weight:800;color:#fff;overflow-wrap:anywhere}
-.bsp-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.bsp-badge{font-size:11px;font-weight:800;border-radius:100px;padding:3px 9px;background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.28)}
-.bsp-badge.ok{background:#FFD24A;color:#0a1f63;border-color:#FFD24A}
-.bsp-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.bsp-act{display:flex;align-items:center;justify-content:center;gap:5px;min-height:44px;border-radius:12px;border:1px solid #cdd4ea;background:#fff;color:#173c88;font-family:inherit;font-weight:800;font-size:12.5px;text-decoration:none;cursor:pointer;text-align:center;padding:6px}
-.bsp-act:hover{border-color:#173c88}
-.bsp-act.call{background:linear-gradient(135deg,#2E9E5B,#1A6B3A);color:#fff;border-color:#1A6B3A}
-.bsp-act.call[disabled]{background:#EEF1F8;color:#8a94b0;border-color:#e3e7f4;cursor:default}
-.bsp-act.go{background:linear-gradient(135deg,#0a1f63,#173c88);color:#FFD24A;border-color:#173c88}
-@media (max-width:520px){ .bsp-acts{grid-template-columns:repeat(2,minmax(0,1fr))} .bsp-name{font-size:20px} }
-.bsp-card{background:#fff;border:1px solid #e3e7f4;border-radius:14px;overflow:hidden}
-.bsp-sh{display:flex;align-items:center;gap:8px;padding:9px 12px;background:linear-gradient(135deg,#0a1f63,#173c88)}
-.bsp-st{font-family:'Poppins',sans-serif;font-weight:700;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#FFD24A}
-.bsp-rows{display:flex;flex-direction:column}
-.bsp-row{display:flex;gap:10px;padding:10px 12px;border-top:1px solid #eef1f8;align-items:flex-start}
-.bsp-row:first-child{border-top:none}
-.bsp-ri{font-size:16px;width:22px;text-align:center;flex-shrink:0;line-height:1.3}
-.bsp-rm{min-width:0}
-.bsp-rl{font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#5a6690}
-.bsp-rv{font-size:13.5px;color:#1a2550;line-height:1.45;overflow-wrap:anywhere;margin-top:1px}
-.bsp-rv i{color:#8a94b0}
-.bsp-dim{color:#8a94b0;font-size:12px}
-.bsp-sel{user-select:all}
-.bsp-owner{display:flex;align-items:center;gap:10px;padding:12px;flex-wrap:wrap}
-.bsp-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810);color:#0a1f63;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.bsp-own-name{flex:1;min-width:0;font-weight:800;font-size:14px;overflow-wrap:anywhere}
-.bsp-btn{border:1px solid #cdd4ea;background:#fff;color:#173c88;border-radius:10px;padding:7px 11px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer}
-.bsp-btn:hover{border-color:#173c88}
-.bsp-empty{padding:16px 12px;text-align:center;color:#5a6690;font-size:12.5px}
-.bsp-safe{font-size:11.5px;color:#7a5a00;background:#FFF6DA;border:1px solid #F1D27A;border-radius:10px;padding:8px 10px;line-height:1.45}
 /* index v13 · the Finder: search bar just above the profile bar, results slide up above it */
 .nm-center .nm-search{display:none !important}            /* the old box in the middle of the map */
 .bmf{position:fixed;z-index:399;display:flex;flex-direction:column;gap:8px;font-family:'Nunito',sans-serif;pointer-events:none}
@@ -2865,6 +2822,218 @@ body.bm-profile .bmf{display:none !important}
 @media(max-width:768px){
   .bmf-bar input{font-size:16px}   /* no zoom-in on iPhones */
   .bmf-sec,.bmf-empty,.bmf-foot{margin-left:8px;margin-right:8px}
+}
+</style>
+<style>
+/* ═══ index v14: shop profile ═══ */
+/* ═══ index v14 · SHOP PROFILE (same layout as a person's profile; shops are green) ═══ */
+#bm-store-page{--navy:#0a1f63;--royal:#173c88;--royal2:#2550b8;--gold:#E3A50F;--gold-dk:#8B6508;--gold-lt:#FFD24A;
+  --green:#1A6B3A;--green2:#2fa463;--mint:#E6F5EE;--hair:#E7EAF4;--muted:#6677AA;--ink:#0a1f63;--red:#C0392B;
+  position:absolute;inset:0;z-index:46;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  background:radial-gradient(1100px 650px at 50% -10%,#1f7a4a,#0b3b36 38%,#0a1f63 78%);font-family:'Nunito',sans-serif;color:var(--ink)}
+#bm-store-page[hidden]{display:none !important}
+#bm-store-page *{box-sizing:border-box}
+#bm-store-page h1,#bm-store-page p{margin:0}
+#bm-store-page button,#bm-store-page input,#bm-store-page textarea,#bm-store-page select{font-family:inherit;margin:0}
+#bm-store-page .bsp-col{max-width:560px;margin:0 auto;padding:18px 16px 18px;min-height:100%;display:flex;flex-direction:column}
+/* everything that floats over the map steps aside while a shop is open */
+body.bsp-open .bmf,body.bsp-open #float-profile-bar,body.bsp-open #bm-back-fab,body.bsp-open #bmm-chip,
+body.bsp-open #locating-banner,body.bsp-open #preview-label,body.bsp-open #guest-teaser{display:none !important}
+body.bsp-open .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}   /* above the shop's floating bar */
+
+/* ── the card: cover photo + logo + name + chips + contact ── */
+#bm-store-page .bsp-card{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:3 / 2;background:#0b2a22;flex:0 0 auto;
+  box-shadow:0 24px 64px rgba(0,0,40,.5),0 0 0 2px rgba(71,209,138,.65),0 0 36px rgba(71,209,138,.2)}
+#bm-store-page .bsp-cover{position:absolute;inset:0;background-size:cover;background-position:center}
+#bm-store-page .bsp-art{position:absolute;inset:0;width:100%;height:100%}
+#bm-store-page .bsp-photo{position:absolute;inset:0;background-size:cover;background-position:center}
+#bm-store-page .bsp-scrim{position:absolute;left:0;right:0;bottom:0;height:82%;background:linear-gradient(to bottom,rgba(4,20,24,0) 0%,rgba(4,22,30,.5) 38%,rgba(3,16,30,.95) 100%)}
+#bm-store-page .bsp-top{position:absolute;top:14px;right:14px;z-index:4;display:flex;gap:8px;align-items:center}
+#bm-store-page .bsp-tb{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.42);color:#fff;border-radius:10px;padding:8px 13px;font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;cursor:pointer;backdrop-filter:blur(6px)}
+#bm-store-page .bsp-tb:hover{background:rgba(255,255,255,.3)}
+#bm-store-page .bsp-tb.gold{background:linear-gradient(135deg,#FFD24A,#E3A810);color:#402d04;border-color:rgba(255,210,74,.75)}
+#bm-store-page .bsp-x{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.85);background:rgba(10,31,99,.55);color:#fff;font-size:19px;font-weight:800;line-height:1;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(0,0,0,.35);transition:.15s}
+#bm-store-page .bsp-x:hover{background:#fff;color:var(--navy);transform:scale(1.06)}
+#bm-store-page .bsp-x:focus-visible,#bm-store-page .bsp-fb:focus-visible{outline:3px solid var(--gold-lt);outline-offset:2px}
+#bm-store-page .bsp-addcov{position:absolute;top:14px;left:14px;z-index:4;border:1.5px dashed rgba(255,255,255,.7);background:rgba(0,0,0,.25);color:#fff;border-radius:10px;padding:7px 11px;font-weight:700;font-size:12px;cursor:pointer;backdrop-filter:blur(4px)}
+#bm-store-page .bsp-ov{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:14px 20px 16px;color:#fff}
+#bm-store-page .bsp-idrow{display:flex;align-items:center;gap:14px}
+#bm-store-page .bsp-logo{position:relative;width:80px;height:80px;flex-shrink:0;border-radius:16px;border:3px solid #fff;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#E9FBF0,#9be0b6 52%,#2fa463);box-shadow:0 0 0 2px #47d18a,0 8px 22px rgba(0,0,0,.45)}
+#bm-store-page .bsp-logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#fff}
+#bm-store-page .bsp-logo-em{font-size:40px;line-height:1}
+#bm-store-page .bsp-id{flex:1;min-width:0}
+#bm-store-page .bsp-name{font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:#fff;line-height:1.1;text-shadow:0 2px 12px rgba(0,0,0,.45);overflow-wrap:anywhere}
+#bm-store-page .bsp-cat{font-size:12.5px;color:var(--gold-lt);font-weight:800;margin-top:4px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+#bm-store-page .bsp-src{font-size:11.5px;color:#d8f3e3;font-weight:700;margin-top:2px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+#bm-store-page .bsp-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+#bm-store-page .bsp-chip{font-family:'Poppins',sans-serif;font-weight:700;font-size:11.5px;padding:4px 11px;border-radius:100px;color:#FFE08A;
+  background:rgba(227,165,15,.2);border:1px solid rgba(255,210,74,.5);backdrop-filter:blur(4px);white-space:nowrap}
+#bm-store-page .bsp-chip.ok{background:linear-gradient(135deg,#47d18a,#1f8a52);color:#fff;border-color:rgba(160,255,200,.7)}
+#bm-store-page .bsp-chip.okl{background:rgba(71,209,138,.22);border-color:rgba(120,230,170,.65);color:#d6ffe6}
+#bm-store-page .bsp-chip.new{background:linear-gradient(135deg,rgba(255,210,74,.3),rgba(227,165,15,.16));border-color:rgba(255,210,74,.6);color:#FFE08A}
+#bm-store-page .bsp-chip.warn{background:rgba(224,90,78,.3);border-color:rgba(255,160,150,.7);color:#ffe1dd}
+#bm-store-page .bsp-ctl{font-family:'Poppins',sans-serif;font-size:10px;font-weight:700;color:var(--gold-lt);letter-spacing:.6px;text-transform:uppercase;margin:12px 0 8px;padding-top:11px;border-top:1px solid rgba(255,210,74,.24)}
+#bm-store-page .bsp-contacts{display:flex;flex-wrap:wrap;gap:8px}
+#bm-store-page .bsp-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:100px;padding:4px 14px 4px 4px;
+  font-family:'Poppins',sans-serif;font-weight:700;font-size:12.5px;cursor:pointer;backdrop-filter:blur(5px);text-decoration:none;transition:.15s}
+#bm-store-page .bsp-pill:hover{background:rgba(255,255,255,.24);transform:translateY(-1px)}
+#bm-store-page .bsp-pill.off{opacity:.6;cursor:default}
+#bm-store-page .bsp-pill.off:hover{transform:none;background:rgba(255,255,255,.14)}
+#bm-store-page .bsp-pi{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px;background:rgba(255,255,255,.2);box-shadow:0 2px 7px rgba(0,0,0,.3)}
+#bm-store-page .bsp-pi.call{background:#1f8a52}
+#bm-store-page .bsp-pi.go{background:var(--royal2)}
+#bm-store-page .bsp-pi.sv{background:#5b6b8f}
+#bm-store-page .bsp-sel{user-select:text;-webkit-user-select:text}
+
+/* ── notices + trust box ── */
+#bm-store-page .bsp-note{margin-top:12px;border-radius:12px;padding:10px 13px;font-size:12.5px;line-height:1.45}
+#bm-store-page .bsp-note.warn{background:#FFF4D6;border:1px solid #F0C75A;color:#6b4a00}
+#bm-store-page .bsp-note.bad{background:#FDE7E4;border:1px solid #F3A89E;color:#8a2116}
+#bm-store-page .bsp-trust{margin-top:14px;background:rgba(10,31,99,.55);border:1px solid rgba(71,209,138,.4);border-radius:16px;padding:13px 14px;color:#fff}
+#bm-store-page .bsp-tq{font-family:'Poppins',sans-serif;font-weight:700;font-size:14.5px;margin-bottom:10px}
+#bm-store-page .bsp-trust.mine .bsp-tq{margin-bottom:5px}
+#bm-store-page .bsp-tbtns{display:flex;gap:9px}
+#bm-store-page .bsp-vote{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:11px 12px;border-radius:12px;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:.15s;border:1.5px solid transparent;min-height:46px}
+#bm-store-page .bsp-vote b{font-size:12px;min-width:22px;padding:2px 7px;border-radius:100px;background:rgba(255,255,255,.22)}
+#bm-store-page .bsp-vote.yes{background:linear-gradient(135deg,#2fa463,#1A6B3A);color:#fff;border-color:rgba(160,255,200,.5)}
+#bm-store-page .bsp-vote.yes:hover{filter:brightness(1.07)}
+#bm-store-page .bsp-vote.yes.on{box-shadow:0 0 0 3px var(--gold-lt) inset,0 0 0 1px #fff}
+#bm-store-page .bsp-vote.no{background:rgba(255,255,255,.06);color:#ffd2cb;border-color:rgba(255,150,135,.55)}
+#bm-store-page .bsp-vote.no:hover,#bm-store-page .bsp-vote.no.open{background:rgba(224,90,78,.2)}
+#bm-store-page .bsp-vote.no.on{background:linear-gradient(135deg,#E05A4E,#a8291c);color:#fff;border-color:#ffb3a9}
+#bm-store-page .bsp-vote:disabled{opacity:.6;cursor:wait}
+#bm-store-page .bsp-tn{font-size:11.5px;color:rgba(255,255,255,.78);line-height:1.5;margin-top:9px}
+#bm-store-page .bsp-reasons{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;padding:10px;border-radius:12px;background:rgba(224,90,78,.14);border:1px solid rgba(255,150,135,.4)}
+#bm-store-page .bsp-rq{width:100%;font-size:12px;font-weight:800;color:#ffe1dd}
+#bm-store-page .bsp-reason{border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff;border-radius:100px;padding:7px 12px;font-weight:700;font-size:12px;cursor:pointer}
+#bm-store-page .bsp-reason:hover{background:#fff;color:var(--red)}
+#bm-store-page .bsp-reason.cancel{border-style:dashed;color:rgba(255,255,255,.8)}
+
+/* ── tabs (same as the profile's Dashboard / About Me) ── */
+#bm-store-page .bsp-tabs{display:flex;gap:6px;margin-top:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:13px;padding:5px}
+#bm-store-page .bsp-tabs button{flex:1;padding:9px;border:none;border-radius:9px;background:transparent;color:rgba(255,255,255,.75);font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:.15s}
+#bm-store-page .bsp-tabs button.on{background:#fff;color:var(--ink);box-shadow:0 2px 9px rgba(0,0,40,.25)}
+
+/* ── white panels with the navy header + gold title ── */
+#bm-store-page .bsp-panel{background:#fff;border:1px solid var(--hair);border-radius:16px;overflow:hidden;margin-top:12px;box-shadow:0 6px 18px rgba(0,0,40,.18)}
+#bm-store-page .bsp-sh{display:flex;align-items:center;gap:8px;padding:10px 14px;background:linear-gradient(135deg,#0a1f63,#173c88);color:var(--gold-lt);font-size:15px}
+#bm-store-page .bsp-st{flex:1;font-family:'Poppins',sans-serif;font-weight:700;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--gold-lt)}
+#bm-store-page .bsp-add{border:none;border-radius:100px;padding:6px 13px;background:linear-gradient(135deg,#FFD24A,#E3A810);color:#402d04;font-family:'Poppins',sans-serif;font-weight:800;font-size:12px;cursor:pointer}
+#bm-store-page .bsp-rows{display:flex;flex-direction:column}
+#bm-store-page .bsp-row{display:flex;gap:11px;padding:11px 14px;border-top:1px solid #F0F2F8}
+#bm-store-page .bsp-row:first-child{border-top:none}
+#bm-store-page .bsp-ri{width:22px;text-align:center;font-size:16px;flex:0 0 auto}
+#bm-store-page .bsp-rm{flex:1;min-width:0}
+#bm-store-page .bsp-rl{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
+#bm-store-page .bsp-rv{font-size:14px;color:var(--ink);margin-top:2px;line-height:1.4;overflow-wrap:anywhere}
+#bm-store-page .bsp-rv i{color:#9aa6c9;font-style:italic}
+#bm-store-page .bsp-dim{color:var(--muted);font-size:12px}
+#bm-store-page .bsp-mini{display:inline-block;margin:2px 5px 2px 0;padding:3px 10px;border-radius:100px;background:var(--mint);color:var(--green);border:1px solid rgba(26,107,58,.22);font-size:12px;font-weight:800}
+#bm-store-page .bsp-owner{display:flex;align-items:center;gap:11px;padding:12px 14px}
+#bm-store-page .bsp-av{width:38px;height:38px;border-radius:50%;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#FFF0B8,#FFD24A 48%,#E3A810);color:#5a3d00;font-family:'Poppins',sans-serif;font-weight:800}
+#bm-store-page .bsp-own-name{flex:1;min-width:0;font-weight:800;color:var(--ink);font-size:14px;overflow-wrap:anywhere}
+#bm-store-page .bsp-own-name small{display:block;font-weight:600;color:var(--muted);font-size:11.5px}
+#bm-store-page .bsp-empty{padding:22px 16px;text-align:center;color:var(--muted);font-size:13px;line-height:1.5}
+#bm-store-page .bsp-empty b{color:var(--ink)}
+#bm-store-page .bsp-fine{font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:8px}
+#bm-store-page .bsp-fine.pad{padding:0 14px 12px}
+
+/* items */
+#bm-store-page .bsp-items{list-style:none;margin:0;padding:0}
+#bm-store-page .bsp-item{display:flex;gap:11px;align-items:flex-start;padding:11px 14px;border-top:1px solid #F0F2F8}
+#bm-store-page .bsp-item:first-child{border-top:none}
+#bm-store-page .bsp-item.dim{opacity:.55}
+#bm-store-page .bsp-iem{width:40px;height:40px;border-radius:11px;background:#EEF1FF;display:inline-flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto}
+#bm-store-page .bsp-imain{flex:1;min-width:0}
+#bm-store-page .bsp-iname{font-weight:800;font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+#bm-store-page .bsp-iprice{display:inline-block;margin-left:4px;padding:1px 8px;border-radius:100px;background:#FFF4D6;color:var(--gold-dk);font-size:12px;font-weight:800;border:1px solid rgba(227,165,15,.35)}
+#bm-store-page .bsp-inote{font-size:12.5px;color:#4a5785;margin-top:2px;overflow-wrap:anywhere}
+#bm-store-page .bsp-imeta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:5px}
+#bm-store-page .bsp-tag{font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:100px;background:#F2F4FB;color:#4a5785;border:1px solid var(--hair)}
+#bm-store-page .bsp-tag.shop{background:var(--mint);color:var(--green);border-color:rgba(26,107,58,.25)}
+#bm-store-page .bsp-tag.ok{background:#E3F7EC;color:#146235;border-color:rgba(26,107,58,.3)}
+#bm-store-page .bsp-tag.new{background:#FFF7E0;color:#8B6508;border-color:rgba(227,165,15,.35)}
+#bm-store-page .bsp-tag.bad{background:#FDE7E4;color:#8a2116;border-color:#F3A89E}
+#bm-store-page .bsp-iago{font-size:10.5px;color:#9aa6c9;font-weight:700}
+#bm-store-page .bsp-iacts{display:flex;gap:6px;align-items:center;flex:0 0 auto}
+#bm-store-page .bsp-iv{border:1.5px solid rgba(26,107,58,.45);background:#fff;color:var(--green);border-radius:100px;padding:6px 10px;font-weight:800;font-size:11.5px;cursor:pointer;white-space:nowrap}
+#bm-store-page .bsp-iv:hover{background:var(--mint)}
+#bm-store-page .bsp-iv.on{background:linear-gradient(135deg,#2fa463,#1A6B3A);color:#fff;border-color:transparent}
+#bm-store-page .bsp-ir{width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(192,57,43,.35);background:#fff;color:var(--red);font-size:13px;cursor:pointer}
+#bm-store-page .bsp-ir:hover{background:#FDE7E4}
+#bm-store-page .bsp-ir.on{background:var(--red);color:#fff;border-color:var(--red)}
+#bm-store-page .bsp-irm{border:1px solid var(--hair);background:#fff;color:var(--muted);border-radius:8px;padding:6px 9px;font-weight:700;font-size:11.5px;cursor:pointer}
+#bm-store-page .bsp-ask{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;padding:8px 10px;border-radius:10px;background:#F5F7FF;border:1px solid var(--hair);font-size:12px;font-weight:700;color:var(--ink)}
+
+/* forms */
+#bm-store-page .bsp-form{padding:12px 14px;border-bottom:1px solid #F0F2F8;background:#FBFCFF}
+#bm-store-page .bsp-ebody{padding:14px}
+#bm-store-page .bsp-fl{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;min-width:0}
+#bm-store-page .bsp-fl.grow{flex:1}
+#bm-store-page .bsp-fl label{font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)}
+#bm-store-page .bsp-fl label small{text-transform:none;letter-spacing:0;font-weight:600}
+#bm-store-page .bsp-fl input,#bm-store-page .bsp-fl textarea,#bm-store-page .bsp-fl select{width:100%;border:1.5px solid var(--hair);border-radius:10px;padding:10px 11px;font-size:16px;color:var(--ink);background:#fff;outline:none}
+#bm-store-page .bsp-fl input:focus,#bm-store-page .bsp-fl textarea:focus,#bm-store-page .bsp-fl select:focus{border-color:var(--royal2)}
+#bm-store-page .bsp-fl textarea{resize:vertical;min-height:70px;line-height:1.4}
+#bm-store-page .bsp-frow{display:flex;gap:10px}
+#bm-store-page .bsp-frow > .bsp-fl{flex:1}
+#bm-store-page .bsp-frow > .bsp-fl:first-child{flex:0 0 32%}
+#bm-store-page .bsp-edit .bsp-frow > .bsp-fl:first-child{flex:1}
+#bm-store-page .bsp-togs{display:flex;flex-wrap:wrap;gap:7px}
+#bm-store-page .bsp-tog{border:1.5px solid var(--hair);background:#fff;color:var(--ink);border-radius:100px;padding:7px 12px;font-weight:800;font-size:12.5px;cursor:pointer}
+#bm-store-page .bsp-tog.on{background:var(--mint);border-color:rgba(26,107,58,.5);color:var(--green)}
+#bm-store-page .bsp-fbtns{display:flex;gap:8px;margin-top:4px}
+#bm-store-page .bsp-btn{border:1.5px solid var(--hair);background:#fff;color:var(--ink);border-radius:10px;padding:9px 14px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Poppins',sans-serif}
+#bm-store-page .bsp-btn:hover{border-color:var(--royal2)}
+#bm-store-page .bsp-btn.gold{background:linear-gradient(135deg,#FFD24A,#E3A810);border-color:transparent;color:#402d04}
+#bm-store-page .bsp-btn.red{background:var(--red);border-color:var(--red);color:#fff}
+#bm-store-page .bsp-btn.ghost{background:transparent;color:var(--muted)}
+#bm-store-page .bsp-btn.sm{padding:6px 10px;font-size:11.5px;border-radius:8px}
+#bm-store-page .bsp-btn:disabled{opacity:.6;cursor:wait}
+#bm-store-page .bsp-owner .bsp-btn{padding:7px 11px;font-size:12px}
+#bm-store-page .bsp-err{background:#FDE7E4;border:1px solid #F3A89E;color:#8a2116;border-radius:10px;padding:8px 11px;font-size:12.5px;font-weight:700;margin-bottom:10px}
+#bm-store-page .bsp-photos{display:flex;gap:12px;align-items:flex-start}
+#bm-store-page .bsp-ph{display:flex;flex-direction:column;gap:7px}
+#bm-store-page .bsp-ph.cover{flex:1;min-width:0}
+#bm-store-page .bsp-ph.logo{flex:0 0 104px}
+#bm-store-page .bsp-phv{border-radius:12px;background:#EEF1FF center/cover no-repeat;border:1.5px dashed #c9d2ee;display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:800;font-size:12px}
+#bm-store-page .bsp-ph.cover .bsp-phv{aspect-ratio:3 / 2}
+#bm-store-page .bsp-ph.logo .bsp-phv{width:104px;height:104px;font-size:38px}
+#bm-store-page .bsp-phb{display:flex;flex-wrap:wrap;gap:5px}
+
+#bm-store-page .bsp-safe{margin-top:12px;background:#FFF4D6;border:1px solid #F0C75A;color:#6b4a00;border-radius:12px;padding:9px 12px;font-size:12px;line-height:1.45}
+
+/* ── the floating bar at the bottom ── */
+#bm-store-page .bsp-fbar{position:sticky;bottom:calc(14px + env(safe-area-inset-bottom,0px));margin-top:auto;align-self:center;z-index:6;display:inline-flex;gap:6px;padding:6px;margin-bottom:0;
+  border-radius:100px;background:linear-gradient(135deg,#0a1f63,#173c88);border:1px solid rgba(255,200,60,.5);box-shadow:0 12px 30px rgba(0,0,30,.5);max-width:100%}
+#bm-store-page .bsp-fb{border:none;border-radius:100px;padding:10px 16px;font-family:'Poppins',sans-serif;font-weight:700;font-size:13px;color:#fff;background:transparent;cursor:pointer;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center}
+#bm-store-page .bsp-fb:hover{background:rgba(255,255,255,.12)}
+#bm-store-page .bsp-fb.back{color:var(--gold-lt)}
+#bm-store-page .bsp-fb.call{background:linear-gradient(135deg,#2fa463,#1A6B3A)}
+#bm-store-page .bsp-fb.go{background:rgba(255,255,255,.12)}
+#bm-store-page .bsp-safe{margin-bottom:16px}
+
+/* ── phones: taller card so the name clears the buttons (same fix as the profile card) ── */
+@media (max-width:560px){
+  #bm-store-page .bsp-col{padding:12px 12px 14px}
+  #bm-store-page .bsp-card{aspect-ratio:auto}
+  #bm-store-page .bsp-ov{position:relative;padding:66px 15px 15px;background:linear-gradient(to top,rgba(3,16,30,.86),rgba(3,16,30,.4) 55%,rgba(3,16,30,.06))}
+  #bm-store-page .bsp-top{top:12px;right:12px}
+  #bm-store-page .bsp-tb{padding:7px 11px;font-size:12px}
+  #bm-store-page .bsp-logo{width:68px;height:68px;border-radius:14px}
+  #bm-store-page .bsp-logo-em{font-size:34px}
+  #bm-store-page .bsp-name{font-size:19px}
+  #bm-store-page .bsp-vote{font-size:12.5px;padding:10px 8px;gap:7px}
+  #bm-store-page .bsp-long{display:none}
+  #bm-store-page .bsp-item{flex-wrap:wrap}
+  #bm-store-page .bsp-iacts{width:100%;padding-left:51px}
+  #bm-store-page .bsp-fb{padding:10px 12px;font-size:12.5px}
+  #bm-store-page .bsp-photos{flex-direction:column}
+  #bm-store-page .bsp-ph.logo{flex:0 0 auto;flex-direction:row;align-items:center}
+  #bm-store-page .bsp-frow{flex-direction:column;gap:0}
+  #bm-store-page .bsp-frow > .bsp-fl:first-child{flex:1}
 }
 </style>
 </head>
@@ -7250,17 +7419,19 @@ function renderRightPanel() {
         const distKm = haversine(USER.lat, USER.lng, s.lat, s.lng).toFixed(1);
         return `<div class="store-card-sm ${s.featured?'featured-s':''}" onclick="map&&map.panTo({lat:${s.lat},lng:${s.lng}});selectItem(${jsId(s.id)},'store')">
           <div class="sc-row">
-            ${s.cover?`<div class="sc-emoji" style="background-image:url('${s.cover}');background-size:cover;background-position:center;font-size:0">${s.catEmoji||'🏪'}</div>`:`<div class="sc-emoji">${s.catEmoji||'🏪'}</div>`}
+            ${(function(){ const u=s.logo||s.cover; return (u&&/^(https:\/\/|data:image\/)[^\s"'()\\<>]+$/.test(u))?`<div class="sc-emoji" style="background-image:url('${u}');background-size:cover;background-position:center;font-size:0">${s.catEmoji||'🏪'}</div>`:`<div class="sc-emoji">${s.catEmoji||'🏪'}</div>`; })()}
             <div class="sc-body">
               <div class="sc-name">${esc(s.name)}</div>
               <div class="sc-meta">
-                <span class="sc-loc">📍 ${esc(s.address)}</span>
+                <span class="sc-loc">📍 ${esc(/^\s*-?\d{1,3}\.\d+\s*,\s*-?\d{1,3}\.\d+\s*$/.test(s.address||'')?'Pinned on the map':s.address)}</span>
                 <span class="sc-dist">${distKm}km</span>
               </div>
               <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">
-                ${s.official?'<span class="sc-badge" style="background:rgba(26,107,58,.14);color:#1A6B3A;border:1px solid rgba(26,107,58,.3)">✅ Official</span>':'<span class="sc-badge" style="background:rgba(176,122,20,.12);color:#9a6b12;border:1px solid rgba(176,122,20,.3)">👥 Unofficial</span>'}
-                <span class="sc-badge sc-open">Open</span>
-                ${s.items&&s.items.length?`<span class="sc-badge" style="background:#eef6f0;color:#1A6B3A;border:1px solid rgba(26,107,58,.2)">📋 ${s.items.length} items</span>`:''}
+                ${s.official?'<span class="sc-badge" style="background:rgba(26,107,58,.14);color:#1A6B3A;border:1px solid rgba(26,107,58,.3)">✅ Official</span>':'<span class="sc-badge" style="background:rgba(176,122,20,.12);color:#9a6b12;border:1px solid rgba(176,122,20,.3)">👥 Community</span>'}
+                ${(function(){ const c=s.category||((typeof PLACE_TAX!=='undefined'&&PLACE_TAX.find(p=>p.em===s.catEmoji))||{}).name||''; return c?`<span class="sc-badge" style="background:#EEF1FF;color:#173c88;border:1px solid rgba(37,80,184,.22)">${esc(c)}</span>`:''; })()}
+                ${s.vouchN?`<span class="sc-badge" style="background:#E3F7EC;color:#146235;border:1px solid rgba(26,107,58,.3)">✓ ${s.vouchN} vouched</span>`:''}
+                ${((s.reportPts||0)>=3&&(s.reportPts||0)>(s.vouchPts||0))?'<span class="sc-badge" style="background:#FDE7E4;color:#8a2116;border:1px solid #F3A89E">⚠ Reported</span>':''}
+                ${(s.itemCount||(s.items&&s.items.length))?`<span class="sc-badge" style="background:#eef6f0;color:#1A6B3A;border:1px solid rgba(26,107,58,.2)">📋 ${s.itemCount||s.items.length} items</span>`:''}
                 ${s.featured?'<span class="sc-badge sc-feat">⭐ Featured</span>':''}
               </div>
             </div>
@@ -8989,7 +9160,7 @@ async function sbLoadStores() {
   // index v12: deleted shops stay off the map
   let { data, error } = await sb.from('stores').select('*').is('removed_at', null).order('featured',{ascending:false});
   if (error && /removed_at/i.test(error.message || '')) ({ data, error } = await sb.from('stores').select('*').order('featured',{ascending:false}));
-  return data || [];
+  return (data || []).filter(s => s.status !== 'taken_down');   // index v14
 }
 async function sbLoadRequests() {
   if (!sb) return [];
@@ -10087,7 +10258,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       .concat(mine.deals.filter(d=>d.role==='helper'&&!d.closed_at).map(x=>({t:'job',x})));
     if(k==='find') return mine.reqs.filter(r=>r.type==='find'&&LIVE_REQ(r)).map(x=>({t:'req',x}));
     if(k==='sell') return mine.lists.filter(l=>!l.removed_at&&(!l.status||l.status==='active')).map(x=>({t:'list',x}));
-    return mine.stores.filter(s=>!s.removed_at).map(x=>({t:'store',x}));
+    return mine.stores.filter(s=>!s.removed_at&&s.status!=='taken_down').map(x=>({t:'store',x}));   // index v14
   }
   const whenOf=it=>{ const x=it.x; return String(x.removed_at||x.closed_at||x.found_at||x.sold_at||x.created_at||x.chosen_at||''); };
   const byWhen=(a,b)=>whenOf(b).localeCompare(whenOf(a));
@@ -10096,7 +10267,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       .concat(mine.deals.filter(d=>d.role==='helper'&&d.closed_at).map(x=>({t:'helped',x}))).sort(byWhen);
     if(k==='find') return mine.reqs.filter(r=>r.type==='find'&&!LIVE_REQ(r)).map(x=>({t:'req',x})).sort(byWhen);
     if(k==='sell') return mine.lists.filter(l=>l.removed_at||l.status==='sold').map(x=>({t:'list',x})).sort(byWhen);
-    return mine.stores.filter(s=>s.removed_at).map(x=>({t:'store',x})).sort(byWhen);
+    return mine.stores.filter(s=>s.removed_at||s.status==='taken_down').map(x=>({t:'store',x})).sort(byWhen);   // index v14
   }
   function histMatch(k,it,f){
     if(f==='all') return true; const x=it.x;
@@ -10193,6 +10364,8 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       return mcard({ em, title, meta:`₱${Number(x.price||0).toLocaleString()} · Sold ${day(x.sold_at||x.created_at)}`, pill:'Sold', pc:'ok',
         acts:btn('List again',`mineDo('sell','${id}','relist')`)+btn('🗑 Delete',`mineAsk('sell','${id}','delete')`,'del'), ask:askBox('sell',id,x) });
     }
+    if(!x.removed_at&&x.status==='taken_down') return mcard({ em:esc(x.emoji||'🏪'), title:esc(x.name||'Shop'), meta:'Taken down after reports from locals', pill:'Taken down', pc:'off', dim:true,   // index v14
+      tap:`BP.mineOpen('shop','${id}')`, acts:btn('Open',`mineOpen('shop','${id}')`) });
     return mcard({ em:esc(x.emoji||'🏪'), title:esc(x.name||'Shop'), meta:`Deleted ${day(x.removed_at)}`, pill:'Deleted', pc:'off', dim:true, acts:btn('↩️ Restore',`mineDo('shop','${id}','restore')`) });
   }
 
@@ -11047,8 +11220,10 @@ function urfPost(){
       id:s.id, _db:{table:'stores', id:s.id}, _ownerId:s.owner_id,
       name:s.name, address:s.address||'Nearby', contact:s.contact||'', hours:s.hours||'',
       official:!!s.featured, pending:false, unofficial:!s.featured,
-      categories:['Shop'], catEmoji:s.emoji||'🏪', emoji:s.emoji||'🏪',
-      products:[], items:[], photos:[], cover:null, docs:[], sells:s.description||'',   // index v13
+      categories:[s.category||'Shop'], catEmoji:s.emoji||'🏪', emoji:s.emoji||'🏪',
+      products:[], items:[], photos:[], cover:s.cover_url||null, docs:[], sells:s.description||'',   // index v13
+      category:s.category||'', logo:s.logo_url||null, details:(s.details&&typeof s.details==='object'&&!Array.isArray(s.details))?s.details:{},   // index v14: shop profile
+      status:s.status||'new', vouchPts:s.vouch_points||0, vouchN:s.vouch_count||0, reportPts:s.report_points||0, reportN:s.report_count||0, createdAt:s.created_at||null,
       seller: who(s.owner_id,names,own), rating:5.0, lat:s.lat, lng:s.lng
     };
   }
@@ -12116,133 +12291,6 @@ function urfPost(){
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
-   index v13 · SHOP PAGE
-   Tapping a shop (side panel card, map pin, search result, profile)
-   opens the shop's own page instead of a small box in the Items panel.
-   A shared link like bringme.store/?shop=<id> opens it directly.
-   ═══════════════════════════════════════════════════════════════════ */
-(function(){
-  'use strict';
-  if (window.bmOpenStorePage) return;
-  var root = null, cur = null, deepDone = false;
-
-  function E(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
-  function all(){ try { return (typeof stores !== 'undefined' && Array.isArray(stores)) ? stores : []; } catch(e){ return []; } }
-  function byId(id){ return all().find(function(x){ return String(x.id) === String(id); }) || null; }
-  function me(){ try { return (typeof USER === 'object' && USER && USER.lat != null) ? { lat:Number(USER.lat), lng:Number(USER.lng) } : null; } catch(e){ return null; } }
-  function away(s){
-    var a = me(); if (!a || s.lat == null) return '';
-    try { var d = haversine(a.lat, a.lng, Number(s.lat), Number(s.lng));
-          return (d < 1 ? Math.max(0.1, Math.round(d * 10) / 10).toFixed(1) : (d < 10 ? d.toFixed(1) : String(Math.round(d)))) + ' km away'; } catch(e){ return ''; }
-  }
-  function isCoords(a){ return /^\s*-?\d{1,3}\.\d+\s*,\s*-?\d{1,3}\.\d+\s*$/.test(String(a || '')); }
-  function telOf(c){ var t = String(c || '').replace(/[^\d+]/g, ''); return t.replace(/\D/g, '').length >= 7 ? t : ''; }
-  function svUrl(s){ return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + Number(s.lat) + '%2C' + Number(s.lng); }
-  function link(s){ return location.origin + location.pathname + '?shop=' + encodeURIComponent(String(s.id)); }
-  function toast(m){ try { showToast(m, 'info', 3200); } catch(e){} }
-  function addrOf(s){ var a = s.address && s.address !== 'Nearby' ? s.address : ''; return a && !isCoords(a) ? a : ''; }
-
-  function card(icon, title, inner){
-    return '<section class="bsp-card"><div class="bsp-sh"><span>' + icon + '</span><span class="bsp-st">' + title + '</span></div>' + inner + '</section>';
-  }
-  function row(icon, label, value){
-    return '<div class="bsp-row"><span class="bsp-ri">' + icon + '</span><div class="bsp-rm"><div class="bsp-rl">' + label + '</div><div class="bsp-rv">' + value + '</div></div></div>';
-  }
-  var NONE = '<i>Not added yet</i>';
-
-  function render(){
-    var s = cur; if (!s || !root) return;
-    var mine = s.seller === 'You';
-    var tel = telOf(s.contact), addr = addrOf(s), dist = away(s);
-    var owner = mine ? 'You' : (s.seller || 'Member');
-    root.innerHTML =
-      '<div class="bsp-top"><button type="button" class="bsp-back" data-act="back">← Back to map</button><span class="bsp-top-t">Shop</span></div>' +
-      '<div class="bsp-wrap">' +
-        '<section class="bsp-hero">' +
-          '<div class="bsp-em">' + E(s.catEmoji || s.emoji || '🏪') + '</div>' +
-          '<div class="bsp-hero-main"><h1 class="bsp-name">' + E(s.name) + '</h1>' +
-            '<div class="bsp-badges"><span class="bsp-badge' + (s.official ? ' ok' : '') + '">' + (s.official ? '✅ Official shop' : '👥 Community listing') + '</span>' +
-            (dist ? '<span class="bsp-badge">📍 ' + E(dist) + '</span>' : '') + '</div></div>' +
-        '</section>' +
-        '<div class="bsp-acts">' +
-          (tel ? '<a class="bsp-act call" href="tel:' + E(tel) + '">📞 Call</a>' : '<button type="button" class="bsp-act call" disabled>📞 No number yet</button>') +
-          '<button type="button" class="bsp-act go" data-act="dir">🧭 Directions</button>' +
-          '<a class="bsp-act" href="' + E(svUrl(s)) + '" target="_blank" rel="noopener">🚶 Street View ↗</a>' +
-          '<button type="button" class="bsp-act" data-act="share">📤 Share</button>' +
-        '</div>' +
-        card('🏪', 'About this shop', '<div class="bsp-rows">' +
-          row('🛍️', 'What it sells', s.sells ? E(s.sells) : NONE) +
-          row('📍', 'Address', addr ? E(addr) : 'Pinned on the map' + (isCoords(s.address) ? ' <span class="bsp-dim">(' + E(s.address) + ')</span>' : '')) +
-          row('⏰', 'Hours', s.hours ? E(s.hours) : NONE) +
-          row('📞', 'Contact number', s.contact ? '<span class="bsp-sel">' + E(s.contact) + '</span>' : NONE) + '</div>') +
-        card('👤', 'Posted by', '<div class="bsp-owner"><span class="bsp-av">' + E(String(owner).replace(/^@/, '').charAt(0).toUpperCase() || '?') + '</span>' +
-          '<span class="bsp-own-name">' + E(owner) + '</span>' +
-          (mine ? '<button type="button" class="bsp-btn" data-act="mine">✏️ Manage in your profile</button>'
-                : (s._ownerId ? '<button type="button" class="bsp-btn" data-act="owner">👤 View profile</button>' : '')) + '</div>') +
-        card('📦', 'Items at this shop', '<div class="bsp-empty">No items listed yet.</div>') +
-        '<div class="bsp-safe">Shops on BringMe are posted by the community. Call or check before you go.</div>' +
-      '</div>';
-  }
-
-  function build(){
-    root = document.createElement('div');
-    root.id = 'bm-store-page'; root.className = 'bsp'; root.hidden = true;
-    root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', 'Shop');
-    document.body.appendChild(root);
-    root.addEventListener('click', onClick);
-    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && root && !root.hidden) close(); });
-  }
-  function open(id){
-    var s = byId(id);
-    if (!s) { toast('This shop isn’t on the map any more'); return; }
-    if (!root) build();
-    cur = s; render();
-    root.hidden = false; root.scrollTop = 0;
-    document.body.classList.add('bsp-open');
-    try { if (!window.BM_NO_MAP && typeof map !== 'undefined' && map) map.panTo({ lat:Number(s.lat), lng:Number(s.lng) }); } catch(e){}
-    setTimeout(function(){ var b = root.querySelector('.bsp-back'); if (b) b.focus(); }, 30);
-  }
-  function close(){
-    if (!root) return;
-    root.hidden = true;
-    document.body.classList.remove('bsp-open');
-  }
-  function share(s){
-    var url = link(s);
-    if (navigator.share) { navigator.share({ title:s.name, text:'Found this shop on BringMe', url:url }).catch(function(){}); return; }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(function(){ toast('🔗 Link copied. Paste it anywhere to share this shop.'); },
-        function(){ toast('Share this link: ' + url); });
-    } else toast('Share this link: ' + url);
-  }
-  function onClick(e){
-    var b = e.target.closest('[data-act]'); if (!b || !cur) return;
-    var s = cur, act = b.getAttribute('data-act');
-    if (act === 'back') return close();
-    if (act === 'dir') { close(); try { navigateTo(Number(s.lat), Number(s.lng), s.name, addrOf(s) || 'Pinned on the map'); } catch(err){} return; }
-    if (act === 'share') return share(s);
-    if (act === 'mine') { close(); try { openProfile(); } catch(err){} return; }
-    if (act === 'owner') {
-      if (typeof window.bmOpenPublicProfile !== 'function') return;
-      var id = s.id; close();
-      window.bmOpenPublicProfile(s._ownerId, function(){ open(id); });
-    }
-  }
-  /* a shared link bringme.store/?shop=<id> opens the shop once its posts have loaded */
-  function deep(){
-    if (deepDone) return;
-    var m = /[?&]shop=([^&#]+)/.exec(location.search);
-    if (!m) { deepDone = true; return; }
-    var id = decodeURIComponent(m[1]);
-    if (byId(id)) { deepDone = true; open(id); }
-  }
-  var _ra = window.renderAll;
-  if (typeof _ra === 'function') window.renderAll = function(){ var r = _ra.apply(this, arguments); try { deep(); } catch(e){} return r; };
-
-  window.bmOpenStorePage = open;
-  window.bmCloseStorePage = close;
-})();
 
 /* ═══════════════════════════════════════════════════════════════════
    index v13 · THE FINDER
@@ -12266,7 +12314,7 @@ function urfPost(){
   var KM_CHOICES = [1, 3, 5, 10, 20];
   var KM_DEFAULT = 5;
   var G_MAX = 12;                 // shops asked from Google per search (same price for 1 or 20)
-  var G_TTL = 10 * 60 * 1000;     // reuse a Google search for 10 minutes
+  var G_TTL = 0;                  // index v14: Google's results aren't reused (Places API policy: nothing kept except place IDs)
   var G_DAILY_CAP = 40;           // Google searches per device per day
   var G_WAIT_KNOWN = 450;         // ms after typing stops, for words we know ("bread")
   var G_WAIT_OTHER = 1100;        // ms after typing stops, for other words (4+ letters)
@@ -12420,7 +12468,7 @@ function urfPost(){
     var out = { shops:[], items:[], asks:[] };
     if (!nq || !at) { F.bm = out; return; }
     arr('stores').forEach(function(s){
-      var sells = s.sells || s.desc || '';
+      var sells = [s.sells || s.desc || '', s.category || '', s.itemNames || ''].filter(Boolean).join(' · ');   // index v14: + category + items at the shop
       var sc = score([s.name, sells].join(' '), s.name, nq, grp); if (!sc) return;
       var d = dist(at, s.lat, s.lng); if (d > lim) return;
       out.shops.push({ x:s, sc:sc, d:d, why:sells });
@@ -12490,7 +12538,6 @@ function urfPost(){
     Promise.resolve(p).then(function(res){
       if (seq !== gSeq) return;
       var list = ((res && res.places) || []).map(function(x){ return toPlace(x, at); }).filter(Boolean);
-      gCache.set(key, { t:Date.now(), list:list });
       F.g.state = 'ok'; setG(list); render();
     }).catch(function(e){
       if (seq !== gSeq) return;
@@ -12690,6 +12737,7 @@ function urfPost(){
     return sec('🏪', 'Shops on BringMe', a.length, listOf('shops', a, 4, function(r, i){
       var s = r.x;
       var meta = '<span class="bmf-tag ' + (s.official ? 'bmf-t-ok' : 'bmf-t-cm') + '">' + (s.official ? '✅ Official' : '👥 Community') + '</span>' +
+                 (s.vouchN ? '<span class="bmf-tag bmf-t-ok">✓ ' + s.vouchN + ' vouched</span>' : '') +   // index v14
                  E(snippet(r.why, F.nq, F.grp) || s.address || '');
       return row('s', i, E(s.catEmoji || s.emoji || '🏪'), 'bmf-tone-green', E(s.name), meta, '<span class="bmf-dist">' + km(r.d) + '</span>');
     }));
@@ -12850,6 +12898,688 @@ function urfPost(){
   window.bmFinder = { dir:dir, show:showG, refresh:refresh, search:setQuery, _state:F, _aboutOf:function(q){ var g = aboutOf(norm(q)); return g ? g.k : null; },
                       _isBroad:function(q){ var n = norm(q); return isBroad(n, aboutOf(n)); } };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build); else build();
+})();
+
+</script>
+<script>
+/* ═══ index v14 ═══ */
+/* ═══════════════════════════════════════════════════════════════════
+   index v14 · SHOP PROFILE
+   A shop's page now looks like a person's profile: cover photo, logo,
+   name, category, trust chips and contact on one card. ✕ on the card
+   closes it; a floating bar at the bottom goes back to the map.
+   Locals vouch ✓ or report ⚠ (worth their vouch power), neighbors add
+   items to community listings and vouch for them, and whoever posted
+   the shop edits its details, cover photo and logo. Needs db stores v1.
+   A shared link bringme.store/?shop=<id> opens it directly.
+   ═══════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+  if (window.bmOpenStorePage && window.bmOpenStorePage.v14) return;
+
+  var root = null, cur = null, deepDone = false, lastStores = null, idxBusy = false, tok = 0;
+  var ui = { tab:'items', editing:false, adding:false, reporting:false, ask:null, busy:false, err:'', add:{ name:'', price:'', note:'' }, addErr:'' };
+  var ex = { id:null, items:null, itemsErr:'', myVote:null, myItemVotes:{}, loading:false };
+  var power = null;          // my vouch power 0–3 (null = signed out / not known yet)
+  var draft = null;          // the editor's values
+
+  var PAY = ['Cash', 'GCash', 'Maya', 'Card', 'Bank transfer'];
+  var REASONS = [['Spam or an ad'], ['Not a real shop'], ['Closed for good'], ['Wrong place on the map'], ['Rude or offensive']];
+  var IREASONS = ['Not sold here', 'Spam', 'Rude or offensive'];
+
+  /* ---------- small helpers ---------- */
+  function E(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function sbOk(){ try { return typeof sb !== 'undefined' && !!sb; } catch(e){ return false; } }
+  function meId(){ try { return (typeof SB_USER !== 'undefined' && SB_USER && SB_USER.id) || null; } catch(e){ return null; } }
+  function all(){ try { return (typeof stores !== 'undefined' && Array.isArray(stores)) ? stores : []; } catch(e){ return []; } }
+  function byId(id){ return all().find(function(x){ return String(x.id) === String(id); }) || null; }
+  function isMine(s){ return !!s && (s.seller === 'You' || (!!meId() && String(s._ownerId) === String(meId()))); }
+  function toast(m, t){ try { showToast(m, t || 'info', 3600); } catch(e){} }
+  function needSignIn(){ try { if (typeof guestGate === 'function') return guestGate(); } catch(e){} return !meId(); }
+  function preview(){ return !!window.BM_PREVIEW; }
+  function okUrl(u){ return (typeof u === 'string' && /^https:\/\/[^\s"'()\\<>]+$/.test(u)) ? u : ''; }
+  function det(s){ var d = s && s.details; return (d && typeof d === 'object' && !Array.isArray(d)) ? d : {}; }
+  function places(){ try { return (typeof PLACE_TAX !== 'undefined' && Array.isArray(PLACE_TAX)) ? PLACE_TAX : []; } catch(e){ return []; } }
+  function catOf(s){   // → [emoji, label]; older shops only saved the type's emoji
+    if (s.category) { var c = places().find(function(p){ return p.name === s.category; }); return [c ? c.em : (s.catEmoji || '🏪'), s.category]; }
+    var em = s.catEmoji || s.emoji || '', hit = places().find(function(p){ return p.em === em; });
+    return hit ? [hit.em, hit.name] : ['', ''];
+  }
+  function me(){ try { return (typeof USER === 'object' && USER && USER.lat != null) ? { lat:Number(USER.lat), lng:Number(USER.lng) } : null; } catch(e){ return null; } }
+  function away(s){
+    var a = me(); if (!a || s.lat == null) return '';
+    try { var d = haversine(a.lat, a.lng, Number(s.lat), Number(s.lng));
+          return (d < 1 ? Math.max(0.1, Math.round(d * 10) / 10).toFixed(1) : (d < 10 ? d.toFixed(1) : String(Math.round(d)))) + ' km away'; } catch(e){ return ''; }
+  }
+  function isCoords(a){ return /^\s*-?\d{1,3}\.\d+\s*,\s*-?\d{1,3}\.\d+\s*$/.test(String(a || '')); }
+  function telOf(c){ var t = String(c || '').replace(/[^\d+]/g, ''); return t.replace(/\D/g, '').length >= 7 ? t : ''; }
+  function svUrl(s){ return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' + Number(s.lat) + '%2C' + Number(s.lng); }
+  function link(s){ return location.origin + location.pathname + '?shop=' + encodeURIComponent(String(s.id)); }
+  function addrOf(s){ var a = s.address && s.address !== 'Nearby' ? s.address : ''; return a && !isCoords(a) ? a : ''; }
+  function since(iso){ var t = iso ? new Date(iso) : null; return (t && !isNaN(t)) ? t.toLocaleDateString('en-US', { month:'short', year:'numeric' }) : ''; }
+  function ago(iso){
+    var t = iso ? new Date(iso).getTime() : NaN; if (isNaN(t)) return '';
+    var d = Math.floor((Date.now() - t) / 86400000);
+    return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? d + 'd ago' : d < 60 ? Math.floor(d / 7) + 'w ago' : since(iso);
+  }
+  function peso(p){ var n = Number(p); return (p === null || p === '' || p == null || isNaN(n)) ? '' : '₱' + n.toLocaleString('en-PH', { maximumFractionDigits:2 }); }
+  function plural(n, a, b){ return n + ' ' + (n === 1 ? a : b); }
+  function msg(err){ var m = (err && (err.message || err.error_description || err.hint)) || String(err || 'Something went wrong'); return m.replace(/^ERROR:\s*/, ''); }
+  function missingDb(err){ return /store_items|store_votes|store_item|stores?\.(category|details|cover_url|logo_url)|column .* does not exist|schema cache|PGRST20[0-9]|42P01|42703/i.test(msg(err)); }
+  function itemEmoji(name){ try { if (typeof catClassify === 'function') { var c = catClassify(name); if (c && c.em) return c.em; } } catch(e){} return '🏷️'; }
+
+  /* a database row → the fields this page (and the side panel / search) use */
+  function fromRow(s, r){
+    var C = function(v){ return v == null ? v : String(v).replace(/[&<>"'`]/g, function(c){ return { '&':'＆', '<':'‹', '>':'›', '"':'”', "'":'’', '`':'ˋ' }[c]; }); };
+    s.name = C(r.name) || s.name; s.address = C(r.address) || 'Nearby'; s.contact = C(r.contact) || ''; s.hours = C(r.hours) || '';
+    s.sells = C(r.description) || ''; s.catEmoji = C(r.emoji) || s.catEmoji || '🏪'; s.emoji = s.catEmoji;
+    s.category = C(r.category) || ''; s.categories = [s.category || 'Shop'];
+    s.cover = C(r.cover_url) || null; s.logo = C(r.logo_url) || null;
+    s.details = (r.details && typeof r.details === 'object') ? r.details : {};
+    s.status = r.status || 'new'; s.official = !!r.featured; s.unofficial = !r.featured;
+    s.vouchPts = r.vouch_points || 0; s.vouchN = r.vouch_count || 0; s.reportPts = r.report_points || 0; s.reportN = r.report_count || 0;
+    s.createdAt = r.created_at || s.createdAt || null; s._ownerId = r.owner_id || s._ownerId;
+    if (r.lat != null) { s.lat = r.lat; s.lng = r.lng; }
+    return s;
+  }
+  function setCounts(r){
+    if (!cur || !r) return;
+    cur.vouchPts = r.vouch_points || 0; cur.vouchN = r.vouch_count || 0; cur.reportPts = r.report_points || 0; cur.reportN = r.report_count || 0;
+    cur.status = r.status || cur.status; ex.myVote = r.my_kind || null; if (r.my_power != null) power = r.my_power;
+  }
+
+  /* ---------- the cover art (shops without a cover photo) ---------- */
+  function coverArt(){
+    var shops = '', x = 18, cols = [['#1A6B3A','#E9F7EF'], ['#E3A810','#FFF6DA'], ['#2550b8','#E8EEFF'], ['#C0392B','#FFE9E6'], ['#1A6B3A','#E9F7EF']];
+    for (var i = 0; i < 5; i++) {
+      var w = 104, h = 92 + (i % 2) * 18, y = 300 - h, c = cols[i], stripes = '';
+      for (var k = 0; k < 8; k++) stripes += '<rect x="' + (x + k * 13) + '" y="' + (y - 4) + '" width="13" height="22" fill="' + (k % 2 ? c[1] : c[0]) + '"/>';
+      shops += '<g opacity=".55"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="3" fill="#0d2a4a"/>' + stripes +
+        '<path d="M' + x + ' ' + (y + 18) + ' q6.5 9 13 0 q6.5 9 13 0 q6.5 9 13 0 q6.5 9 13 0 q6.5 9 13 0 q6.5 9 13 0 q6.5 9 13 0 q6.5 9 13 0" fill="' + c[0] + '"/>' +
+        '<rect x="' + (x + 10) + '" y="' + (y + 36) + '" width="44" height="30" rx="3" fill="#FFD24A" opacity=".9"/>' +
+        '<rect x="' + (x + 64) + '" y="' + (y + 36) + '" width="30" height="' + (h - 36) + '" rx="2" fill="#FFE9A8" opacity=".75"/></g>';
+      x += 116;
+    }
+    var bulbs = '';
+    for (var b = 0; b < 15; b++) { var bx = 10 + b * 42, by = 52 + Math.sin(b / 14 * Math.PI) * 26; bulbs += '<circle cx="' + bx + '" cy="' + by.toFixed(1) + '" r="4.2" fill="#FFD24A"/><circle cx="' + bx + '" cy="' + by.toFixed(1) + '" r="10" fill="#FFD24A" opacity=".16"/>'; }
+    var stars = '';
+    [[60,22],[150,14],[260,30],[340,12],[420,26],[520,16],[575,34],[110,40],[480,44]].forEach(function(p){ stars += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="1.4" fill="#fff" opacity=".7"/>'; });
+    return '<svg class="bsp-art" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+      '<defs><linearGradient id="bspSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1f63"/><stop offset=".55" stop-color="#0c3b3a"/><stop offset="1" stop-color="#0b2a22"/></linearGradient></defs>' +
+      '<rect width="600" height="400" fill="url(#bspSky)"/>' + stars +
+      '<path d="M10 52 Q300 110 600 52" stroke="#3a4f7a" stroke-width="1.5" fill="none"/>' + bulbs + shops +
+      '<rect x="0" y="300" width="600" height="100" fill="#0a1d2e"/><rect x="0" y="300" width="600" height="3" fill="#E3A810" opacity=".5"/></svg>';
+  }
+
+  /* ---------- pieces of the page ---------- */
+  function chip(cls, txt){ return '<span class="bsp-chip' + (cls ? ' ' + cls : '') + '">' + txt + '</span>'; }
+  function warned(s){ return (s.reportPts || 0) >= 3 && (s.reportPts || 0) > (s.vouchPts || 0); }
+
+  function cardHTML(s){
+    var mine = isMine(s), cat = catOf(s), cover = okUrl(s.cover), logo = okUrl(s.logo), dist = away(s), tel = telOf(s.contact);
+    var src = s.official ? '✅ Official shop' : '👥 Community listing';
+    var trust = s.vouchN > 0 ? chip(s.status === 'confirmed' ? 'ok' : 'okl', '✓ Vouched by ' + plural(s.vouchN, 'local', 'locals'))
+                             : chip('new', '🆕 New · not confirmed yet');
+    var rep = s.reportN > 0 ? chip('warn', '⚠ ' + plural(s.reportN, 'report', 'reports')) : '';
+    var sn = since(s.createdAt);
+    return '<div class="bsp-card' + (cover ? ' has-cover' : '') + '">' +
+      '<div class="bsp-cover">' + coverArt() + (cover ? '<div class="bsp-photo" style="background-image:url(\'' + E(cover) + '\')"></div>' : '') + '</div>' +
+      '<div class="bsp-scrim"></div>' +
+      (mine && !cover ? '<button type="button" class="bsp-addcov" data-act="edit">📷 Add a cover photo</button>' : '') +
+      '<div class="bsp-top">' +
+        (mine && s.status !== 'taken_down' ? '<button type="button" class="bsp-tb gold" data-act="edit">✎ Edit</button>' : '') +
+        '<button type="button" class="bsp-tb" data-act="share">Share</button>' +
+        '<button type="button" class="bsp-x" data-act="close" aria-label="Close the shop page" title="Close">✕</button>' +
+      '</div>' +
+      '<div class="bsp-ov">' +
+        '<div class="bsp-idrow">' +
+          '<div class="bsp-logo"><span class="bsp-logo-em">' + E(s.catEmoji || s.emoji || '🏪') + '</span>' + (logo ? '<img src="' + E(logo) + '" alt="" onerror="this.remove()">' : '') + '</div>' +
+          '<div class="bsp-id"><h1 class="bsp-name">' + E(s.name) + '</h1>' +
+            (cat[1] ? '<div class="bsp-cat">' + E(cat[0]) + ' ' + E(cat[1]) + '</div>' : '') +
+            '<div class="bsp-src">' + src + (sn ? ' · on BringMe since ' + E(sn) : '') + '</div></div>' +
+        '</div>' +
+        '<div class="bsp-chips">' + trust + rep + (dist ? chip('', '📍 ' + E(dist)) : '') + (s.hours ? chip('', '⏰ ' + E(s.hours)) : '') + '</div>' +
+        '<div class="bsp-ctl">Contact</div>' +
+        '<div class="bsp-contacts">' +
+          (tel ? '<a class="bsp-pill" href="tel:' + E(tel) + '"><span class="bsp-pi call">📞</span><span class="bsp-sel">' + E(s.contact) + '</span></a>'
+               : '<span class="bsp-pill off"><span class="bsp-pi">📞</span>No number yet</span>') +
+          '<button type="button" class="bsp-pill" data-act="dir"><span class="bsp-pi go">🧭</span>Directions</button>' +
+          '<a class="bsp-pill" href="' + E(svUrl(s)) + '" target="_blank" rel="noopener"><span class="bsp-pi sv">🚶</span>Street View ↗</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function noticeHTML(s){
+    if (s.status === 'taken_down') return '<div class="bsp-note bad">⛔ <b>Taken down after reports from locals.</b> Only you can see this page. If it’s a mistake, contact BringMe.</div>';
+    if (warned(s)) return '<div class="bsp-note warn">⚠ <b>Some locals reported this listing.</b> It may be closed, fake or spam. Check before you go.</div>';
+    return '';
+  }
+
+  function powerNote(kind){
+    if (power == null) return '';
+    if (power === 0) return 'Your account is new: your ' + (kind || 'vouch') + ' is saved but counts once your account is 7 days old. Tap again then.';
+    return 'Your ' + (kind || 'vouch') + ' is worth ' + plural(power, 'point', 'points') + '.';
+  }
+  function trustHTML(s){
+    if (s.status === 'taken_down') return '';
+    if (isMine(s)) return '<section class="bsp-trust mine"><div class="bsp-tq">Vouches for your shop</div>' +
+      '<div class="bsp-tn">' + (s.vouchN ? '✓ ' + plural(s.vouchN, 'local has', 'locals have') + ' vouched (' + plural(s.vouchPts, 'point', 'points') + ').' : 'No vouches yet.') +
+      ' Ask regular customers to open this page and tap <b>✓ It’s real</b>. 3 points make your shop <b>Confirmed</b>.</div></section>';
+    var v = ex.myVote, rep = ui.reporting;
+    var h = '<section class="bsp-trust"><div class="bsp-tq">Do you know this shop?</div>' +
+      '<div class="bsp-tbtns">' +
+        '<button type="button" class="bsp-vote yes' + (v === 'vouch' ? ' on' : '') + '" data-act="vouch" aria-pressed="' + (v === 'vouch') + '"' + (ui.busy ? ' disabled' : '') + '>' +
+          '<span>' + (v === 'vouch' ? '✓ You vouched' : '✓ It’s real<span class="bsp-long"> · I know it</span>') + '</span><b>' + (s.vouchPts || 0) + '</b></button>' +
+        '<button type="button" class="bsp-vote no' + (v === 'report' ? ' on' : '') + (rep ? ' open' : '') + '" data-act="report" aria-pressed="' + (v === 'report') + '"' + (ui.busy ? ' disabled' : '') + '>' +
+          '<span>' + (v === 'report' ? '⚠ You reported' : '⚠ Report') + '</span><b>' + (s.reportN || 0) + '</b></button>' +
+      '</div>';
+    if (rep) h += '<div class="bsp-reasons"><div class="bsp-rq">What’s wrong with this listing?</div>' +
+      REASONS.map(function(r){ return '<button type="button" class="bsp-reason" data-act="reason" data-r="' + E(r[0]) + '">' + E(r[0]) + '</button>'; }).join('') +
+      '<button type="button" class="bsp-reason cancel" data-act="reason-x">Cancel</button></div>';
+    var note = v === 'vouch' ? powerNote('vouch') + ' Tap ✓ again to take it back.' : v === 'report' ? powerNote('report') + ' Tap ⚠ again to take it back.'
+             : 'Vouch if you’ve been there. Report spam, fake or closed shops: enough reports from locals hide it.';
+    return h + '<div class="bsp-tn">' + E(note) + '</div></section>';
+  }
+
+  function tabsHTML(s){
+    var n = ex.items ? ex.items.filter(function(i){ return i.status !== 'taken_down'; }).length : null;
+    return '<div class="bsp-tabs" role="tablist">' +
+      '<button type="button" role="tab" class="' + (ui.tab === 'items' ? 'on' : '') + '" data-act="tab" data-tab="items" aria-selected="' + (ui.tab === 'items') + '">🛍️ Items' + (n ? ' · ' + n : '') + '</button>' +
+      '<button type="button" role="tab" class="' + (ui.tab === 'about' ? 'on' : '') + '" data-act="tab" data-tab="about" aria-selected="' + (ui.tab === 'about') + '">ℹ️ About</button></div>';
+  }
+
+  function panel(icon, title, inner, extra){
+    return '<section class="bsp-panel"><div class="bsp-sh"><span>' + icon + '</span><span class="bsp-st">' + title + '</span>' + (extra || '') + '</div>' + inner + '</section>';
+  }
+  function row(icon, label, value){
+    return '<div class="bsp-row"><span class="bsp-ri">' + icon + '</span><div class="bsp-rm"><div class="bsp-rl">' + label + '</div><div class="bsp-rv">' + value + '</div></div></div>';
+  }
+  var NONE = '<i>Not added yet</i>';
+
+  function canAdd(s){ return s.status !== 'taken_down' && (!s.official || isMine(s)); }
+  function itemsHTML(s){
+    var add = canAdd(s) ? '<button type="button" class="bsp-add" data-act="add">+ Add item</button>' : '';
+    var h = '';
+    if (ui.adding) h += '<div class="bsp-form">' +
+      '<div class="bsp-fl"><label for="bsp-in-name">Item</label><input id="bsp-in-name" maxlength="60" autocomplete="off" placeholder="e.g. Pandesal, phone charger, LPG refill" value="' + E(ui.add.name) + '"></div>' +
+      '<div class="bsp-frow"><div class="bsp-fl"><label for="bsp-in-price">Price ₱ <small>(optional)</small></label><input id="bsp-in-price" inputmode="decimal" maxlength="10" autocomplete="off" placeholder="0" value="' + E(ui.add.price) + '"></div>' +
+      '<div class="bsp-fl grow"><label for="bsp-in-note">Note <small>(optional)</small></label><input id="bsp-in-note" maxlength="160" autocomplete="off" placeholder="' + (isMine(s) ? 'Size, brand, when it’s available' : 'When you saw it, size, brand') + '" value="' + E(ui.add.note) + '"></div></div>' +
+      (ui.addErr ? '<div class="bsp-err">' + E(ui.addErr) + '</div>' : '') +
+      '<div class="bsp-fbtns"><button type="button" class="bsp-btn gold" data-act="add-save"' + (ui.busy ? ' disabled' : '') + '>' + (ui.busy ? 'Adding…' : 'Add item') + '</button><button type="button" class="bsp-btn" data-act="add-x">Cancel</button></div>' +
+      '<div class="bsp-fine">' + (isMine(s) ? 'Items you add show as “from the shop”.' : 'Seen it sold here? Add it so neighbors can find it. No links. New accounts: 5 items a day.') + '</div></div>';
+    if (ex.itemsErr) h += '<div class="bsp-empty">' + E(ex.itemsErr) + '</div>';
+    else if (ex.items == null) h += '<div class="bsp-empty">Loading items…</div>';
+    else if (!ex.items.length) h += '<div class="bsp-empty"><b>No items yet.</b><br>' + (s.official && !isMine(s) ? 'The owner hasn’t listed items here yet.' : 'Seen something sold here? Add it so neighbors can find it.') + '</div>';
+    else h += '<ul class="bsp-items">' + ex.items.map(function(i){ return itemHTML(s, i); }).join('') + '</ul>';
+    if (s.official && !isMine(s)) h += '<div class="bsp-fine pad">Only the owner lists items at an official shop.</div>';
+    return panel('🛍️', 'Items at this shop', h, add);
+  }
+  function itemHTML(s, i){
+    var mineI = meId() && String(i.added_by) === String(meId()), myShop = isMine(s), v = ex.myItemVotes[i.id] || null;
+    var who = i.by_owner ? '<span class="bsp-tag shop">From the shop</span>' : (mineI ? '<span class="bsp-tag">Added by you</span>' : '<span class="bsp-tag">Added by a neighbor</span>');
+    var trust = i.status === 'taken_down' ? '<span class="bsp-tag bad">Hidden after reports</span>'
+              : (i.vouch_count ? '<span class="bsp-tag ok">✓ ' + plural(i.vouch_count, 'local', 'locals') + ' saw it</span>' : (i.by_owner ? '' : '<span class="bsp-tag new">Not confirmed yet</span>'));
+    var acts = '';
+    if (i.status !== 'taken_down') {
+      if (!mineI && !myShop) acts += '<button type="button" class="bsp-iv' + (v === 'vouch' ? ' on' : '') + '" data-act="ivouch" data-id="' + E(i.id) + '" aria-pressed="' + (v === 'vouch') + '" title="I saw it sold here">✓ ' + (v === 'vouch' ? 'Seen' : 'Seen it') + (i.vouch_points ? ' · ' + i.vouch_points : '') + '</button>' +
+                                    '<button type="button" class="bsp-ir' + (v === 'report' ? ' on' : '') + '" data-act="ireport" data-id="' + E(i.id) + '" aria-pressed="' + (v === 'report') + '" title="' + (v === 'report' ? 'You reported this item. Tap to take it back.' : 'Report this item') + '">⚠</button>';
+    }
+    if (mineI || (s.official && myShop)) acts += '<button type="button" class="bsp-irm" data-act="iremove" data-id="' + E(i.id) + '">Remove</button>';
+    var ask = '';
+    if (ui.ask && String(ui.ask.id) === String(i.id)) {
+      ask = ui.ask.kind === 'remove'
+        ? '<div class="bsp-ask">Remove this item? <button type="button" class="bsp-btn red sm" data-act="iremove-yes" data-id="' + E(i.id) + '">Remove</button><button type="button" class="bsp-btn sm" data-act="ask-x">Keep</button></div>'
+        : '<div class="bsp-ask">Report this item: ' + IREASONS.map(function(r){ return '<button type="button" class="bsp-btn sm" data-act="ireason" data-id="' + E(i.id) + '" data-r="' + E(r) + '">' + E(r) + '</button>'; }).join('') +
+          '<button type="button" class="bsp-btn sm ghost" data-act="ask-x">Cancel</button></div>';
+    }
+    return '<li class="bsp-item' + (i.status === 'taken_down' ? ' dim' : '') + '"><span class="bsp-iem">' + E(i.emoji || itemEmoji(i.name)) + '</span>' +
+      '<div class="bsp-imain"><div class="bsp-iname">' + E(i.name) + (peso(i.price) ? ' <span class="bsp-iprice">' + E(peso(i.price)) + '</span>' : '') + '</div>' +
+      (i.note ? '<div class="bsp-inote">' + E(i.note) + '</div>' : '') +
+      '<div class="bsp-imeta">' + who + trust + '<span class="bsp-iago">' + E(ago(i.created_at)) + '</span></div>' + ask + '</div>' +
+      (acts ? '<div class="bsp-iacts">' + acts + '</div>' : '') + '</li>';
+  }
+
+  function aboutHTML(s){
+    var d = det(s), cat = catOf(s), addr = addrOf(s), pays = Array.isArray(d.payments) ? d.payments.filter(function(p){ return typeof p === 'string'; }) : [];
+    var ways = [d.delivery ? '🛵 Delivery' : '', d.pickup ? '🛍️ Pick-up' : ''].filter(Boolean);
+    var owner = isMine(s) ? 'You' : (s.seller || 'Member');
+    var trust = s.status === 'taken_down' ? '⛔ Taken down after reports' :
+      (s.status === 'confirmed' ? '✓ Confirmed by locals' : '🆕 Not confirmed yet') +
+      ' <span class="bsp-dim">· ' + plural(s.vouchPts || 0, 'vouch point', 'vouch points') + (s.reportN ? ' · ' + plural(s.reportN, 'report', 'reports') : '') + '</span>';
+    var rows = '<div class="bsp-rows">' +
+      row('🛍️', 'What it sells', s.sells ? E(s.sells) : NONE) +
+      row(E(cat[0] || '🏷️'), 'Category', cat[1] ? E(cat[1]) : NONE) +
+      row('📍', 'Address', addr ? E(addr) : 'Pinned on the map' + (isCoords(s.address) ? ' <span class="bsp-dim">(' + E(s.address) + ')</span>' : '')) +
+      (d.landmark ? row('🧭', 'Landmark', E(d.landmark)) : '') +
+      row('⏰', 'Hours', s.hours ? E(s.hours) : NONE) +
+      row('📞', 'Contact number', s.contact ? '<span class="bsp-sel">' + E(s.contact) + '</span>' : NONE) +
+      row('💳', 'Payments', pays.length ? pays.map(function(p){ return '<span class="bsp-mini">' + E(p) + '</span>'; }).join('') : NONE) +
+      row('🛵', 'Delivery / pick-up', ways.length ? ways.map(function(w){ return '<span class="bsp-mini">' + w + '</span>'; }).join('') : NONE) +
+      row('🛡️', 'Trust', trust) +
+      (since(s.createdAt) ? row('📅', 'On BringMe since', E(since(s.createdAt))) : '') +
+      '</div>';
+    var by = '<div class="bsp-owner"><span class="bsp-av">' + E(String(owner).replace(/^@/, '').charAt(0).toUpperCase() || '?') + '</span>' +
+      '<span class="bsp-own-name">' + E(owner) + '<small>' + (s.official ? 'Owner' : 'Posted this listing') + '</small></span>' +
+      (isMine(s) ? '<button type="button" class="bsp-btn" data-act="mine">Your posts</button>'
+                 : (s._ownerId ? '<button type="button" class="bsp-btn" data-act="owner">👤 View profile</button>' : '')) + '</div>';
+    return panel('🏪', 'About this shop', rows) + panel('👤', 'Posted by', by);
+  }
+
+  /* ---------- the editor (whoever posted the shop) ---------- */
+  function startEdit(){
+    var s = cur, d = det(s), cat = catOf(s);
+    draft = { name:s.name || '', category:s.category || cat[1] || '', custom:'', sells:s.sells || '', address:addrOf(s), landmark:d.landmark || '',
+              hours:s.hours || '', contact:s.contact || '', payments:(Array.isArray(d.payments) ? d.payments.slice() : []),
+              delivery:!!d.delivery, pickup:!!d.pickup, cover:okUrl(s.cover) || null, logo:okUrl(s.logo) || null, coverNew:null, logoNew:null };
+    // shop text from the database shows look-alike quotes (＆ ’ ”); keep the plain ones in the editor
+    ['name','sells','address','hours','contact','category'].forEach(function(k){ draft[k] = String(draft[k]).replace(/’/g, "'").replace(/”/g, '"').replace(/＆/g, '&'); });
+    if (draft.category && !places().some(function(p){ return p.name === draft.category; })) { draft.custom = draft.category; draft.category = '__own'; }
+    ui.editing = true; ui.err = ''; ui.adding = false; ui.reporting = false; ui.ask = null;
+  }
+  function grab(){
+    if (!root) return;
+    var v = function(id){ var el = root.querySelector('#' + id); return el ? el.value : null; };
+    if (ui.adding) { ['name','price','note'].forEach(function(k){ var x = v('bsp-in-' + k); if (x != null) ui.add[k] = x; }); }
+    if (ui.editing && draft) {
+      ['name','custom','sells','address','landmark','hours','contact'].forEach(function(k){ var x = v('bsp-ed-' + k); if (x != null) draft[k] = x; });
+      var c = v('bsp-ed-category'); if (c != null) draft.category = c;
+    }
+  }
+  function editHTML(){
+    var d = draft, opts = places().map(function(p){ return '<option value="' + E(p.name) + '"' + (d.category === p.name ? ' selected' : '') + '>' + E(p.em + ' ' + p.name) + '</option>'; }).join('');
+    var coverSrc = d.coverNew || d.cover, logoSrc = d.logoNew || d.logo;
+    var fld = function(id, label, val, o){ o = o || {};
+      return '<div class="bsp-fl"><label for="bsp-ed-' + id + '">' + label + '</label>' + (o.area
+        ? '<textarea id="bsp-ed-' + id + '" rows="3" maxlength="' + (o.max || 600) + '" placeholder="' + E(o.ph || '') + '">' + E(val) + '</textarea>'
+        : '<input id="bsp-ed-' + id + '" maxlength="' + (o.max || 120) + '" autocomplete="off" placeholder="' + E(o.ph || '') + '" value="' + E(val) + '"' + (o.tel ? ' inputmode="tel"' : '') + '>') + '</div>'; };
+    var tog = function(act, key, label, on){ return '<button type="button" class="bsp-tog' + (on ? ' on' : '') + '" data-act="' + act + '" data-k="' + E(key) + '" aria-pressed="' + !!on + '">' + (on ? '✓ ' : '') + E(label) + '</button>'; };
+    return '<section class="bsp-panel bsp-edit"><div class="bsp-sh"><span>✎</span><span class="bsp-st">Edit your shop</span></div><div class="bsp-ebody">' +
+      '<div class="bsp-photos">' +
+        '<div class="bsp-ph cover"><div class="bsp-phv"' + (coverSrc ? ' style="background-image:url(\'' + E(coverSrc) + '\')"' : '') + '>' + (coverSrc ? '' : '<span>Cover photo</span>') + '</div>' +
+          '<div class="bsp-phb"><button type="button" class="bsp-btn sm" data-act="pick" data-k="cover">📷 ' + (coverSrc ? 'Change cover' : 'Add a cover photo') + '</button>' + (coverSrc ? '<button type="button" class="bsp-btn sm ghost" data-act="unpick" data-k="cover">Remove</button>' : '') + '</div></div>' +
+        '<div class="bsp-ph logo"><div class="bsp-phv"' + (logoSrc ? ' style="background-image:url(\'' + E(logoSrc) + '\')"' : '') + '>' + (logoSrc ? '' : '<span>' + E(cur.catEmoji || '🏪') + '</span>') + '</div>' +
+          '<div class="bsp-phb"><button type="button" class="bsp-btn sm" data-act="pick" data-k="logo">📷 ' + (logoSrc ? 'Change logo' : 'Add a logo') + '</button>' + (logoSrc ? '<button type="button" class="bsp-btn sm ghost" data-act="unpick" data-k="logo">Remove</button>' : '') + '</div></div>' +
+      '</div>' +
+      '<div class="bsp-fine">Photos are made smaller on your phone before upload, and their location data is removed.</div>' +
+      fld('name', 'Shop name', d.name, { max:80 }) +
+      '<div class="bsp-fl"><label for="bsp-ed-category">Category</label><select id="bsp-ed-category"><option value="">Pick a category</option>' + opts +
+        '<option value="__own"' + (d.category === '__own' ? ' selected' : '') + '>✏️ Type my own…</option></select></div>' +
+      (d.category === '__own' ? fld('custom', 'Your category', d.custom, { max:60, ph:'e.g. Bike shop' }) : '') +
+      fld('sells', 'What it sells', d.sells, { area:1, max:600, ph:'Pandesal from 5 AM, ensaymada, banana bread' }) +
+      fld('address', 'Address', d.address, { max:200, ph:'Street, barangay' }) +
+      fld('landmark', 'Landmark', d.landmark, { max:120, ph:'Beside the chapel, across the 7-Eleven' }) +
+      '<div class="bsp-frow">' + fld('hours', 'Hours', d.hours, { max:120, ph:'5 AM – 8 PM, closed Sunday' }) + fld('contact', 'Contact number', d.contact, { max:40, ph:'+63 9…', tel:1 }) + '</div>' +
+      '<div class="bsp-fl"><label>Payments</label><div class="bsp-togs">' + PAY.map(function(p){ return tog('pay', p, p, d.payments.indexOf(p) >= 0); }).join('') + '</div></div>' +
+      '<div class="bsp-fl"><label>Delivery / pick-up</label><div class="bsp-togs">' + tog('way', 'delivery', '🛵 Delivery', d.delivery) + tog('way', 'pickup', '🛍️ Pick-up', d.pickup) + '</div></div>' +
+      (ui.err ? '<div class="bsp-err">' + E(ui.err) + '</div>' : '') +
+      '<div class="bsp-fbtns"><button type="button" class="bsp-btn gold" data-act="save"' + (ui.busy ? ' disabled' : '') + '>' + (ui.busy ? 'Saving…' : 'Save changes') + '</button><button type="button" class="bsp-btn" data-act="edit-x">Cancel</button></div>' +
+      '<div class="bsp-fine">No links (they’re blocked to stop spam). Neighbors can still vouch for or report the shop.</div>' +
+    '</div></section>';
+  }
+
+  /* ---------- whole page ---------- */
+  function render(){
+    var s = cur; if (!s || !root) return;
+    grab();
+    var foc = document.activeElement && root.contains(document.activeElement) && document.activeElement.id ? document.activeElement.id : null;
+    var scroll = root.scrollTop;
+    root.innerHTML = '<div class="bsp-col">' + cardHTML(s) + noticeHTML(s) +
+      (ui.editing ? editHTML() : trustHTML(s) + tabsHTML(s) + (ui.tab === 'about' ? aboutHTML(s) : itemsHTML(s))) +
+      '<div class="bsp-safe">Shops on BringMe are posted by the community. Call or check before you go.</div>' +
+      '<div class="bsp-fbar" role="toolbar" aria-label="Shop actions">' +
+        '<button type="button" class="bsp-fb back" data-act="close">← Back to map</button>' +
+        (telOf(s.contact) ? '<a class="bsp-fb call" href="tel:' + E(telOf(s.contact)) + '">📞 Call</a>' : '') +
+        '<button type="button" class="bsp-fb go" data-act="dir">🧭 Directions</button>' +
+      '</div></div>' +
+      '<input type="file" accept="image/*" id="bsp-file" hidden>';
+    root.scrollTop = scroll;
+    if (foc) { var f = root.querySelector('#' + foc); if (f) { try { f.focus({ preventScroll:true }); var n = (f.value || '').length; if (f.setSelectionRange && f.type !== 'number') f.setSelectionRange(n, n); } catch(e){} } }
+  }
+
+  /* ---------- loading what's on the page ---------- */
+  async function loadExtras(){
+    var s = cur; if (!s) return;
+    var t = ++tok, id = s.id, uid = meId();
+    if (!sbOk() || !s._db) { ex.items = []; render(); return; }
+    ex.loading = true;
+    try {
+      var res = await Promise.all([
+        sb.from('stores').select('*').eq('id', id).maybeSingle(),
+        sb.from('store_items').select('*').eq('store_id', id).is('removed_at', null).order('created_at', { ascending:false }).limit(200),
+        uid ? sb.from('store_votes').select('kind,power').eq('store_id', id).eq('user_id', uid).maybeSingle() : Promise.resolve({ data:null }),
+        (uid && power == null) ? sb.rpc('my_vouch_power') : Promise.resolve({ data:power })
+      ]);
+      if (t !== tok || !cur || String(cur.id) !== String(id)) return;
+      if (res[0] && res[0].data) fromRow(cur, res[0].data);
+      if (res[1] && res[1].error) { ex.items = []; ex.itemsErr = missingDb(res[1].error) ? (preview() ? 'Items need the database update (db stores v1). Run it in Supabase, then reload.' : 'Items couldn’t load right now.') : 'Items couldn’t load right now.'; }
+      else { ex.itemsErr = ''; ex.items = sortItems((res[1] && res[1].data) || []); }
+      ex.myVote = (res[2] && res[2].data && res[2].data.kind) || null;
+      if (uid && res[3] && !res[3].error && res[3].data != null) power = Number(res[3].data);
+      ex.myItemVotes = {};
+      if (uid && ex.items.length) {
+        var iv = await sb.from('store_item_votes').select('item_id,kind').eq('user_id', uid).in('item_id', ex.items.map(function(i){ return i.id; }));
+        if (t !== tok) return;
+        ((iv && iv.data) || []).forEach(function(v){ ex.myItemVotes[v.item_id] = v.kind; });
+      }
+      cur.itemNames = ex.items.filter(function(i){ return i.status !== 'taken_down'; }).map(function(i){ return i.name; }).join(', ');
+      cur.itemCount = ex.items.filter(function(i){ return i.status !== 'taken_down'; }).length;
+    } catch(e) { if (t === tok) { ex.items = ex.items || []; ex.itemsErr = 'Items couldn’t load right now.'; } }
+    ex.loading = false;
+    if (t === tok) render();
+  }
+  function sortItems(a){
+    return a.slice().sort(function(x, y){
+      if (!!y.by_owner !== !!x.by_owner) return y.by_owner ? 1 : -1;                         // from the shop first
+      if ((x.status === 'taken_down') !== (y.status === 'taken_down')) return x.status === 'taken_down' ? 1 : -1;
+      if ((y.vouch_points || 0) !== (x.vouch_points || 0)) return (y.vouch_points || 0) - (x.vouch_points || 0);   // then the most vouched
+      return String(y.created_at || '').localeCompare(String(x.created_at || ''));            // then the newest
+    });
+  }
+
+  /* ---------- actions ---------- */
+  async function vote(kind, reason){
+    var s = cur; if (!s || ui.busy) return;
+    if (needSignIn()) return;
+    var want = (kind !== 'clear' && ex.myVote === kind) ? 'clear' : kind;
+    ui.busy = true; ui.reporting = false; render();
+    try {
+      var r = await sb.rpc('store_vote', { p_store_id:s.id, p_kind:want, p_reason:reason || null });
+      if (r.error) throw r.error;
+      var row1 = Array.isArray(r.data) ? r.data[0] : r.data;
+      setCounts(row1);
+      if (want === 'clear') toast('Your vote was taken back.');
+      else if (want === 'vouch') toast(power ? '✓ Thanks! Your vouch adds ' + plural(power, 'point', 'points') + '.' : '✓ Saved. New accounts’ vouches count once the account is 7 days old.', 'success');
+      else toast(cur.status === 'taken_down' ? 'Reported. This shop is now hidden after reports from locals.' : '⚠ Reported. Thanks for keeping BringMe honest.', 'success');
+      if (cur.status === 'taken_down' && !isMine(cur)) { var gone = cur.id; close(); dropShop(gone); }
+    } catch(e) { toast(missingDb(e) ? 'Vouching needs the database update (db stores v1).' : msg(e)); }
+    ui.busy = false; if (cur) render();
+  }
+  function dropShop(id){
+    try { stores = all().filter(function(x){ return String(x.id) !== String(id); }); } catch(e){}
+    try { if (typeof renderAll === 'function') renderAll(); } catch(e){}
+    try { if (typeof buildMarkers === 'function') buildMarkers(); } catch(e){}
+  }
+  async function itemVote(id, kind, reason){
+    if (ui.busy) return; if (needSignIn()) return;
+    var want = (kind !== 'clear' && ex.myItemVotes[id] === kind) ? 'clear' : kind;
+    ui.busy = true; ui.ask = null; render();
+    try {
+      var r = await sb.rpc('store_item_vote', { p_item_id:id, p_kind:want, p_reason:reason || null });
+      if (r.error) throw r.error;
+      var d = Array.isArray(r.data) ? r.data[0] : r.data, it = (ex.items || []).find(function(i){ return String(i.id) === String(id); });
+      if (it && d) { it.vouch_points = d.vouch_points; it.vouch_count = d.vouch_count; it.report_points = d.report_points; it.report_count = d.report_count; it.status = d.status; }
+      if (d) { ex.myItemVotes[id] = d.my_kind || null; if (d.my_power != null) power = d.my_power; }
+      if (it && it.status === 'taken_down') { ex.items = ex.items.filter(function(i){ return i !== it; }); toast('Reported. The item is now hidden.'); }
+      else toast(want === 'clear' ? 'Your vote was taken back.' : want === 'vouch' ? (power ? '✓ Thanks! Marked as seen here.' : '✓ Saved. It counts once your account is 7 days old.') : '⚠ Reported. Thanks!', want === 'clear' ? 'info' : 'success');
+      ex.items = sortItems(ex.items || []);
+    } catch(e) { toast(msg(e)); }
+    ui.busy = false; render();
+  }
+  async function addItem(){
+    grab();
+    var s = cur, name = ui.add.name.trim(), note = ui.add.note.trim(), pr = ui.add.price.replace(/[₱,\s]/g, '');
+    if (name.length < 2) { ui.addErr = 'Type the item’s name (2 letters or more).'; return render(); }
+    if (pr && (isNaN(Number(pr)) || Number(pr) < 0)) { ui.addErr = 'The price should be a number, like 25 or 120.50.'; return render(); }
+    if (/(https?:\/\/|www\.)/i.test(name + ' ' + note)) { ui.addErr = 'No links, please.'; return render(); }
+    if (needSignIn()) return;
+    ui.busy = true; ui.addErr = ''; render();
+    try {
+      var r = await sb.rpc('store_item_add', { p_store_id:s.id, p_name:name, p_price:pr ? Number(pr) : null, p_note:note || null, p_emoji:itemEmoji(name) });
+      if (r.error) throw r.error;
+      var row1 = Array.isArray(r.data) ? r.data[0] : r.data;
+      if (row1) ex.items = sortItems([row1].concat(ex.items || []));
+      ui.adding = false; ui.add = { name:'', price:'', note:'' };
+      cur.itemNames = (ex.items || []).map(function(i){ return i.name; }).join(', '); cur.itemCount = (ex.items || []).length;
+      toast('✓ Added. Neighbors can now find it here.', 'success');
+    } catch(e) { ui.addErr = missingDb(e) ? 'Adding items needs the database update (db stores v1).' : msg(e); }
+    ui.busy = false; render();
+  }
+  async function removeItem(id){
+    if (ui.busy) return; ui.busy = true; ui.ask = null; render();
+    try {
+      var r = await sb.rpc('store_item_remove', { p_item_id:id });
+      if (r.error) throw r.error;
+      ex.items = (ex.items || []).filter(function(i){ return String(i.id) !== String(id); });
+      cur.itemNames = ex.items.map(function(i){ return i.name; }).join(', '); cur.itemCount = ex.items.length;
+      toast('Removed.');
+    } catch(e) { toast(msg(e)); }
+    ui.busy = false; render();
+  }
+
+  /* photos: shrink in the browser (this also drops the photo's location data), upload to your own folder */
+  function shrink(file, max, cb){
+    var rd = new FileReader();
+    rd.onload = function(){ var img = new Image(); img.onload = function(){
+      var w = img.width, h = img.height, k = Math.min(1, max / Math.max(w, h)); w = Math.round(w * k); h = Math.round(h * k);
+      var c = document.createElement('canvas'); c.width = w; c.height = h; var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); g.drawImage(img, 0, 0, w, h);
+      try { cb(c.toDataURL('image/jpeg', 0.84)); } catch(e){ cb(null); } };
+      img.onerror = function(){ cb(null); }; img.src = rd.result; };
+    rd.onerror = function(){ cb(null); }; rd.readAsDataURL(file);
+  }
+  async function upload(dataUrl, base){
+    try {
+      var blob = await (await fetch(dataUrl)).blob();
+      var path = meId() + '/' + base + '_' + Date.now() + '.jpg';
+      var up = await sb.storage.from('profile-media').upload(path, blob, { upsert:true, contentType:'image/jpeg' });
+      if (up.error) throw up.error;
+      var pub = sb.storage.from('profile-media').getPublicUrl(path);
+      return (pub && pub.data && pub.data.publicUrl) || null;
+    } catch(e) { console.warn('[BringMe] shop photo upload failed:', e); return null; }
+  }
+  async function save(){
+    grab();
+    var s = cur, d = draft; if (!s || !d || ui.busy) return;
+    var name = d.name.trim(), cat = d.category === '__own' ? d.custom.trim() : d.category;
+    if (name.length < 2) { ui.err = 'The shop name needs 2 letters or more.'; return render(); }
+    if (/(https?:\/\/|www\.)/i.test([name, d.sells, d.address, d.landmark, d.hours, d.contact, cat].join(' '))) { ui.err = 'No links, please (they’re blocked to stop spam).'; return render(); }
+    if (!sbOk() || !meId()) { ui.err = 'Please sign in first.'; return render(); }
+    ui.busy = true; ui.err = ''; render();
+    try {
+      var hit = places().find(function(p){ return p.name === cat; });
+      var dd = Object.assign({}, det(s), { payments:d.payments.slice(), delivery:!!d.delivery, pickup:!!d.pickup, landmark:d.landmark.trim() });
+      var pay = { name:name, category:cat || null, description:d.sells.trim(), address:d.address.trim(), hours:d.hours.trim(), contact:d.contact.trim(), details:dd };
+      if (hit) pay.emoji = hit.em;
+      if (d.coverNew) { var cu = await upload(d.coverNew, 'store_' + s.id + '_cover'); if (!cu) throw new Error('The cover photo couldn’t upload. Try again, or a smaller photo.'); pay.cover_url = cu; }
+      else if (!d.cover && s.cover) pay.cover_url = null;
+      if (d.logoNew) { var lu = await upload(d.logoNew, 'store_' + s.id + '_logo'); if (!lu) throw new Error('The logo couldn’t upload. Try again, or a smaller photo.'); pay.logo_url = lu; }
+      else if (!d.logo && s.logo) pay.logo_url = null;
+      var r = await sb.from('stores').update(pay).eq('id', s.id).select().maybeSingle();
+      if (r.error) throw r.error;
+      if (!r.data) throw new Error('Only the person who posted this shop can edit it.');
+      fromRow(cur, r.data);
+      ui.editing = false; draft = null;
+      toast('✓ Shop saved.', 'success');
+      try { if (typeof window.bmLoadPosts === 'function') window.bmLoadPosts(); } catch(e){}
+    } catch(e) { ui.err = missingDb(e) ? 'Saving these details needs the database update (db stores v1). Run it in Supabase, then try again.' : msg(e); }
+    ui.busy = false; render();
+  }
+
+  function share(s){
+    var url = link(s);
+    if (navigator.share) { navigator.share({ title:s.name, text:'Found this shop on BringMe', url:url }).catch(function(){}); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function(){ toast('🔗 Link copied. Paste it anywhere to share this shop.'); },
+        function(){ toast('Share this link: ' + url); });
+    } else toast('Share this link: ' + url);
+  }
+
+  function onClick(e){
+    var b = e.target.closest('[data-act]'); if (!b || !cur || !root.contains(b)) return;
+    var s = cur, act = b.getAttribute('data-act'), id = b.getAttribute('data-id');
+    if (act === 'close') return close();
+    if (act === 'dir') { close(); try { navigateTo(Number(s.lat), Number(s.lng), s.name, addrOf(s) || 'Pinned on the map'); } catch(err){} return; }
+    if (act === 'share') return share(s);
+    if (act === 'tab') { grab(); ui.tab = b.getAttribute('data-tab') === 'about' ? 'about' : 'items'; ui.ask = null; return render(); }
+    if (act === 'vouch') return vote('vouch');
+    if (act === 'report') { if (ex.myVote === 'report') return vote('report'); if (needSignIn()) return; ui.reporting = !ui.reporting; return render(); }
+    if (act === 'reason') return vote('report', b.getAttribute('data-r'));
+    if (act === 'reason-x') { ui.reporting = false; return render(); }
+    if (act === 'add') { if (needSignIn()) return; grab(); ui.adding = !ui.adding; ui.addErr = ''; render(); var n = root.querySelector('#bsp-in-name'); if (n) n.focus(); return; }
+    if (act === 'add-x') { ui.adding = false; ui.addErr = ''; ui.add = { name:'', price:'', note:'' }; return render(); }
+    if (act === 'add-save') return addItem();
+    if (act === 'ivouch') return itemVote(id, 'vouch');
+    if (act === 'ireport') { if (ex.myItemVotes[id] === 'report') return itemVote(id, 'report'); if (needSignIn()) return; grab(); ui.ask = { id:id, kind:'report' }; return render(); }
+    if (act === 'ireason') return itemVote(id, 'report', b.getAttribute('data-r'));
+    if (act === 'iremove') { grab(); ui.ask = { id:id, kind:'remove' }; return render(); }
+    if (act === 'iremove-yes') return removeItem(id);
+    if (act === 'ask-x') { ui.ask = null; return render(); }
+    if (act === 'edit') { if (!isMine(s)) return; startEdit(); render(); var ed = root.querySelector('.bsp-edit'); if (ed) root.scrollTop += ed.getBoundingClientRect().top - root.getBoundingClientRect().top - 12; return; }
+    if (act === 'edit-x') { ui.editing = false; draft = null; ui.err = ''; return render(); }
+    if (act === 'save') return save();
+    if (act === 'pick') { grab(); var f = root.querySelector('#bsp-file'); if (f) { f.setAttribute('data-k', b.getAttribute('data-k')); f.value = ''; f.click(); } return; }
+    if (act === 'unpick') { grab(); var k = b.getAttribute('data-k'); draft[k] = null; draft[k + 'New'] = null; return render(); }
+    if (act === 'pay') { grab(); var p = b.getAttribute('data-k'), i = draft.payments.indexOf(p); if (i >= 0) draft.payments.splice(i, 1); else draft.payments.push(p); return render(); }
+    if (act === 'way') { grab(); var w = b.getAttribute('data-k'); draft[w] = !draft[w]; return render(); }
+    if (act === 'mine') { close(); try { openProfile(); } catch(err){} return; }
+    if (act === 'owner') {
+      if (typeof window.bmOpenPublicProfile !== 'function') return;
+      var sid = s.id; close();
+      window.bmOpenPublicProfile(s._ownerId, function(){ open(sid); });
+    }
+  }
+  function onChange(e){
+    var t = e.target;
+    if (t.id === 'bsp-ed-category') { grab(); return render(); }
+    if (t.id === 'bsp-file' && t.files && t.files[0] && draft) {
+      var k = t.getAttribute('data-k') === 'logo' ? 'logo' : 'cover', file = t.files[0];
+      if (!/^image\//.test(file.type || '')) { toast('Pick a photo (JPG or PNG).'); return; }
+      shrink(file, k === 'logo' ? 512 : 1400, function(url){
+        if (!url) { toast('That photo couldn’t be read. Try another one.'); return; }
+        grab(); draft[k + 'New'] = url; render();
+      });
+    }
+  }
+  function onKey(e){
+    if (e.key === 'Escape' && root && !root.hidden) {
+      if (ui.reporting || ui.ask) { ui.reporting = false; ui.ask = null; return render(); }
+      if (ui.adding) { ui.adding = false; ui.addErr = ''; return render(); }
+      if (ui.editing) { ui.editing = false; draft = null; ui.err = ''; return render(); }
+      return close();
+    }
+    if (e.key === 'Enter' && root && !root.hidden && ui.adding && e.target && /^bsp-in-/.test(e.target.id || '')) { e.preventDefault(); addItem(); }
+  }
+
+  function build(){
+    root = document.createElement('div');
+    root.id = 'bm-store-page'; root.className = 'bsp'; root.hidden = true;
+    root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'false'); root.setAttribute('aria-label', 'Shop');
+    var host = document.getElementById('profile-page'); host = host && host.parentNode ? host.parentNode : (document.querySelector('.map-wrap') || document.body);
+    host.appendChild(root);
+    root.addEventListener('click', onClick);
+    root.addEventListener('change', onChange);
+    document.addEventListener('keydown', onKey);
+  }
+  function reset(){
+    ui = { tab:'items', editing:false, adding:false, reporting:false, ask:null, busy:false, err:'', add:{ name:'', price:'', note:'' }, addErr:'' };
+    ex = { id:null, items:null, itemsErr:'', myVote:null, myItemVotes:{}, loading:false }; draft = null;
+  }
+  function show(s, opt){
+    if (!root) build();
+    if (!cur || String(cur.id) !== String(s.id)) reset();
+    cur = s; ex.id = s.id;
+    if (opt && opt.edit && isMine(s)) startEdit();
+    render();
+    root.hidden = false; root.scrollTop = 0;
+    document.body.classList.add('bsp-open');
+    try { if (!window.BM_NO_MAP && typeof map !== 'undefined' && map && s.lat != null) map.panTo({ lat:Number(s.lat), lng:Number(s.lng) }); } catch(e){}
+    setTimeout(function(){ var b = root.querySelector('.bsp-x'); if (b) try { b.focus({ preventScroll:true }); } catch(e){} }, 30);
+    loadExtras();
+  }
+  async function open(id, opt){
+    var s = byId(id);
+    if (s) return show(s, opt);
+    // not on the map (yet): a shared link, or your own shop that was taken down
+    if (sbOk()) {
+      try {
+        var r = await sb.from('stores').select('*').eq('id', id).maybeSingle();
+        if (r && r.data && !r.data.removed_at) {
+          var o = fromRow({ id:r.data.id, _db:{ table:'stores', id:r.data.id }, seller:(meId() && r.data.owner_id === meId()) ? 'You' : 'Member', rating:5 }, r.data);
+          return show(o, opt);
+        }
+      } catch(e){}
+    }
+    toast('This shop isn’t on BringMe any more');
+  }
+  function close(){
+    if (!root) return;
+    grab();
+    root.hidden = true; ui.reporting = false; ui.ask = null; ui.editing = false; ui.adding = false; draft = null;
+    document.body.classList.remove('bsp-open');
+  }
+
+  /* search + side panel: what each shop has on its items list (one light query after posts load) */
+  async function indexItems(){
+    if (idxBusy || !sbOk()) return;
+    var list = all(); if (!list.length) return;
+    idxBusy = true;
+    try {
+      var ids = list.filter(function(s){ return s._db; }).map(function(s){ return s.id; }), names = {};
+      for (var i = 0; i < ids.length; i += 150) {
+        var r = await sb.from('store_items').select('store_id,name,status').in('store_id', ids.slice(i, i + 150)).is('removed_at', null).limit(3000);
+        if (r.error) { idxBusy = false; return; }
+        (r.data || []).forEach(function(x){ if (x.status === 'taken_down') return; (names[x.store_id] = names[x.store_id] || []).push(String(x.name).replace(/[&<>"'`]/g, ' ')); });
+      }
+      if (list !== all()) { idxBusy = false; return; }                // posts reloaded meanwhile: the next pass does it
+      list.forEach(function(s){ var n = names[s.id] || []; s.itemNames = n.join(', '); s.itemCount = n.length; });
+      try { if (typeof renderRightPanel === 'function') renderRightPanel(); } catch(e){}
+      try { if (window.bmFinder && typeof window.bmFinder.refresh === 'function') window.bmFinder.refresh(); } catch(e){}
+    } catch(e){}
+    idxBusy = false;
+  }
+
+  /* a shared link bringme.store/?shop=<id> opens the shop once its posts have loaded */
+  function deep(){
+    if (deepDone) return;
+    var m = /[?&]shop=([^&#]+)/.exec(location.search);
+    if (!m) { deepDone = true; return; }
+    var id = decodeURIComponent(m[1]);
+    if (byId(id)) { deepDone = true; open(id); }
+    else if (sbOk() && all().length) { deepDone = true; open(id); }
+  }
+  var _ra = window.renderAll;
+  if (typeof _ra === 'function') window.renderAll = function(){
+    var r = _ra.apply(this, arguments);
+    try { deep(); } catch(e){}
+    try {
+      var list = all();
+      if (list !== lastStores) {
+        lastStores = list;
+        if (cur && root && !root.hidden) { var n = byId(cur.id); if (n && n !== cur) { n.itemNames = cur.itemNames; n.itemCount = cur.itemCount; cur = n; if (!ui.editing && !ui.adding) render(); } }
+        setTimeout(indexItems, 0);
+      }
+    } catch(e){}
+    return r;
+  };
+
+  /* new shops: also save the category, the first photo (as the cover) and the form's items */
+  window.bmPersistStore = async function(o){
+    if (!sbOk() || !meId()) return;
+    var desc = (o.products && o.products.length) ? o.products.join(', ') : (o.desc || '');
+    var cat = (o.categories && o.categories[0] && o.categories[0] !== 'Shop') ? o.categories[0] : '';
+    var row = { owner_id:meId(), name:o.name, emoji:o.catEmoji || '🏪', description:desc, address:o.address || '', hours:o.hours || '',
+                contact:o.contact || '', lat:o.lat, lng:o.lng, featured:false, category:cat || null, details:{ poster:o.pending ? 'owner' : 'community' } };
+    var r = await sb.from('stores').insert(row).select().single();
+    if (r.error && missingDb(r.error)) { delete row.category; delete row.details; r = await sb.from('stores').insert(row).select().single(); }   // before db stores v1
+    if (r.error) { toast('Could not save store: ' + msg(r.error)); return; }
+    toast('✅ Store registered!', 'success');
+    var id = r.data.id; o._db = { table:'stores', id:id }; o.id = id;
+    try {
+      var ph = (o.photos || [])[0];
+      if (ph && /^data:image\//.test(ph)) { var url = await upload(ph, 'store_' + id + '_cover'); if (url) await sb.from('stores').update({ cover_url:url }).eq('id', id); }
+      var its = (o.items || []).slice(0, 40);
+      for (var i = 0; i < its.length; i++) {
+        var it = its[i], p = parseFloat(String(it.price || '').replace(/[₱,\s]/g, ''));
+        var a = await sb.rpc('store_item_add', { p_store_id:id, p_name:String(it.name || '').slice(0, 60), p_price:isNaN(p) ? null : p, p_note:null, p_emoji:it.em || null });
+        if (a.error && missingDb(a.error)) break;
+      }
+    } catch(e){ console.warn('[BringMe] shop extras', e); }
+    try { if (typeof window.bmLoadPosts === 'function') window.bmLoadPosts(); } catch(e){}
+  };
+
+  open.v14 = true;
+  window.bmOpenStorePage = open;
+  window.bmCloseStorePage = close;
 })();
 
 </script>
