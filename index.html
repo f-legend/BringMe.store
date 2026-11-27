@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v18 · 2026-11-27 ═══════ -->
-<script>window.BM_VERSION='index v18 · 2026-11-27';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v19 · 2026-11-27 ═══════ -->
+<script>window.BM_VERSION='index v19 · 2026-11-27';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
     <script>
     /* index v11: if Google Maps can't load (blocked, offline), keep the app running without the map */
@@ -2234,6 +2234,22 @@ select.sf-inp{appearance:none;-webkit-appearance:none;background-image:url("data
 .cat-sub.custom{border-color:var(--gold);background:#fffdf4;color:var(--gold-dk)}
 .cat-hint,.cat-unsure{font-size:12px;color:var(--muted);background:var(--cream2);border-radius:10px;padding:10px 12px;line-height:1.5}
 .cat-link{background:none;border:none;color:var(--gold-dk);font-weight:700;cursor:pointer;padding:0;font-size:12px;text-decoration:underline}
+/* index v19: typed categories — a box + AI's list */
+.cat-ty{display:flex;flex-direction:column;gap:8px}
+.cat-inrow{display:flex;gap:8px;align-items:center}
+.cat-inrow .cat-in{flex:1;min-width:0;margin:0}
+.cat-x{flex-shrink:0;background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:8px 13px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;font-family:inherit}
+.cat-sugs{display:flex;flex-direction:column;gap:6px}
+.cat-sl{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--gold-dk);margin:2px 2px 0}
+.cat-sg{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1.5px solid var(--border);border-radius:11px;padding:8px 12px;background:#fff;cursor:pointer;font-family:inherit;color:var(--navy)}
+.cat-sg:hover,.cat-sg:focus-visible{border-color:var(--gold);background:#fffdf4;outline:none}
+.cat-sg .em{font-size:19px;flex-shrink:0;width:24px;text-align:center;line-height:1}
+.cat-sg .tx{flex:1;min-width:0;font-size:13.5px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.cat-sg .tx small{display:block;font-size:11px;font-weight:600;color:var(--muted)}
+.cat-sg .bm{flex-shrink:0;font-size:10px;font-weight:800;color:var(--gold-dk);background:#fdf4d8;border:1px solid rgba(227,168,16,.35);border-radius:100px;padding:2px 8px}
+.cat-sg.best{border-color:var(--gold);background:linear-gradient(135deg,#fffdf4,#fdf6e0)}
+.cat-sg.own{border-style:dashed;border-color:rgba(227,168,16,.55)}
+.cat-sg.own .tx{color:var(--gold-dk)}
 </style>
 
   <!-- Service Worker Registration -->
@@ -2984,6 +3000,10 @@ body.bsp-open .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}   /* a
 #bm-store-page .bsp-togs{display:flex;flex-wrap:wrap;gap:7px}
 #bm-store-page .bsp-tog{border:1.5px solid var(--hair);background:#fff;color:var(--ink);border-radius:100px;padding:7px 12px;font-weight:800;font-size:12.5px;cursor:pointer}
 #bm-store-page .bsp-tog.on{background:var(--mint);border-color:rgba(26,107,58,.5);color:var(--green)}
+#bm-store-page .bsp-catsugs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:2px}
+#bm-store-page .bsp-csl{flex-basis:100%;font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--muted)}
+#bm-store-page .bsp-cat{border:1.5px solid var(--hair);background:#fff;color:var(--ink);border-radius:100px;padding:6px 11px;font-weight:800;font-size:12.5px;cursor:pointer;font-family:inherit}
+#bm-store-page .bsp-cat.on{background:var(--mint);border-color:rgba(26,107,58,.5);color:var(--green)}
 #bm-store-page .bsp-fbtns{display:flex;gap:8px;margin-top:4px}
 #bm-store-page .bsp-btn{border:1.5px solid var(--hair);background:#fff;color:var(--ink);border-radius:10px;padding:9px 14px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Poppins',sans-serif}
 #bm-store-page .bsp-btn:hover{border-color:var(--royal2)}
@@ -3580,7 +3600,7 @@ let S = {
   postType:"sell",
   form:{title:"",cat:null,catUI:null,price:"",location:"",desc:"",contact:"",image:"",imageUrl:"",brand:"",images:[],condition:"",negotiable:true,quantity:1,meetup:true,deliver:false,pickup:false,sellRadius:5,reason:"",cc:"+63",lat:null,lng:null},
   storeForm:{name:"",address:"",contact:"",hours:"",cat:null,catUI:null,products:"",poster:"community",docs:[],items:[],draft:"",openCatFor:null,catSearch:"",drillTop:null,importOpen:false,importText:"",importRows:[],importDupes:0,photos:[],lat:null,lng:null,located:false},
-  helpForm:{item:"",category:"Electronics"},
+  helpForm:{item:"",cat:null,catUI:null},
   helpReplyForm:{store:"",address:"",msg:""},
   pointsHistory:[],
   modal:null,
@@ -4230,7 +4250,8 @@ function submitPost() {
   const f=S.form;
   // Validate in form order so the toast points to the first gap.
   if (!f.title) { showToast('⚠️ What are you selling? Add an item name.', 'error'); return; }
-  if (!f.cat) { showToast('⚠️ Pick a category (AI can suggest one).', 'error'); return; }
+  catCommit('sell');   // index v19: words left in the category box count
+  if (!f.cat) { showToast('⚠️ Type a category — AI suggests some.', 'error'); return; }
   if (!(f.images && f.images.length)) { showToast('⚠️ Add at least one photo.', 'error'); return; }
   if (!f.condition) { showToast('⚠️ Choose the item condition.', 'error'); return; }
   if (!f.price || (f.saleType==='auction' && !(Number(f.price) >= 1))) { showToast(f.saleType==='auction' ? '⚠️ Set a starting bid from ₱1.' : '⚠️ Set your price.', 'error'); return; }   // index v16
@@ -4272,15 +4293,16 @@ function submitPost() {
 
 function submitHelpRequest() {
   if (!S.helpForm.item) { showToast('⚠️ Enter what you need.'); return; }
+  catCommit('help');   // index v19
   const helpBtn = document.querySelector('.help-submit-btn');
   if (helpBtn) { helpBtn.classList.add('btn-loading'); helpBtn.innerHTML = '<div class="spinner spinner-sm"></div> Posting...'; }
   setTimeout(() => {
     helpRequests=[{
-      id:Date.now(),item:S.helpForm.item,category:S.helpForm.category,
+      id:Date.now(),item:S.helpForm.item,category:catLabel(S.helpForm)||'Other',
       user:'You',avatar:'ME',time:'Just now',urgent:true,
       lat:USER.lat+(Math.random()-.5)*.01,lng:USER.lng+(Math.random()-.5)*.01,replies:[]
     },...helpRequests];
-    S.helpForm={item:'',category:'Electronics'};
+    S.helpForm={item:'',cat:null,catUI:null};
     closeModal(); S.tab='help'; renderAll(); showToast('🆘 Help request posted!', 'success');
   }, 700);
 }
@@ -4310,7 +4332,8 @@ function submitStore() {
   const f=S.storeForm;
   const owner=f.poster==='owner';
   if (!f.name) { showToast('⚠️ Add a name.'); return; }
-  if (!f.cat) { showToast('⚠️ Pick a type for your place.'); return; }
+  catCommit('place');   // index v19
+  if (!f.cat) { showToast('⚠️ Type what kind of place it is — AI suggests some.'); return; }
   if (f.placeId && !f.located) { showToast('⚠️ Check the spot first: tap 📌 Drop a pin.'); return; }   // index v15
   const svLink = (typeof bmSvLinkNorm === 'function') ? bmSvLinkNorm(f.svLink) : '';   // index v15: the poster's Street View link
   if (svLink && !bmSvLinkOk(svLink)) { showToast('⚠️ The Street View link must be a Google Maps link. In Google Maps: Share → Copy link.'); return; }
@@ -4386,13 +4409,12 @@ function stQuickAdd(k){
   renderModal();
 }
 function stRemoveItem(id){ S.storeForm.items=S.storeForm.items.filter(it=>it.id!==id); if(S.storeForm.openCatFor===id)S.storeForm.openCatFor=null; renderModal(); }
-function stOpenItemCat(id){ S.storeForm.openCatFor=id; S.storeForm.catSearch=''; S.storeForm.drillTop=null; renderModal(); }
-function stCloseItemCat(){ S.storeForm.openCatFor=null; S.storeForm.catSearch=''; S.storeForm.drillTop=null; renderModal(); }
-function stItemCatSearch(v){ S.storeForm.catSearch=v; renderModal(); }
+function stOpenItemCat(id){ S.storeForm.openCatFor=id; S.storeForm.catSearch=''; renderModal(); setTimeout(()=>{ const i=document.getElementById('st-catsrch'); if(i) try{ i.focus(); }catch(e){} },40); }
+function stCloseItemCat(){ S.storeForm.openCatFor=null; S.storeForm.catSearch=''; renderModal(); }
+function stItemCatSearch(v){ S.storeForm.catSearch=v; const it=S.storeForm.items.find(x=>x.id===S.storeForm.openCatFor); const el=document.getElementById('st-catsugs'); if(el&&it) el.innerHTML=stItemSugsHTML(it); }
+function stItemCatKey(e,id){ if(e.key!=='Enter') return; e.preventDefault(); const m=S.storeForm._itemMatches||[]; if(m.length) return stApplyMatch(id,0); if((S.storeForm.catSearch||'').trim()) return stApplyCustom(id); }
 function stApplyMatch(id,k){ const m=S.storeForm._itemMatches&&S.storeForm._itemMatches[k]; const it=S.storeForm.items.find(x=>x.id===id); if(!m||!it)return; it.cat={em:m.em,top:m.top,sub:m.sub}; stCloseItemCat(); }
-function stApplyCustom(id){ const it=S.storeForm.items.find(x=>x.id===id); if(!it)return; const name=(S.storeForm.catSearch||'').trim(); if(!name)return; it.cat={em:'🏷️',top:name,sub:''}; stCloseItemCat(); }
-function stDrillItemCat(id,ci){ S.storeForm.drillTop={itemId:id,ci}; renderModal(); }
-function stApplyDrillSub(id,ci,si){ const it=S.storeForm.items.find(x=>x.id===id); if(!it)return; const c=CAT_TAX[ci]; it.cat={em:c.em,top:c.name,sub: si<0?'':c.subs[si]}; S.storeForm.drillTop=null; stCloseItemCat(); }
+function stApplyCustom(id){ const it=S.storeForm.items.find(x=>x.id===id); if(!it)return; const c=catFromTyped('sell',S.storeForm.catSearch); if(!c)return; it.cat=c; stCloseItemCat(); }
 
 // ---------- bulk import ----------
 function stToggleImport(){ S.storeForm.importOpen=!S.storeForm.importOpen; renderModal(); const t=document.getElementById('st-imp-ta'); if(t&&S.storeForm.importOpen) t.focus(); }
@@ -4492,7 +4514,7 @@ function modalDirty(){
     if(S._postReqType==='urgent'){ const uf=(typeof urfF==='object'&&urfF)?urfF:{}; const t=(document.getElementById('urf-title')||{}).value||''; return !!(t||uf.cat||uf.when||uf.reward||uf.delivery); }
     const f=S._reqForm||{}; return !!(f.item||f.details||f.points||f.cat||f.location||(f.images&&f.images.length));
   }
-  if(m==='help-request'){ const f=S.helpForm||{}; return !!(f.item); }
+  if(m==='help-request'){ const f=S.helpForm||{}; return !!(f.item||f.cat); }
   return false;
 }
 function confirmDiscard(){
@@ -4520,6 +4542,7 @@ function dismissDiscard(doClose){
 }
 
 function renderModal() {
+  if (renderModal._busy) return;   // index v19
   const root=document.getElementById('modal-root');
   if (!S.modal) { root.innerHTML=''; renderModal._last=null; return; }
   // Preserve scroll position and the focused field across a full re-render,
@@ -4533,7 +4556,8 @@ function renderModal() {
   // modal (typing in a field) must not replay it, or the overlay flashes.
   const reRender = !!prevModal && renderModal._last===S.modal;
   const builders={detail:buildDetailModal,post:buildPostModal,'help-request':buildHelpRequestModal,'help-detail':buildHelpDetailModal,points:buildPointsModal,'store-register':buildStoreRegisterModal,boost:buildBoostModal,'boost-info':buildBoostInfoModal,admin:buildAdminModal,'trust-points':buildTrustPointsModal,'post-request':buildPostRequestModal};
-  root.innerHTML = (builders[S.modal]||(() => ''))();
+  renderModal._busy=true;
+  try { root.innerHTML = (builders[S.modal]||(() => ''))(); } finally { renderModal._busy=false; }
   const newOverlay=root.querySelector('.overlay');
   const newModal=root.querySelector('.modal');
   if (reRender){ if(newOverlay) newOverlay.classList.add('no-anim'); if(newModal) newModal.classList.add('no-anim'); }
@@ -4619,7 +4643,7 @@ function buildPostModal() {
           <textarea class="sf-inp" rows="3" placeholder="Condition details, specs, what's included..." oninput="S.form.desc=this.value" onblur="renderModal()" style="resize:vertical">${esc(f.desc)}</textarea>
           <label class="sf-fl">Brand <span class="sf-opt">(optional)</span></label>
           <input class="sf-inp" value="${esc(f.brand||'')}" placeholder="e.g. Sony" oninput="S.form.brand=this.value">
-          <label class="sf-fl">Category <span class="sf-opt">— AI picks it from your title &amp; details</span></label>
+          <label class="sf-fl">Category <span class="sf-opt">— type it; AI suggests from your title</span></label>
           ${catSection('sell')}
         </div>
 
@@ -4743,7 +4767,7 @@ function resetPostForm(){ S.form=Object.assign(postFormDefaults(), { saleType:'s
 const CAT_TAX = [
   { em:'📱', name:'Electronics & Gadgets', subs:['Phones & Tablets','Computers & Laptops','TV, Audio & Cameras','Gaming','Chargers & Accessories','Parts & Repair'] },
   { em:'👗', name:'Fashion & Accessories', subs:["Women's","Men's","Kids'",'Shoes','Bags & Wallets','Watches & Jewelry'] },
-  { em:'🏠', name:'Home & Furniture', subs:['Furniture','Appliances','Kitchen & Dining','Decor','Bedding & Bath','Storage & Organization'] },
+  { em:'🏠', name:'Home & Furniture', subs:['Furniture','Appliances','Kitchen & Dining','Decor','Bedding & Bath','Storage & Organization','Household Supplies'] },
   { em:'🛒', name:'Food & Groceries', subs:['Fresh & Produce','Pantry & Dry Goods','Snacks & Sweets','Drinks','Home-cooked & Baked'] },
   { em:'💄', name:'Health & Beauty', subs:['Skincare','Makeup','Hair & Body','Supplements & Vitamins','Medical & First Aid'] },
   { em:'👶', name:'Baby & Kids', subs:['Diapers & Wipes','Toys','Baby Clothes','Strollers & Gear','Feeding','School & Study'] },
@@ -4755,40 +4779,159 @@ const CAT_TAX = [
   { em:'🧰', name:'Services & Help', subs:['Repairs & Fix','Cleaning','Tutoring & Lessons','Events','Errands & Delivery','Professional'] },
   { em:'📦', name:'Everything Else', subs:['Freebies','Tickets & Vouchers','Lost & Found','Other'] },
 ];
-// Instant on-device classifier. (In production this is the fast layer; an LLM via a
-// Supabase Edge Function — reading title + details + photo — backs it up when keywords miss.)
+// Instant on-device suggestions (index v19). A keyword must start a word: one under 6 letters must be the whole word
+// (a plural is fine: "car" finds "cars", not "card"); a longer one may start a longer word ("repair" → "repairing").
+// English + Filipino. The first rule that fits is the single guess (item tags); every rule that fits goes into the
+// suggestion list. (An LLM through a Supabase Edge Function could back this up later when no keyword fits.)
+const CAT_CLOTHES = ['shirt','t-shirt','tshirt','tee','jeans','maong','shorts','jacket','hoodie','sweater','uniform','clothes','clothing',
+  'damit','apparel','ukay','ukay-ukay','socks','medyas','cap','hat','sombrero','scarf','pajama','sando','underwear'];
 const CAT_RULES = [
-  [['headphone','earphone','earbuds','airpods','speaker','soundbar','camera','television',' tv '], '📱','Electronics & Gadgets','TV, Audio & Cameras'],
-  [['charger','cable',' usb','adapter','power bank','powerbank'], '📱','Electronics & Gadgets','Chargers & Accessories'],
-  [['paracetamol','biogesic','medicine','pharmacy','antibiotic','capsule','syrup','ointment','bandage','first aid','betadine','thermometer','painkiller','tablets','vaccine','alcohol','face mask','checkup','check-up','lab test','x-ray','dental','blood pressure'], '💄','Health & Beauty','Medical & First Aid'],
-  [['iphone','samsung','phone','tablet','ipad','android'], '📱','Electronics & Gadgets','Phones & Tablets'],
-  [['laptop','macbook','computer',' pc ','monitor','keyboard','mouse'], '📱','Electronics & Gadgets','Computers & Laptops'],
-  [['playstation','ps5','xbox','nintendo','gaming chair','console'], '📱','Electronics & Gadgets','Gaming'],
-  [['milo','milktea','milk tea','coffee','juice','soda','water','drink','tea'], '🛒','Food & Groceries','Drinks'],
-  [['rice','flour','sugar','canned','noodle','pasta','pantry','cooking oil'], '🛒','Food & Groceries','Pantry & Dry Goods'],
-  [['cake','bread','pastry','ube','halaya','kakanin','homemade','home-cooked','silog','rice meal','lumpia','leche flan','lechon'], '🛒','Food & Groceries','Home-cooked & Baked'],
-  [['shoes','sneakers','sandals','heels','boots','rubber shoes','running'], '👗','Fashion & Accessories','Shoes'],
-  [['shirt','dress','jeans','jacket','clothes','uniform','tshirt'], '👗','Fashion & Accessories',"Women's"],
-  [['bag','wallet','backpack','purse'], '👗','Fashion & Accessories','Bags & Wallets'],
-  [['watch','jewelry','ring','necklace'], '👗','Fashion & Accessories','Watches & Jewelry'],
-  [['sofa','table','chair','bed','furniture','cabinet','shelf','desk'], '🏠','Home & Furniture','Furniture'],
-  [['airfryer','air fryer','fridge','refrigerator','aircon','appliance','microwave','washing machine','blender'], '🏠','Home & Furniture','Appliances'],
-  [['knife','kitchen','cookware','frying pan','utensil','plates','dinnerware','chef','spatula','casserole'], '🏠','Home & Furniture','Kitchen & Dining'],
-  [['diaper','stroller','baby clothes','onesie'], '👶','Baby & Kids','Baby Clothes'],
-  [['toy','lego','doll','figure'], '👶','Baby & Kids','Toys'],
-  [['bike','bicycle','mtb','mountain bike'], '⚽','Sports & Outdoors','Bikes & Cycling'],
-  [['dumbbell','gym','treadmill','yoga','weights'], '⚽','Sports & Outdoors','Fitness & Gym'],
-  [['guitar','piano','violin','ukulele'], '🎸','Hobbies & Leisure','Musical Instruments'],
-  [['book','comic','novel','manga'], '🎸','Hobbies & Leisure','Books & Comics'],
-  [['drill','hammer','wrench','tool','screwdriver','grinder'], '🔧','Tools & Hardware','Power Tools'],
-  [['car','sedan','suv','toyota','civic','vios'], '🏍️','Vehicles & Parts','Cars'],
-  [['motor','motorcycle','scooter','honda beat','click'], '🏍️','Vehicles & Parts','Motorcycles'],
-  [['dog','cat ','pet','kitten','puppy','aquarium'], '🐾','Pets & Animals','Accessories'],
-  [['haircut','hair color','rebond','manicure','pedicure','facial','salon','spa'], '💄','Health & Beauty','Hair & Body'],
-  [['tutor','tutoring','lesson','review class','review center','daycare'], '🧰','Services & Help','Tutoring & Lessons'],
-  [['legal','attorney','notary','accounting','insurance','consult','permit','clearance','cedula','real estate'], '🧰','Services & Help','Professional'],
-  [['repair','fix','cleaning','aircon cleaning','vulcanizing','laundry','printing','tailor','tailoring','welding','car wash','service','massage','plumber','electrician'], '🧰','Services & Help','Repairs & Fix'],
-  [['skincare','lotion','makeup','lipstick','shampoo','vitamin','perfume'], '💄','Health & Beauty','Skincare'],
+  // Electronics & Gadgets
+  [['charger','charging','power bank','powerbank','usb','usb-c','type-c','type c','lightning cable','cable','adapter','phone case','case ng phone',
+    'screen protector','tempered glass','otg','phone holder','selfie stick'], '📱','Electronics & Gadgets','Chargers & Accessories'],
+  [['headphone','headset','earphone','earbud','airpods','speaker','soundbar','camera','gopro','dslr','television','smart tv','tv','projector',
+    'microphone','karaoke','videoke','radio','cctv','drone','ring light'], '📱','Electronics & Gadgets','TV, Audio & Cameras'],
+  [['iphone','samsung','oppo','vivo','xiaomi','redmi','realme','infinix','tecno','huawei','cellphone','cell phone','phone','smartphone','cp',
+    'tablet','ipad','android','sim card','simcard','e-load','eload','prepaid load','pocket wifi','smartwatch','smart watch'], '📱','Electronics & Gadgets','Phones & Tablets'],
+  [['laptop','macbook','notebook pc','computer','desktop','pc','monitor','keyboard','mouse','printer','printer ink','printer toner','router',
+    'modem','wifi','ssd','hard drive','hard disk','flash drive','usb drive','ram','graphics card','gpu','cpu','webcam'], '📱','Electronics & Gadgets','Computers & Laptops'],
+  [['playstation','ps4','ps5','xbox','nintendo','console','gaming','game controller','controller','joystick','steam deck'], '📱','Electronics & Gadgets','Gaming'],
+  [['lcd','screen repair','battery replacement','motherboard','spare part','phone parts','cellphone repair','phone repair','laptop repair',
+    'computer repair','gadget repair'], '📱','Electronics & Gadgets','Parts & Repair'],
+  // Health & Beauty (medicine first, so "paracetamol tablets" is medicine)
+  [['paracetamol','biogesic','neozep','bioflu','decolgen','medicol','alaxan','ibuprofen','mefenamic','amoxicillin','antibiotic','medicine',
+    'gamot','pharmacy','botika','capsule','syrup','ointment','bandage','band-aid','band aid','first aid','betadine','thermometer','painkiller',
+    'vaccine','rubbing alcohol','alcohol','face mask','facemask','mask','check-up','checkup','lab test','laboratory','x-ray','xray',
+    'blood pressure','bp monitor','glucometer','nebulizer','oximeter','insulin','prescription','reseta','doctor','clinic','dental','dentist'], '💄','Health & Beauty','Medical & First Aid'],
+  [['vitamin','multivitamin','supplement','protein powder','whey','collagen','fish oil','ascorbic','ceelin','enervon','centrum','glutathione'], '💄','Health & Beauty','Supplements & Vitamins'],
+  [['makeup','make-up','lipstick','lip tint','foundation','concealer','mascara','eyeliner','eyeshadow','blush','face powder','cosmetic',
+    'nail polish','cutex','kutiks'], '💄','Health & Beauty','Makeup'],
+  [['skincare','skin care','lotion','sunscreen','sunblock','moisturizer','toner','serum','facial wash','facial cleanser','whitening',
+    'rejuvenating','sheet mask','acne','pimple'], '💄','Health & Beauty','Skincare'],
+  [['shampoo','conditioner','hair dye','hair color','hair colour','hair wax','pomade','deodorant','tawas','perfume','cologne','body wash',
+    'bath soap','soap','sabon','razor','toothpaste','toothbrush','mouthwash','feminine wash','napkin','sanitary pad','haircut','gupit','rebond',
+    'manicure','pedicure','facial','salon','spa','massage','masahe','hilot','waxing','eyelash','lash lift','barber'], '💄','Health & Beauty','Hair & Body'],
+  // Home & Furniture (appliances before food, so "rice cooker" is an appliance)
+  [['rice cooker','air fryer','airfryer','refrigerator','ref','fridge','freezer','aircon','air conditioner','electric fan','bentilador',
+    'stand fan','washing machine','microwave','oven','toaster','blender','kettle','water heater','water dispenser','induction cooker','stove',
+    'kalan','gas stove','vacuum','flat iron','plantsa','clothes iron','appliance'], '🏠','Home & Furniture','Appliances'],
+  [['sofa','couch','table','mesa','chair','upuan','monobloc','bed','kama','bed frame','double deck','cabinet','aparador','shelf','shelves',
+    'drawer','desk','furniture','wardrobe','dresser','tv rack','dining set','bench','stool','sala set'], '🏠','Home & Furniture','Furniture'],
+  [['kitchen','cookware','frying pan','kawali','kaldero','pot','casserole','knife','kutsilyo','utensil','spoon','kutsara','fork','tinidor',
+    'plate','plato','bowl','mangkok','glass','baso','mug','cup','tasa','tupperware','lalagyan','food container','chopping board','sangkalan',
+    'dinnerware','spatula','sandok','ladle','strainer','thermos','tumbler'], '🏠','Home & Furniture','Kitchen & Dining'],
+  [['pillow','unan','blanket','kumot','bedsheet','bed sheet','kobre kama','comforter','mattress','kutson','foam','banig','towel','tuwalya',
+    'bath mat','curtain','kurtina'], '🏠','Home & Furniture','Bedding & Bath'],
+  [['decor','dekorasyon','wall art','picture frame','frame','vase','plorera','lamp','lampshade','fairy lights','christmas lights','parol',
+    'artificial plant','rug','carpet','alpombra','wall clock','clock','orasan','mirror','salamin','figurine'], '🏠','Home & Furniture','Decor'],
+  [['storage','storage box','plastic drawer','organizer','basket','hamper','laundry basket','rack','hanger','sabitan','shoe rack'], '🏠','Home & Furniture','Storage & Organization'],
+  [['detergent','fabric conditioner','downy','bleach','zonrox','dishwashing','sponge','tissue','toilet paper','paper towel','garbage bag',
+    'trash bag','insect spray','baygon','katol','mosquito coil','candle','kandila','matches','posporo','air freshener','floor wax','mop',
+    'lampaso','walis','broom','dustpan','pandakot','basahan','batteries','umbrella','payong'], '🏠','Home & Furniture','Household Supplies'],
+  // Baby & Kids
+  [['diaper','lampin','wipes','baby wipes','pampers','huggies'], '👶','Baby & Kids','Diapers & Wipes'],
+  [['stroller','car seat','baby carrier','crib','playpen','baby walker','high chair','baby bath','baby gear'], '👶','Baby & Kids','Strollers & Gear'],
+  [['baby bottle','feeding bottle','tsupon','pacifier','formula','infant formula','milk formula','nido','bonna','enfamil','similac',
+    'baby food','cerelac','sippy cup','breast pump'], '👶','Baby & Kids','Feeding'],
+  [['baby clothes','onesie','baru-baruan','barubaruan','baby dress','mittens','bonnet','swaddle','receiving blanket'], '👶','Baby & Kids','Baby Clothes'],
+  [['toy','laruan','lego','doll','manika','action figure','stuffed toy','plush','rc car','remote control car','barbie','hot wheels'], '👶','Baby & Kids','Toys'],
+  [['school supplies','notebook','kuwaderno','pad paper','intermediate pad','yellow pad','bond paper','pencil','lapis','ballpen','pen',
+    'crayon','marker','ruler','eraser','scissors','gunting','glue','pandikit','school bag','lunch box','baunan','calculator',
+    'art materials','construction paper','folder','envelope'], '👶','Baby & Kids','School & Study'],
+  // Food & Groceries (cooked food before pantry, so "rice meal" is a meal)
+  [['cake','cupcake','bread','tinapay','loaf','pandesal','ensaymada','pastry','pastries','brownies','ube','halaya','leche flan','flan',
+    'kakanin','puto','kutsinta','bibingka','suman','biko','sapin-sapin','turon','banana cue','maruya','taho','halo-halo','halo halo',
+    'homemade','home-made','home made','home-cooked','home cooked','ulam','baon','silog','tapsilog','rice meal','lutong bahay','adobo',
+    'sinigang','kare-kare','pancit','lumpia','shanghai','siomai','siopao','lechon','inasal','bbq','barbecue','isaw','fried chicken',
+    'pizza','burger','spaghetti','palabok','sisig','tocino','longganisa','tapa','empanada','dimsum','food tray','bilao','catering'], '🛒','Food & Groceries','Home-cooked & Baked'],
+  [['gulay','vegetable','veggies','prutas','fruit','mango','mangga','banana','saging','apple','calamansi','kalamansi','tomato','kamatis',
+    'onion','sibuyas','garlic','bawang','potato','patatas','fish','isda','tilapia','bangus','galunggong','shrimp','hipon','pusit','squid',
+    'meat','karne','pork','baboy','beef','baka','chicken','manok','egg','itlog','tofu','tokwa'], '🛒','Food & Groceries','Fresh & Produce'],
+  [['water','tubig','mineral water','distilled','purified water','gallon','juice','soda','softdrinks','soft drinks','coke','sprite','pepsi',
+    'drink','inumin','tea','milk tea','milktea','coffee','kape','frappe','iced coffee','milk','gatas','beer','alak','gin','ginebra',
+    'emperador','red horse','san mig','wine','whiskey','vodka','rum','tanduay','energy drink','gatorade','yakult','buko juice','shake'], '🛒','Food & Groceries','Drinks'],
+  [['chips','chichirya','junk food','candy','kendi','chocolate','tsokolate','biscuit','cookie','crackers','snack','ice cream','sorbetes',
+    'polvoron','yema','pastillas','chicharon','chicharron','mani','peanuts','popcorn','gummy','jelly'], '🛒','Food & Groceries','Snacks & Sweets'],
+  [['rice','bigas','flour','harina','sugar','asukal','salt','asin','canned','de lata','sardinas','sardines','corned beef','noodle',
+    'pancit canton','instant noodles','pasta','cooking oil','mantika','soy sauce','toyo','vinegar','suka','patis','fish sauce','ketchup',
+    'mayonnaise','seasoning','pantry','grocery','groceries','powdered milk','cereal','oatmeal'], '🛒','Food & Groceries','Pantry & Dry Goods'],
+  // Fashion & Accessories
+  [['shoes','shoe','sapatos','sneakers','rubber shoes','sandals','sandalyas','slippers','tsinelas','heels','boots','loafers','crocs'], '👗','Fashion & Accessories','Shoes'],
+  [['bag','backpack','handbag','sling bag','tote','wallet','pitaka','purse','coin purse','luggage','maleta','travel bag','belt bag','pouch'], '👗','Fashion & Accessories','Bags & Wallets'],
+  [['watch','relo','jewelry','jewellery','alahas','ring','singsing','necklace','kwintas','bracelet','pulseras','earring','hikaw','pendant',
+    'anklet','gold','silver'], '👗','Fashion & Accessories','Watches & Jewelry'],
+  [['dress','blouse','skirt','gown','bestida','bistida','leggings','bra','panty','panties','lingerie','women','ladies','pambabae','maternity'], '👗','Fashion & Accessories',"Women's"],
+  [['polo','barong','men','pants','slacks','boxer','brief','panlalaki','necktie'], '👗','Fashion & Accessories',"Men's"],
+  [['kids','children','bata','pambata','school uniform'], '👗','Fashion & Accessories',"Kids'"],
+  [CAT_CLOTHES, '👗','Fashion & Accessories',"Women's"],
+  [CAT_CLOTHES, '👗','Fashion & Accessories',"Men's"],
+  [CAT_CLOTHES, '👗','Fashion & Accessories',"Kids'"],
+  // Sports & Outdoors
+  [['bike','bicycle','bisikleta','mtb','mountain bike','road bike','bmx','fixie','folding bike','e-bike','ebike'], '⚽','Sports & Outdoors','Bikes & Cycling'],
+  [['dumbbell','barbell','kettlebell','gym','treadmill','yoga','weights','resistance band','exercise','fitness','workout','jump rope',
+    'boxing gloves','punching bag'], '⚽','Sports & Outdoors','Fitness & Gym'],
+  [['basketball','bola','ball','volleyball','football','soccer','badminton','shuttlecock','raket','racket','racquet','tennis','table tennis',
+    'ping pong','jersey','sports'], '⚽','Sports & Outdoors','Team Sports'],
+  [['tent','camping','hiking','trekking','sleeping bag','flashlight','headlamp','cooler','hydro flask'], '⚽','Sports & Outdoors','Camping & Hiking'],
+  [['fishing','pamingwit','fishing rod','reel','fishing line','hook','lure','bait'], '⚽','Sports & Outdoors','Fishing'],
+  // Hobbies & Leisure
+  [['guitar','gitara','piano','violin','ukulele','drums','drum','cajon','bass guitar','amplifier','amp','flute','harmonica',
+    'musical instrument'], '🎸','Hobbies & Leisure','Musical Instruments'],
+  [['book','libro','comic','novel','nobela','manga','textbook','reviewer','magazine','bible','biblia'], '🎸','Hobbies & Leisure','Books & Comics'],
+  [['board game','card game','cards','baraha','chess','ahedres','scrabble','monopoly','uno','mahjong','tongits','tong-its','puzzle'], '🎸','Hobbies & Leisure','Board & Card Games'],
+  [['collectible','funko','figure','anime figure','die-cast','diecast','coin collection','stamps','trading card','pokemon card','tcg'], '🎸','Hobbies & Leisure','Collectibles'],
+  [['art','crafts','craft','acrylic','watercolor','canvas','sketch','yarn','crochet','gantsilyo','sewing','cross stitch','beads','resin'], '🎸','Hobbies & Leisure','Arts & Crafts'],
+  // Tools & Hardware
+  [['drill','grinder','power tool','jigsaw','circular saw','sander','heat gun','impact driver','cordless','bosch','makita','dewalt',
+    'welding machine'], '🔧','Tools & Hardware','Power Tools'],
+  [['hammer','martilyo','screwdriver','distornilyador','wrench','liyabe','pliers','plais','hacksaw','lagari','tape measure','toolbox',
+    'tool box','tool','cutter','kandado','padlock','lock'], '🔧','Tools & Hardware','Hand Tools'],
+  [['cement','semento','hollow block','sand','buhangin','gravel','graba','plywood','lumber','kahoy','wood','yero','gi sheet','roofing',
+    'steel bar','rebar','bakal','tile','paint','pintura','nails','pako','screw','turnilyo','bolt','adhesive','sealant','vulca seal',
+    'building materials','construction'], '🔧','Tools & Hardware','Building Materials'],
+  [['wire','kawad','electrical','extension cord','extension wire','outlet','saksakan','breaker','circuit breaker','bulb','bumbilya',
+    'led bulb','led light','light bulb','socket','electrical tape','fuse'], '🔧','Tools & Hardware','Electrical'],
+  [['pipe','tubo','pvc','faucet','gripo','toilet bowl','inidoro','sink','lababo','shower','water pump','pump','hose','plumbing','drain',
+    'bidet','water tank','fittings'], '🔧','Tools & Hardware','Plumbing'],
+  [['plant','halaman','seeds','soil','garden','hardin','fertilizer','pataba','flower pot','paso','lawn mower','grass cutter','shovel',
+    'rake','kalaykay','sprinkler','orchid','succulent','bonsai'], '🔧','Tools & Hardware','Garden & Outdoor'],
+  // Vehicles & Parts
+  [['car','kotse','sedan','suv','pickup truck','van','auv','toyota','honda civic','civic','vios','innova','fortuner','mitsubishi','montero',
+    'nissan','hyundai','ford','mazda','wigo','mirage'], '🏍️','Vehicles & Parts','Cars'],
+  [['motorcycle','motor','motorbike','scooter','honda beat','honda click','yamaha','mio','nmax','aerox','raider','xrm','tmx','kawasaki',
+    'suzuki','rusi','tricycle','e-trike'], '🏍️','Vehicles & Parts','Motorcycles'],
+  [['bicycle','bisikleta','bike','e-bike','ebike'], '🏍️','Vehicles & Parts','Bicycles'],
+  [['tire','tyre','gulong','rim','mags','car battery','motor battery','engine oil','motor oil','langis','helmet','side mirror','headlight',
+    'brake','preno','spark plug','muffler','tambutso','car parts','motor parts','car accessories','motor accessories','seat cover',
+    'dash cam','dashcam','wiper'], '🏍️','Vehicles & Parts','Parts & Accessories'],
+  // Pets & Animals
+  [['dog food','cat food','pet food','dog treats','cat treats','kibble','pedigree','whiskas','pellets','fish food','bird seed'], '🐾','Pets & Animals','Pet Food'],
+  [['pet grooming','dog grooming','grooming','vet','veterinary','beterinaryo','deworm','anti-rabies','rabies','pet shampoo','tick','flea',
+    'garapata','pulgas'], '🐾','Pets & Animals','Grooming & Care'],
+  [['puppy','puppies','tuta','kitten','kuting','for adoption','adopt','rehome','shih tzu','shihtzu','aspin','puspin','poodle','husky',
+    'chihuahua','golden retriever','labrador','persian cat','hamster','rabbit','koneho','sisiw','gamefowl','fighting cock','parrot',
+    'lovebirds','goldfish','koi'], '🐾','Pets & Animals','For Adoption / Sale'],
+  [['dog','aso','cat','pusa','pet','alaga','leash','dog collar','pet collar','cage','kulungan','aquarium','fish tank','cat litter',
+    'litter','pet bed'], '🐾','Pets & Animals','Accessories'],
+  // Services & Help
+  [['tutor','tutorial','tutoring','lesson','review class','review center','daycare','teacher','coaching','driving school'], '🧰','Services & Help','Tutoring & Lessons'],
+  [['lawyer','abogado','attorney','legal','notary','notaryo','notarize','accounting','accountant','bookkeep','tax','bir','insurance',
+    'consult','permit','clearance','cedula','real estate','broker','visa','passport','paperwork','printing','print','xerox','photocopy',
+    'id photo'], '🧰','Services & Help','Professional'],
+  [['cleaning','linis','house cleaning','general cleaning','deep cleaning','aircon cleaning','maid','kasambahay','housekeeper','yaya',
+    'laundry','labada','laba','dry cleaning','pest control','termite','declogging','septic','siphoning'], '🧰','Services & Help','Cleaning'],
+  [['repair','fix','ayos','pagawa','technician','tech','mechanic','mekaniko','vulcanizing','vulcanize','welding','tailor','sastre',
+    'mananahi','alteration','plumber','tubero','electrician','elektrisyan','carpenter','karpintero','mason','painter','pintor',
+    'installation','install','car wash','service','serbisyo'], '🧰','Services & Help','Repairs & Fix'],
+  [['event','party','birthday','debut','wedding','kasal','christening','binyag','catering','caterer','photographer','photography',
+    'videographer','emcee','clown','magician','sound system','lights and sounds','venue','balloon','party needs','tent rental',
+    'chairs rental','rental'], '🧰','Services & Help','Events'],
+  [['delivery','deliver','padala','pasabuy','pabili','errand','courier','lalamove','lbc','j&t','jnt','ninja van','moving','lipat bahay',
+    'truck rental','hauling','driver','hatid','sundo'], '🧰','Services & Help','Errands & Delivery'],
+  // Everything Else
+  [['for free','libre','freebie','giveaway','pamigay'], '📦','Everything Else','Freebies'],
+  [['ticket','voucher','gift card','gc','gift certificate','concert','promo code','coupon'], '📦','Everything Else','Tickets & Vouchers'],
+  [['lost','nawawala','nawala','napulot','missing','lost and found'], '📦','Everything Else','Lost & Found'],
 ];
 // Place types for the "Shops & Services" directory (flat types — from backyard shops to hospitals).
 const PLACE_TAX = [
@@ -4806,98 +4949,217 @@ const PLACE_TAX = [
   { em:'📦', name:'Other', subs:[] },
 ];
 const PLACE_RULES = [
-  [['pharmacy','botika','drugstore','mercury drug'], '💊','Pharmacy',''],
-  [['clinic','hospital','medical','dental','dentist','doctor','health center','laboratory','diagnostic'], '🏥','Clinic / Hospital',''],
-  [['salon','parlor','barber','spa','nails','beauty','aesthetic'], '💅','Salon / Beauty',''],
-  [['law','attorney','lawyer','accounting','bookkeep','notary','consult','insurance','real estate','firm'], '⚖️','Professional / Office',''],
-  [['school','tutor','review center','academy','learning','daycare','montessori'], '🏫','School / Tutor',''],
-  [['barangay','city hall','municipal','government','sss','pag-ibig','pagibig','lto','post office','philhealth'], '🏛️','Government',''],
-  [['water refill','water station','gas station','lpg','refilling','petron','shell','utility'], '💧','Water / Gas / Utilities',''],
-  [['eatery','carinderia','restaurant','cafe','bakery','bakeshop','grill','canteen','milktea','milk tea','coffee','food'], '🍳','Food / Eatery',''],
-  [['backyard','home-based','home based','homemade','online shop','online seller','small business','startup'], '🏡','Backyard / Home-based',''],
-  [['repair','fix','vulcanizing','welding','aircon cleaning','laundry','printing','tailor','car wash'], '🔧','Repair / Services',''],
-  [['store','shop','mart','sari-sari','sarisari','grocery','hardware','boutique','retail','tindahan'], '🛍️','Shop / Store',''],
+  [['pharmacy','botika','butika','drugstore','drug store','mercury drug','watsons','rose pharmacy','generika','southstar'], '💊','Pharmacy',''],
+  [['clinic','klinika','hospital','ospital','medical','dental','dentist','doctor','health center','laboratory','diagnostic','lying-in',
+    'lying in','maternity','optical','optometrist','physical therapy','therapy','vet clinic','veterinary','animal clinic'], '🏥','Clinic / Hospital',''],
+  [['salon','parlor','parlour','barber','barbershop','barberya','gupitan','spa','massage','masahe','nails','nail salon','beauty','aesthetic',
+    'derma','tattoo','lash'], '💅','Salon / Beauty',''],
+  [['law office','law firm','attorney','lawyer','abogado','accounting','bookkeep','notary','notaryo','consult','insurance','real estate',
+    'firm','bank','atm','remittance','padala center','money transfer','pawnshop','sanglaan','palawan','cebuana','lhuillier','lending',
+    'loans','office','bpo','call center'], '⚖️','Professional / Office',''],
+  [['school','paaralan','eskwelahan','tutor','tutorial','review center','academy','learning center','daycare','montessori','college',
+    'university','driving school','swimming school','music school'], '🏫','School / Tutor',''],
+  [['barangay','brgy','city hall','municipal','munisipyo','government','sss','gsis','pag-ibig','pagibig','lto','nbi','post office',
+    'philhealth','bir','dfa','police','pulis','fire station','bumbero','court','comelec','psa'], '🏛️','Government',''],
+  [['water refill','water refilling','refilling station','water station','purified water','gas station','gasolinahan','petron','shell',
+    'caltex','seaoil','phoenix','cleanfuel','unioil','lpg','gasul','solane','meralco','electric coop','water district','utility',
+    'internet provider','pldt','converge'], '💧','Water / Gas / Utilities',''],
+  [['eatery','carinderia','karinderya','kainan','restaurant','restawran','resto','cafe','coffee shop','coffee','bakery','bakeshop',
+    'panaderya','grill','ihaw-ihaw','canteen','milktea','milk tea','food','fastfood','fast food','jollibee','mcdonalds','mang inasal',
+    'chowking','pizza','burger','bbq','lugawan','goto','bulalo','sisig','food stall','food cart','food truck','bar'], '🍳','Food / Eatery',''],
+  [['backyard','home-based','home based','homemade','home made','online shop','online seller','small business','startup','side hustle',
+    'pasabuy','reseller','made to order'], '🏡','Backyard / Home-based',''],
+  [['repair','fix','vulcanizing','vulcanize','welding','aircon cleaning','aircon repair','laundry','laundromat','labahan','printing',
+    'print shop','xerox','photocopy','tailor','sastre','car wash','talyer','auto shop','motor shop','machine shop','cellphone repair',
+    'computer repair','gadget repair','shoe repair','key duplication','locksmith','upholstery','glass and aluminum','junk shop','junkshop'], '🔧','Repair / Services',''],
+  [['store','shop','mart','minimart','mini mart','sari-sari','sarisari','sari sari','tindahan','grocery','supermarket','palengke','market',
+    'hardware','boutique','retail','ukay','ukay-ukay','department store','mall','convenience store','7-eleven','7 eleven','ministop',
+    'alfamart','puregold','savemore','robinsons','furniture shop','appliance center','gadget store','bookstore','pet shop','flower shop',
+    'gift shop'], '🛍️','Shop / Store',''],
 ];
-function catTax(scope){ return scope==='place' ? PLACE_TAX : CAT_TAX; }
-function catRules(scope){ return scope==='place' ? PLACE_RULES : CAT_RULES; }
-function catClassify(text, scope){ const t=' '+String(text||'').toLowerCase()+' '; for(const r of catRules(scope)){ if(r[0].some(k=>t.includes(k))) return {em:r[1],top:r[2],sub:r[3]}; } return null; }
+function catTax(scope){ return (scope==='place'||scope==='store') ? PLACE_TAX : CAT_TAX; }
+function catRules(scope){ return (scope==='place'||scope==='store') ? PLACE_RULES : CAT_RULES; }
+function catNorm(s){ return ' '+String(s||'').toLowerCase().replace(/[’']/g,'').replace(/\s+/g,' ')+' '; }
+// Does keyword k start a word in t (a catNorm'd text)? Under 6 letters it must be the whole word (plurals ok).
+function catHit(t, k){
+  k=String(k).trim(); if(!k) return false;
+  for(let i=t.indexOf(k); i>=0; i=t.indexOf(k,i+1)){
+    if(i>0 && /[a-z0-9ñ]/.test(t.charAt(i-1))) continue;
+    if(k.length>=6 || /^(?:e?s)?(?![a-z0-9ñ])/.test(t.slice(i+k.length))) return true;
+  }
+  return false;
+}
+function catClassify(text, scope){ const t=catNorm(text); for(const r of catRules(scope)){ if(r[0].some(k=>catHit(t,k))) return {em:r[1],top:r[2],sub:r[3]}; } return null; }
+function catLabel(f){ return f && f.cat ? (f.cat.sub || f.cat.top) : ''; }
+// ── index v19: categories are typed. AI suggests a ranked list from what you type in the box,
+//    and (before you type) from the title. No dropdowns, no browsing.
+const CAT_STOP=['for','and','the','of','to','in','on','at','or','with','an','my','your','ng','sa','na','ang','mga','para','pang','may','yung','po','kasama'];
+function catWords(s){ return catNorm(s).trim().split(/[^a-z0-9ñ\-]+/).filter(w=>w.length>=2 && CAT_STOP.indexOf(w)<0); }
+function catLabelScore(label, q, toks){
+  const L=catNorm(label).trim(); if(!q) return 0;
+  if(L===q) return 100;
+  if(!toks.length) return 0;                                          // only filler words ("for", "ng")
+  if(q.length>=2 && L.startsWith(q)) return /[a-z0-9ñ]/.test(L.charAt(q.length)) ? 66 : 88;   // "tea" is not "Team Sports"
+  const words=L.split(/[^a-z0-9ñ\-]+/).filter(Boolean); let s=0;
+  toks.forEach(t=>{
+    if(words.some(w=>w===t||w===t+'s'||t===w+'s'||w===t+'es')) s=Math.max(s,78);
+    else if(t.length>=3 && words.some(w=>w.startsWith(t))) s=Math.max(s,66);
+  });
+  return s;
+}
+// Rules whose keywords appear in t. "covered": every keyword it matched sits inside a longer keyword of another
+// rule ("rice" in "rice cooker"). "tail": a keyword ends the text ("phone charger" → charger).
+function catRuleHits(R, t){
+  const q=t.trim(), hq=(q.split(/ (?:ng|sa|for|of|para|pang|with|w\/|may|kasama) /)[0]||q).trim(), lw=hq.split(' ').pop()||'', hits=[];   // "charger ng cellphone" → the charger
+  R.forEach(r=>{ const ks=r[0].map(k=>String(k).trim()).filter(k=>k&&catHit(t,k)); if(ks.length) hits.push({r,ks}); });
+  const inside=(k,K)=>K.length>k.length && catHit(' '+K+' ',k);
+  hits.forEach(x=>{
+    x.covered=x.ks.every(k=>hits.some(y=>y!==x && !(y.r[2]===x.r[2]&&y.r[3]===x.r[3]) && y.ks.some(K=>inside(k,K))));
+    x.tail=x.ks.some(k=>hq.endsWith(k)||hq.endsWith(k+'s')||hq.endsWith(k+'es')||(k.length>=6&&lw.startsWith(k)));
+    x.head=hq!==q && x.ks.some(k=>catHit(' '+hq+' ',k));             // "Samsung A54 with charger" → the phone
+  });
+  return hits;
+}
+// typo distance (a swap of two letters counts as one); stops early past max
+function catEdit(a,b,max){
+  if(Math.abs(a.length-b.length)>max) return max+1;
+  let p2=null, p1=[]; for(let j=0;j<=b.length;j++) p1[j]=j;
+  for(let i=1;i<=a.length;i++){
+    const c=[i]; let lo=i;
+    for(let j=1;j<=b.length;j++){
+      let v=Math.min(p1[j]+1, c[j-1]+1, p1[j-1]+(a[i-1]===b[j-1]?0:1));
+      if(p2 && j>1 && a[i-1]===b[j-2] && a[i-2]===b[j-1]) v=Math.min(v, p2[j-2]+1);
+      c[j]=v; if(v<lo) lo=v;
+    }
+    if(lo>max) return max+1;
+    p2=p1; p1=c;
+  }
+  return p1[b.length];
+}
+function catSuggest(scope, typed, ctx, n){
+  n=n||5;
+  const T=catTax(scope), R=catRules(scope), found=[];
+  const put=(em,top,sub,score,full)=>{ sub=sub||''; let o=found.find(x=>x.top===top&&x.sub===sub);
+    if(o){ if(score>o.score) o.score=score; else o.score+=1; } else { o={em,top,sub,score,i:found.length,full:false}; found.push(o); }
+    if(full) o.full=true; };
+  const raw=String(typed||''), q=catNorm(raw).trim(), toks=catWords(raw);
+  const last=/\s$/.test(raw)?'':(toks[toks.length-1]||'');
+  if(q){
+    const hits=catRuleHits(R,' '+q+' ');
+    hits.forEach(x=>{ put(x.r[1],x.r[2],x.r[3], x.covered?35:(x.tail?86:80)+(x.head?1:0), true); if(x.r[3]&&!x.covered) put(x.r[1],x.r[2],'',40,true); });
+    const multi=[]; hits.forEach(x=>x.ks.forEach(k=>{ if(/[\s-]/.test(k)) multi.push(k); }));
+    const free=toks.filter(t=>!multi.some(K=>K!==t&&catHit(' '+K+' ',t)));   // "food" in "dog food" names no category
+    T.forEach(c=>{
+      const s=catLabelScore(c.name,q,free);
+      if(s) put(c.em,c.name,'',s,s>=78);
+      c.subs.forEach(sb=>{ const ss=catLabelScore(sb,q,free); if(ss) put(c.em,c.name,sb,ss+2,ss>=78); });
+      if(s>=85) c.subs.forEach(sb=>put(c.em,c.name,sb,s-30,true));         // "electronics" → its kinds too
+    });
+    if(q.includes(' ') && q.length>=5) R.forEach(r=>{                      // still typing a phrase: "phone ca" → phone case
+      if(r[0].some(k=>{ k=String(k).trim(); return k.length>q.length && k.startsWith(q); })) put(r[1],r[2],r[3],84,true); });
+    if(last.length>=3) R.forEach(r=>{                                       // still typing: "char" → charger
+      if(r[0].some(k=>String(k).trim().split(/\s+/).some(w=>w.length>last.length&&w.startsWith(last)))) put(r[1],r[2],r[3],60,false); });
+    if(!found.some(x=>x.full)){                                             // a typo: "chager" → charger
+      const tt=toks.filter(t=>t.length>=4);
+      if(tt.length){
+        R.forEach(r=>{ if(r[0].some(k=>{ k=String(k).trim(); return k.length>=4 && !/\s/.test(k) && tt.some(t=>catEdit(t,k,k.length>=8?2:1)<=(k.length>=8?2:1)); })) put(r[1],r[2],r[3],58,false); });
+        T.forEach(c=>{
+          const near=lbl=>catNorm(lbl).trim().split(/[^a-z0-9ñ\-]+/).some(w=>w.length>=4 && tt.some(t=>catEdit(t,w,w.length>=8?2:1)<=(w.length>=8?2:1)));
+          if(near(c.name)) put(c.em,c.name,'',57,false);
+          c.subs.forEach(sb=>{ if(near(sb)) put(c.em,c.name,sb,59,false); });
+        });
+      }
+    }
+  }
+  const c=catNorm(ctx);
+  if(c.trim().length>=2) catRuleHits(R,c).forEach(x=>put(x.r[1],x.r[2],x.r[3], (q?30:50)-(x.covered?15:0)+(x.tail?2:0)+(x.head?2:0), !q));
+  const list=found.some(x=>x.full&&x.score>=78) ? found.filter(x=>x.full) : found;
+  return list.sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,n).map(x=>({em:x.em,top:x.top,sub:x.sub}));
+}
+// What was typed: the same as one of our categories (any case) → that one; otherwise the words as typed,
+// with the emoji of AI's best guess.
+function catFromTyped(scope, t){
+  t=String(t||'').replace(/\s+/g,' ').trim().slice(0,60); if(!t) return null;
+  const k=catNorm(t).trim();
+  for(const c of catTax(scope)){
+    if(catNorm(c.name).trim()===k) return {em:c.em,top:c.name,sub:''};
+    const sb=c.subs.find(s=>catNorm(s).trim()===k); if(sb) return {em:c.em,top:c.name,sub:sb};
+  }
+  if(t===t.toLowerCase()) t=t.charAt(0).toUpperCase()+t.slice(1);
+  const best=catSuggest(scope,t,'',1)[0];
+  return {em: best?best.em:((scope==='place'||scope==='store')?'🏪':'🏷️'), top:t, sub:'', custom:true};
+}
 function catCtx(scope){
   if(scope==='find'){ const f=S._reqForm||{}; return {f, text:((f.item||'')+' '+(f.details||'')).trim()}; }
-  if(scope==='place'||scope==='store'){ const f=S.storeForm||{}; return {f, text:((f.name||'')+' '+(f.products||'')).trim()}; }
+  if(scope==='place'||scope==='store'){ const f=S.storeForm||{}; return {f, text:((f.name||'')+' '+(f.products||'')+' '+(f.items||[]).map(i=>i&&i.name||'').join(' ')).trim()}; }
   if(scope==='urgent'){ const f=(typeof urfF==='object'&&urfF)?urfF:{}; return {f, text:urfCatText()}; }
+  if(scope==='help'){ const f=S.helpForm||{}; return {f, text:(f.item||'').trim()}; }
   const f=S.form||{}; return {f, text:((f.title||'')+' '+(f.desc||'')).trim()};
 }
 // Urgent form is DOM-based (no full re-render) → update only its category block in place.
 function catRerender(scope){ if(scope==='urgent'){ urfCatRender(); } else { renderModal(); } }
-function catUI(scope){ const {f}=catCtx(scope); if(!f.catUI) f.catUI={picking:false,openIdx:null,search:''}; return f.catUI; }
-function catOpenPicker(scope){ const u=catUI(scope); u.picking=true; u.openIdx=null; u.search=''; catRerender(scope); }
-function catClosePicker(scope){ const u=catUI(scope); u.picking=false; catRerender(scope); }
-function catOpenCat(scope,i){ const u=catUI(scope); u.openIdx=i; catRerender(scope); }
-function catBack(scope){ const u=catUI(scope); u.openIdx=null; catRerender(scope); }
-function catChooseIdx(scope,ci,si){ const {f}=catCtx(scope); const c=catTax(scope)[ci]; f.cat={em:c.em,top:c.name,sub: si>=0?c.subs[si]:''}; f.catUI={picking:false,openIdx:null,search:''}; catRerender(scope); }
-function catUseSug(scope){ const {f}=catCtx(scope); if(f._sug) f.cat=Object.assign({},f._sug); f.catUI={picking:false,openIdx:null,search:''}; catRerender(scope); }
-function catSearch(scope,v){ const u=catUI(scope); u.search=v; catRerender(scope); }
-function catCustom(scope){ const {f}=catCtx(scope); const el=document.getElementById('cat-srch'); const t=(el?el.value:((f.catUI&&f.catUI.search)||'')).trim(); if(!t) return; f.cat={em:'🏷️',top:t,sub:'',custom:true}; f.catUI={picking:false,openIdx:null,search:''}; catRerender(scope); }
-function catLabel(f){ return f && f.cat ? (f.cat.sub || f.cat.top) : ''; }
+function catUI(scope){ const {f}=catCtx(scope); if(!f.catUI||typeof f.catUI!=='object') f.catUI={open:false,typed:''}; if(typeof f.catUI.typed!=='string') f.catUI.typed=''; return f.catUI; }
+function catFocus(scope){ setTimeout(()=>{ const el=document.getElementById('cat-in-'+scope); if(el){ try{ el.focus(); const n=el.value.length; el.setSelectionRange(n,n); }catch(e){} } },30); }
+function catType(scope,v){ const u=catUI(scope); u.typed=String(v||''); const {f,text}=catCtx(scope); const el=document.getElementById('cat-sugs-'+scope); if(el) el.innerHTML=catSugsHTML(scope,f,text); }
+function catKey(e,scope){
+  if(e.key==='Enter'){
+    e.preventDefault(); const {f}=catCtx(scope), u=catUI(scope), has=!!(f._sugs&&f._sugs.length);
+    if(has) return catPickSug(scope,0);
+    if(u.typed.trim()) return catUseTyped(scope);
+  } else if(e.key==='Escape'){ const {f}=catCtx(scope); if(f.cat){ e.preventDefault(); e.stopPropagation(); catCancel(scope); } }
+}
+function catPickSug(scope,i){ const {f}=catCtx(scope); const s=f._sugs&&f._sugs[i]; if(!s) return; f.cat={em:s.em,top:s.top,sub:s.sub||''}; f.catUI={open:false,typed:''}; catRerender(scope); }
+function catUseTyped(scope){ const {f}=catCtx(scope); const c=catFromTyped(scope,catUI(scope).typed); if(!c) return; f.cat=c; f.catUI={open:false,typed:''}; catRerender(scope); }
+function catChange(scope){ const {f}=catCtx(scope); f.catUI={open:true,typed:''}; catRerender(scope); catFocus(scope); }
+function catCancel(scope){ const {f}=catCtx(scope); f.catUI={open:false,typed:''}; catRerender(scope); }
+// On Post: words left in the category box count (they were typed on purpose).
+function catCommit(scope){
+  const {f}=catCtx(scope), u=f.catUI;
+  if(u && typeof u.typed==='string' && u.typed.trim()){ const c=catFromTyped(scope,u.typed); if(c){ f.cat=c; f.catUI={open:false,typed:''}; } }
+  else if(u && u.open && f.cat) f.catUI={open:false,typed:''};
+}
+// Refresh only the category block (keeps your cursor where you're typing).
+function catRefresh(scope){
+  const el=document.getElementById(scope==='urgent'?'urf-cat-sec':'cat-sec-'+scope); if(!el) return;
+  const ae=document.activeElement, fid=(ae&&el.contains(ae))?ae.id:null, cs=(fid&&typeof ae.selectionStart==='number')?ae.selectionStart:null;
+  const {f,text}=catCtx(scope); el.innerHTML=catBody(scope,f,text);
+  if(fid){ const n=document.getElementById(fid); if(n){ try{ n.focus(); if(cs!=null&&n.setSelectionRange) n.setSelectionRange(cs,cs); }catch(e){} } }
+}
 function catSection(scope){
   const {f, text} = catCtx(scope);
   return `<div class="cat-wrap" id="cat-sec-${scope}">${catBody(scope,f,text)}</div>`;
 }
-function catBody(scope,f,text){
-  if(!f.catUI) f.catUI={picking:false,openIdx:null,search:''};
-  const u=f.catUI; const T=catTax(scope);
-  const noun = scope==='place' ? 'type' : 'category';
+function catSugsHTML(scope,f,text){
+  const u=f.catUI||{}, typed=String(u.typed||'').trim(), place=(scope==='place'||scope==='store'), noun=place?'type':'category';
+  const list=catSuggest(scope, typed, text, 5); f._sugs=list;
   let h='';
-  if(f.cat){
-    const c=f.cat, main=c.sub?c.sub:c.top, sub=c.custom?('🏷️ your own '+noun):(c.sub?c.top:(noun+' set'));
-    h+=`<div class="cat-confirmed"><span class="cc-em">${c.em}</span><span class="cc-tx">${esc(main)}<small>${esc(sub)}</small></span><button type="button" class="cc-ch" onclick="catOpenPicker('${scope}')">Change</button></div>`;
-  } else if(u.picking){
-    if(u.openIdx===null){
-      const q=(u.search||'').trim().toLowerCase();
-      h+=`<div class="cat-ph"><button type="button" class="cat-back" onclick="catClosePicker('${scope}')">←</button><div class="cat-pt">Pick or type a ${noun}<small>Browse, search, or type your own</small></div></div>`;
-      h+=`<input class="form-input" id="cat-srch" placeholder="🔍 Search or type your own ${noun}…" value="${esc(u.search||'')}" oninput="catSearch('${scope}',this.value)" autocomplete="off" style="margin-bottom:10px">`;
-      if(q){
-        const safe=esc(u.search.trim());
-        const matches=[];
-        T.forEach((c,ci)=>{
-          if(c.name.toLowerCase().includes(q)) matches.push([ci,-1,c.em,c.name,'']);
-          c.subs.forEach((s,si)=>{ if((c.name+' '+s).toLowerCase().includes(q)) matches.push([ci,si,c.em,s,c.name]); });
-        });
-        h+=`<div class="cat-subs"><div class="cat-sub custom" onclick="catCustom('${scope}')"><span>➕ Use "<b>${safe}</b>" as your ${noun}</span> <span class="go">✓</span></div>`;
-        matches.slice(0,8).forEach(m=>{ const ctx=m[4]?` <span style="color:var(--muted);font-weight:500;font-size:11px">· ${esc(m[4])}</span>`:''; h+=`<div class="cat-sub" onclick="catChooseIdx('${scope}',${m[0]},${m[1]})"><span>${m[2]} ${esc(m[3])}${ctx}</span> <span class="go">›</span></div>`; });
-        if(!matches.length) h+=`<div style="font-size:11.5px;color:var(--muted);padding:8px 2px;line-height:1.5">No match — tap above to use your own.</div>`;
-        h+=`</div>`;
-      } else {
-        h+=`<div class="cat-grid">`+T.map((c,i)=>{ const act=c.subs.length?`catOpenCat('${scope}',${i})`:`catChooseIdx('${scope}',${i},-1)`; const meta=c.subs.length?`${c.subs.length} types`:'tap to pick'; return `<button type="button" class="cat-tile" onclick="${act}"><span class="em">${c.em}</span><span><span class="nm">${esc(c.name)}</span><span class="ct">${meta}</span></span></button>`; }).join('')+`</div>`;
-      }
-    } else {
-      const c=T[u.openIdx], ci=u.openIdx;
-      h+=`<div class="cat-ph"><button type="button" class="cat-back" onclick="catBack('${scope}')">←</button><div class="cat-pt">${c.em} ${esc(c.name)}<small>Choose the closest type</small></div></div>`;
-      h+=`<div class="cat-subs"><div class="cat-sub any" onclick="catChooseIdx('${scope}',${ci},-1)"><span>All of ${esc(c.name)}</span> <span class="go">✓</span></div>`+
-        c.subs.map((s,si)=>`<div class="cat-sub" onclick="catChooseIdx('${scope}',${ci},${si})"><span>${esc(s)}</span> <span class="go">›</span></div>`).join('')+`</div>`;
-    }
-  } else {
-    const sug = text.length>=2 ? catClassify(text, scope) : null;
-    f._sug = sug;
-    if(sug){
-      const pick = sug.sub ? `<div class="cat-ai-top">${esc(sug.top)}</div><div class="cat-ai-sub">${esc(sug.sub)}</div>` : `<div class="cat-ai-sub">${esc(sug.top)}</div>`;
-      h+=`<div class="cat-ai"><div class="cat-ai-lbl">🤖 AI suggests</div><div class="cat-ai-pick"><span class="cat-ai-em">${sug.em}</span><div>${pick}</div></div><div class="cat-ai-act"><button type="button" class="btn-primary cat-use" onclick="catUseSug('${scope}')">✓ Use this</button><button type="button" class="cat-change" onclick="catOpenPicker('${scope}')">Change</button></div></div>`;
-    } else if(text.length>=2){
-      h+=`<div class="cat-unsure">🤔 AI isn't sure yet — <button type="button" class="cat-link" onclick="catOpenPicker('${scope}')">pick or type a ${noun}</button>.</div>`;
-    } else {
-      h+=`<div class="cat-hint">⌨️ Type a name and AI suggests a ${noun} — or <button type="button" class="cat-link" onclick="catOpenPicker('${scope}')">pick one</button>.</div>`;
-    }
+  if(list.length){
+    h+=`<div class="cat-sl">🤖 AI suggests${typed?'':(place?' from the name':' from your title')}</div>`;
+    h+=list.map((s,i)=>`<button type="button" onmousedown="event.preventDefault()" class="cat-sg${i===0?' best':''}" onclick="catPickSug('${scope}',${i})"><span class="em">${s.em}</span><span class="tx">${esc(s.sub||s.top)}${s.sub?`<small>${esc(s.top)}</small>`:''}</span>${i===0?'<span class="bm">Best match</span>':''}</button>`).join('');
+  }
+  if(typed){
+    if(!list.length) h+=`<div class="cat-hint">🤔 No suggestion for that yet — you can still use it.</div>`;
+    if(!list.some(s=>catNorm(s.sub||s.top).trim()===catNorm(typed).trim()))
+      h+=`<button type="button" onmousedown="event.preventDefault()" class="cat-sg own" onclick="catUseTyped('${scope}')"><span class="em">🏷️</span><span class="tx">Use “${esc(typed)}”<small>as your own ${noun}</small></span></button>`;
+  } else if(!list.length){
+    h+=`<div class="cat-hint">⌨️ ${place?'Type the kind of place — like bakery, pharmacy, barbershop — and AI suggests a type.':'Type what it is — like phone charger, cake, haircut — and AI suggests categories.'}</div>`;
   }
   return h;
 }
+function catBody(scope,f,text){
+  if(!f.catUI||typeof f.catUI!=='object') f.catUI={open:false,typed:''};
+  const u=f.catUI, place=(scope==='place'||scope==='store'), noun=place?'type':'category';
+  if(f.cat && !u.open){
+    const c=f.cat, main=c.sub?c.sub:c.top, sub=c.custom?('🏷️ your own '+noun):(c.sub?c.top:(noun+' set'));
+    return `<div class="cat-confirmed"><span class="cc-em">${c.em}</span><span class="cc-tx">${esc(main)}<small>${esc(sub)}</small></span><button type="button" onmousedown="event.preventDefault()" class="cc-ch" onclick="catChange('${scope}')">Change</button></div>`;
+  }
+  const cls={sell:'sf-inp',place:'sreg-inp',store:'sreg-inp',urgent:'inp'}[scope]||'form-input';
+  const ph=place?'Type it — e.g. bakery, pharmacy, barbershop':'Type it — e.g. phone charger, cake, haircut';
+  return `<div class="cat-ty"><div class="cat-inrow"><input class="${cls} cat-in" id="cat-in-${scope}" type="text" value="${esc(u.typed||'')}" placeholder="${ph}" maxlength="60" autocomplete="off" enterkeyhint="done" aria-label="${place?'Type of place':'Category'}" oninput="catType('${scope}',this.value)" onkeydown="catKey(event,'${scope}')">${f.cat?`<button type="button" onmousedown="event.preventDefault()" class="cat-x" onclick="catCancel('${scope}')">Cancel</button>`:''}</div><div class="cat-sugs" id="cat-sugs-${scope}">${catSugsHTML(scope,f,text)}</div></div>`;
+}
 // Urgent form helpers: read its title/qty from the DOM, and re-render just its category block.
 function urfCatText(){ return (urfGV('urf-title')+' '+urfGV('urf-qty')).trim(); }
-function urfCatRender(){
-  const el=document.getElementById('urf-cat-sec'); if(!el) return;
-  const ae=document.activeElement; const fid=ae&&ae.id; const cs=(ae&&typeof ae.selectionStart==='number')?ae.selectionStart:null;
-  el.innerHTML = catBody('urgent', (typeof urfF==='object'&&urfF)?urfF:{}, urfCatText());
-  if(fid){ const n=document.getElementById(fid); if(n){ try{ n.focus(); if(cs!=null&&n.setSelectionRange) n.setSelectionRange(cs,cs); }catch(e){} } }
-}
+function urfCatRender(){ catRefresh('urgent'); }
 
 // ── PRODUCT SEARCH ENGINE ──────────────────────────────────────────────────────
 let PS = { suggestions:[], loading:false, source:'', timer:null };
@@ -4930,10 +5192,7 @@ const PHP_RATE = 56;
 
 // Refresh ONLY the sell-form category block in place — re-rendering the whole modal
 // on every keystroke made the category suggestion (and the rest of the form) flicker.
-function updateSellCat(){
-  const el=document.getElementById('cat-sec-sell'); if(!el) return;
-  const {f,text}=catCtx('sell'); el.innerHTML=catBody('sell',f,text);
-}
+function updateSellCat(){ catRefresh('sell'); }
 // Tell Chrome/Safari to keep their autofill (saved cards, addresses, names) out of our
 // form fields — those chips above the mobile keyboard are the browser's, not ours.
 function killAutofill(root){
@@ -5090,7 +5349,7 @@ function applyProduct(idx) {
   // Set the category the form actually uses (the {em,top,sub} object), not just the
   // legacy string — otherwise picking a product leaves the Category section empty.
   S.form.cat = catClassify(((p.title||'')+' '+(p.desc||'')).trim(), 'sell') || S.form.cat;
-  S.form.catUI = {picking:false,openIdx:null,search:''};
+  S.form.catUI = {open:false,typed:''};
   PS.suggestions = [];
   renderModal();
   // Focus price field
@@ -5116,13 +5375,11 @@ function buildHelpRequestModal() {
       <div class="modal-body">
         <div class="form-group">
           <label class="form-label">What do you need? *</label>
-          <input class="form-input" type="text" value="${esc(f.item)}" placeholder="e.g. 65W USB-C laptop charger" oninput="S.helpForm.item=this.value">
+          <input class="form-input" type="text" value="${esc(f.item)}" placeholder="e.g. 65W USB-C laptop charger" oninput="S.helpForm.item=this.value;catRefresh('help')">
         </div>
         <div class="form-group">
-          <label class="form-label">Category</label>
-          <select class="form-input" onchange="S.helpForm.category=this.value">
-            ${CATS.filter(c=>c!=='All').map(c=>`<option ${f.category===c?'selected':''}>${c}</option>`).join('')}
-          </select>
+          <label class="form-label">Category <span style="font-weight:400;color:var(--muted);text-transform:none">— type it; AI suggests</span></label>
+          ${catSection('help')}
         </div>
         <div style="background:#fff8f0;border-radius:11px;padding:13px;margin-bottom:14px;font-size:13px;color:#555;line-height:1.6">
           💡 Members reply with store locations. Confirm it was helpful → they earn <strong>⭐ 1 pt = ₱1</strong> cashable to GCash!
@@ -5262,40 +5519,20 @@ function stLocationHTML(){
       <div class="sreg-pnote">In Google Maps, open Street View in front of the shop, then Share → Copy link, and paste it here. Neighbors tap it to see the shop. <a href="${esc(typeof bmSvHere==='function'?bmSvHere():'https://www.google.com/maps')}" target="_blank" rel="noopener">Open Google Maps here ↗</a></div>
     </div>`;
 }
-function stItemCatPickerHTML(it){
-  const q=(S.storeForm.catSearch||'').trim().toLowerCase();
-  let inner;
-  if(q){
-    const matches=[];
-    CAT_TAX.forEach(c=>{
-      if(c.name.toLowerCase().includes(q)) matches.push({em:c.em,top:c.name,sub:''});
-      c.subs.forEach(s=>{ if(s.toLowerCase().includes(q)) matches.push({em:c.em,top:c.name,sub:s}); });
-    });
-    S.storeForm._itemMatches=matches;
-    inner = matches.length
-      ? `<div class="sreg-subchips">${matches.slice(0,10).map((m,k)=>`<button class="sreg-subchip" onclick="stApplyMatch(${it.id},${k})">${m.em} ${esc(m.sub||m.top)}</button>`).join('')}</div>`
-      : `<div style="font-size:12.5px;color:var(--muted);padding:4px 0">No match — use your own below.</div>`;
-    inner += `<div class="sreg-typeown" onclick="stApplyCustom(${it.id})">🏷️ Use "<b>${esc(S.storeForm.catSearch)}</b>" as the category</div>`;
-  } else {
-    inner = `<div class="sreg-ptgrid">${CAT_TAX.map((c,i)=>`<button class="sreg-pttile" onclick="stDrillItemCat(${it.id},${i})"><span class="em">${c.em}</span><span><span class="nm">${esc(c.name)}</span><span class="meta">${c.subs.length} types</span></span></button>`).join('')}</div>`;
-  }
-  return `<div class="sreg-ipick">
-    <input class="sreg-inp" id="st-catsrch" placeholder="🔍 Search or type your own category…" value="${esc(S.storeForm.catSearch)}" oninput="stItemCatSearch(this.value)" autocomplete="off">
-    ${inner}
-    <div style="margin-top:10px"><button class="sreg-ghost" style="width:100%" onclick="stCloseItemCat()">Close</button></div>
-  </div>`;
+function stItemSugsHTML(it){
+  const typed=(S.storeForm.catSearch||'').trim();
+  const list=catSuggest('sell', typed, it.name, 6); S.storeForm._itemMatches=list;
+  let h='';
+  if(list.length) h+=`<div class="sreg-csl">🤖 AI suggests${typed?'':' from the item name'}</div><div class="sreg-subchips">${list.map((m,k)=>`<button type="button" onmousedown="event.preventDefault()" class="sreg-subchip${k===0?' best':''}" onclick="stApplyMatch(${it.id},${k})">${m.em} ${esc(m.sub||m.top)}</button>`).join('')}</div>`;
+  if(typed && !list.some(m=>catNorm(m.sub||m.top).trim()===catNorm(typed).trim())) h+=`<div class="sreg-typeown" onclick="stApplyCustom(${it.id})">🏷️ Use "<b>${esc(typed)}</b>" as the category</div>`;
+  if(!list.length && !typed) h+=`<div class="sreg-cnone">Type what it is, and AI suggests categories.</div>`;
+  return h;
 }
-function stDrillSubsHTML(){
-  const d=S.storeForm.drillTop; const c=CAT_TAX[d.ci]; const it=S.storeForm.items.find(x=>x.id===d.itemId);
-  if(!it){ S.storeForm.drillTop=null; return ''; }
+function stItemCatPickerHTML(it){
   return `<div class="sreg-ipick">
-    <div class="sreg-pickhead"><button class="sreg-pickback" onclick="S.storeForm.drillTop=null;renderModal()">←</button>
-      <div class="sreg-pickttl">${c.em} ${esc(c.name)}<small>Pick a type, or just the category</small></div></div>
-    <div class="sreg-subchips">
-      <button class="sreg-subchip" onclick="stApplyDrillSub(${it.id},${d.ci},-1)">${c.em} Just "${esc(c.name)}"</button>
-      ${c.subs.map((s,si)=>`<button class="sreg-subchip" onclick="stApplyDrillSub(${it.id},${d.ci},${si})">${esc(s)}</button>`).join('')}
-    </div>
-    <div style="margin-top:10px"><button class="sreg-ghost" style="width:100%" onclick="stCloseItemCat()">Cancel</button></div>
+    <input class="sreg-inp" id="st-catsrch" placeholder="Type a category — e.g. bread, phone case" value="${esc(S.storeForm.catSearch||'')}" oninput="stItemCatSearch(this.value)" onkeydown="stItemCatKey(event,${it.id})" autocomplete="off" maxlength="60" enterkeyhint="done">
+    <div id="st-catsugs" style="margin-top:9px">${stItemSugsHTML(it)}</div>
+    <div style="margin-top:10px"><button class="sreg-ghost" style="width:100%" onclick="stCloseItemCat()">Close</button></div>
   </div>`;
 }
 function stItemRowHTML(it){
@@ -5306,7 +5543,7 @@ function stItemRowHTML(it){
     : `<span class="sreg-catchip none" onclick="stOpenItemCat(${it.id})">+ set category</span>`;
   let picker='';
   if(S.storeForm.openCatFor===it.id){
-    picker = (S.storeForm.drillTop && S.storeForm.drillTop.itemId===it.id) ? stDrillSubsHTML() : stItemCatPickerHTML(it);
+    picker = stItemCatPickerHTML(it);
   }
   return `<div class="sreg-irow">
       <span class="em">${it.cat?it.cat.em:'🏷️'}</span>
@@ -5461,6 +5698,9 @@ function buildStoreRegisterModal() {
       .sreg .sreg-pttile .nm{font-weight:700;font-size:12.5px;color:var(--text);line-height:1.2}
       .sreg .sreg-pttile .meta{font-size:10px;color:var(--muted)}
       .sreg .sreg-subchips{display:flex;flex-wrap:wrap;gap:7px}
+      .sreg .sreg-subchip.best{border-color:var(--gold);background:#fffdf4}
+      .sreg .sreg-csl{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--gold-dk);margin:0 2px 7px}
+      .sreg .sreg-cnone{font-size:12.5px;color:var(--muted);padding:4px 0}
       .sreg .sreg-subchip{border:1.5px solid var(--border);background:#fff;border-radius:100px;padding:7px 12px;font-size:12.5px;font-weight:700;color:var(--text);cursor:pointer;font-family:inherit}
       .sreg .sreg-typeown{margin-top:9px;border:1.5px dashed rgba(26,107,58,.38);border-radius:11px;padding:10px 12px;background:#F0FBF4;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--green)}
       .sreg .sreg-imppanel{margin:8px 15px 4px;border:1.5px solid rgba(26,107,58,.3);border-radius:14px;padding:13px;background:#F7FDF9}
@@ -5510,10 +5750,10 @@ function buildStoreRegisterModal() {
         </div>`:''}
         <div class="sreg-fg">
           <label class="sreg-lbl">Name *</label>
-          <input class="sreg-inp" id="st-name" value="${esc(f.name)}" placeholder="${f.placeId ? 'Name on the shop’s sign' : 'e.g. ' + esc(ST_EG_NAME)}" oninput="S.storeForm.name=this.value" onblur="bmLaterRender()">
+          <input class="sreg-inp" id="st-name" value="${esc(f.name)}" placeholder="${f.placeId ? 'Name on the shop’s sign' : 'e.g. ' + esc(ST_EG_NAME)}" oninput="S.storeForm.name=this.value;catRefresh('place')" onblur="bmLaterRender()">
         </div>
         <div class="sreg-fg">
-          <label class="sreg-lbl">Type <span class="hint">— AI suggests from your name</span></label>
+          <label class="sreg-lbl">Type <span class="hint">— type it; AI suggests from the name</span></label>
           ${catSection('place')}
         </div>
         <div class="sreg-fg">
@@ -6532,7 +6772,7 @@ function buildPostRequestModal() {
         <div class="form-group">
           <label class="form-label">${isPoll ? 'What do you want recommendations for? *' : 'What do you need? *'}</label>
           <input class="form-input" type="text" placeholder="${isPoll ? 'e.g. Best barber near Balibago, a good aircon repair shop…' : 'e.g. 65W USB-C charger, Paracetamol 500mg...'}"
-            value="${esc(f.item)}" oninput="S._reqForm.item=this.value" onblur="${isPoll ? '' : 'renderModal()'}">
+            value="${esc(f.item)}" oninput="S._reqForm.item=this.value;catRefresh('find')" onblur="${isPoll ? '' : 'renderModal()'}">
         </div>
         ${isPoll ? '' : `<div class="form-group">
           <label class="form-label">Brand / model / size <span class="bmfd-opt">(optional)</span></label>
@@ -6541,14 +6781,14 @@ function buildPostRequestModal() {
         <div class="form-group">
           <label class="form-label">More details <span style="font-weight:400;color:var(--muted);text-transform:none">(optional — ${isPoll ? 'the area, your budget, what matters to you' : 'describe exactly what you need'})</span></label>
           <textarea class="form-input" rows="2" placeholder="${isPoll ? 'e.g. Walking distance from Nepo Mart, under ₱150, open on Sundays' : 'Brand, color, size, specs, how urgent…'}"
-            style="resize:vertical" oninput="S._reqForm.details=this.value" onblur="${isPoll ? '' : 'renderModal()'}">${esc(f.details||'')}</textarea>
+            style="resize:vertical" oninput="S._reqForm.details=this.value;catRefresh('find')" onblur="${isPoll ? '' : 'renderModal()'}">${esc(f.details||'')}</textarea>
         </div>
         ${isPoll ? '' : `        <div class="form-group">
           <label class="form-label">Reference photos <span style="font-weight:400;color:var(--muted);text-transform:none">(optional — show what it looks like)</span></label>
           ${buildReqPhotoUI()}
         </div>
         <div class="form-group">
-          <label class="form-label">Category <span style="font-weight:400;color:var(--muted);text-transform:none">— AI picks it from your title, details &amp; photos</span></label>
+          <label class="form-label">Category <span style="font-weight:400;color:var(--muted);text-transform:none">— type it; AI suggests from your title</span></label>
           ${catSection('find')}
         </div>
         ${typeof bmFindDetailsHTML==='function' ? bmFindDetailsHTML(f) : ''}`}
@@ -6582,7 +6822,8 @@ function buildPostRequestModal() {
 function submitPostRequest() {
   const f = S._reqForm || {};
   if (!f.item) { showToast('⚠️ Please describe what you need.', 'error'); return; }
-  if (!f.cat && !f.poll) { showToast('⚠️ Pick a category (AI can suggest one).', 'error'); return; }
+  if (!f.poll) catCommit('find');   // index v19
+  if (!f.cat && !f.poll) { showToast('⚠️ Type a category — AI suggests some.', 'error'); return; }
   if (!f.poll && typeof bmFindCheck === 'function') { const fe = bmFindCheck(f); if (fe) { showToast('⚠️ ' + fe, 'error'); return; } }   // index v18
   // Find Me: Trust Points reward only (no cash bounty). Cash is an optional thank-you tip later.
   const newReq = {
@@ -11186,24 +11427,6 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
 /* ===== Urgent Request Form — namespaced (urf*), demo-mode ===== */
 let urfManual = false;
 let urfF = { cat:'', emoji:'🆘', when:'', reward:'', cover:'back', delivery:'' };
-const urfCATS = [
- {e:'💊',n:'Medicine',k:['medicine','paracetamol','biogesic','tablet','capsule','drug','pharmacy','antibiotic','vitamin','bandage','alcohol','mask','thermometer','syrup','cough','fever','painkiller','betadine']},
- {e:'🍔',n:'Food',k:['food','cake','meal','ulam','baon','rice','bread','snack','pizza','burger','chicken','lunch','dinner','pancit','dessert','fries']},
- {e:'🛒',n:'Groceries',k:['grocery','milk','egg','sugar','salt','oil','flour','canned','noodles','sardines','coffee']},
- {e:'🔌',n:'Electronics',k:['charger','cable','usb','phone','laptop','battery','adapter','earphone','mouse','keyboard','powerbank','hdmi','monitor','router','sim','type-c','type c']},
- {e:'📄',n:'Documents',k:['document','papers','form','printout','print','photocopy','xerox','notarize','certificate','passport','permit','resume']},
- {e:'🍼',n:'Baby and Kids',k:['baby','diaper','formula','wipes','pacifier','bottle','infant','nappy']},
- {e:'👕',n:'Clothing',k:['clothes','shirt','pants','dress','shoes','jacket','uniform','socks']},
- {e:'🔧',n:'Hardware and Tools',k:['tool','screwdriver','hammer','nail','screw','wrench','drill','tape','glue','bulb','hardware','paint','pliers']},
- {e:'🐾',n:'Pet Supplies',k:['pet','dog','cat','dog food','cat food','leash','litter','kibble']},
- {e:'🚗',n:'Auto and Moto',k:['car','motor','motorcycle','tire','brake','helmet','engine','fuel']},
- {e:'💄',n:'Beauty and Care',k:['makeup','lipstick','perfume','lotion','sunscreen','skincare','shampoo','razor','deodorant','soap']},
- {e:'📚',n:'School Supplies',k:['school','notebook','pen','pencil','bond paper','crayon','marker','ruler','calculator','project']},
- {e:'🎁',n:'Gifts and Flowers',k:['gift','flower','bouquet','balloon','present','chocolate']},
- {e:'💧',n:'Water and Gas',k:['water','gallon','gas','lpg','tank','refill','mineral']},
- {e:'🧴',n:'Household',k:['detergent','tissue','toilet paper','cleaner','bleach','sponge','candle','matches','umbrella']},
- {e:'📦',n:'Other',k:[]},
-];
 function urfGV(id){ const el=document.getElementById(id); return el ? (el.value||'').trim() : ''; }
 function urfBuildForm(){
   urfManual = false;
@@ -11287,39 +11510,12 @@ function urfPickCov(x){
   document.getElementById('urf-cb').classList.toggle('on',x==='back');
   document.getElementById('urf-ci').classList.toggle('on',x==='incl');
 }
-function urfAutoCat(){
-  if(urfManual) return;
-  const t=' '+(urfGV('urf-title')+' '+urfGV('urf-qty')).toLowerCase()+' ';
-  const face=document.getElementById('urf-cat-face'), lab=document.getElementById('urf-cat-label'), box=document.getElementById('urf-cat-box');
-  if(!face) return;
-  if(!t.trim()){ urfF.cat=''; urfF.emoji='🆘'; face.textContent='✨'; lab.textContent='Start typing above…'; box.classList.remove('has'); return; }
-  let b=null; for(const c of urfCATS){ if(c.k.some(k=>t.includes(k))){ b=c; break; } }
-  if(b){ urfF.cat=b.n; urfF.emoji=b.e; face.textContent=b.e; lab.innerHTML=b.n+' <span class="sug">✨ suggested</span>'; box.classList.add('has'); }
-  else { urfF.cat=''; urfF.emoji='🆘'; face.textContent='🤔'; lab.textContent='No match yet — tap to choose'; box.classList.remove('has'); }
-}
-function urfToggleCat(){
-  const p=document.getElementById('urf-cat-picker'); p.classList.toggle('open');
-  if(p.classList.contains('open')){ document.getElementById('urf-cat-search').value=''; urfRenderCats(''); }
-}
-function urfRenderCats(q){
-  q=(q||'').toLowerCase().trim();
-  const list=urfCATS.filter(c=>!q||c.n.toLowerCase().includes(q)||c.k.some(k=>k.includes(q)));
-  let h=list.map(c=>`<div class="cat-opt" onclick="urfChooseCat('${c.e}','${c.n.replace(/'/g,"\\'")}')">${c.e} ${c.n}</div>`).join('');
-  if(q && !urfCATS.some(c=>c.n.toLowerCase()===q)) h+=`<div class="cat-opt custom" onclick="urfChooseCat('🏷️','${q.replace(/['\\]/g,'')}')">➕ Use “${q}”</div>`;
-  document.getElementById('urf-cat-grid').innerHTML=h;
-}
-function urfChooseCat(e,n){
-  urfManual=true; urfF.cat=n; urfF.emoji=e;
-  document.getElementById('urf-cat-face').textContent=e;
-  document.getElementById('urf-cat-label').textContent=n;
-  document.getElementById('urf-cat-box').classList.add('has');
-  document.getElementById('urf-cat-picker').classList.remove('open');
-}
 function urfPost(){
   const err=document.getElementById('urf-err');
   const title=urfGV('urf-title');
   if(!title){ err.textContent='Please say what you need.'; return; }
-  if(!urfF.cat){ err.textContent='Pick a category.'; return; }
+  catCommit('urgent');   // index v19
+  if(!urfF.cat){ err.textContent='Type a category — AI suggests some.'; return; }
   if(!urfF.when){ err.textContent='Choose how urgent it is.'; return; }
   const cash=urfGV('urf-cash'), pts=urfGV('urf-pts');
   if(!urfF.reward || (!cash && !pts)){ err.textContent='Add a reward (cash or trust points).'; return; }
@@ -13678,13 +13874,12 @@ function urfPost(){
   /* ---------- the editor (whoever posted the shop) ---------- */
   function startEdit(mode){
     var s = cur, d = det(s), cat = catOf(s);
-    draft = { name:s.name || '', category:s.category || cat[1] || '', custom:'', sells:s.sells || '', address:addrOf(s), landmark:d.landmark || '',
+    draft = { name:s.name || '', category:s.category || cat[1] || '', sells:s.sells || '', address:addrOf(s), landmark:d.landmark || '',
               hours:s.hours || '', contact:s.contact || '', payments:(Array.isArray(d.payments) ? d.payments.filter(function(p){ return PAY.indexOf(p) >= 0; }) : []),
               delivery:!!d.delivery, pickup:!!d.pickup, cover:okUrl(s.cover) || null, logo:okUrl(s.logo) || null, coverNew:null, logoNew:null,
               lat:(s.lat != null ? Number(s.lat) : null), lng:(s.lng != null ? Number(s.lng) : null), note:'', svlink:svLinkOk(s.svLink) ? s.svLink : '' };
     // shop text from the database shows look-alike quotes (＆ ’ ”); keep the plain ones in the editor
     ['name','sells','address','hours','contact','category'].forEach(function(k){ draft[k] = String(draft[k]).replace(/’/g, "'").replace(/”/g, '"').replace(/＆/g, '&'); });
-    if (draft.category && !places().some(function(p){ return p.name === draft.category; })) { draft.custom = draft.category; draft.category = '__own'; }
     draft0 = JSON.parse(JSON.stringify(draft));
     ui.mode = mode === 'suggest' ? 'suggest' : 'owner';
     ui.editing = true; ui.err = ''; ui.adding = false; ui.reporting = false; ui.ask = null; ui.itemEdit = null;
@@ -13694,13 +13889,13 @@ function urfPost(){
     var v = function(id){ var el = root.querySelector('#' + id); return el ? el.value : null; };
     if (ui.adding) { ['name','price','note'].forEach(function(k){ var x = v('bsp-in-' + k); if (x != null) ui.add[k] = x; }); }
     if (ui.editing && draft) {
-      ['name','custom','sells','address','landmark','hours','contact','note','svlink'].forEach(function(k){ var x = v('bsp-ed-' + k); if (x != null) draft[k] = x; });
+      ['name','sells','address','landmark','hours','contact','note','svlink'].forEach(function(k){ var x = v('bsp-ed-' + k); if (x != null) draft[k] = x; });
       var c = v('bsp-ed-category'); if (c != null) draft.category = c;
     }
     if (ui.itemEdit) { ['name','price','note'].forEach(function(k){ var x = v('bsp-ie-' + k); if (x != null) ui.itemEdit[k] = x; }); }
   }
   function editHTML(){
-    var d = draft, opts = places().map(function(p){ return '<option value="' + E(p.name) + '"' + (d.category === p.name ? ' selected' : '') + '>' + E(p.em + ' ' + p.name) + '</option>'; }).join('');
+    var d = draft;
     var coverSrc = d.coverNew || d.cover, logoSrc = d.logoNew || d.logo;
     var fld = function(id, label, val, o){ o = o || {};
       return '<div class="bsp-fl"><label for="bsp-ed-' + id + '">' + label + '</label>' + (o.area
@@ -13722,9 +13917,9 @@ function urfPost(){
       '</div>' +
       '<div class="bsp-fine">Photos are made smaller on your phone before upload, and their location data is removed.</div>' +
       fld('name', 'Shop name', d.name, { max:80 }) +
-      '<div class="bsp-fl"><label for="bsp-ed-category">Category</label><select id="bsp-ed-category"><option value="">Pick a category</option>' + opts +
-        '<option value="__own"' + (d.category === '__own' ? ' selected' : '') + '>✏️ Type my own…</option></select></div>' +
-      (d.category === '__own' ? fld('custom', 'Your category', d.custom, { max:60, ph:'e.g. Bike shop' }) : '') +
+      '<div class="bsp-fl"><label for="bsp-ed-category">Category</label>' +   // index v19: typed, AI suggests (no dropdown)
+        '<input id="bsp-ed-category" maxlength="60" autocomplete="off" enterkeyhint="done" placeholder="Type it — e.g. bakery, pharmacy, barbershop" value="' + E(d.category) + '">' +
+        '<div class="bsp-catsugs" id="bsp-catsugs">' + catSugs() + '</div></div>' +
       fld('sells', 'What it sells', d.sells, { area:1, max:600, ph:'Pandesal from 5 AM, ensaymada, banana bread' }) +
       fld('address', 'Address', d.address, { max:200, ph:'Street, barangay' }) +
       fld('landmark', 'Landmark', d.landmark, { max:120, ph:'Beside the chapel, across the 7-Eleven' }) +
@@ -13746,6 +13941,16 @@ function urfPost(){
       '<div class="bsp-fbtns"><button type="button" class="bsp-btn gold" data-act="save"' + (ui.busy ? ' disabled' : '') + '>' + (ui.busy ? (sug ? 'Sending…' : 'Saving…') : (sug ? 'Send suggestion' : 'Save changes')) + '</button><button type="button" class="bsp-btn" data-act="edit-x">Cancel</button></div>' +
       '<div class="bsp-fine">' + (sug ? 'No links, except the Street View link. Other people see it as suggested by “a neighbor”.' : 'No links in the text (they’re blocked to stop spam), only the Street View link. Neighbors can still vouch for or report the shop, and suggest edits.') + '</div>' +
     '</div></section>';
+  }
+
+  // index v19: AI's suggestions under the shop editor's category box (tap one to use it)
+  function catSugs(){
+    var d = draft; if (!d) return '';
+    var typed = String(d.category || '').replace(/\s+/g, ' ').trim(), low = typed.toLowerCase(), list = [];
+    try { if (typeof window.catSuggest === 'function') list = window.catSuggest('place', typed, d.name + ' ' + d.sells, 5); } catch(e){}
+    if (!list.length) return '<span class="bsp-fine">' + (typed ? 'Your own category. AI has no suggestion for it.' : 'Type the kind of shop, and AI suggests one.') + '</span>';
+    return '<span class="bsp-csl">🤖 AI suggests</span>' + list.map(function(s){ var nm = s.sub || s.top, on = nm.toLowerCase() === low;
+      return '<button type="button" class="bsp-cat' + (on ? ' on' : '') + '" data-act="catpick" data-k="' + E(nm) + '" aria-pressed="' + on + '">' + E(s.em + ' ' + nm) + (on ? ' ✓' : '') + '</button>'; }).join('');
   }
 
   /* ---------- whole page ---------- */
@@ -13939,7 +14144,9 @@ function urfPost(){
   async function save(){
     grab();
     var s = cur, d = draft; if (!s || !d || ui.busy) return;
-    var name = d.name.trim(), cat = d.category === '__own' ? d.custom.trim() : d.category;
+    var name = d.name.trim(), cat = String(d.category || '').replace(/\s+/g, ' ').trim();
+    var ptHit = places().find(function(p){ return p.name.toLowerCase() === cat.toLowerCase(); }); if (ptHit) cat = ptHit.name;   // "pharmacy" → Pharmacy
+    else if (cat && cat === cat.toLowerCase()) cat = cat.charAt(0).toUpperCase() + cat.slice(1);   // "bike shop" → Bike shop
     if (name.length < 2) { ui.err = 'The shop name needs 2 letters or more.'; return render(); }
     if (/(https?:\/\/|www\.)/i.test([name, d.sells, d.address, d.landmark, d.hours, d.contact, cat, d.note].join(' '))) { ui.err = 'No links, please (they’re blocked to stop spam).'; return render(); }
     var svl = svLinkNorm(d.svlink); d.svlink = svl;
@@ -13972,7 +14179,7 @@ function urfPost(){
   /* a suggestion = only the fields that changed */
   async function suggest(name, cat){
     var s = cur, d = draft, d0 = draft0, ch = {}, dd = {};
-    var cat0 = d0.category === '__own' ? d0.custom.trim() : d0.category;
+    var cat0 = String(d0.category || '').replace(/\s+/g, ' ').trim();
     if (name !== d0.name.trim()) ch.name = name;
     if (cat !== cat0) { ch.category = cat || null; var hit = places().find(function(p){ return p.name === cat; }); if (hit) ch.emoji = hit.em; }
     [['sells', 'description'], ['address', 'address'], ['hours', 'hours'], ['contact', 'contact']].forEach(function(p){
@@ -14232,6 +14439,7 @@ function urfPost(){
     if (act === 'edit') { if (!isMine(s)) return; startEdit('owner'); render(); var ed = root.querySelector('.bsp-edit'); if (ed) root.scrollTop += ed.getBoundingClientRect().top - root.getBoundingClientRect().top - 12; return; }
     if (act === 'edit-x') { ui.editing = false; draft = null; ui.err = ''; return render(); }
     if (act === 'save') return save();
+    if (act === 'catpick') { var ci = root.querySelector('#bsp-ed-category'); if (ci) ci.value = b.getAttribute('data-k') || ''; grab(); return render(); }   // index v19
     if (act === 'pick') { grab(); var f = root.querySelector('#bsp-file'); if (f) { f.setAttribute('data-k', b.getAttribute('data-k')); f.value = ''; f.click(); } return; }
     if (act === 'unpick') { grab(); var k = b.getAttribute('data-k'); draft[k] = null; draft[k + 'New'] = null; return render(); }
     if (act === 'pay') { grab(); var p = b.getAttribute('data-k'), i = draft.payments.indexOf(p); if (i >= 0) draft.payments.splice(i, 1); else draft.payments.push(p); return render(); }
@@ -14245,7 +14453,6 @@ function urfPost(){
   }
   function onChange(e){
     var t = e.target;
-    if (t.id === 'bsp-ed-category') { grab(); return render(); }
     if (t.id === 'bsp-file' && t.files && t.files[0] && draft) {
       var k = t.getAttribute('data-k') === 'logo' ? 'logo' : 'cover', file = t.files[0];
       if (!/^image\//.test(file.type || '')) { toast('Pick a photo (JPG or PNG).'); return; }
@@ -14254,6 +14461,10 @@ function urfPost(){
         grab(); draft[k + 'New'] = url; render();
       });
     }
+  }
+  function onInput(e){   // index v19: the category box suggests as you type
+    var t = e.target;
+    if (t && t.id === 'bsp-ed-category' && draft) { draft.category = t.value; var box = root.querySelector('#bsp-catsugs'); if (box) box.innerHTML = catSugs(); }
   }
   function onKey(e){
     if (e.key === 'Escape' && root && !root.hidden) {
@@ -14275,6 +14486,7 @@ function urfPost(){
     host.appendChild(root);
     root.addEventListener('click', onClick);
     root.addEventListener('change', onChange);
+    root.addEventListener('input', onInput);
     document.addEventListener('keydown', onKey);
   }
   function reset(){ ui = freshUi(); ex = freshEx(); draft = null; draft0 = null; }
