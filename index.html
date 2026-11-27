@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v16 · 2026-11-27 ═══════ -->
-<script>window.BM_VERSION='index v16 · 2026-11-27';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v18 · 2026-11-27 ═══════ -->
+<script>window.BM_VERSION='index v18 · 2026-11-27';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
     <script>
     /* index v11: if Google Maps can't load (blocked, offline), keep the app running without the map */
@@ -3048,6 +3048,13 @@ body.bsp-open .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}   /* a
 #bm-store-page .bsp-elink{display:block;width:calc(100% - 28px);margin:12px 14px 2px;text-align:left;border:1.5px solid rgba(37,80,184,.3);background:#EEF1FF;color:#173c88;border-radius:10px;padding:9px 12px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
 #bm-store-page .bsp-ehint{font-size:12.5px;color:#4a5785;line-height:1.5;background:#F5F7FF;border:1px solid var(--hair);border-radius:10px;padding:9px 11px;margin-bottom:12px}
 #bm-store-page .bsp-ehint.pad{margin:12px 14px 6px}
+#bm-store-page .bsp-locbtns{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 8px}
+#bm-store-page .bsp-locbtn{flex:1 1 150px;display:flex;align-items:center;justify-content:center;gap:7px;min-height:46px;border:none;border-radius:12px;padding:11px 10px;font-family:'Poppins',sans-serif;font-weight:800;font-size:13px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);box-shadow:0 4px 12px rgba(26,107,58,.26)}
+#bm-store-page .bsp-locbtn.alt{background:#fff;color:var(--green);border:1.5px solid rgba(26,107,58,.45);box-shadow:none}
+#bm-store-page .bsp-locbtn:active{transform:scale(.98)}
+#bm-store-page .bsp-locstatus{display:flex;align-items:center;justify-content:space-between;gap:8px 10px;flex-wrap:wrap;border:1.5px solid rgba(26,107,58,.25);background:var(--mint);border-radius:10px;padding:8px 10px;font-size:13.5px;font-weight:700;color:var(--green)}
+#bm-store-page .bsp-locstatus.moved{border-color:rgba(227,165,15,.6);background:#FFF8E6;color:#7a5600}
+#bm-store-page .bsp-undo{border:1.5px solid rgba(139,101,8,.35);background:#fff;color:var(--gold-dk);border-radius:100px;padding:5px 12px;font-family:'Poppins',sans-serif;font-weight:800;font-size:12px;cursor:pointer}
 #bm-store-page .bsp-pinrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;border:1.5px solid var(--hair);border-radius:10px;padding:8px 10px;font-size:13.5px;color:var(--ink);font-weight:700}
 #bm-store-page .bsp-elist{display:flex;flex-direction:column;gap:10px;padding:8px 14px 12px}
 #bm-store-page .bsp-ecard{border:1px solid var(--hair);border-left:4px solid #2550b8;border-radius:12px;padding:11px 12px;background:#fff;box-shadow:0 2px 8px rgba(0,0,40,.06)}
@@ -6404,13 +6411,14 @@ function renderLeftPanel() {
       <div class="req-card find-card ${selectedLF===String(r.id)?'active-req':''}"
            onclick="selectRequest(${jsId(r.id)},'find')">
         <div class="req-card-top">
-          <div class="req-emoji find-bg">${r.isPoll?'🗳️':'🔍'}</div>
+          <div class="req-emoji find-bg${!r.isPoll&&r.photos&&r.photos.length?' bmfd-thumb':''}">${!r.isPoll&&r.photos&&r.photos.length?`<img src="${esc(r.photos[0])}" alt="" loading="lazy">`:(r.isPoll?'🗳️':'🔍')}</div>
           <div class="req-info">
             <div class="req-title">${r.item}</div>
             <div class="req-cat">${r.category}</div>
           </div>
         </div>
         ${r.isPoll && typeof bmPollLine==='function' ? bmPollLine(r) : renderOffer(r)}
+        ${!r.isPoll && typeof bmFindCardLine==='function' ? bmFindCardLine(r) : ''}
         ${r.note ? `<div style="font-size:11px;color:var(--muted);font-style:italic;margin-bottom:7px;line-height:1.4">"${r.note}"</div>` : ''}
         <div class="req-footer">
           <span class="req-user">👤 ${r.user} · ${r.time}</span>
@@ -6526,8 +6534,12 @@ function buildPostRequestModal() {
           <input class="form-input" type="text" placeholder="${isPoll ? 'e.g. Best barber near Balibago, a good aircon repair shop…' : 'e.g. 65W USB-C charger, Paracetamol 500mg...'}"
             value="${esc(f.item)}" oninput="S._reqForm.item=this.value" onblur="${isPoll ? '' : 'renderModal()'}">
         </div>
+        ${isPoll ? '' : `<div class="form-group">
+          <label class="form-label">Brand / model / size <span class="bmfd-opt">(optional)</span></label>
+          <input class="form-input" type="text" maxlength="80" placeholder="e.g. Yale, 4-digit code, 50 mm" value="${esc(f.spec||'')}" oninput="S._reqForm.spec=this.value">
+        </div>`}
         <div class="form-group">
-          <label class="form-label">${isPoll ? 'More details' : 'Details'} <span style="font-weight:400;color:var(--muted);text-transform:none">(optional — ${isPoll ? 'the area, your budget, what matters to you' : 'describe exactly what you need'})</span></label>
+          <label class="form-label">More details <span style="font-weight:400;color:var(--muted);text-transform:none">(optional — ${isPoll ? 'the area, your budget, what matters to you' : 'describe exactly what you need'})</span></label>
           <textarea class="form-input" rows="2" placeholder="${isPoll ? 'e.g. Walking distance from Nepo Mart, under ₱150, open on Sundays' : 'Brand, color, size, specs, how urgent…'}"
             style="resize:vertical" oninput="S._reqForm.details=this.value" onblur="${isPoll ? '' : 'renderModal()'}">${esc(f.details||'')}</textarea>
         </div>
@@ -6538,7 +6550,8 @@ function buildPostRequestModal() {
         <div class="form-group">
           <label class="form-label">Category <span style="font-weight:400;color:var(--muted);text-transform:none">— AI picks it from your title, details &amp; photos</span></label>
           ${catSection('find')}
-        </div>`}
+        </div>
+        ${typeof bmFindDetailsHTML==='function' ? bmFindDetailsHTML(f) : ''}`}
         <div class="form-group">
           <label class="form-label">📍 Your Location</label>
           <div class="loc-methods">
@@ -6548,6 +6561,7 @@ function buildPostRequestModal() {
           <input class="form-input" type="text" id="req-location" placeholder="Area or landmark near you"
             value="${esc(f.location||'')}" oninput="S._reqForm.location=this.value;S._reqForm.lat=null;S._reqForm.lng=null" style="margin-top:8px">
         </div>
+        ${!isPoll && typeof bmFindWhereHTML==='function' ? bmFindWhereHTML(f) : ''}
         <div class="form-group">
         ${isPoll ? `<div class="form-group">
           <label class="form-label">⏳ How long it runs</label>
@@ -6569,6 +6583,7 @@ function submitPostRequest() {
   const f = S._reqForm || {};
   if (!f.item) { showToast('⚠️ Please describe what you need.', 'error'); return; }
   if (!f.cat && !f.poll) { showToast('⚠️ Pick a category (AI can suggest one).', 'error'); return; }
+  if (!f.poll && typeof bmFindCheck === 'function') { const fe = bmFindCheck(f); if (fe) { showToast('⚠️ ' + fe, 'error'); return; } }   // index v18
   // Find Me: Trust Points reward only (no cash bounty). Cash is an optional thank-you tip later.
   const newReq = {
     id: Date.now(), reqType: 'find',
@@ -6585,6 +6600,7 @@ function submitPostRequest() {
     lng: (f.lng!=null?f.lng:USER.lng + (Math.random()-.5)*.01),
     replies: []
   };
+  if (!f.poll && typeof bmFindApply === 'function') bmFindApply(newReq, f);   // index v18: the details, and only a circle on the map (never your exact spot)
   helpRequests = [newReq, ...helpRequests];
   if(typeof bmPersistRequest==='function') bmPersistRequest(newReq,'find');
   S._reqForm = { item:'', details:'', cat:null, catUI:null, points:'', location:'', images:[] };
@@ -9358,7 +9374,13 @@ async function sbCreateRequest(req) {
     lat: req.lat, lng: req.lng, status: 'open'
   };
   if (req.isPoll) { row.is_poll = true; row.poll_ends_at = req.pollEndsAt || null; }   // index v16
-  const { data, error } = await sb.from('help_requests').insert(row).select().single();
+  if (req.findDetails && typeof bmFindRow === 'function') Object.assign(row, await bmFindRow(req.findDetails));   // index v18: photos (uploaded first) + details
+  let { data, error } = await sb.from('help_requests').insert(row).select().single();
+  if (error && req.findDetails && typeof bmFindMissing === 'function' && bmFindMissing(error)) {   // before db market v1.2: save it without the details
+    ['photos','category','cat_emoji','spec','budget','item_condition','needed_by','area_m','travel_km'].forEach(k => { delete row[k]; });
+    ({ data, error } = await sb.from('help_requests').insert(row).select().single());
+    if (!error) setTimeout(() => showToast('⚠️ Posted, but the photos and details weren’t saved: they need the database update db market v1.2.'), 1400);
+  }
   if (error) { showToast((req.isPoll && typeof bmMarketMissing === 'function' && bmMarketMissing(error)) ? '⚠️ ' + bmMarketErr(error) : 'Could not save request: ' + error.message); return {error}; }
   showToast(req.isPoll ? '🗳️ Poll posted! Neighbors can suggest picks and vote.' : '✅ Request posted!', 'success');
   return { data };
@@ -10565,7 +10587,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
     return b;
   }
   function mineCloseEdit(){ mineUI.edit=null; const b=document.getElementById('bmedit-back'); if(b){ b.style.display='none'; b.innerHTML=''; } }
-  function mineEdit(k,j){ const r=mineRow(k,j); if(!r) return; mineUI.ask=null; mineUI.edit={k,j,err:'',busy:false}; paintEdit(true); }
+  function mineEdit(k,j){ const r=mineRow(k,j); if(!r) return; mineUI.ask=null; mineUI.edit={k,j,err:'',busy:false,photos:(k==='find'&&Array.isArray(r.photos))?r.photos.slice(0,4):[]}; paintEdit(true); }
   // index v15: your shop opens its own page with the full editor (name, type, photos, the pin, payments, Street View link…)
   function mineEditShop(j){ const r=mineRow('shop',j); if(!r) return; mineUI.ask=null;
     if(typeof window.bmOpenStorePage!=='function'){ mineEdit('shop',j); return; }
@@ -10581,7 +10603,9 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
     const T={urgent:'Edit your Urgent request',find:'Edit your Find Me',sell:'Edit your item',shop:'Edit your shop'}[E.k];
     let f='';
     if(E.k==='urgent'||E.k==='find'){
-      f+=fld('me-item','What do you need?',r.item||'',{max:120})+fld('me-note','Note (optional)',r.note||'',{area:1,max:500});
+      const fd=E.k==='find' && !r.is_poll && typeof window.bmFindEditHTML==='function';   // index v18: photos, details, your spot, how far you'll travel
+      f+=fld('me-item','What do you need?',r.item||'',{max:120})+(fd?fld('me-spec','Brand / model / size (optional)',r.spec||'',{max:80}):'')+fld('me-note',fd?'More details (optional)':'Note (optional)',r.note||'',{area:1,max:500});
+      if(fd) f+=window.bmFindEditHTML(r, E);
       const o=rawOffer(r);
       if(E.k==='urgent'){
         f+=`<div class="me-row">${fld('me-cash','Cash reward (₱)',o.cash||'',{num:1,max:7})}${fld('me-cr','Credits reward (✨)',o.cr||'',{num:1,max:6})}</div>`;
@@ -10617,6 +10641,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
         if(!(cash>0)&&!(cr>0)) return fail('Add a reward: cash, Credits or both.');
         Object.assign(patch,{ offer_cash:cash, offer_trust:cr, offer_type:(cash>0&&cr>0)?'both':(cash>0?'cash':'points'), delivery:v('me-del')||r.delivery||'doorstep' });
       } else patch.offer_trust=cr;
+      if(E.k==='find' && !r.is_poll && typeof window.bmFindEditPatch==='function'){ const fp=window.bmFindEditPatch(r,E,v); if(fp.err) return fail(fp.err); Object.assign(patch, fp.patch); E.fd=true; }   // index v18
       if((Number(r.reply_count)||0)>0){ const o=rawOffer(r), n=rawOffer(Object.assign({},r,patch)); if(n.cash<o.cash||n.cr<o.cr) return fail('People already offered, so you can raise the reward but not lower it.'); }
     } else if(E.k==='sell'){
       const title=v('me-title'); if(title.length<2) return fail('Give the item a name.');
@@ -10626,11 +10651,27 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       table='stores'; patch={ name, address:v('me-addr'), hours:v('me-hours'), contact:v('me-contact'), description:v('me-desc') };
     }
     E.busy=true; E.err=''; paintEdit(false);
+    if(E.fd){ const urls=[]; for(const src of (E.photos||[]).slice(0,4)){ const u=await window.bmUploadFindPhoto(src); if(u) urls.push(u); else { E.busy=false; return fail('A photo didn’t upload. Check your connection and try again.'); } } patch.photos=urls.length?urls:null; }   // index v18
     let res; try{ res=await sb.from(table).update(patch).eq('id',r.id); }catch(e){ res={error:e}; }
-    if(res&&res.error){ E.busy=false; return fail((res.error&&res.error.message)||'Could not save'); }
+    if(res&&res.error){ E.busy=false; return fail((typeof window.bmFindMissing==='function'&&window.bmFindMissing(res.error))?'Photos and details need the database update db market v1.2.':((res.error&&res.error.message)||'Could not save')); }
     mineCloseEdit(); bmToast('✓ Saved. Everyone sees the new details.');
     await bpLoadMine();
     try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(_){}
+  }
+  // index v18: the Find Me editor's photos and spot
+  function mineEditPhotoAdd(input){ const E=mineUI.edit; if(!E) return; const files=[].slice.call(input.files||[]); input.value='';
+    files.slice(0, Math.max(0, 4-(E.photos||[]).length)).forEach(file=>compressImage(file, c=>{ if(!c||mineUI.edit!==E) return; (E.photos=E.photos||[]).push(c); paintEdit(false); })); }
+  function mineEditPhotoDel(i){ const E=mineUI.edit; if(!E||!E.photos) return; E.photos.splice(i,1); paintEdit(false); }
+  function mineEditLoc(kind){ const E=mineUI.edit; if(!E) return; const r=mineRow(E.k,E.j); if(!r) return;
+    if(kind==='gps'){
+      if(!navigator.geolocation){ bmToast('This browser can’t share your location. Use 📌 Drop a pin instead.'); return; }
+      bmToast('📍 Finding where you are…');
+      navigator.geolocation.getCurrentPosition(p=>{ if(mineUI.edit!==E) return; E.loc={ lat:p.coords.latitude, lng:p.coords.longitude }; paintEdit(false); bmToast('📍 Spot set. Tap Save changes to keep it.'); },
+        ()=>bmToast('Couldn’t get your location. Use 📌 Drop a pin instead.'), { enableHighAccuracy:true, timeout:10000, maximumAge:0 });
+      return; }
+    if(typeof openPinPicker!=='function' || window.BM_NO_MAP || !window.google || !google.maps || !google.maps.Map){ bmToast('The map isn’t ready yet. Try again in a moment.'); return; }
+    const at=E.loc || { lat:Number(r.lat), lng:Number(r.lng) };
+    openPinPicker('custom', { lat:at.lat, lng:at.lng, title:'📍 Where you are', onPick:(lat,lng)=>{ if(mineUI.edit!==E) return; E.loc={ lat, lng }; paintEdit(false); bmToast('📍 Spot set. Tap Save changes to keep it.'); } });
   }
   document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&mineUI.edit) mineCloseEdit(); });
 
@@ -10834,7 +10875,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
   }
 
   /* ---------- expose + open/close ---------- */
-  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, pinLocation, clearPin, pickDoc, removeDoc, openContact, toast:bmToast, logout:bpLogout, refresh:bpRefresh, modChat, modAsk, modDecide, mineTab, mineQ, mineF, mineAsk, mineDo, mineEdit, mineEditShop, mineSave, mineOpen, mineCloseEdit };
+  window.BP = { startEdit, cancelEdit, saveEdit, setDraft, setHandle, setContact, removeContact, addContact, removeService, addService, setEdu, removeEdu, addEdu, setJob, removeJob, addJob, toggleVis, setView, pickAvatar, pickCover, pinLocation, clearPin, pickDoc, removeDoc, openContact, toast:bmToast, logout:bpLogout, refresh:bpRefresh, modChat, modAsk, modDecide, mineTab, mineQ, mineF, mineAsk, mineDo, mineEdit, mineEditShop, mineSave, mineOpen, mineCloseEdit, mineEditPhotoAdd, mineEditPhotoDel, mineEditLoc };
   function bpLogout(){ if(typeof sbSignOut==='function'){ sbSignOut(); } bmCloseProfile(); }
   window.bmToast = bmToast;
   window.bmPickAvatar = pickAvatar;
@@ -11352,6 +11393,9 @@ function urfPost(){
       offer:{ type:r.offer_type||'pts', cash:r.offer_cash||0, points:r.offer_trust||0 },
       delivery:r.delivery||'', when:'', cover:'back',
       lat:r.lat, lng:r.lng, replies:[],
+      photos:(Array.isArray(r.photos)?r.photos:[]).filter(function(u){ return typeof u==='string' && /^https:\/\/[^\s"'<>()\\]+$/.test(u); }).slice(0,4),   // index v18: Find Me details
+      spec:r.spec||'', budget:r.budget!=null?Number(r.budget):null, cond:r.item_condition||'any', neededBy:r.needed_by||null,
+      areaM:r.area_m!=null?Number(r.area_m):null, travelKm:r.travel_km!=null?Number(r.travel_km):null, catName:r.category||'',
       // index v10: status + counters from the database
       status:r.status||'open', replyCount:r.reply_count||0, chosenHelper:r.chosen_helper||null, boughtReplyId:r.bought_reply_id||null, dispute:!!r.dispute_open,
       isPoll:!!r.is_poll, pollEndsAt:r.poll_ends_at||null, foundAt:r.found_at||null   // index v16: Find Me polls
@@ -11432,7 +11476,9 @@ function urfPost(){
     if(!signedIn() || typeof sbCreateRequest!=='function') return;
     sbCreateRequest({ type:type||o.reqType, item:o.item, note:(o.note||o.details||''),
       offerType:(o.offer&&o.offer.type)||'pts', cash:(o.offer&&o.offer.cash)||0, pts:(o.offer&&o.offer.points)||0,
-      delivery:o.delivery||'', lat:o.lat, lng:o.lng, isPoll:!!o.isPoll, pollEndsAt:o.pollEndsAt||null })   // index v16: polls
+      delivery:o.delivery||'', lat:o.lat, lng:o.lng, isPoll:!!o.isPoll, pollEndsAt:o.pollEndsAt||null,   // index v16: polls
+      findDetails:(o.reqType==='find' && !o.isPoll && o.areaM!=null) ? { images:o.photos||[], category:o.catName||'', catEmoji:o.catEmoji||'', spec:o.spec||'', budget:o.budget,
+        cond:o.cond, neededBy:o.neededBy, areaM:o.areaM, travelKm:o.travelKm } : null })   // index v18: Find Me details
      .then(function(res){ if(res&&res.data){ o._db={table:'help_requests',id:res.data.id}; o.id=res.data.id; loadPosts(); } else if(res&&res.error&&o.isPoll) loadPosts(); });
   }
   function persistListing(o){
@@ -12099,6 +12145,26 @@ function urfPost(){
 .bmf-anon{font-size:11.5px;font-weight:700;color:#6b76a8}
 .bmf-post{border:none;border-radius:12px;padding:12px;background:linear-gradient(135deg,#FFD24A,#E3A810);color:#0a1f63;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit}
 .bmf-post:disabled{opacity:.6}
+/* index v17: the shop the helper means, the item for its list, no big empty box */
+.bmf-none{margin:8px 10px 0;font-size:12px;font-weight:700;color:#6b76a8}
+.bmf-newhelp{display:flex;flex-direction:column;gap:7px}
+.bmf-newhelp:empty{display:none}
+.bmf-fine{font-size:11.5px;font-weight:600;color:#6b76a8;line-height:1.45}
+.bmf-dupe{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;background:#E6F5EE;border:1.5px solid rgba(26,107,58,.3);border-radius:12px;padding:9px 11px;font-size:12.5px;font-weight:700;color:#14532d;line-height:1.4}
+.bmf-dupe span{flex:1 1 170px;min-width:0}
+.bmf-use{flex-shrink:0;border:none;border-radius:10px;padding:8px 12px;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);color:#fff;font-family:inherit;font-weight:800;font-size:12.5px;cursor:pointer}
+.bmf-gbtn{width:100%;border:1.5px solid #cdd4ea;background:#fff;border-radius:10px;padding:10px 12px;font-family:inherit;font-weight:800;font-size:13px;color:#173c88;cursor:pointer;text-align:center}
+.bmf-glist{display:flex;flex-direction:column;gap:6px}
+.bmf-g{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;border:1px solid #e3e7f4;border-radius:10px;padding:8px 10px;background:#fff}
+.bmf-g .t{flex:1 1 170px;min-width:0;font-size:12.5px;color:#1a2550;line-height:1.35}
+.bmf-g .t b{display:block}
+.bmf-g .t span{font-size:11.5px;font-weight:700;color:#6b76a8}
+.bmf-gadd{flex-shrink:0;border:1.5px solid rgba(26,107,58,.45);background:#fff;color:#1A6B3A;border-radius:10px;padding:7px 11px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer}
+.bmf-gattr{font-size:10.5px;font-weight:700;color:#8a94b8;text-align:right}
+.bmf-additem{display:flex;align-items:flex-start;gap:9px;background:#F4F7FF;border:1px solid #e3e7f4;border-radius:10px;padding:9px 11px;font-size:12.5px;font-weight:700;color:#1a2550;line-height:1.4;cursor:pointer}
+.bmf-additem input{width:18px;height:18px;margin:1px 0 0;flex-shrink:0;accent-color:#1A6B3A}
+.bmf-itemok{font-size:12px;font-weight:700;color:#1A6B3A}
+.bmf-dupeask span{flex-basis:100%}
 /* index v10: long pop-up messages wrap on phones instead of running off the screen,
    and they slide in already centered (a second "fadeUp" animation was pushing them off to the right) */
 .toast{width:max-content;max-width:calc(100vw - 32px);white-space:normal;text-align:center;box-sizing:border-box;border-radius:22px;line-height:1.4;animation-name:bmToastIn}
@@ -12107,7 +12173,7 @@ function urfPost(){
 <script>
 (function(){
   var F=null, tempMarker=null;
-  var BLANK=function(){ return { kind:'shop', shop:'', name:'', phone:'', price:'', note:'' }; };
+  var BLANK=function(){ return { kind:'shop', shop:'', name:'', phone:'', price:'', note:'', addItem:true, itemName:null, notDupe:null }; };   // index v17: + the item for the shop's list
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function connected(){ return (typeof sb!=='undefined' && sb); }
   function me(){ return (typeof SB_USER!=='undefined' && SB_USER)?SB_USER.id:null; }
@@ -12180,7 +12246,8 @@ function urfPost(){
   function render(){
     if(!F) return;
     var p=F.post, owner=isOwner(), open=isOpen(), signed=!!me(), h='';
-    h+='<div class="bmpost-sum"><b>'+esc(p.item)+'</b>'+(p.note?'<br>“'+esc(p.note)+'”':'')+
+    var fdx=(typeof window.bmFindSumHTML==='function') ? window.bmFindSumHTML(p) : { top:'', mid:'' };   // index v18: photos + details
+    h+='<div class="bmpost-sum">'+fdx.top+'<b>'+esc(p.item)+'</b>'+(p.spec?'<span class="bmfd-spec">'+esc(p.spec)+'</span>':'')+(p.note?(p.spec?'':'<br>')+'“'+esc(p.note)+'”':'')+fdx.mid+
        (reward()?'<br>Reward: ✨'+reward()+' Credits for the reply that leads to the buy':'')+
        '<br><span style="color:#8a94b8">👤 '+esc(p.user||'Member')+(p.time?' · '+esc(p.time):'')+'</span></div>';
     if(F.err){ paint(h+'<div class="bmf-status off">⚠️ '+esc(F.err)+'</div>'); return; }
@@ -12190,7 +12257,7 @@ function urfPost(){
     else if(!open) h+='<div class="bmf-status off">This request is closed.</div>';
     else if(owner) h+='<div class="bmf-status wait">Bought it? Tap “I bought it here” on the reply that led you there.'+(reward()?' Whoever sent it gets the ✨'+reward()+' reward.':'')+' You won’t see their name.</div>';
     else h+='<div class="bmf-help">Replies show as Neighbor 1, 2… with no names. Vouch for replies you know are true: the person who wrote it earns ✨1 per point.</div>';
-    if(!F.rows.length) h+='<div class="bmthread-empty"><div class="big">🔍</div>No replies yet.'+(owner?'':' Know where to get it? Reply below.')+'</div>';
+    if(!F.rows.length && owner) h+='<div class="bmf-none">No replies yet. Neighbors who know where to get it will reply here.</div>';   // index v17: no big 🔍 box
     h+=F.rows.map(repHTML).join('');
     if(open && !owner) h+= signed ? composeHTML() : '<button class="bmsignin" type="button" data-f="signin">Sign in to reply</button>';
     else if(!open && !owner) h+='<div class="bmf-status off">New replies are off because the item was found. You can still vouch and report.</div>';
@@ -12269,6 +12336,159 @@ function urfPost(){
       '<button class="bmf-btn report" type="button" data-f="report" data-rid="'+esc(r.id)+'">⚠ Report</button></div>';
   }
 
+  /* ═══ index v17: find the shop the helper means (BringMe first, then Google Maps) and put the item on its list ═══ */
+  var SAME_SHOP_KM=0.15;   // "very close": 150 m
+  var GEN={ store:1, shop:1, sari:1, sarisari:1, tindahan:1, the:1, ng:1, and:1, general:1, merchandise:1, mini:1, mart:1, minimart:1,
+            trading:1, enterprise:1, enterprises:1, center:1, centre:1, supply:1, supplies:1, co:1, inc:1, corp:1 };
+  function nn(s){ return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim(); }
+  function core(s){ return nn(s).split(' ').filter(function(w){ return w && !GEN[w]; }).join(''); }
+  function dice(a,b){ var bg=function(s){ var o={}, n=0; for(var i=0;i<s.length-1;i++){ var k=s.substr(i,2); o[k]=(o[k]||0)+1; n++; } return { o:o, n:n }; };
+    var x=bg(a), y=bg(b), m=0; for(var k in x.o){ if(y.o[k]) m+=Math.min(x.o[k], y.o[k]); } return (x.n+y.n) ? 2*m/(x.n+y.n) : 0; }
+  // the same shop name? ("Sari-Sari Store" = "sari sari store"; "Aling Nena" = "Aling Nena Sari-sari Store")
+  function sameName(a,b){
+    var A=nn(a).replace(/ /g,''), B=nn(b).replace(/ /g,''); if(!A || !B) return false;
+    if(A===B) return true;
+    var ca=core(a), cb=core(b); if(!ca || !cb) return false;          // only shop words: the exact name only
+    if(ca===cb) return true;
+    var s=ca.length<=cb.length?ca:cb, l=ca.length<=cb.length?cb:ca;
+    if(s.length>=4 && l.indexOf(s)>=0) return true;
+    return s.length>=4 && dice(ca,cb)>=0.8;
+  }
+  function isCoords(a){ return /^\s*-?\d{1,3}\.\d+\s*,\s*-?\d{1,3}\.\d+\s*$/.test(String(a||'')); }
+  function mTx(k){ return k<1 ? Math.max(5, Math.round(k*200)*5)+' m' : k.toFixed(1)+' km'; }
+  function allShops(){ return (typeof stores!=='undefined' && Array.isArray(stores)) ? stores.filter(function(s){ return s && s._db && s._db.id; }) : []; }
+  function shopById(id){ var x=null; allShops().forEach(function(s){ if(!x && String(s._db.id)===String(id)) x=s; }); return x; }
+  // a BringMe shop with (about) the same name very close to a spot (the phone's GPS, or where the app thinks you are)
+  function sameShopNear(name, at){
+    if(String(name||'').trim().length<3) return null;
+    var best=null;
+    allShops().forEach(function(s){
+      if(s.lat==null || s.lng==null || !sameName(name, s.name)) return;
+      var d=at ? haversine(at.lat, at.lng, Number(s.lat), Number(s.lng)) : km(s.lat, s.lng);
+      if(d==null || isNaN(d) || d>SAME_SHOP_KM) return;
+      if(!best || d<best.d) best={ s:s, d:d };
+    });
+    return best;
+  }
+  // the item for the shop's list: the request's words unless the helper changed them
+  function itemOf(){ var d=F.draft; return String(d.itemName!=null ? d.itemName : ((F.post && F.post.item) || '')).replace(/\s+/g,' ').trim().slice(0,60); }
+  function listed(s, name){ var n=nn(name); return !!n && String(s.itemNames||'').split(',').some(function(x){ return nn(x)===n; }); }
+  function ownShop(s){ return !!s && (s.seller==='You' || (!!me() && String(s._ownerId)===String(me()))); }
+  function canAddItem(s){ return !!s && (!s.official || ownShop(s)); }   // community listings: anyone; official shops: the owner
+  function itemBoxHTML(s){
+    var d=F.draft, name=itemOf();
+    if(!canAddItem(s)) return '';
+    if(name && listed(s, name)) return '<div class="bmf-itemok">✓ “'+esc(name)+'” is already on '+esc(s.name)+'’s item list.</div>';
+    var on=d.addItem!==false;
+    return '<label class="bmf-additem"><input type="checkbox" data-d="addItem"'+(on?' checked':'')+'><span>➕ Also add it to <b>'+esc(s.name)+'</b>’s items, so the next person finds it there</span></label>'+
+      (on ? '<div class="bmf-field"><label for="bmf-iname">Item name</label><input id="bmf-iname" data-d="itemName" maxlength="60" autocomplete="off" placeholder="e.g. Combination padlock" value="'+esc(name)+'"></div>' : '');
+  }
+
+  /* Google Maps, when the shop isn't on BringMe (one search per tap; counted with the Finder's searches) */
+  var G_FIELDS=['id','displayName','location','formattedAddress','shortFormattedAddress','primaryTypeDisplayName','googleMapsURI','businessStatus'];
+  var G_CAP=40;   // Google searches per device per day, shared with the Finder
+  function gDay(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+  function gUsed(){ try{ var c=JSON.parse(localStorage.getItem('bm_gq')||'null'); return (c && c.d===gDay()) ? c.n : 0; }catch(e){ return 0; } }
+  function gCount(){ try{ localStorage.setItem('bm_gq', JSON.stringify({ d:gDay(), n:gUsed()+1 })); }catch(e){} }
+  function gReady(){ try{ return !window.BM_NO_MAP && window.google && google.maps && google.maps.places && google.maps.places.Place && typeof google.maps.places.Place.searchByText==='function'; }catch(e){ return false; } }
+  function linkedShop(pid){ var x=null; if(pid) allShops().forEach(function(s){ if(!x && s.placeId && s.placeId===pid) x=s; }); return x; }
+  async function gSearch(){
+    if(!F) return;
+    var name=String(F.draft.name||'').replace(/\s+/g,' ').trim(), q=nn(name), id=F.id;
+    if(name.length<3) return;
+    var at=(typeof USER!=='undefined' && USER && USER.lat!=null) ? { lat:Number(USER.lat), lng:Number(USER.lng) } : null;
+    if(!at){ F.g={ q:q, state:'noloc' }; return paintHelp(); }
+    if(!gReady()){ F.g={ q:q, state:'nomap' }; return paintHelp(); }
+    if(gUsed()>=G_CAP){ F.g={ q:q, state:'cap' }; return paintHelp(); }
+    F.g={ q:q, state:'loading' }; paintHelp(); gCount();
+    try{
+      var res=await google.maps.places.Place.searchByText({ textQuery:name, fields:G_FIELDS, maxResultCount:5, language:'en', region:'ph', locationBias:{ center:at, radius:3000 } });
+      if(!F || F.id!==id || !F.g || F.g.q!==q) return;
+      var list=((res && res.places) || []).map(function(p){
+        var lat=null, lng=null, loc=p && p.location;
+        try{ lat=typeof loc.lat==='function'?loc.lat():loc.lat; lng=typeof loc.lng==='function'?loc.lng():loc.lng; }catch(e){}
+        if(lat==null || lng==null || isNaN(lat) || isNaN(lng) || p.businessStatus==='CLOSED_PERMANENTLY') return null;
+        return { id:String(p.id||''), name:String(p.displayName||'Shop'), addr:String(p.shortFormattedAddress||p.formattedAddress||''),
+                 lat:Number(lat), lng:Number(lng), d:haversine(at.lat, at.lng, Number(lat), Number(lng)) };
+      }).filter(Boolean).sort(function(a,b){ return a.d-b.d; }).slice(0,5);
+      F.g={ q:q, state:'ok', list:list }; paintHelp();
+    }catch(e){ if(F && F.g && F.g.q===q){ F.g={ q:q, state:'err' }; paintHelp(); } console.warn('[BringMe] Google Maps search (Find Me reply)', e); }
+  }
+  // under "Shop name": already on BringMe? on Google Maps?
+  function helpHTML(){
+    var d=F.draft, name=String(d.name||'').replace(/\s+/g,' ').trim(), h='';
+    if(name.length<3) return '<div class="bmf-fine">Type the name on the shop’s sign. We check whether it’s already on BringMe or on Google Maps.</div>';
+    var m=sameShopNear(name, null);
+    if(m) h+='<div class="bmf-dupe"><span>🏪 Already on BringMe: <b>'+esc(m.s.name)+'</b>, '+esc(mTx(m.d))+' from you.</span>'+
+             '<button class="bmf-use" type="button" data-f="useshop" data-sid="'+esc(m.s._db.id)+'">Use this shop</button></div>';
+    var g=(F.g && F.g.q===nn(name)) ? F.g : null;
+    if(!g) h+='<button class="bmf-gbtn" type="button" data-f="gsearch">🔎 Find “'+esc(name)+'” on Google Maps</button>'+
+              (m ? '' : '<div class="bmf-fine">Not on BringMe yet? If Google Maps has it, add it to BringMe so the next person finds it too.</div>');
+    else if(g.state==='loading') h+='<div class="bmf-fine">Searching Google Maps…</div>';
+    else if(g.state==='ok'){
+      if(!g.list.length) h+='<div class="bmf-fine">Google Maps didn’t find “'+esc(name)+'” near you. You can still reply with the name.</div>';
+      else h+='<div class="bmf-glist">'+g.list.map(function(p, i){
+        var s=linkedShop(p.id);
+        return '<div class="bmf-g"><div class="t"><b>'+esc(p.name)+'</b><span>'+(p.addr?esc(p.addr)+' · ':'')+esc(mTx(p.d))+' from you</span></div>'+
+          (s ? '<button class="bmf-use" type="button" data-f="useshop" data-sid="'+esc(s._db.id)+'">✓ On BringMe · Use it</button>'
+             : '<button class="bmf-gadd" type="button" data-f="gadd" data-i="'+i+'">🏪 Add to BringMe</button>')+'</div>'; }).join('')+
+        '<div class="bmf-gattr">Results from Google Maps</div></div>';
+    }
+    else h+='<div class="bmf-fine">'+({ noloc:'Turn on location to search Google Maps near you.', nomap:'Google Maps search isn’t available right now.',
+              cap:'You’ve used today’s Google Maps searches on this phone. Try again tomorrow.', err:'Google Maps search didn’t work. Try again in a moment.' }[g.state]||'')+'</div>';
+    return h;
+  }
+  var tHelp=null;
+  function paintHelp(){ var el=document.querySelector('#bmfind-back #bmf-newhelp'); if(el && F) el.innerHTML=helpHTML(); }
+
+  /* a shop from Google Maps → Post a Shop; then back to the reply with that shop picked */
+  var PENDING=null;
+  function addFromGoogle(p){
+    var have=linkedShop(p.id);
+    if(have){ F.draft.kind='shop'; F.draft.shop=String(have._db.id); render(); return; }
+    if(typeof window.bmAddFromGoogle!=='function'){ toast('Adding shops isn’t available right now.','error'); return; }
+    PENDING={ post:F.post, draft:JSON.parse(JSON.stringify(F.draft)), submitted:false, done:false };
+    var typed=String(F.draft.name||'').replace(/\s+/g,' ').trim().slice(0,80);
+    window.bmCloseFind();
+    window.bmAddFromGoogle({ placeId:p.id, lat:p.lat, lng:p.lng, grp:null });
+    try{ if(typeof S!=='undefined' && S.modal==='store-register' && S.storeForm && !S.storeForm.name && typed){ S.storeForm.name=typed; if(typeof renderModal==='function') renderModal(); } }catch(e){}
+    setTimeout(function(){ toast('🏪 Check the name, pick its type and tap 📌 Drop a pin. Then you’ll be back at your reply.'); }, 150);
+  }
+  async function backToReply(P, shop){
+    if(!P || typeof window.bmOpenFind!=='function') return;
+    await window.bmOpenFind(P.post);
+    if(!F || String(F.id)!==String(P.post._db.id)) return;
+    F.draft=P.draft;
+    if(shop && shop._db){
+      F.draft.kind='shop'; F.draft.shop=String(shop._db.id); F.draft.addItem=true; F.draft.itemName=null;
+      F.note='🏪 '+shop.name+' is on BringMe now. Finish your reply below.';
+      setTimeout(function(){ toast('🏪 '+shop.name+' is on BringMe now. Finish your reply.','success'); }, 1300);
+    }
+    render();
+    setTimeout(function(){ var c=document.querySelector('#bmfind-back #bmf-compose'); if(c) try{ c.scrollIntoView({ block:'start' }); }catch(e){} }, 60);
+  }
+  window.bmAfterShopPost=function(o){ if(!PENDING || PENDING.done) return; var P=PENDING; P.done=true; PENDING=null; backToReply(P, o); };
+  (function hook(){
+    var ss=window.submitStore, cm=window.closeModal;
+    if(typeof ss==='function' && !ss.bmf){
+      var w1=function(){ var n=(typeof stores!=='undefined' && stores) ? stores.length : 0; var r=ss.apply(this, arguments);
+        try{ if(PENDING && typeof stores!=='undefined' && stores.length>n) PENDING.submitted=true; }catch(e){} return r; };
+      w1.bmf=true; window.submitStore=w1;
+    }
+    if(typeof cm==='function' && !cm.bmf){
+      var w2=function(){ var was=(typeof S!=='undefined' && S) ? S.modal : null; var r=cm.apply(this, arguments);
+        try{
+          if(PENDING && !PENDING.done && was==='store-register'){
+            var P=PENDING;
+            if(P.submitted) setTimeout(function(){ if(PENDING===P && !P.done){ P.done=true; PENDING=null; backToReply(P, null); } }, 9000);   // it didn't save: back to the reply as it was
+            else { P.done=true; PENDING=null; backToReply(P, null); }                                                                       // closed without posting
+          }
+        }catch(e){}
+        return r; };
+      w2.bmf=true; window.closeModal=w2;
+    }
+  })();
+
   // BringMe shops nearest to you, for the reply form
   function shopsNear(){
     var arr=(typeof stores!=='undefined' && Array.isArray(stores)) ? stores.filter(function(s){ return s && s._db && s._db.id; }) : [];
@@ -12278,11 +12498,15 @@ function urfPost(){
   }
   function composeHTML(){
     var d=F.draft, list=shopsNear(), isShop=d.kind!=='mine', sel=null;
+    if(isShop && d.shop && d.shop!=='__new' && !list.some(function(x){ return String(x.s._db.id)===String(d.shop); })){   // a shop picked from a suggestion stays in the list
+      var ex=shopById(d.shop); if(ex) list.push({ s:ex, d:km(ex.lat, ex.lng) });
+    }
     if(isShop && !d.shop) d.shop = list.length ? String(list[0].s._db.id) : '__new';
     if(isShop && d.shop!=='__new'){ list.forEach(function(x){ if(String(x.s._db.id)===String(d.shop)) sel=x; }); if(!sel) d.shop='__new'; }
     var isNew=isShop && d.shop==='__new';
     var named={}; F.rows.forEach(function(r){ if(!r.flagged && r.source_kind==='shop' && r.source_store_id!=null) named[String(r.source_store_id)]=1; });
     var h='<div class="bmf-compose" id="bmf-compose"><div class="bmf-ch" id="bmf-ch">Your reply: where can they get it?</div>';
+    if(F.note) h+='<div class="bmf-status ok">'+esc(F.note)+'</div>';
     h+='<div class="bmf-pick" role="group" aria-labelledby="bmf-ch"><button type="button" data-f="kind" data-k="shop" aria-pressed="'+isShop+'">🏪 At a shop</button><button type="button" data-f="kind" data-k="mine" aria-pressed="'+(!isShop)+'">🛍️ I’m selling mine</button></div>';
     if(isShop){
       h+='<div class="bmf-field"><label for="bmf-shop">Shop</label><select id="bmf-shop" data-d="shop">'+
@@ -12290,9 +12514,12 @@ function urfPost(){
          '<option value="__new"'+(isNew?' selected':'')+'>➕ A shop not on BringMe yet</option></select></div>';
       if(isNew){
         h+='<div class="bmf-field"><label for="bmf-sname">Shop name</label><input id="bmf-sname" data-d="name" maxlength="60" autocomplete="off" placeholder="e.g. Aling Nena Sari-sari Store" value="'+esc(d.name)+'"></div>';
+        h+='<div class="bmf-newhelp" id="bmf-newhelp">'+helpHTML()+'</div>';
         h+='<div class="bmf-loc">📍 We save where you are now as the shop’s spot, so reply while you’re at the shop or close to it.</div>';
+        if(typeof window.bmFindFar==='function' && typeof USER!=='undefined' && USER){ var far2=window.bmFindFar(F.post, USER.lat, USER.lng); if(far2) h+='<div class="bmf-warn">'+esc(far2)+'</div>'; }   // index v18
       } else {
-        h+='<div class="bmf-loc">📍 '+(sel.s.address?esc(sel.s.address)+' · ':'')+esc(kmTx(sel.d))+(sel.s.contact?' · 📞 '+esc(sel.s.contact):'')+'</div>';
+        h+='<div class="bmf-loc">📍 '+(sel.s.address ? (isCoords(sel.s.address) ? 'Pinned on the map · ' : esc(sel.s.address)+' · ') : '')+esc(kmTx(sel.d))+(sel.s.contact?' · 📞 '+esc(sel.s.contact):'')+'</div>';
+        if(typeof window.bmFindFar==='function'){ var far=window.bmFindFar(F.post, sel.s.lat, sel.s.lng); if(far) h+='<div class="bmf-warn">'+esc(far)+'</div>'; }   // index v18
         if(named[String(sel.s._db.id)]) h+='<div class="bmf-warn">⚠ Someone already named this shop here. You can still post, but the reward goes to the first reply.</div>';
       }
       if(isNew || !(sel && sel.s.contact)){
@@ -12300,10 +12527,14 @@ function urfPost(){
       }
     } else {
       h+='<div class="bmf-loc">📍 Only your general area shows (about 1 km), never your exact spot.</div>';
+      if(F.post && F.post.cond==='new') h+='<div class="bmf-warn">⚠ They want it new. Reply only if yours is new too.</div>';   // index v18
       h+='<div class="bmf-field"><label for="bmf-phone">Your contact number</label><input id="bmf-phone" data-d="phone" type="tel" inputmode="tel" autocomplete="off" placeholder="09XX XXX XXXX" value="'+esc(d.phone)+'"></div>';
     }
     h+='<div class="bmf-field"><label for="bmf-price">Price in pesos (optional)</label><input id="bmf-price" data-d="price" inputmode="numeric" autocomplete="off" placeholder="e.g. 1150" value="'+esc(d.price)+'"></div>';
+    if(isShop && !isNew && sel) h+=itemBoxHTML(sel.s);
     h+='<div class="bmf-field"><label for="bmf-note">Note (optional)</label><textarea id="bmf-note" data-d="note" rows="2" maxlength="500" placeholder="e.g. They had two on the shelf yesterday.">'+esc(d.note)+'</textarea></div>';
+    if(F.dupeAsk) h+='<div class="bmf-confirm bmf-dupeask"><span>There’s already a BringMe shop called <b>“'+esc(F.dupeAsk.name)+'”</b>, '+esc(mTx(F.dupeAsk.d))+' from you. Is it the same shop?</span>'+
+       '<button class="bmf-btn buy" type="button" data-f="dupe-yes">Yes, use it</button><button class="bmf-btn" type="button" data-f="dupe-no">No, a different shop</button></div>';
     h+='<div class="bmf-anon">👤 You will show as Neighbor '+nextAlias()+'. Your name is not shown.</div>';
     h+='<button class="bmf-post" type="button" data-f="post">Post reply</button></div>';
     return h;
@@ -12320,8 +12551,10 @@ function urfPost(){
   function onInput(e){
     var t=e.target; if(!F || !t || !t.getAttribute) return;
     var k=t.getAttribute('data-d'); if(!k) return;
-    F.draft[k]=t.value;
-    if(k==='shop' && e.type==='change'){ F.draft.phone=''; render(); focusSel('#bmf-shop'); }
+    F.draft[k]=(t.type==='checkbox') ? t.checked : t.value;
+    if(k==='shop' && e.type==='change'){ F.draft.phone=''; F.draft.itemName=null; F.draft.addItem=true; F.dupeAsk=null; render(); focusSel('#bmf-shop'); }
+    else if(k==='addItem' && e.type==='change'){ render(); focusSel('[data-d="addItem"]'); }
+    else if(k==='name'){ F.dupeAsk=null; F.draft.notDupe=null; clearTimeout(tHelp); tHelp=setTimeout(paintHelp, 250); }   // index v17: on BringMe already? on Google Maps?
   }
   function onClick(e){
     var b=e.target && e.target.closest ? e.target.closest('[data-f]') : null; if(!b || !F) return;
@@ -12339,6 +12572,14 @@ function urfPost(){
         return (x && x.now_flagged) ? 'Reported. That was report 10, so the reply is now hidden.' : 'Reported'+(x?' ('+x.new_reports+' of 10).':'.'); }); return; }
     if(f==='buy-yes'){ act(b, 'mark_bought', { p_request_id:F.id, p_reply_id:idv(rid) }, function(d){ var n=Number(d)||0;
         return n ? 'Marked as bought. The ✨'+n+' reward went to the neighbor who helped.' : 'Marked as bought. The request is now closed.'; }); return; }
+    if(f==='photo'){ if(typeof window.bmFindPhotoOpen==='function') window.bmFindPhotoOpen(F.post, Number(b.getAttribute('data-i'))); return; }   // index v18
+    if(f==='area'){ if(typeof window.bmShowFindArea==='function') window.bmShowFindArea(F.post); return; }
+    if(f==='useshop'){ F.draft.kind='shop'; F.draft.shop=String(b.getAttribute('data-sid')); F.draft.phone=''; F.draft.itemName=null; F.draft.addItem=true; F.dupeAsk=null; render(); focusSel('#bmf-shop'); return; }   // index v17
+    if(f==='gsearch'){ gSearch(); return; }
+    if(f==='gadd'){ var gp=F.g && F.g.list && F.g.list[Number(b.getAttribute('data-i'))]; if(gp) addFromGoogle(gp); return; }
+    if(f==='dupe-yes'){ var da=F.dupeAsk; F.dupeAsk=null; if(da){ F.draft.kind='shop'; F.draft.shop=String(da.id); F.draft.phone=''; F.draft.itemName=null; F.draft.addItem=true; }
+      render(); toast('Your reply now names '+(da?da.name:'that shop')+'. Tap Post reply.'); focusSel('.bmf-post'); return; }
+    if(f==='dupe-no'){ var dn=F.dupeAsk; F.dupeAsk=null; if(dn) F.draft.notDupe=String(dn.id); render(); var pb=document.querySelector('#bmfind-back .bmf-post'); if(pb) post(pb); return; }
     if(f==='post'){ post(b); return; }
   }
   async function act(btn, fn, args, okMsg){
@@ -12360,6 +12601,9 @@ function urfPost(){
     var price=parseFloat(String(d.price||'').replace(/[^0-9.]/g,''));
     if(kind==='shop_text' && String(d.name||'').trim().length<3){ toast('Type the shop’s name.','error'); focusSel('#bmf-sname'); return; }
     if(kind==='mine' && phone.replace(/[^0-9]/g,'').length<7){ toast('Add your contact number so the buyer can reach you.','error'); focusSel('#bmf-phone'); return; }
+    // index v17: put the item on the shop's list too (decided now, before the form resets)
+    var shopObj=kind==='shop' ? shopById(d.shop) : null, iname=itemOf();
+    var addIt=!!(shopObj && d.addItem!==false && canAddItem(shopObj) && iname.length>=2 && !listed(shopObj, iname));
     var here=null, reqId=F.id;
     btn.disabled=true;
     if(kind!=='shop'){   // a new shop or a second-hand offer needs where you are right now
@@ -12367,6 +12611,13 @@ function urfPost(){
       try{ here=await getHere(); }
       catch(e){ toast('We couldn’t get your location. Allow location for this site, then try again.','error'); btn.disabled=false; btn.textContent='Post reply'; return; }
       if(!F || F.id!==reqId) return;
+      if(kind==='shop_text'){   // index v17: is it a BringMe shop already? (about the same name, within 150 m)
+        var m=sameShopNear(d.name, here);
+        if(m && String(m.s._db.id)!==String(d.notDupe||'')){
+          F.dupeAsk={ id:String(m.s._db.id), name:m.s.name, d:m.d }; btn.disabled=false; btn.textContent='Post reply';
+          render(); focusSel('[data-f="dupe-yes"]'); return;
+        }
+      }
     }
     var args={ p_request_id:reqId, p_body:String(d.note||'').trim(), p_kind:kind,
                p_store_id: kind==='shop' ? idv(d.shop) : null,
@@ -12377,8 +12628,18 @@ function urfPost(){
     try{
       var r=await sb.rpc('post_find_reply', args);
       if(r.error){ toast(dbErr(r.error),'error'); btn.disabled=false; btn.textContent='Post reply'; return; }
-      if(F && F.id===reqId) F.draft=BLANK();
-      toast('✅ Reply posted. Everyone can read it, and your name is not shown.','success');
+      var extra='', itemErr='';
+      if(addIt){
+        try{
+          var a=await sb.rpc('store_item_add', { p_store_id:shopObj._db.id, p_name:iname, p_price:(isNaN(price) || price<=0) ? null : price, p_note:null,
+                                                 p_emoji:(typeof window.bmItemEmoji==='function') ? window.bmItemEmoji(iname) : null });
+          if(a.error) itemErr=(/PGRST202|Could not find the function/i.test(String(a.error.message||''))) ? 'adding items needs the database update db stores v1.' : String(a.error.message||a.error);
+          else { extra=' “'+iname+'” is on '+shopObj.name+'’s item list now too.'; shopObj.itemNames=(shopObj.itemNames ? shopObj.itemNames+', ' : '')+iname; }
+        }catch(e2){ itemErr=String((e2 && e2.message) || e2); }
+      }
+      if(F && F.id===reqId){ F.draft=BLANK(); F.dupeAsk=null; F.g=null; F.note=null; }
+      toast('✅ Reply posted. Everyone can read it, and your name is not shown.'+extra,'success');
+      if(itemErr) setTimeout(function(){ toast('Your reply is up, but the item wasn’t added to the shop: '+itemErr,'error'); }, 600);
       await reload();
       try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(e){}
     }catch(e){ toast(dbErr(e),'error'); btn.disabled=false; btn.textContent='Post reply'; }
@@ -13190,6 +13451,7 @@ function urfPost(){
   function itemDirect(s, i){ return mineItem(i) || (s.official && isMine(s)); }      // may edit it without votes
   function canDecide(s, e){ return isMine(s) || (!!e.item_id && mineItem(itemOf(e.item_id))); }
   function itemEmoji(name){ try { if (typeof catClassify === 'function') { var c = catClassify(name); if (c && c.em) return c.em; } } catch(e){} return '🏷️'; }
+  window.bmItemEmoji = itemEmoji;   // index v17: Find Me replies add items too
 
   /* a database row → the fields this page (and the side panel / search) use */
   function fromRow(s, r){
@@ -13446,8 +13708,9 @@ function urfPost(){
         : '<input id="bsp-ed-' + id + '" maxlength="' + (o.max || 120) + '" autocomplete="off" placeholder="' + E(o.ph || '') + '" value="' + E(val) + '"' + (o.tel ? ' inputmode="tel"' : '') + '>') + '</div>'; };
     var tog = function(act, key, label, on){ return '<button type="button" class="bsp-tog' + (on ? ' on' : '') + '" data-act="' + act + '" data-k="' + E(key) + '" aria-pressed="' + !!on + '">' + (on ? '✓ ' : '') + E(label) + '</button>'; };
     var sug = ui.mode === 'suggest', moved = d.lat != null && draft0 && draft0.lat != null && (d.lat !== draft0.lat || d.lng !== draft0.lng);
-    var pinTxt = moved ? 'Moved about ' + Math.round(meters({ lat:draft0.lat, lng:draft0.lng }, { lat:d.lat, lng:d.lng })) + ' m <span class="bsp-dim">(not saved yet)</span>'
-                       : (d.lat != null ? 'Where it is now' : 'Not pinned yet');
+    var dist = moved ? meters({ lat:draft0.lat, lng:draft0.lng }, { lat:d.lat, lng:d.lng }) : 0;   // index v16.1
+    var pinTxt = moved ? 'Moved about ' + (dist >= 1000 ? (Math.round(dist / 100) / 10) + ' km' : Math.round(dist) + ' m') + ' <span class="bsp-dim">(not saved yet)</span>'
+                       : (d.lat != null ? 'Pinned on the map <span class="bsp-dim">· ' + Number(d.lat).toFixed(5) + ', ' + Number(d.lng).toFixed(5) + '</span>' : 'Not pinned yet');
     return '<section class="bsp-panel bsp-edit"><div class="bsp-sh"><span>' + (sug ? '✏️' : '✎') + '</span><span class="bsp-st">' + (sug ? 'Suggest an edit' : 'Edit your shop') + '</span></div><div class="bsp-ebody">' +
       (sug ? '<div class="bsp-ehint">Change what’s wrong or missing. ' + (cur.official ? 'The owner decides whether to use it.'
            : 'It shows on the shop after ' + need.v + ' locals vouch for it, or when whoever posted the shop accepts it.') + '</div>' : '') +
@@ -13468,9 +13731,12 @@ function urfPost(){
       '<div class="bsp-frow">' + fld('hours', 'Hours', d.hours, { max:120, ph:'5 AM – 8 PM, closed Sunday' }) + fld('contact', 'Contact number', d.contact, { max:40, ph:'+63 9…', tel:1 }) + '</div>' +
       '<div class="bsp-fl"><label>Payments</label><div class="bsp-togs">' + PAY.map(function(p){ return tog('pay', p, p, d.payments.indexOf(p) >= 0); }).join('') + '</div></div>' +
       '<div class="bsp-fl"><label>Delivery / pick-up</label><div class="bsp-togs">' + tog('way', 'delivery', '🛵 Delivery', d.delivery) + tog('way', 'pickup', '🛍️ Pick-up', d.pickup) + '</div></div>' +
-      '<div class="bsp-fl"><label>Pin on the map</label><div class="bsp-pinrow"><span>📍 ' + pinTxt + '</span>' +
-        '<button type="button" class="bsp-btn sm" data-act="pin">📌 Move the pin</button></div>' +
-        '<div class="bsp-fine">Opens the map. Put the pin on the shop’s door.</div></div>' +
+      '<div class="bsp-fl"><label>Location on the map</label>' +   // index v16.1: the same buttons as Post a Shop
+        '<div class="bsp-locbtns"><button type="button" class="bsp-locbtn" data-act="gps">📍 Use my current location</button>' +
+        '<button type="button" class="bsp-locbtn alt" data-act="pin">📌 Drop a pin</button></div>' +
+        '<div class="bsp-locstatus' + (moved ? ' moved' : '') + '"><span>📍 ' + pinTxt + '</span>' +
+          (moved ? '<button type="button" class="bsp-undo" data-act="pinundo">↩ Undo</button>' : '') + '</div>' +
+        '<div class="bsp-fine">Drop the pin on the shop’s door, or stand at the shop and use your location.</div></div>' +
       '<div class="bsp-fl"><label for="bsp-ed-svlink">Street View link <small>(optional)</small></label>' +
         '<input id="bsp-ed-svlink" maxlength="1500" autocomplete="off" inputmode="url" placeholder="Paste a Google Maps link" value="' + E(d.svlink) + '">' +
         '<div class="bsp-fine">In Google Maps, open Street View in front of the shop, then Share → Copy link. ' +
@@ -13896,7 +14162,27 @@ function urfPost(){
     grab();
     var s = cur, at = { lat:(draft && draft.lat != null) ? draft.lat : Number(s.lat), lng:(draft && draft.lng != null) ? draft.lng : Number(s.lng) };
     if (typeof openPinPicker !== 'function' || window.BM_NO_MAP || !window.google || !google.maps || !google.maps.Map) { toast('The map isn’t ready yet. Try again in a moment.'); return; }
-    openPinPicker('custom', { lat:at.lat, lng:at.lng, title:'📍 Move the shop’s pin', onPick:function(lat, lng){ if (!draft) return; draft.lat = lat; draft.lng = lng; render(); } });
+    openPinPicker('custom', { lat:at.lat, lng:at.lng, title:'📍 Move the shop’s pin', onPick:function(lat, lng){ if (!draft) return; draft.lat = lat; draft.lng = lng; render(); keepTip(); } });
+  }
+  /* index v16.1: "📍 Use my current location" while standing at the shop, and ↩ Undo */
+  function keepTip(){
+    var moved = draft && draft0 && (draft.lat !== draft0.lat || draft.lng !== draft0.lng);
+    if (moved) toast('📍 New spot set. Tap ' + (ui.mode === 'suggest' ? 'Send suggestion' : 'Save changes') + ' to keep it.', 'success');
+  }
+  function useMyLoc(){
+    grab();
+    if (!navigator.geolocation) { toast('This browser can’t share your location. Use 📌 Drop a pin instead.', 'error'); return; }
+    toast('📍 Finding where you are…');
+    navigator.geolocation.getCurrentPosition(function(p){
+      if (!draft || !root || root.hidden || !ui.editing) return;
+      var lat = +p.coords.latitude.toFixed(6), lng = +p.coords.longitude.toFixed(6), acc = Math.round(p.coords.accuracy || 0);
+      var far = (draft0 && draft0.lat != null) ? meters({ lat:draft0.lat, lng:draft0.lng }, { lat:lat, lng:lng }) : 0;
+      draft.lat = lat; draft.lng = lng; render();
+      if (far > 1000) toast('⚠️ That’s ' + (Math.round(far / 100) / 10) + ' km from the shop’s pin. If you’re not at the shop, tap ↩ Undo and drop a pin instead.', 'error');
+      else toast('📍 Pin set to where you are' + (acc > 30 ? ' (your phone says within about ' + acc + ' m)' : '') + '. Check it with 📌 Drop a pin, then tap ' +
+                 (ui.mode === 'suggest' ? 'Send suggestion' : 'Save changes') + '.', 'success');
+    }, function(){ toast('Couldn’t get your location. Use 📌 Drop a pin instead.', 'error'); },
+    { enableHighAccuracy:true, timeout:10000, maximumAge:0 });
   }
 
   function share(s){
@@ -13919,6 +14205,8 @@ function urfPost(){
     if (act === 'goedits') { grab(); ui.tab = 'edits'; ui.itemEdit = null; ui.ask = null; render(); var tbs = root.querySelector('.bsp-tabs'); if (tbs) root.scrollTop += tbs.getBoundingClientRect().top - root.getBoundingClientRect().top - 12; return; }
     if (act === 'suggest') { if (needSignIn()) return; startEdit(isMine(s) ? 'owner' : 'suggest'); render(); var se = root.querySelector('.bsp-edit'); if (se) root.scrollTop += se.getBoundingClientRect().top - root.getBoundingClientRect().top - 12; return; }
     if (act === 'pin') return movePin();
+    if (act === 'gps') return useMyLoc();   // index v16.1
+    if (act === 'pinundo') { grab(); if (draft && draft0) { draft.lat = draft0.lat; draft.lng = draft0.lng; } render(); toast('↩ The pin is back where it was.'); return; }
     if (act === 'evouch') return editVote(id, 'vouch');
     if (act === 'ereject') return editVote(id, 'reject');
     if (act === 'eaccept') return editDecide(id, 'accept');
@@ -14086,6 +14374,7 @@ function urfPost(){
     if (r.error) { toast('Could not save store: ' + msg(r.error)); return; }
     toast('✅ Store registered!', 'success');
     var id = r.data.id; o._db = { table:'stores', id:id }; o.id = id;
+    try { if (typeof window.bmAfterShopPost === 'function') window.bmAfterShopPost(o); } catch(e){}   // index v17: a Find Me reply waiting for this shop
     try {
       var ph = (o.photos || [])[0];
       if (ph && /^data:image\//.test(ph)) { var url = await upload(ph, 'store_' + id + '_cover'); if (url) await sb.from('stores').update({ cover_url:url }).eq('id', id); }
@@ -14281,7 +14570,7 @@ function urfPost(){
 .mk-nudge{position:fixed;left:50%;transform:translateX(-50%);top:calc(12px + env(safe-area-inset-top,0px));z-index:1300;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 24px);width:max-content;
   background:linear-gradient(135deg,#0a1f63,#173c88);color:#fff;border:1px solid rgba(255,210,74,.55);border-radius:14px;padding:9px 10px 9px 13px;box-shadow:0 10px 30px rgba(0,0,40,.35);font-size:13px;font-weight:700;line-height:1.35}
 .mk-nudge span{min-width:0}
-body.bm-profile .mk-nudge{display:none}
+body.bm-profile .mk-nudge,body.bsp-open .mk-nudge{display:none}   /* not over the profile or a shop page (index v16.1) */
 .mk-nudge-go{flex-shrink:0;border:none;border-radius:9px;padding:7px 12px;background:linear-gradient(135deg,#FFD24A,#E3A810);color:#0a1f63;font:inherit;font-weight:800;font-size:12.5px;cursor:pointer}
 .mk-nudge-x{flex-shrink:0;border:none;background:rgba(255,255,255,.16);color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:12px}
 /* the poll + auction screens (they reuse the message screen's frame) */
@@ -15117,6 +15406,204 @@ body.bm-profile .mk-nudge{display:none}
     }
   }, 1000);
   document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ if(A) closeAuction(); else if(P) closePoll(); } });
+})();
+</script>
+<!-- ══════════ FIND ME DETAILS (index v18) ══════════ -->
+<style>
+/* ═══ index v18: Find Me details ═══ */
+.bmfd-opt{font-weight:400;color:var(--muted);text-transform:none}
+.sf-prefix .form-input{padding-left:30px}
+.bmfd-hint{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+.bmfd-chips{flex-wrap:wrap}
+.bmfd-photos{display:flex;gap:6px;margin:0 0 8px;flex-wrap:wrap}
+.bmfd-ph{width:64px;height:64px;border-radius:10px;overflow:hidden;border:1px solid #e3e7f4;padding:0;background:#f4f6fb;cursor:zoom-in;flex-shrink:0}
+.bmfd-ph img{width:100%;height:100%;object-fit:cover;display:block}
+.bmfd-spec{display:block;font-size:12px;font-weight:700;color:#334a66;margin-top:2px}
+.bmfd-chiprow{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 2px}
+.bmfd-c{background:#FFF8E1;border:1px solid #f1dfa5;color:#6b5200;border-radius:100px;padding:3px 9px;font-size:11.5px;font-weight:800;line-height:1.35}
+.bmfd-area{display:flex;align-items:center;justify-content:space-between;gap:6px 10px;flex-wrap:wrap;margin-top:8px;font-size:12px;font-weight:700;color:#334a66}
+.bmfd-areabtn{border:1.5px solid #cdd4ea;background:#fff;border-radius:100px;padding:5px 11px;font-family:inherit;font-size:11.5px;font-weight:800;color:#173c88;cursor:pointer}
+.bmfd-line{font-size:11px;font-weight:700;color:#6b5200;margin:-2px 0 7px;line-height:1.4}
+.req-emoji.bmfd-thumb{padding:0;overflow:hidden}
+.req-emoji.bmfd-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+#bmfd-lb{position:fixed;inset:0;z-index:3300;background:rgba(5,12,40,.9);display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+#bmfd-lb img{max-width:100%;max-height:100%;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#bmfd-lb button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.16);color:#fff;font-size:18px;cursor:pointer}
+.pin-picker-overlay{z-index:3200 !important}   /* above the Find Me editor */
+.mefd-photos{display:flex;gap:6px;flex-wrap:wrap}
+.mefd-ph{position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;border:1px solid #e3e7f4;flex-shrink:0}
+.mefd-ph img{width:100%;height:100%;object-fit:cover;display:block}
+.mefd-ph button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;border:none;background:rgba(0,0,0,.62);color:#fff;font-size:11px;line-height:22px;padding:0;cursor:pointer}
+.mefd-add{width:64px;height:64px;border-radius:10px;border:1.5px dashed #cdd4ea;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:800;color:#6b76a8;cursor:pointer;background:#fff;flex-shrink:0}
+.mefd-loc{display:flex;flex-wrap:wrap;gap:6px}
+.mefd-loc button{flex:1 1 140px;border:1.5px solid #cdd4ea;background:#fff;border-radius:10px;padding:9px 10px;font-family:inherit;font-weight:800;font-size:12.5px;color:#173c88;cursor:pointer}
+.mefd-locst{font-size:12px;font-weight:700;color:#334a66;margin-top:6px;line-height:1.4}
+</style>
+<script>
+/* ═══ index v18: Find Me details — photos, brand / model / size, budget, new or second-hand, needed by,
+   the circle neighbors see instead of your spot, and how far you'll travel. Needs db market v1.2. ═══ */
+(function(){
+  'use strict';
+  var AREAS=[[200,'200 m'],[500,'500 m'],[1000,'1 km'],[2000,'2 km']];
+  var TRAVEL=[[1,'1 km'],[3,'3 km'],[5,'5 km'],[10,'10 km'],[0,'Anywhere']];
+  var CONDS=[['any','Either'],['new','🆕 New only'],['used','♻️ Second-hand only']];
+  var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function z(n){ return (n<10?'0':'')+n; }
+  function today(){ var d=new Date(); return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate()); }
+  function day(s){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(s||'')); if(!m) return ''; var d=new Date(+m[1], +m[2]-1, +m[3]); return DAYS[d.getDay()]+', '+MONTHS[d.getMonth()]+' '+d.getDate(); }
+  function areaTx(m){ m=Number(m); return m>=1000 ? (m/1000)+' km' : m+' m'; }
+  function peso(n){ return '₱'+Number(n).toLocaleString('en-US',{ maximumFractionDigits:2 }); }
+  function okUrl(u){ return typeof u==='string' && /^(https:\/\/[^\s"'<>()\\]+|data:image\/(png|jpe?g|webp|gif);base64,[a-z0-9+\/=]+)$/i.test(u); }
+  function defaults(f){ if(!f.cond) f.cond='any'; if(f.areaM==null) f.areaM=500; if(f.travelKm===undefined) f.travelKm=5; return f; }
+  function chips(list, cur, fn){
+    return '<div class="sf-chips bmfd-chips" role="group">'+list.map(function(x){ var on=String(x[0])===String(cur);
+      return '<span class="sf-chip'+(on?' on':'')+'" role="button" tabindex="0" data-v="'+esc(x[0])+'" onclick="'+fn+'(\''+esc(x[0])+'\',this)">'+esc(x[1])+'</span>'; }).join('')+'</div>';
+  }
+  function pick(el){ if(!el || !el.parentNode) return; [].forEach.call(el.parentNode.children, function(c){ c.classList.toggle('on', c===el); }); }
+
+  /* Post a Find Me: budget, new or second-hand, needed by … */
+  window.bmFindDetailsHTML=function(f){
+    defaults(f);
+    return '<div class="form-group"><label class="form-label">💰 Budget <span class="bmfd-opt">(optional — the most you’d pay)</span></label>'+
+        '<div class="sf-prefix"><span class="sf-pf">₱</span><input class="form-input" id="bmfd-budget" type="number" min="1" inputmode="decimal" placeholder="e.g. 500" value="'+esc(f.budget||'')+'" oninput="S._reqForm.budget=this.value"></div></div>'+
+      '<div class="form-group"><label class="form-label">New or second-hand?</label>'+chips(CONDS, f.cond, 'bmFindCond')+'</div>'+
+      '<div class="form-group"><label class="form-label">📅 Needed by <span class="bmfd-opt">(optional)</span></label>'+
+        '<input class="form-input" id="bmfd-need" type="date" min="'+today()+'" value="'+esc(f.neededBy||'')+'" oninput="S._reqForm.neededBy=this.value"></div>';
+  };
+  /* … and where you are: the circle neighbors see, how far you'll travel */
+  window.bmFindWhereHTML=function(f){
+    defaults(f);
+    return '<div class="form-group"><label class="form-label">👀 Neighbors see your spot as a circle of</label>'+chips(AREAS, f.areaM, 'bmFindArea')+
+        '<div class="bmfd-hint">They see a circle this big around your pin, never your exact spot.</div></div>'+
+      '<div class="form-group"><label class="form-label">🚗 How far will you travel to get it?</label>'+chips(TRAVEL, f.travelKm||0, 'bmFindTravel')+
+        '<div class="bmfd-hint">Neighbors are told when a shop is farther than this.</div></div>';
+  };
+  window.bmFindCond=function(v, el){ if(S._reqForm) S._reqForm.cond=v; pick(el); };
+  window.bmFindArea=function(v, el){ if(S._reqForm) S._reqForm.areaM=Number(v); pick(el); };
+  window.bmFindTravel=function(v, el){ if(S._reqForm) S._reqForm.travelKm=Number(v)||null; pick(el); };
+  window.bmFindCheck=function(f){
+    var b=String(f.budget==null?'':f.budget).replace(/[₱,\s]/g,'');
+    if(b && !(parseFloat(b)>=1 && parseFloat(b)<=10000000)) return 'Budget: ₱1 to ₱10,000,000 (or leave it empty).';
+    if(f.neededBy && f.neededBy<today()) return 'Needed by: pick today or a later day.';
+    if(/(https?:\/\/|www\.)/i.test(String(f.spec||''))) return 'No links in brand / model / size, please.';
+    return '';
+  };
+  // a random spot inside 70% of the circle, so the circle always holds your real spot
+  window.bmFuzz=function(lat, lng, areaM){
+    var r=(Number(areaM)||500)*0.7*Math.sqrt(Math.random()), t=Math.random()*2*Math.PI;
+    return { lat:+(lat + r*Math.cos(t)/111320).toFixed(6), lng:+(lng + r*Math.sin(t)/(111320*Math.cos(lat*Math.PI/180))).toFixed(6) };
+  };
+  window.bmFindApply=function(o, f){
+    defaults(f);
+    var base=(f.lat!=null && f.lng!=null) ? { lat:Number(f.lat), lng:Number(f.lng) } : { lat:Number(USER.lat), lng:Number(USER.lng) };
+    var at=window.bmFuzz(base.lat, base.lng, f.areaM), b=parseFloat(String(f.budget==null?'':f.budget).replace(/[₱,\s]/g,''));
+    Object.assign(o, { lat:at.lat, lng:at.lng, areaM:Number(f.areaM)||500, travelKm:f.travelKm?Number(f.travelKm):null,
+      spec:String(f.spec||'').replace(/\s+/g,' ').trim().slice(0,80), budget:(b>0)?Math.round(b*100)/100:null, cond:f.cond||'any',
+      neededBy:f.neededBy||null, photos:(f.images||[]).filter(okUrl).slice(0,4), catName:o.category||'' });
+  };
+  // photos go to your own folder (the database only takes photos from there)
+  window.bmUploadFindPhoto=async function(src){
+    try {
+      if (/^https:\/\//.test(src)) return src;
+      if (!/^data:image\//.test(String(src)) || typeof sb==='undefined' || !sb || typeof SB_USER==='undefined' || !SB_USER) return null;
+      var blob=await (await fetch(src)).blob();
+      var path=SB_USER.id+'/find_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)+'.jpg';
+      var up=await sb.storage.from('profile-media').upload(path, blob, { upsert:true, contentType:'image/jpeg' });
+      if (up.error) throw up.error;
+      var pub=sb.storage.from('profile-media').getPublicUrl(path);
+      return (pub && pub.data && pub.data.publicUrl) || null;
+    } catch(e) { console.warn('[BringMe] Find Me photo upload failed:', e); return null; }
+  };
+  window.bmFindRow=async function(d){
+    var urls=[];
+    for (var i=0; i<(d.images||[]).length && urls.length<4; i++){ var u=await window.bmUploadFindPhoto(d.images[i]); if(u) urls.push(u); }
+    return { photos:urls.length?urls:null, category:d.category?String(d.category).slice(0,80):null, cat_emoji:d.catEmoji?String(d.catEmoji).slice(0,8):null,
+             spec:d.spec||null, budget:(d.budget>0)?d.budget:null, item_condition:d.cond||'any', needed_by:d.neededBy||null,
+             area_m:d.areaM||null, travel_km:d.travelKm||null };
+  };
+  window.bmFindMissing=function(e){ var m=String((e && (e.message || e.code)) || e || '');
+    return /PGRST204|42703/.test(m) || (/photos|item_condition|needed_by|travel_km|area_m|budget|cat_emoji|\bspec\b|category/.test(m) && /column|schema cache|does not exist/i.test(m)); };
+
+  /* showing it */
+  function chipsOf(r, short){
+    var out=[];
+    if (r.budget) out.push(short ? '≤ '+peso(r.budget) : '💰 Up to '+peso(r.budget));
+    if (r.cond==='new') out.push('🆕 New only'); else if (r.cond==='used') out.push('♻️ Second-hand only');
+    if (r.neededBy) out.push((short ? '📅 by ' : '📅 Needed by ')+day(r.neededBy));
+    if (r.travelKm) out.push(short ? '🚗 '+r.travelKm+' km' : '🚗 Will travel up to '+r.travelKm+' km');
+    else if (!short && r.areaM!=null) out.push('🚗 Will travel anywhere');
+    return out;
+  }
+  window.bmFindCardLine=function(r){ var c=chipsOf(r, true); return c.length ? '<div class="bmfd-line">'+c.map(esc).join(' · ')+'</div>' : ''; };
+  window.bmFindSumHTML=function(p){
+    var ph=(p.photos||[]).filter(okUrl), c=chipsOf(p, false);
+    var top=ph.length ? '<div class="bmfd-photos">'+ph.map(function(u,i){ return '<button type="button" class="bmfd-ph" data-f="photo" data-i="'+i+'" aria-label="Photo '+(i+1)+' of '+ph.length+'"><img src="'+esc(u)+'" alt="" loading="lazy"></button>'; }).join('')+'</div>' : '';
+    var mid=(c.length ? '<div class="bmfd-chiprow">'+c.map(function(x){ return '<span class="bmfd-c">'+esc(x)+'</span>'; }).join('')+'</div>' : '')+
+      (p.areaM!=null ? '<div class="bmfd-area"><span>📍 Somewhere within '+esc(areaTx(p.areaM))+' of the pin</span><button type="button" class="bmfd-areabtn" data-f="area">🗺️ See the area</button></div>' : '');
+    return { top:top, mid:mid };
+  };
+  window.bmFindPhotoOpen=function(p, i){
+    var ph=(p && p.photos || []).filter(okUrl); if(!ph[i]) return;
+    var lb=document.getElementById('bmfd-lb'); if(lb) lb.remove();
+    lb=document.createElement('div'); lb.id='bmfd-lb'; lb.setAttribute('role','dialog'); lb.setAttribute('aria-label','Photo');
+    lb.innerHTML='<img src="'+esc(ph[i])+'" alt=""><button type="button" aria-label="Close">✕</button>';
+    lb.addEventListener('click', function(){ lb.remove(); });
+    document.body.appendChild(lb);
+  };
+  document.addEventListener('keydown', function(e){ var lb=document.getElementById('bmfd-lb'); if(e.key==='Escape' && lb){ lb.remove(); e.stopImmediatePropagation(); } }, true);
+  // a shop farther than the asker will travel (they're somewhere in their circle, so count from its edge)
+  window.bmFindFar=function(p, lat, lng){
+    if (!p || !p.travelKm || lat==null || lng==null || p.lat==null || typeof haversine!=='function') return '';
+    var d=haversine(Number(p.lat), Number(p.lng), Number(lat), Number(lng)) - (Number(p.areaM)||0)/1000;
+    if (!(d > p.travelKm)) return '';
+    return '⚠ About '+(Math.round(d*10)/10)+' km from where they are: farther than the '+p.travelKm+' km they’ll travel. You can still reply.';
+  };
+  // 🗺️ See the area: the asker's circle (gold) and how far they'll travel (blue ring)
+  var circles=[];
+  window.bmShowFindArea=function(p){
+    circles.forEach(function(c){ try{ c.setMap(null); }catch(e){} }); circles=[];
+    if (typeof window.bmCloseFind==='function') window.bmCloseFind();
+    try {
+      if (window.BM_NO_MAP || typeof map==='undefined' || !map || !window.google || !google.maps || !google.maps.Circle) { showToast('The map isn’t ready yet. Try again in a moment.'); return; }
+      var c={ lat:Number(p.lat), lng:Number(p.lng) };
+      circles.push(new google.maps.Circle({ map:map, center:c, radius:Number(p.areaM)||300, strokeColor:'#E3A810', strokeWeight:2, fillColor:'#FFD24A', fillOpacity:0.22, clickable:false }));
+      if (p.travelKm) circles.push(new google.maps.Circle({ map:map, center:c, radius:Number(p.travelKm)*1000, strokeColor:'#2550b8', strokeOpacity:0.85, strokeWeight:2, fillOpacity:0, clickable:false }));
+      var big=circles[circles.length-1];
+      if (big.getBounds && map.fitBounds) map.fitBounds(big.getBounds()); else if (map.panTo) map.panTo(c);
+      showToast(p.travelKm ? '📍 They’re somewhere in the gold circle, and they’ll travel up to '+p.travelKm+' km (the blue ring).' : '📍 They’re somewhere in the gold circle.');
+    } catch(e) { console.warn('[BringMe] Find Me area', e); }
+  };
+
+  /* the profile's editor: photos, budget, needed by, new or second-hand, your spot + circle, how far you'll travel */
+  window.bmFindEditHTML=function(r, E){
+    var ph=(E.photos||[]).filter(okUrl), areaNow=r.area_m!=null ? Number(r.area_m) : 500, trav=Number(r.travel_km)||0;
+    var h='<div class="bmf-field"><label>Photos <span class="bmfd-opt">(up to 4)</span></label><div class="mefd-photos">'+
+      ph.map(function(u,i){ return '<div class="mefd-ph"><img src="'+esc(u)+'" alt=""><button type="button" aria-label="Remove photo '+(i+1)+'" onclick="BP.mineEditPhotoDel('+i+')">✕</button></div>'; }).join('')+
+      (ph.length<4 ? '<label class="mefd-add">📷<span>Add</span><input type="file" accept="image/*" multiple hidden onchange="BP.mineEditPhotoAdd(this)"></label>' : '')+'</div></div>';
+    h+='<div class="me-row"><div class="bmf-field"><label for="me-budget">Budget, up to ₱ (optional)</label><input id="me-budget" inputmode="decimal" autocomplete="off" maxlength="11" value="'+esc(r.budget!=null?Number(r.budget):'')+'"></div>'+
+       '<div class="bmf-field"><label for="me-need">Needed by (optional)</label><input id="me-need" type="date" min="'+today()+'" value="'+esc(r.needed_by||'')+'"></div></div>';
+    h+='<div class="bmf-field"><label for="me-cond">New or second-hand?</label><select id="me-cond">'+CONDS.map(function(c){ return '<option value="'+c[0]+'"'+((r.item_condition||'any')===c[0]?' selected':'')+'>'+esc(c[1])+'</option>'; }).join('')+'</select></div>';
+    h+='<div class="bmf-field"><label>Where you are</label><div class="mefd-loc"><button type="button" onclick="BP.mineEditLoc(\'gps\')">📍 Use my location</button><button type="button" onclick="BP.mineEditLoc(\'pin\')">📌 Drop a pin</button></div>'+
+       '<div class="mefd-locst">'+(E.loc ? '📍 New spot set (not saved yet)' : (r.area_m!=null ? '📍 Neighbors see a '+esc(areaTx(areaNow))+' circle around your pin' : '📍 Your pin is where you posted it'))+'</div></div>';
+    h+='<div class="me-row"><div class="bmf-field"><label for="me-area">Neighbors see a circle of</label><select id="me-area">'+AREAS.map(function(a){ return '<option value="'+a[0]+'"'+(areaNow===a[0]?' selected':'')+'>'+a[1]+'</option>'; }).join('')+'</select></div>'+
+       '<div class="bmf-field"><label for="me-travel">You’ll travel up to</label><select id="me-travel">'+TRAVEL.map(function(t){ return '<option value="'+t[0]+'"'+(trav===t[0]?' selected':'')+'>'+t[1]+'</option>'; }).join('')+'</select></div></div>';
+    return h;
+  };
+  window.bmFindEditPatch=function(r, E, v){
+    var spec=v('me-spec').replace(/\s+/g,' ').slice(0,80);
+    if (/(https?:\/\/|www\.)/i.test(spec)) return { err:'No links in brand / model / size, please.' };
+    var bs=v('me-budget').replace(/[₱,\s]/g,''), b=bs ? parseFloat(bs) : null;
+    if (bs && !(b>=1 && b<=10000000)) return { err:'Budget: ₱1 to ₱10,000,000 (or leave it empty).' };
+    var need=v('me-need')||null;
+    if (need && need<today() && need!==r.needed_by) return { err:'Needed by: pick today or a later day.' };
+    var area=Number(v('me-area'))||500, travel=Number(v('me-travel'))||null, cond=v('me-cond')||'any', oldA=r.area_m!=null ? Number(r.area_m) : null;
+    var patch={ spec:spec||null, budget:b, item_condition:cond, needed_by:need, area_m:area, travel_km:travel }, at;
+    if (E.loc) { at=window.bmFuzz(E.loc.lat, E.loc.lng, area); patch.lat=at.lat; patch.lng=at.lng; }
+    else if (oldA!=null && area<oldA) return { err:'To show a smaller circle, set your spot again: 📍 Use my location or 📌 Drop a pin.' };
+    else if (oldA==null && r.lat!=null) { at=window.bmFuzz(Number(r.lat), Number(r.lng), area); patch.lat=at.lat; patch.lng=at.lng; }   // an older Find Me: its pin may be your exact spot
+    return { patch:patch };
+  };
 })();
 </script>
 </body>
