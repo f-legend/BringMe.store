@@ -85,8 +85,8 @@
   <meta name="application-name" content="BringMe.Store">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BringMe.Store — Find It. Buy It. Nearby.</title>
-<!-- ═══════ BringMe.Store · index v19 · 2026-11-27 ═══════ -->
-<script>window.BM_VERSION='index v19 · 2026-11-27';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
+<!-- ═══════ BringMe.Store · index v20.1 · 2026-11-28 ═══════ -->
+<script>window.BM_VERSION='index v20.1 · 2026-11-28';try{console.log('%cBringMe.Store — '+window.BM_VERSION,'color:#E3A50F;font-weight:800;font-size:13px')}catch(e){}</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhYCMw56xi68s6gutZ9SvxsMWaedRgkhI&libraries=places,geometry"></script>
     <script>
     /* index v11: if Google Maps can't load (blocked, offline), keep the app running without the map */
@@ -2250,6 +2250,125 @@ select.sf-inp{appearance:none;-webkit-appearance:none;background-image:url("data
 .cat-sg.best{border-color:var(--gold);background:linear-gradient(135deg,#fffdf4,#fdf6e0)}
 .cat-sg.own{border-style:dashed;border-color:rgba(227,168,16,.55)}
 .cat-sg.own .tx{color:var(--gold-dk)}
+/* index v20: ➕ Quick add (a Google Maps shop → a basic BringMe shop) */
+.sreg.qa .sreg-inp{width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:14.5px;color:var(--text);background:#fff;outline:none}
+.sreg.qa .sreg-inp:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,107,58,.14)}
+.sreg.qa .sreg-lbl{display:block;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#555;margin:0 0 7px}
+.sreg.qa .sreg-lbl .hint{font-weight:500;color:var(--muted);text-transform:none;letter-spacing:0}
+.sreg.qa .sreg-fg{margin-bottom:16px}
+.sreg.qa .sreg-primary{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-weight:800;font-size:15px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);box-shadow:0 6px 16px rgba(26,107,58,.28)}
+.qa-g{position:relative;display:flex;align-items:center;gap:11px;border:1.5px solid rgba(26,107,58,.25);background:#F4FBF7;border-radius:14px;padding:12px 13px;margin:4px 0 18px}
+.qa-gic{font-size:22px;flex-shrink:0}
+.qa-gt{flex:1;min-width:0;line-height:1.3}
+.qa-gt b{display:block;font-size:14px;color:var(--text);overflow-wrap:anywhere}
+.qa-gt span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.qa-gopen{display:inline-block;margin-top:5px;font-size:11.5px;font-weight:800;color:var(--green);text-decoration:underline}
+.qa-gattr{position:absolute;right:10px;top:-9px;background:#fff;border:1px solid var(--border);border-radius:100px;padding:1px 9px;font-size:10px;font-weight:700;color:#5f6368;letter-spacing:.2px}
+.qa-fine{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+.qa-fine.c{text-align:center;margin-top:12px}
+.qa-spotbtns{display:flex;gap:8px}
+.qa-yes,.qa-move{flex:1;min-width:0;border-radius:12px;padding:12px 8px;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer}
+.qa-yes{border:none;color:#fff;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);box-shadow:0 4px 12px rgba(26,107,58,.24)}
+.qa-move{border:1.5px solid rgba(26,107,58,.4);background:#fff;color:var(--green)}
+.qa-spot{display:flex;align-items:center;gap:8px;border:1.5px solid rgba(26,107,58,.35);background:#F0FBF4;border-radius:12px;padding:9px 10px 9px 12px}
+.qa-spot .ic{font-size:17px;flex-shrink:0}
+.qa-spot .tx{flex:1;min-width:0;font-weight:800;font-size:13px;color:var(--green);line-height:1.3}
+.qa-spot .tx small{display:block;font-weight:600;font-size:11px;color:var(--muted)}
+.qa-link{flex-shrink:0;border:none;background:none;color:var(--green);font-family:inherit;font-weight:800;font-size:12px;cursor:pointer;padding:4px 5px;text-decoration:underline}
+.qa-itemrow{display:flex;gap:8px}
+.qa-itemrow .sreg-inp{flex:1;min-width:0}
+.qa-itemrow .qa-price{flex:0 0 100px}
+.qa-note{font-size:12.5px;color:#5a6b60;background:#F7FDF9;border:1px dashed rgba(26,107,58,.35);border-radius:12px;padding:10px 12px;margin-bottom:16px;line-height:1.45}
+/* index v20.1: no dropdowns — chips for a few choices, typed boxes with suggestions for the rest */
+.bm-chips{display:flex;flex-wrap:wrap;gap:7px}
+.bm-chip{border:1.5px solid #cdd4ea;background:#fff;border-radius:100px;padding:7px 12px;font-family:inherit;font-weight:800;font-size:12.5px;color:#334a66;cursor:pointer;line-height:1.2}
+.bm-chip.on{background:#FFF3C4;border-color:#E3A810;color:#7a5a06}
+.bm-ccw{position:relative;display:block;flex:0 0 108px;min-width:0}
+.bm-ccw .bm-ccf{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;line-height:1;pointer-events:none}
+.bm-ccw .bm-ccin{width:100%;box-sizing:border-box;padding-left:34px !important}
+.bm-ccsug{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bm-ccsug[hidden]{display:none}
+.bm-ccopt{border:1.5px solid #cdd4ea;background:#fff;border-radius:100px;padding:6px 11px;font-family:inherit;font-weight:800;font-size:12.5px;color:#1a2550;cursor:pointer}
+.bm-ccopt small{font-weight:600;color:#6b76a8}
+.bm-ccnone{font-size:12px;color:#6b76a8}
+/* the Find Me reply's shop: typed, with suggestions from BringMe, then Google Maps */
+.bmf-sl{font-size:10.5px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:#6b76a8;margin:2px 2px 6px}
+.bmf-ssugs{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
+.bmf-ssug{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1.5px solid #cdd4ea;border-radius:11px;padding:8px 11px;background:#fff;cursor:pointer;font-family:inherit;color:#1a2550}
+.bmf-ssug:hover,.bmf-ssug:focus-visible{border-color:#1A6B3A;background:#F4FBF7;outline:none}
+.bmf-ssug .ic{font-size:18px;flex-shrink:0;width:24px;text-align:center}
+.bmf-ssug .tx{flex:1;min-width:0;line-height:1.3}
+.bmf-ssug .tx b{display:block;font-size:13.5px;overflow-wrap:anywhere}
+.bmf-ssug .tx small{display:block;font-size:11.5px;font-weight:600;color:#6b76a8;overflow-wrap:anywhere}
+.bmf-ssug .go{flex-shrink:0;font-size:12px;font-weight:800;color:#1A6B3A;border:1.5px solid rgba(26,107,58,.4);border-radius:9px;padding:5px 10px}
+.bmf-shoppick{display:flex;align-items:center;gap:10px;border:1.5px solid rgba(26,107,58,.4);background:#F0FBF4;border-radius:11px;padding:9px 11px}
+.bmf-shoppick .ic{font-size:19px;flex-shrink:0}
+.bmf-shoppick .tx{flex:1;min-width:0;line-height:1.3}
+.bmf-shoppick .tx b{display:block;font-size:14px;color:#14532d;overflow-wrap:anywhere}
+.bmf-shoppick .tx small{display:block;font-size:11.5px;font-weight:700;color:#3d6b4f}
+.bmf-chg{flex-shrink:0;border:1.5px solid rgba(26,107,58,.45);background:#fff;color:#1A6B3A;border-radius:100px;padding:6px 12px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer}
+/* ═══ index v20.1: the Find Me replies page — the question like a Threads post; the replies across the lower part of the map ═══ */
+.bmq{background:#fff;border:1px solid #e3e7f4;border-radius:16px;padding:14px 15px 0;margin-bottom:14px;box-shadow:0 1px 3px rgba(10,31,99,.05)}
+.bmq-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bmq-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#2550b8,#0a1f63);color:#FFD24A;display:flex;align-items:center;justify-content:center;font:800 16px 'Poppins',sans-serif;flex-shrink:0;text-transform:uppercase}
+.bmq-who{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.bmq-who b{font-size:14px;font-weight:800;color:#0a1f63;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bmq-who span{font-size:12px;font-weight:600;color:#8a94b8}
+.bmq-kind{margin-left:auto;flex-shrink:0;font-size:11px;font-weight:800;color:#7a5a06;background:#FFF3C4;border:1px solid #F1D27A;border-radius:100px;padding:3px 10px}
+.bmq-t{font-family:'Poppins',sans-serif;font-size:22px;line-height:1.28;font-weight:800;color:#0a1f63;margin:0;overflow-wrap:anywhere;text-wrap:balance}
+.bmq-spec{font-size:14px;font-weight:700;color:#334a66;margin-top:4px}
+.bmq-note{font-size:16px;line-height:1.5;color:#1a2550;margin:8px 0 0;overflow-wrap:anywhere;white-space:pre-line}
+.bmq .bmfd-photos{margin:12px 0 4px}
+.bmq .bmfd-ph{width:84px;height:84px;border-radius:12px}
+.bmq .bmfd-chiprow{margin:12px 0 2px}
+.bmq-rw{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:12.5px;font-weight:800;color:#7a5a06;background:linear-gradient(135deg,#FFF6DA,#FFEFB8);border:1px solid #F1D27A;border-radius:10px;padding:6px 10px}
+.bmq-meta{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;padding:10px 0 11px;border-top:1px solid #eef1f8;font-size:12.5px;font-weight:700;color:#6b76a8}
+.bmq-rl{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#6b76a8;margin:2px 4px 9px}
+.bmf-help.bmfr-foot{margin:14px 6px 4px;text-align:center}
+.bmf-cb:empty{display:none}
+/* reply cards: what neighbors say about the item at the shop */
+.bmf-item{flex-basis:100%;font-size:12px;font-weight:700;color:#14532d;line-height:1.4}
+.bmf-acts3 .bmf-btn{flex:1 1 auto}
+.bmf-said{font-size:12px;font-weight:800;border-radius:10px;padding:6px 10px}
+.bmf-said.ok{background:#E6F4EA;color:#1A6B3A}
+.bmf-said.no{background:#FBEDEA;color:#9B2D1F}
+/* the shop box: BringMe, then Google Maps, then Register */
+.bmf-ssug .go{background:#fff;cursor:pointer;font-family:inherit;white-space:nowrap}
+.bmf-ssug .go:hover{background:#F0FBF4}
+.bmf-ssug .go.add{color:#173c88;border-color:#9fb3e6}
+.bmf-ssug .go.add:hover{background:#EEF3FF}
+.bmf-ssug.g .ic{font-size:16px}
+.bmf-ssug.g:hover,.bmf-ssug.g:focus-visible{border-color:#2550b8;background:#F4F7FF}
+.bmf-gwait{color:#2550b8}
+.bmf-reg{display:flex;flex-direction:column;gap:6px;background:#F0FBF4;border:1.5px dashed rgba(26,107,58,.45);border-radius:12px;padding:11px 12px;font-size:12.5px;color:#14532d;line-height:1.45}
+.bmf-reg b{font-size:13px}
+.bmf-regbtn{align-self:flex-start;border:none;border-radius:10px;padding:9px 14px;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);color:#fff;font-family:inherit;font-weight:800;font-size:13px;cursor:pointer;max-width:100%;overflow-wrap:anywhere;text-align:left}
+.bmf-reglink{align-self:flex-start;border:none;background:none;padding:4px 2px;font-family:inherit;font-size:12.5px;font-weight:800;color:#1A6B3A;text-decoration:underline;cursor:pointer;text-align:left;overflow-wrap:anywhere}
+.bmf-mapbtn{padding:6px 9px}
+.bmf-newhelp .bmf-dupeask{margin-bottom:4px}
+/* the band across the lower part of the map (the map stays visible above it) */
+#bmfind-back.band{inset:auto;left:var(--bmb-l,0);bottom:var(--bmb-b,0);width:var(--bmb-w,100%);height:var(--bmb-h,56vh);background:transparent;pointer-events:none;align-items:stretch;justify-content:stretch;z-index:1300}
+#bmfind-back.band.full{height:var(--bmb-f,90vh)}
+#bmfind-back.band .bmthread{pointer-events:auto;width:100%;max-width:none;height:100%;max-height:none;border-radius:18px 18px 0 0;box-shadow:0 -10px 34px rgba(0,0,40,.3);border-top:3px solid #FFD24A}
+#bmfind-back.band .bmthread-hd{padding:9px 14px}
+.bmthread-sz{flex-shrink:0;border:1.5px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:100px;padding:6px 11px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap}
+#bmfind-back.wide .bmthread-body{display:flex;overflow:hidden;padding:0}
+#bmfind-back.wide .bmf-cols{display:flex;flex:1;width:100%;min-height:0}
+#bmfind-back.wide .bmf-ca,#bmfind-back.wide .bmf-cb{overflow-y:auto;min-height:0;padding:14px 16px}
+#bmfind-back.wide .bmf-ca{flex:1.15 1 0}
+#bmfind-back.wide .bmf-cb{flex:1 1 0;border-left:1px solid #dfe4f2;background:#f5f7fd}
+/* index v20.1: dropping a pin — the top half of the map; the form stays open on the lower half */
+#bm-pinhalf{position:fixed;z-index:3300;overflow:hidden;border-radius:0 0 16px 16px;box-shadow:0 10px 30px rgba(0,0,40,.35);border-bottom:3px solid #FFD24A;background:#000}
+#bm-pinhalf .pin-picker-overlay{position:absolute;inset:0;z-index:1 !important}
+#bm-pinhalf .pin-picker-sv{bottom:66px;padding:8px 12px;font-size:12px}
+#bm-pinhalf #pin-addr-display{bottom:12px !important;padding:8px 14px !important;font-size:12px !important;max-width:88% !important}
+body.bm-pinhalf #modal-root>.overlay{top:var(--bmp-bottom,50vh);align-items:flex-start;padding-top:8px;background:rgba(8,18,50,.5);backdrop-filter:none;pointer-events:none}
+body.bm-pinhalf #modal-root>.overlay .modal{pointer-events:auto;max-height:calc(100% - 8px) !important}
+/* the Urgent form: where to bring it — your location or a dropped pin */
+.urf-locbtns{display:flex;gap:8px;margin:0 0 8px}
+.urf-lb{flex:1 1 0;min-width:0;border:1.5px solid #cdd4ea;background:#fff;border-radius:10px;padding:9px 8px;font-family:inherit;font-weight:800;font-size:12.5px;color:#173c88;cursor:pointer}
+.urf-lb:hover{border-color:#2550b8;background:#F4F7FF}
+.qa-full{display:block;width:100%;margin-top:10px;border:1.5px solid var(--border);background:#fff;border-radius:12px;padding:11px;font-family:inherit;font-weight:700;font-size:13px;color:var(--green);cursor:pointer}
 </style>
 
   <!-- Service Worker Registration -->
@@ -2804,6 +2923,9 @@ body.bm-profile .bmf{display:none !important}
 .bmf-price{font-family:'Poppins',sans-serif;font-size:12.5px;font-weight:700;color:var(--gold-dk,#9a6b12);white-space:nowrap}
 .bmf-act{border:none;border-left:1px solid #eef1f8;background:none;width:46px;font-size:17px;cursor:pointer;flex-shrink:0}
 .bmf-act:hover{background:#FFF8E1}
+.bmf-act.bmf-qadd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:50px;color:var(--green,#1A6B3A);font-size:15px;font-family:inherit}
+.bmf-act.bmf-qadd small{font-size:9.5px;font-weight:800;letter-spacing:.2px}
+.bmf-act.bmf-qadd:hover{background:#F0FBF4}
 .bmf-more{display:block;width:100%;border:none;border-top:1px solid #eef1f8;background:#FAFBFE;color:#173c88;font-family:inherit;font-weight:800;font-size:12px;padding:8px;cursor:pointer}
 .bmf-note{font-size:12px;color:#5a6690;padding:10px 12px;line-height:1.5;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .bmf-link{border:none;background:none;color:#173c88;font-family:inherit;font-weight:800;font-size:12px;text-decoration:underline;cursor:pointer;padding:0}
@@ -4721,10 +4843,11 @@ function buildPostModal() {
           <label class="sf-fl">Reason for selling <span class="sf-opt">(optional — builds trust)</span></label>
           <input class="sf-inp" value="${esc(f.reason||'')}" placeholder="e.g. Upgraded to a newer one" oninput="S.form.reason=this.value">
           <label class="sf-fl">Contact number <span class="sf-opt">— from your account, edit if needed</span></label>
-          <div class="sf-cc">
-            <select class="sf-inp" onchange="S.form.cc=this.value">${ccOpts.map(o=>{const code=o.split(' ')[1];return `<option value="${code}" ${f.cc===code?'selected':''}>${o}</option>`;}).join('')}</select>
+          <div class="sf-cc bm-ccrow">
+            ${ccInputHTML('sf-cc', f.cc||'+63', 'sf-inp', 'onchange="S.form.cc=ccNorm(this.value)"')}
             <input class="sf-inp" type="tel" value="${esc(f.contact)}" placeholder="9XX XXX XXXX" oninput="S.form.contact=this.value">
           </div>
+          ${ccSugHTML('sf-cc')}
         </div>
        </div>
       </div>
@@ -4989,8 +5112,23 @@ function catHit(t, k){
   }
   return false;
 }
-function catClassify(text, scope){ const t=catNorm(text); for(const r of catRules(scope)){ if(r[0].some(k=>catHit(t,k))) return {em:r[1],top:r[2],sub:r[3]}; } return null; }
+function catClassify(text, scope){ const t=catNorm(text); for(const r of catRules(scope)){ if(r[0].some(k=>catHit(t,k))) return {em:catEm(r[2],r[3],r[1]),top:r[2],sub:r[3]}; } return null; }
 function catLabel(f){ return f && f.cat ? (f.cat.sub || f.cat.top) : ''; }
+// index v20: each kind's own emoji (the main category's emoji otherwise)
+const CAT_SUB_EM={'Phones & Tablets':'📱','Computers & Laptops':'💻','TV, Audio & Cameras':'📺','Gaming':'🎮','Chargers & Accessories':'🔋','Parts & Repair':'🛠️',
+  "Women's":'👗',"Men's":'👕',"Kids'":'🧒','Shoes':'👟','Bags & Wallets':'👜','Watches & Jewelry':'⌚',
+  'Furniture':'🛋️','Appliances':'🔌','Kitchen & Dining':'🍽️','Decor':'🖼️','Bedding & Bath':'🛏️','Storage & Organization':'🗄️','Household Supplies':'🧽',
+  'Fresh & Produce':'🥬','Pantry & Dry Goods':'🍚','Snacks & Sweets':'🍫','Drinks':'🥤','Home-cooked & Baked':'🍞',
+  'Skincare':'🧴','Makeup':'💄','Hair & Body':'🧼','Supplements & Vitamins':'💊','Medical & First Aid':'💊',
+  'Diapers & Wipes':'👶','Toys':'🧸','Baby Clothes':'🍼','Strollers & Gear':'👶','Feeding':'🍼','School & Study':'✏️',
+  'Fitness & Gym':'🏋️','Bikes & Cycling':'🚲','Team Sports':'🏀','Camping & Hiking':'⛺','Fishing':'🎣',
+  'Collectibles':'🏆','Board & Card Games':'🎲','Musical Instruments':'🎸','Arts & Crafts':'🎨','Books & Comics':'📚',
+  'Power Tools':'🔧','Hand Tools':'🔨','Building Materials':'🧱','Electrical':'💡','Plumbing':'🚰','Garden & Outdoor':'🌱',
+  'Cars':'🚗','Motorcycles':'🏍️','Bicycles':'🚲','Parts & Accessories':'🛞',
+  'Pet Food':'🦴','Accessories':'🐾','For Adoption / Sale':'🐶','Grooming & Care':'🛁',
+  'Repairs & Fix':'🛠️','Cleaning':'🧹','Tutoring & Lessons':'📖','Events':'🎉','Errands & Delivery':'🛵','Professional':'💼',
+  'Freebies':'🎁','Tickets & Vouchers':'🎟️','Lost & Found':'🔎','Other':'📦'};
+function catEm(top, sub, em){ return (sub && CAT_SUB_EM[sub]) || em; }
 // ── index v19: categories are typed. AI suggests a ranked list from what you type in the box,
 //    and (before you type) from the title. No dropdowns, no browsing.
 const CAT_STOP=['for','and','the','of','to','in','on','at','or','with','an','my','your','ng','sa','na','ang','mga','para','pang','may','yung','po','kasama'];
@@ -5074,7 +5212,7 @@ function catSuggest(scope, typed, ctx, n){
   const c=catNorm(ctx);
   if(c.trim().length>=2) catRuleHits(R,c).forEach(x=>put(x.r[1],x.r[2],x.r[3], (q?30:50)-(x.covered?15:0)+(x.tail?2:0)+(x.head?2:0), !q));
   const list=found.some(x=>x.full&&x.score>=78) ? found.filter(x=>x.full) : found;
-  return list.sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,n).map(x=>({em:x.em,top:x.top,sub:x.sub}));
+  return list.sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,n).map(x=>({em:catEm(x.top,x.sub,x.em),top:x.top,sub:x.sub}));
 }
 // What was typed: the same as one of our categories (any case) → that one; otherwise the words as typed,
 // with the emoji of AI's best guess.
@@ -5083,7 +5221,7 @@ function catFromTyped(scope, t){
   const k=catNorm(t).trim();
   for(const c of catTax(scope)){
     if(catNorm(c.name).trim()===k) return {em:c.em,top:c.name,sub:''};
-    const sb=c.subs.find(s=>catNorm(s).trim()===k); if(sb) return {em:c.em,top:c.name,sub:sb};
+    const sb=c.subs.find(s=>catNorm(s).trim()===k); if(sb) return {em:catEm(c.name,sb,c.em),top:c.name,sub:sb};
   }
   if(t===t.toLowerCase()) t=t.charAt(0).toUpperCase()+t.slice(1);
   const best=catSuggest(scope,t,'',1)[0];
@@ -5150,7 +5288,7 @@ function catBody(scope,f,text){
   if(!f.catUI||typeof f.catUI!=='object') f.catUI={open:false,typed:''};
   const u=f.catUI, place=(scope==='place'||scope==='store'), noun=place?'type':'category';
   if(f.cat && !u.open){
-    const c=f.cat, main=c.sub?c.sub:c.top, sub=c.custom?('🏷️ your own '+noun):(c.sub?c.top:(noun+' set'));
+    const c=f.cat, main=c.sub?c.sub:c.top, sub=c.custom?('🏷️ your own '+noun):(c.ai?'🤖 picked by AI':(c.sub?c.top:(noun+' set')));
     return `<div class="cat-confirmed"><span class="cc-em">${c.em}</span><span class="cc-tx">${esc(main)}<small>${esc(sub)}</small></span><button type="button" onmousedown="event.preventDefault()" class="cc-ch" onclick="catChange('${scope}')">Change</button></div>`;
   }
   const cls={sell:'sf-inp',place:'sreg-inp',store:'sreg-inp',urgent:'inp'}[scope]||'form-input';
@@ -5611,8 +5749,187 @@ function stItemsHTML(){
     <div class="sreg-nudge">${nudge}</div>
   </div>`;
 }
+// ── index v20.1: no dropdowns. A few fixed choices → chips; picking from many → a typed box with suggestions ──
+// Neil (2026-11-28): "like i said i dont like drop downs, the reply for a shop name again is a drop down we should make it
+// typed and suggested again."
+function bmChipsHTML(id, opts, cur){
+  cur=String(cur);
+  return '<div class="bm-chips" role="group" data-chips="'+esc(id)+'">'+opts.map(function(o){ var on=String(o[0])===cur;
+    return '<button type="button" class="bm-chip'+(on?' on':'')+'" data-v="'+esc(String(o[0]))+'" aria-pressed="'+on+'" onclick="bmChipPick(this)">'+esc(o[1])+'</button>'; }).join('')+
+    '</div><input type="hidden" id="'+esc(id)+'" value="'+esc(cur)+'">';
+}
+function bmChipPick(btn){
+  var g=btn.closest('[data-chips]'); if(!g) return;
+  var i=document.getElementById(g.getAttribute('data-chips')); if(i) i.value=btn.getAttribute('data-v');
+  g.querySelectorAll('button[data-v]').forEach(function(b){ var on=b===btn; b.classList.toggle('on',on); b.setAttribute('aria-pressed',String(on)); });
+}
+function bmChipSync(root){   // after a redraw that kept typed values: light the chip that matches its hidden value
+  (root||document).querySelectorAll('[data-chips]').forEach(function(g){ var i=document.getElementById(g.getAttribute('data-chips')); if(!i) return;
+    g.querySelectorAll('button[data-v]').forEach(function(b){ var on=b.getAttribute('data-v')===String(i.value); b.classList.toggle('on',on); b.setAttribute('aria-pressed',String(on)); }); });
+}
+// the phone's country code: type a country or a code; matching countries show as chips under the number
+const BM_CC=[['🇵🇭','+63','Philippines','pilipinas ph'],['🇸🇬','+65','Singapore','sg'],['🇮🇩','+62','Indonesia','id'],['🇲🇾','+60','Malaysia','my'],
+  ['🇹🇭','+66','Thailand','th'],['🇻🇳','+84','Vietnam','vn'],['🇦🇺','+61','Australia','au'],['🇬🇧','+44','United Kingdom','uk britain england'],['🇺🇸','+1','United States','usa us america']];
+function ccMatch(t){
+  t=String(t||'').trim().toLowerCase(); if(!t) return BM_CC.slice();
+  var d=t.replace(/[^0-9]/g,'');
+  if(d) return BM_CC.filter(function(c){ return c[1].slice(1).indexOf(d)===0; });
+  return BM_CC.filter(function(c){ return (c[2]+' '+c[3]).toLowerCase().split(' ').some(function(w){ return w.indexOf(t)===0; }) || c[2].toLowerCase().indexOf(t)===0; });
+}
+function ccNorm(v){
+  var t=String(v||'').trim(), d=t.replace(/[^0-9]/g,'');
+  if(/^\+?\s*\d{1,3}$/.test(t)) return '+'+d;          // any code typed as digits (+81 too)
+  var m=ccMatch(t); return m.length ? m[0][1] : '+63';
+}
+function ccFlag(code){ for(var i=0;i<BM_CC.length;i++) if(BM_CC[i][1]===code) return BM_CC[i][0]; return '🌐'; }
+function ccInputHTML(id, code, cls, attrs){
+  code=ccNorm(code||'+63');
+  return '<span class="bm-ccw"><span class="bm-ccf" aria-hidden="true">'+ccFlag(code)+'</span><input class="'+cls+' bm-ccin" id="'+id+'" value="'+esc(code)+'" maxlength="24" autocomplete="off" spellcheck="false" '+
+    'aria-label="Country code: type a country or a code" onfocus="ccShow(this,true)" oninput="ccShow(this,false)" onkeydown="ccKey(event,this)" onblur="ccDone(this)" '+(attrs||'')+'></span>';
+}
+function ccSugHTML(id){ return '<div class="bm-ccsug" id="'+id+'-sug" hidden></div>'; }
+function ccShow(inp, all){
+  var box=document.getElementById(inp.id+'-sug'); if(!box) return;
+  if(all){ try{ inp.select(); }catch(e){} }
+  var list=all ? BM_CC : ccMatch(inp.value);
+  box.innerHTML=list.length ? list.map(function(c){ return '<button type="button" class="bm-ccopt" onmousedown="event.preventDefault()" onclick="ccPick(\''+inp.id+'\',\''+c[1]+'\')">'+c[0]+' '+c[1]+' <small>'+esc(c[2])+'</small></button>'; }).join('')
+                            : '<span class="bm-ccnone">Not in the list? Type the code, like +81.</span>';
+  box.hidden=false;
+}
+function ccSet(inp, code){ inp.value=code; var f=inp.parentNode && inp.parentNode.querySelector('.bm-ccf'); if(f) f.textContent=ccFlag(code); }
+function ccPick(id, code){
+  var i=document.getElementById(id); if(!i) return;
+  ccSet(i, code); var box=document.getElementById(id+'-sug'); if(box) box.hidden=true;
+  i.dispatchEvent(new Event('change', { bubbles:true }));
+  var row=i.closest('.bm-ccrow'), n=row ? row.querySelector('input[type="tel"]') : null; if(n) try{ n.focus(); }catch(e){}
+}
+function ccDone(inp){
+  var c=ccNorm(inp.value); if(c!==inp.value){ ccSet(inp, c); inp.dispatchEvent(new Event('change', { bubbles:true })); } else ccSet(inp, c);
+  var box=document.getElementById(inp.id+'-sug'); if(box) box.hidden=true;
+}
+function ccKey(e, inp){
+  if(e.key==='Enter'){ e.preventDefault(); var m=ccMatch(inp.value); if(m.length) ccPick(inp.id, m[0][1]); else ccDone(inp); }
+  else if(e.key==='Escape'){ var box=document.getElementById(inp.id+'-sug'); if(box && !box.hidden){ e.stopPropagation(); box.hidden=true; } }
+}
+
+// ── index v20: ➕ Quick add — a shop from Google Maps → a basic BringMe shop in a few seconds ──
+// Neil (2026-11-28): "listing a store is very tedious … we should just let helper list items and tag a google result to
+// make it easier … our main advantage is that we can provide data of where an item is available." → option B.
+// Kept: Google's place ID (allowed forever), the name the person types from the shop's sign, the spot they check,
+// the type (AI picks it from the typed name) and the item they saw. Google's name and address are only shown here
+// for reference (live, never saved). Photos, hours and contact are optional: the full form, or neighbors later.
+function qaTx(km){ return km<1 ? Math.max(5, Math.round(km*200)*5)+' m' : km.toFixed(1)+' km'; }
+function qaNear(a,b){ try{ return (a && b && a.lat!=null && b.lat!=null) ? haversine(Number(a.lat),Number(a.lng),Number(b.lat),Number(b.lng)) : null; }catch(e){ return null; } }
+function qaMe(){ try{ return (typeof USER!=='undefined' && USER && USER.lat!=null) ? { lat:Number(USER.lat), lng:Number(USER.lng) } : null; }catch(e){ return null; } }
+// AI's type for the typed name, unless the person chose one themselves
+function qaAutoType(){
+  const f=S.storeForm; if(!f) return;
+  if(f.cat && !f.cat.ai) return;
+  const b=catSuggest('place','',String(f.name||''),1)[0];
+  f.cat = b ? { em:b.em, top:b.top, sub:'', ai:true } : (f.qaBase || null);   // else the guess from the search words, if any
+}
+// Google's own page for the place (photos, Street View) — a plain link, no cost; helps check the spot
+function qaGLink(f){
+  if(!f || !f.placeId || /^(sample|demo-g-)/.test(f.placeId) || !f.pinStart) return '';
+  const u='https://www.google.com/maps/search/?api=1&query='+Number(f.pinStart.lat)+'%2C'+Number(f.pinStart.lng)+'&query_place_id='+encodeURIComponent(f.placeId);
+  return '<a class="qa-gopen" href="'+esc(u)+'" target="_blank" rel="noopener">See it on Google Maps ↗</a>';
+}
+function stQuickName(v){ S.storeForm.name=v; qaAutoType(); catRefresh('place'); }
+function stQuickSpot(){ const f=S.storeForm; if(!f || !f.pinStart) return; f.lat=Number(f.pinStart.lat); f.lng=Number(f.pinStart.lng); f.located=true; renderModal(); }
+function stQuickUnspot(){ const f=S.storeForm; if(!f) return; f.lat=null; f.lng=null; f.located=false; renderModal(); }
+function stQuickItem(){   // the item they saw → the new shop's item list
+  const f=S.storeForm, nm=String(f.qaItem||'').replace(/\s+/g,' ').trim();
+  if(!nm) return;
+  const p=parseFloat(String(f.qaPrice||'').replace(/[₱,\s]/g,''));
+  f.items=(f.items||[]).filter(it=>!it.qa);
+  f.items.unshift({ id:Date.now(), qa:true, name:nm.slice(0,60), price:(p>0 ? String(Math.round(p*100)/100) : ''), cat:catClassify(nm,'')||null, service:false });
+}
+function stQuickFull(){ const f=S.storeForm; stQuickItem(); f.qaItem=''; f.qaPrice=''; f.quick=false; window.bmQaGoogle=null; renderModal(); }
+function stQuickPost(){
+  const f=S.storeForm;
+  f.name=String(f.name||'').replace(/\s+/g,' ').trim();
+  if(!f.name){ showToast('⚠️ Type the name on the shop’s sign.'); setTimeout(()=>{ const i=document.getElementById('st-name'); if(i) try{ i.focus(); }catch(e){} },30); return; }
+  if(!f.located){ showToast(f.quickNew ? '⚠️ Set the spot: 📍 I’m at the shop now or 📌 Drop a pin.' : '⚠️ Check the spot: tap “✓ It’s at Google’s pin” or 📌 Move the pin.'); return; }
+  catCommit('place');
+  if(!f.cat){ showToast('⚠️ AI couldn’t tell what kind of place it is. Type its type.'); catFocus('place'); return; }
+  stQuickItem();
+  f.poster='community';
+  submitStore();
+}
+function buildQuickAddHTML(){
+  // index v20.1: the same quick sheet registers a shop that's on neither BringMe nor Google Maps (f.quickNew): no Google part,
+  // and the spot is where you are or a dropped pin (Neil: "if the typed shop is not from google nor from bring me the user should register the store")
+  const f=S.storeForm, isNew=!!f.quickNew, g=(!isNew && window.bmQaGoogle && window.bmQaGoogle.placeId===f.placeId) ? window.bmQaGoogle : {}, fromReply=f.quickFrom==='reply', me=qaMe();   // Google's name/address: shown, never part of the form
+  const dMe=qaNear(me, f.pinStart);
+  let spot;
+  if(f.located){
+    const moved=isNew ? null : qaNear(f.pinStart, { lat:f.lat, lng:f.lng });
+    spot=`<div class="qa-spot ok"><span class="ic">✅</span><span class="tx">${isNew ? 'Pinned' : (moved!=null && moved>0.015 ? 'Pin moved '+qaTx(moved)+' from Google’s' : 'At Google’s pin')}${(()=>{ const d=qaNear(me,{lat:f.lat,lng:f.lng}); return d!=null ? '<small>'+qaTx(d)+' from you</small>' : ''; })()}</span>`+
+         `<button type="button" class="qa-link" onclick="storeDropPin()">📌 Move</button><button type="button" class="qa-link" onclick="stQuickUnspot()">Undo</button></div>`;
+  } else if(isNew){
+    spot=`<div class="qa-spotbtns"><button type="button" class="qa-yes" onclick="storeUseCurrentLoc()">📍 I’m at the shop now</button><button type="button" class="qa-move" onclick="storeDropPin()">📌 Drop a pin</button></div>`+
+         `<div class="qa-fine">Not at the shop? Drop the pin on its door.</div>`;
+  } else {
+    spot=`<div class="qa-spotbtns"><button type="button" class="qa-yes" onclick="stQuickSpot()">✓ It’s at Google’s pin</button><button type="button" class="qa-move" onclick="storeDropPin()">📌 Move the pin</button></div>`+
+         `<div class="qa-fine">${dMe!=null ? 'Google’s pin is '+qaTx(dMe)+' from you. ' : ''}Wrong spot? Move the pin to the shop’s door.</div>`;
+  }
+  return `<div class="overlay" onclick="if(event.target===this)confirmDiscard()">
+    <div class="modal sreg qa${isNew ? ' qa-new' : ''}" style="width:460px" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="confirmDiscard()">✕</button>
+      <div class="modal-head">
+        <div class="modal-title" style="color:var(--fn-store)">${isNew ? '🏪 Register this shop' : '➕ Quick add'}</div>
+        <div class="modal-sub">${isNew ? 'It isn’t on BringMe or Google Maps yet. Put it on the map in a few seconds' : 'Put this shop on BringMe in a few seconds'}${fromReply ? ', then finish your reply' : ''}. Photos, hours and contact can come later.</div>
+      </div>
+      <div class="modal-body">
+        ${isNew ? '' : `<div class="qa-g">
+          <div class="qa-gic">🗺️</div>
+          <div class="qa-gt"><b>${esc(g.name||'A place on Google Maps')}</b>${g.addr ? '<span>'+esc(g.addr)+'</span>' : ''}${qaGLink(f)}</div>
+          <div class="qa-gattr">Google Maps</div>
+        </div>`}
+        <div class="sreg-fg">
+          <label class="sreg-lbl" for="st-name">Name on the shop’s sign *</label>
+          <input class="sreg-inp" id="st-name" value="${esc(f.name)}" placeholder="Type it as it’s written on the sign" maxlength="80" autocomplete="off" oninput="stQuickName(this.value)">
+          ${isNew ? '' : '<div class="qa-fine">Google’s name can’t be copied into BringMe, so type it yourself.</div>'}
+        </div>
+        <div class="sreg-fg">
+          <label class="sreg-lbl">The spot *</label>
+          ${spot}
+        </div>
+        <div class="sreg-fg">
+          <label class="sreg-lbl">Type <span class="hint">— AI picks it from the name</span></label>
+          ${catSection('place')}
+        </div>
+        ${fromReply
+          ? `<div class="qa-note">🏷️ The item from your reply goes on this shop’s list when you send the reply.</div>`
+          : `<div class="sreg-fg">
+              <label class="sreg-lbl" for="qa-item">What did you see there? <span class="hint">— optional</span></label>
+              <div class="qa-itemrow">
+                <input class="sreg-inp" id="qa-item" value="${esc(f.qaItem||'')}" placeholder="${f.qaHint ? 'e.g. '+esc(f.qaHint) : 'e.g. Paracetamol, USB-C charger'}" maxlength="60" autocomplete="off" oninput="S.storeForm.qaItem=this.value">
+                <input class="sreg-inp qa-price" id="qa-price" value="${esc(f.qaPrice||'')}" placeholder="₱ price" inputmode="decimal" maxlength="9" autocomplete="off" oninput="S.storeForm.qaPrice=this.value">
+              </div>
+            </div>`}
+        <button type="button" class="sreg-primary store-reg-btn" onclick="stQuickPost()">${isNew ? '🏪 Register shop' : '➕ Add to BringMe'}</button>
+        <button type="button" class="qa-full" onclick="stQuickFull()">Add photos, hours or contact → full form</button>
+        <div class="qa-fine c">${isNew ? '👥 Goes up as a community listing. Neighbors can vouch for it and add what it sells.' : '👥 Goes up as a community listing. BringMe keeps only Google’s link to the place; the name and the pin come from you.'}</div>
+      </div>
+    </div>
+  </div>`;
+}
+// index v20.1: 🏪 Register from a Find Me reply — a shop on neither BringMe nor Google Maps
+window.bmRegisterQuick=function(o){
+  try{
+    S.storeForm={ name:'', address:'', contact:'', hours:'', cat:null, catUI:null, products:'', poster:'community', docs:[], items:[], draft:'', openCatFor:null,
+      catSearch:'', drillTop:null, importOpen:false, importText:'', importRows:[], importDupes:0, photos:[], lat:null, lng:null, located:false,
+      placeId:null, pinStart:null, svLink:'', quick:true, quickNew:true, quickFrom:(o && o.from==='reply') ? 'reply' : 'search', qaBase:null, qaItem:'', qaPrice:'', qaHint:'' };
+    window.bmQaGoogle=null;
+    if(o && o.name){ S.storeForm.name=String(o.name).slice(0,80); qaAutoType(); }
+    openModal('store-register');
+  }catch(e){ console.warn('[BringMe] register a shop', e); }
+};
+
 function buildStoreRegisterModal() {
   const f=S.storeForm;
+  if (f && f.quick) return buildQuickAddHTML();   // index v20: ➕ Quick add
   const owner=f.poster==='owner';
   return `<div class="overlay" onclick="if(event.target===this)confirmDiscard()">
     <div class="modal sreg" style="width:520px" onclick="event.stopPropagation()">
@@ -6028,13 +6345,10 @@ document.getElementById('map').addEventListener('click', () => {
 });
 
 // On desktop, make sure sidebar is always visible
-window.addEventListener('resize', () => {
-  if (!isMobile()) {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('mobile-nav').style.display = 'none';
-  } else {
-    document.getElementById('mobile-nav').style.display = 'flex';
-  }
+window.addEventListener('resize', () => {   // index v20: the old phone nav may be gone (this threw on every phone resize)
+  const sb = document.getElementById('sidebar'), mn = document.getElementById('mobile-nav');
+  if (!isMobile()) { if (sb) sb.classList.remove('open'); if (mn) mn.style.display = 'none'; }
+  else if (mn) mn.style.display = 'flex';
 });
 
 // Hide mobile nav on desktop initially
@@ -6285,7 +6599,7 @@ function awValidateProfile() {
   const fn=document.getElementById('aw-fname').value.trim();
   const ln=document.getElementById('aw-lname').value.trim();
   const nk=document.getElementById('aw-nick').value.trim();
-  const cc=document.getElementById('aw-cc')?.value||'+63';
+  const cc=ccNorm(document.getElementById('aw-cc')?.value||'+63');   // index v20.1: typed
   const ph=(document.getElementById('aw-phone-num')?.value||'').trim();
   if(!fn||!ln||!nk){showToast('Please fill in your name and nickname');return false;}
   if(AW_TAKEN_NICKS.includes(nk.toLowerCase())){showToast('Username already taken');return false;}
@@ -7805,7 +8119,7 @@ function renderRightPanel() {
                 ${(function(){ const c=s.category||((typeof PLACE_TAX!=='undefined'&&PLACE_TAX.find(p=>p.em===s.catEmoji))||{}).name||''; return c?`<span class="sc-badge" style="background:#EEF1FF;color:#173c88;border:1px solid rgba(37,80,184,.22)">${esc(c)}</span>`:''; })()}
                 ${s.vouchN?`<span class="sc-badge" style="background:#E3F7EC;color:#146235;border:1px solid rgba(26,107,58,.3)">✓ ${s.vouchN} vouched</span>`:''}
                 ${((s.reportPts||0)>=3&&(s.reportPts||0)>(s.vouchPts||0))?'<span class="sc-badge" style="background:#FDE7E4;color:#8a2116;border:1px solid #F3A89E">⚠ Reported</span>':''}
-                ${(s.itemCount||(s.items&&s.items.length))?`<span class="sc-badge" style="background:#eef6f0;color:#1A6B3A;border:1px solid rgba(26,107,58,.2)">📋 ${s.itemCount||s.items.length} items</span>`:''}
+                ${(s.itemCount||(s.items&&s.items.length))?`<span class="sc-badge" style="background:#eef6f0;color:#1A6B3A;border:1px solid rgba(26,107,58,.2)">📋 ${s.itemCount||s.items.length} item${(s.itemCount||s.items.length)===1?'':'s'}</span>`:''}
                 ${s.featured?'<span class="sc-badge sc-feat">⭐ Featured</span>':''}
               </div>
             </div>
@@ -8678,22 +8992,34 @@ function useMyGPSForReq() {
 }
 
 // ── METHOD 2: DROP PIN ON MAP ────────────────────────────────────
+// index v20.1: the pin goes on the top half of the map and the form stays open below it (Neil, item 8: "use half of the
+// map to drop down pin on all registrations of all 4 functions": Urgent, Find Me, Sell an Item, Register a Store)
+function bmPinHalfFit(){
+  const el=document.getElementById('bm-pinhalf'); if(!el) return;
+  const vw=window.innerWidth, vh=window.innerHeight||document.documentElement.clientHeight, w=document.querySelector('.map-wrap');
+  let r=w ? w.getBoundingClientRect() : null;
+  if(!r || r.width<280 || r.height<300) r={ left:0, top:0, width:vw, bottom:vh };   // no map area showing: use the screen
+  const top=Math.max(0, r.top), h=Math.round(Math.max(240, (Math.min(vh, r.bottom)-top)*0.5));
+  el.style.left=Math.round(Math.max(0, r.left))+'px'; el.style.top=top+'px'; el.style.width=Math.round(Math.min(r.width, vw))+'px'; el.style.height=h+'px';
+  document.documentElement.style.setProperty('--bmp-bottom', (top+h)+'px');
+}
+window.addEventListener('resize', bmPinHalfFit);
+function bmPinHalfDone(){ const el=document.getElementById('bm-pinhalf'); if(el) el.remove(); document.body.classList.remove('bm-pinhalf'); return !!el; }
 function openPinPicker(forReq, opts) {
-  pinPickerMode = (forReq===true||forReq==='request') ? 'request' : (forReq==='store' ? 'store' : (forReq==='custom' ? 'custom' : 'listing'));
+  if (window.BM_NO_MAP || !window.google || !google.maps || typeof google.maps.Map !== 'function') { showToast('📌 The map isn’t loaded here. Use 📍 your location instead.'); return; }   // index v20.1
+  pinPickerMode = (forReq===true||forReq==='request') ? 'request' : (forReq==='store' ? 'store' : (forReq==='custom' ? 'custom' : (forReq==='urgent' ? 'urgent' : 'listing')));
   window.__bmPinOpts = opts || null;   // index v15: { lat, lng, title, onPick }
-  const _src = pinPickerMode==='store' ? S.storeForm : S.form;
+  const _src = pinPickerMode==='store' ? S.storeForm : (pinPickerMode==='request' ? S._reqForm : (pinPickerMode==='urgent' ? (typeof urfF!=='undefined' ? urfF : null) : S.form));   // index v20.1: each form starts at its own spot
   const _start = (opts && opts.lat != null) ? opts : ((_src && _src.lat) ? _src : (pinPickerMode==='store' && _src && _src.pinStart) || null);   // index v15
   const startLat = (_start && _start.lat) || USER.lat;
   const startLng = (_start && _start.lng) || USER.lng;
-
-  // Build full-screen pin picker
-  const root = document.getElementById('modal-root');
-  root.innerHTML = `
+  const half = pinPickerMode !== 'custom' && !!S.modal && !!document.querySelector('#modal-root .overlay');
+  const html = `
     <div class="pin-picker-overlay" id="pin-picker-overlay">
       <div class="pin-picker-topbar">
         <button class="pin-picker-cancel" onclick="closePinPicker()">✕ Cancel</button>
-        <div class="pin-picker-title">${(opts && opts.title) ? esc(opts.title) : '📍 Drop Your Pin'}</div>
-        <button class="pin-picker-done" onclick="confirmPinLocation()">✅ Confirm</button>
+        <div class="pin-picker-title">${(opts && opts.title) ? esc(opts.title) : (half ? '📍 Drop the pin' : '📍 Drop Your Pin')}</div>
+        <button class="pin-picker-done" onclick="confirmPinLocation()">✅ ${half ? 'Use this spot' : 'Confirm'}</button>
       </div>
       <div style="position:relative;flex:1">
         <div id="pin-picker-map" style="width:100%;height:100%"></div>
@@ -8710,10 +9036,18 @@ function openPinPicker(forReq, opts) {
         </div>
       </div>
     </div>`;
+  if (half) {   // the form stays where it is, on the lower half
+    bmPinHalfDone();
+    const el = document.createElement('div'); el.id = 'bm-pinhalf'; el.innerHTML = html;
+    document.body.appendChild(el); document.body.classList.add('bm-pinhalf'); bmPinHalfFit();
+  } else {
+    document.getElementById('modal-root').innerHTML = html;   // the editors: the whole screen, as before
+  }
 
   // Init the pin picker map after render
   setTimeout(() => {
-    pinPickerMap = new google.maps.Map(document.getElementById('pin-picker-map'), {
+    const box = document.getElementById('pin-picker-map'); if (!box) return;
+    pinPickerMap = new google.maps.Map(box, {
       center: { lat: startLat, lng: startLng },
       zoom: 16,
       mapTypeControl: false,
@@ -8726,7 +9060,7 @@ function openPinPicker(forReq, opts) {
     let geocodeTimer = null;
     pinPickerMap.addListener('center_changed', () => {
       clearTimeout(geocodeTimer);
-      document.getElementById('pin-addr-display').textContent = '📍 Move map to set location...';
+      const d = document.getElementById('pin-addr-display'); if (d) d.textContent = '📍 Move map to set location...';
       geocodeTimer = setTimeout(() => reverseGeocodeCenter(), 600);
     });
 
@@ -8762,18 +9096,25 @@ function confirmPinLocation() {
   const center = pinPickerMap.getCenter();
   const lat = center.lat(), lng = center.lng();
   const addrEl = document.getElementById('pin-addr-display');
-  const addr = addrEl ? addrEl.textContent.replace('📍 ','') : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+  const addr = addrEl ? addrEl.textContent.replace('📍 ','').trim() : `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
 
   if (pinPickerMode === 'custom') {   // index v15: hand the spot back (shop editor, suggested edits)
     const o = window.__bmPinOpts; window.__bmPinOpts = null; pinPickerMap = null;
-    const mr = document.getElementById('modal-root'); if (mr) mr.innerHTML = '';
+    if (!bmPinHalfDone()) { const mr = document.getElementById('modal-root'); if (mr) mr.innerHTML = ''; }
     if (o && typeof o.onPick === 'function') o.onPick(+lat.toFixed(6), +lng.toFixed(6));
     return;
   }
   if (pinPickerMode === 'store') {
     S.storeForm.lat = +lat.toFixed(5); S.storeForm.lng = +lng.toFixed(5); S.storeForm.located = true;
     S.storeForm.pinHint = addr;   // index v15: Google's address is shown as a hint, not saved (Google lets apps keep only place IDs)
-    pinPickerMap = null; renderModal();
+    pinPickerMap = null; bmPinHalfDone(); renderModal();
+    showToast('📍 Pin location set!', 'success');
+    return;
+  }
+  if (pinPickerMode === 'urgent') {   // index v20.1: the Urgent form's drop-off spot (its form isn't redrawn: that would clear its choices)
+    if (typeof urfF !== 'undefined' && urfF) { urfF.lat = lat; urfF.lng = lng; urfF.locLabel = addr; }
+    const ui = document.getElementById('urf-loc'); if (ui) ui.value = '📍 ' + addr;
+    closePinPicker();
     showToast('📍 Pin location set!', 'success');
     return;
   }
@@ -8794,12 +9135,15 @@ function confirmPinLocation() {
     updateLocDisplay(lat, lng);
   }
 
+  const wasReq = pinPickerMode === 'request';
   closePinPicker();
+  if (wasReq && S.modal === 'post-request') renderModal();   // index v20.1: the form was open below; show its new spot
   showToast('📍 Pin location set!', 'success');
 }
 
 function closePinPicker() {
   pinPickerMap = null; window.__bmPinOpts = null;   // index v15
+  if (bmPinHalfDone()) { if (pinPickerMode === 'store') renderModal(); return; }   // index v20.1: the form stayed open below
   if (pinPickerMode === 'store') { renderModal(); return; }
   const root = document.getElementById('modal-root');
   if (root) root.innerHTML = '';
@@ -9112,20 +9456,11 @@ window.submitPostRequest = function() {
 
         <div class="aw-input-wrap">
           <label class="aw-label">📱 Contact Number *</label>
-          <div style="display:flex;gap:8px">
-            <select class="aw-input" id="aw-cc" style="flex:0 0 106px" onchange="awCheckProfile()">
-              <option value="+63">🇵🇭 +63</option>
-              <option value="+65">🇸🇬 +65</option>
-              <option value="+62">🇮🇩 +62</option>
-              <option value="+60">🇲🇾 +60</option>
-              <option value="+66">🇹🇭 +66</option>
-              <option value="+84">🇻🇳 +84</option>
-              <option value="+61">🇦🇺 +61</option>
-              <option value="+44">🇬🇧 +44</option>
-              <option value="+1">🇺🇸 +1</option>
-            </select>
+          <div class="bm-ccrow" style="display:flex;gap:8px">
+            <span class="bm-ccw"><span class="bm-ccf" aria-hidden="true">🇵🇭</span><input class="aw-input bm-ccin" id="aw-cc" value="+63" maxlength="24" autocomplete="off" spellcheck="false" aria-label="Country code: type a country or a code" onfocus="ccShow(this,true)" oninput="ccShow(this,false)" onkeydown="ccKey(event,this)" onblur="ccDone(this)" onchange="awCheckProfile()"></span>
             <input class="aw-input" id="aw-phone-num" type="tel" placeholder="9XX XXX XXXX" style="flex:1" oninput="awCheckProfile()">
           </div>
+          <div class="bm-ccsug" id="aw-cc-sug" hidden></div>
           <div style="font-size:10px;color:var(--muted);margin-top:3px">🔒 Confirmed once here — buyers &amp; helpers use this to reach you. You won't be asked again.</div>
         </div>
 
@@ -9423,17 +9758,18 @@ function showContactCapture(){
         <div class="modal-sub">Add a contact number so buyers and helpers can reach you. You'll only do this once.</div>
       </div>
       <div class="modal-body">
-        <div style="display:flex;gap:8px">
-          <select class="sf-inp" id="cc-sel" style="flex:0 0 106px">${opts.map(o=>{const code=o.split(' ')[1];return `<option value="${code}" ${cc===code?'selected':''}>${o}</option>`;}).join('')}</select>
+        <div class="bm-ccrow" style="display:flex;gap:8px">
+          ${ccInputHTML('cc-sel', cc, 'sf-inp')}
           <input class="sf-inp" id="cc-num" type="tel" placeholder="9XX XXX XXXX" style="flex:1" autofocus>
         </div>
+        ${ccSugHTML('cc-sel')}
         <button class="btn-primary" style="margin-top:14px" onclick="saveContactNumber()">Save number</button>
       </div>
     </div>
   </div>`;
 }
 async function saveContactNumber(){
-  const cc = document.getElementById('cc-sel').value;
+  const cc = ccNorm(document.getElementById('cc-sel').value);   // index v20.1: typed
   const ph = (document.getElementById('cc-num').value||'').trim();
   if (ph.replace(/\D/g,'').length < 7){ showToast('Please enter a valid contact number','error'); return; }
   const full = cc + ' ' + ph;
@@ -10850,7 +11186,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       const o=rawOffer(r);
       if(E.k==='urgent'){
         f+=`<div class="me-row">${fld('me-cash','Cash reward (₱)',o.cash||'',{num:1,max:7})}${fld('me-cr','Credits reward (✨)',o.cr||'',{num:1,max:6})}</div>`;
-        f+=`<div class="bmf-field"><label for="me-del">Delivery</label><select id="me-del">${[['doorstep','🏠 Deliver to my door'],['meetup','🤝 Meet halfway'],['pickup','🚶 I’ll pick it up']].map(x=>`<option value="${x[0]}"${(r.delivery||'doorstep')===x[0]?' selected':''}>${x[1]}</option>`).join('')}</select></div>`;
+        f+=`<div class="bmf-field"><label>Delivery</label>${bmChipsHTML('me-del',[['doorstep','🏠 Deliver to my door'],['meetup','🤝 Meet halfway'],['pickup','🚶 I’ll pick it up']],r.delivery||'doorstep')}</div>`;   // index v20.1: chips
       } else f+=fld('me-cr','Credits reward (✨)',Number(r.offer_trust)||'',{num:1,max:6});
       const n=Number(r.reply_count)||0;
       if(n) f+=`<div class="bmu-safe">${n} ${n===1?'person has':'people have'} already ${E.k==='urgent'?'offered':'replied'}. You can raise the reward, but not lower it.</div>`;
@@ -10866,6 +11202,7 @@ body.bm-profile #profile-page{background:radial-gradient(1100px 650px at 50% -10
       `<div class="bmthread-foot"><div class="me-foot"><button class="bmsend" type="button" ${E.busy?'disabled':''} onclick="BP.mineSave()">${E.busy?'Saving…':'Save changes'}</button><button class="bmu-btn" type="button" onclick="BP.mineCloseEdit()">Cancel</button></div></div></div>`;
     b.style.display='flex';
     Object.keys(keep).forEach(id=>{ const el=document.getElementById(id); if(el) el.value=keep[id]; });
+    try{ bmChipSync(b); }catch(_){}   // index v20.1: chips show the choice you made before the redraw
     if(first){ const el=b.querySelector('input,textarea'); if(el) try{ el.focus(); }catch(_){} }
   }
   async function mineSave(){
@@ -11481,6 +11818,7 @@ function urfBuildForm(){
             <div class="chip royal" data-v="pickup" onclick="urfPick(this,'urf-dl','delivery')">🚶 I'll pick it up</div>
           </div>
           <label class="fl">Drop-off location</label>
+          <div class="urf-locbtns"><button type="button" class="urf-lb" onclick="urfUseGps()">📍 My location</button><button type="button" class="urf-lb" onclick="openPinPicker('urgent')">📌 Drop a pin</button></div>
           <input class="inp" id="urf-loc" value="📍 ${USER.name} (your GPS)">
           <label class="fl">Landmark / instructions <span class="opt">(optional)</span></label>
           <input class="inp" id="urf-note" placeholder="e.g. near the covered court, leave at gate">
@@ -11493,6 +11831,7 @@ function urfBuildForm(){
     </div>
   </div>`;
 }
+function urfUseGps(){ urfF.lat=null; urfF.lng=null; urfF.locLabel=''; const i=document.getElementById('urf-loc'); if(i) i.value='📍 '+USER.name+' (your GPS)'; showToast('📍 Your location'); }   // index v20.1
 function urfPick(el, grp, key, showTime){
   document.querySelectorAll('#'+grp+' .chip').forEach(c=>c.classList.remove('on'));
   el.classList.add('on');
@@ -11532,8 +11871,8 @@ function urfPost(){
     when: urfF.when,
     cover: urfF.cover,
     note: note,
-    lat: USER.lat,            // your own request sits at your GPS → tops the default "Nearest" sort
-    lng: USER.lng,
+    lat: urfF.lat!=null ? urfF.lat : USER.lat,   // index v20.1: the dropped pin, else your GPS (tops the default "Nearest" sort)
+    lng: urfF.lng!=null ? urfF.lng : USER.lng,
     replies: []
   };
   helpRequests = [newReq, ...helpRequests];
@@ -12351,10 +12690,10 @@ function urfPost(){
 .bmf-use{flex-shrink:0;border:none;border-radius:10px;padding:8px 12px;background:linear-gradient(135deg,#2E9E5B,#1A6B3A);color:#fff;font-family:inherit;font-weight:800;font-size:12.5px;cursor:pointer}
 .bmf-gbtn{width:100%;border:1.5px solid #cdd4ea;background:#fff;border-radius:10px;padding:10px 12px;font-family:inherit;font-weight:800;font-size:13px;color:#173c88;cursor:pointer;text-align:center}
 .bmf-glist{display:flex;flex-direction:column;gap:6px}
-.bmf-g{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;border:1px solid #e3e7f4;border-radius:10px;padding:8px 10px;background:#fff}
-.bmf-g .t{flex:1 1 170px;min-width:0;font-size:12.5px;color:#1a2550;line-height:1.35}
-.bmf-g .t b{display:block}
-.bmf-g .t span{font-size:11.5px;font-weight:700;color:#6b76a8}
+.bmf-glist .bmf-g{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;border:1px solid #e3e7f4;border-radius:10px;padding:8px 10px;background:#fff}
+.bmf-glist .bmf-g .t{flex:1 1 170px;min-width:0;font-size:12.5px;color:#1a2550;line-height:1.35}
+.bmf-glist .bmf-g .t b{display:block}
+.bmf-glist .bmf-g .t span{font-size:11.5px;font-weight:700;color:#6b76a8}
 .bmf-gadd{flex-shrink:0;border:1.5px solid rgba(26,107,58,.45);background:#fff;color:#1A6B3A;border-radius:10px;padding:7px 11px;font-family:inherit;font-weight:800;font-size:12px;cursor:pointer}
 .bmf-gattr{font-size:10.5px;font-weight:700;color:#8a94b8;text-align:right}
 .bmf-additem{display:flex;align-items:flex-start;gap:9px;background:#F4F7FF;border:1px solid #e3e7f4;border-radius:10px;padding:9px 11px;font-size:12.5px;font-weight:700;color:#1a2550;line-height:1.4;cursor:pointer}
@@ -12397,14 +12736,67 @@ function urfPost(){
   function svUrl(lat,lng){ return 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint='+encodeURIComponent(Number(lat).toFixed(6)+','+Number(lng).toFixed(6)); }
   function focusSel(sel){ var el=document.querySelector('#bmfind-back '+sel); if(el) el.focus(); }
 
+  // ── index v20.1: the replies sit across the lower part of the map, so the map above can show the shop ──
+  // Neil (2026-11-28, item 7): "make the floating bar take the lower part of the map. crosswise. if the shop is registered
+  // already at google and bring me show it on the map. in the middle of the map the system will direct the pin point to the store"
+  var MK=[], FULL=false, tG=null;
+  function bandOn(){ try{ var c=document.body.classList; return !c.contains('bm-profile') && !c.contains('bsp-open') && !!document.querySelector('.map-wrap'); }catch(e){ return false; } }
+  function bandFit(){
+    var back=document.getElementById('bmfind-back'); if(!back) return;
+    var on=!!F && bandOn();
+    back.classList.toggle('band', on); back.classList.toggle('full', on && FULL);
+    if(!on){ back.classList.remove('wide'); return; }
+    var w=document.querySelector('.map-wrap'), r=w.getBoundingClientRect(), vh=window.innerHeight || document.documentElement.clientHeight;
+    var top=Math.max(0, r.top), bot=Math.min(vh, r.bottom), avail=Math.max(240, bot-top);
+    var half=Math.round(Math.min(Math.max(avail*0.56, 300), avail-120));
+    back.style.setProperty('--bmb-l', Math.round(Math.max(0, r.left))+'px');
+    back.style.setProperty('--bmb-w', Math.round(Math.min(r.width, window.innerWidth))+'px');
+    back.style.setProperty('--bmb-b', Math.round(Math.max(0, vh-bot))+'px');
+    back.style.setProperty('--bmb-h', half+'px');
+    back.style.setProperty('--bmb-f', Math.round(avail)+'px');
+    back.classList.toggle('wide', r.width>=860);
+  }
+  window.addEventListener('resize', function(){ if(F) bandFit(); });
+  function mapOK(){ try{ return !window.BM_NO_MAP && typeof map!=='undefined' && !!map && !!(window.google && google.maps && google.maps.Marker); }catch(e){ return false; } }
+  function clearPins(){ MK.forEach(function(m){ try{ m.setMap(null); }catch(e){} }); MK=[]; }
+  function pinIcon(kind){   // green = on BringMe, blue = Google Maps, gold = the shop in your reply
+    try{
+      if(!google.maps.Size || !google.maps.Point) return undefined;
+      var c={ bm:'#1A6B3A', g:'#2550b8', pick:'#E3A810' }[kind] || '#2550b8';
+      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="36" height="48" viewBox="0 0 36 48"><path d="M18 47S34 29 34 17.5A16 16 0 0 0 2 17.5C2 29 18 47 18 47Z" fill="'+c+'" stroke="#fff" stroke-width="3"/><circle cx="18" cy="17.5" r="6.5" fill="#fff"/></svg>';
+      return { url:'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg), scaledSize:new google.maps.Size(36,48), anchor:new google.maps.Point(18,47) };
+    }catch(e){ return undefined; }
+  }
+  function showPins(list){
+    clearPins(); if(!mapOK()) return;
+    list.forEach(function(p, i){ try{ MK.push(new google.maps.Marker({ position:{ lat:p.lat, lng:p.lng }, map:map, title:p.name, icon:pinIcon(p.kind), zIndex:99000-i })); }catch(e){} });
+  }
+  function bandOffset(){ var b=document.getElementById('bmfind-back'); if(!b || !b.classList.contains('band') || b.classList.contains('full')) return 0; var t=b.querySelector('.bmthread'); return t ? Math.round(t.getBoundingClientRect().height/2) : 0; }
+  // the shop's pin in the middle of the part of the map you can see (above the replies)
+  function centerOn(lat, lng, zoomIn){
+    lat=Number(lat); lng=Number(lng);
+    if(!mapOK() || isNaN(lat) || isNaN(lng)) return;
+    try{
+      if(zoomIn && map.getZoom && map.getZoom()<16) map.setZoom(16);
+      var off=bandOffset(), pr=map.getProjection ? map.getProjection() : null, z=map.getZoom ? map.getZoom() : 16;
+      if(off && pr && google.maps.Point && google.maps.LatLng){
+        var s=Math.pow(2, z), wp=pr.fromLatLngToPoint(new google.maps.LatLng(lat, lng));
+        map.panTo(pr.fromPointToLatLng(new google.maps.Point(wp.x, wp.y+off/s)));
+      } else map.panTo({ lat:lat, lng:lng });
+    }catch(e){}
+  }
+
   window.bmOpenFind = async function(post){
     if(!post || !post._db) return;
-    F={ post:post, id:post._db.id, rows:[], power:null, req:null, err:null, ask:null, draft:BLANK(), loaded:false };
+    clearPins(); FULL=false;
+    F={ post:post, id:post._db.id, rows:[], items:[], myItemVotes:{}, myShopVotes:{}, power:null, req:null, err:null, ask:null, draft:BLANK(), loaded:false };
     ensureBack().style.display='flex';
+    bandFit();
     paint('<div class="bmthread-empty"><div class="big">⏳</div>Loading replies…</div>');
+    if(post.lat!=null && post.lng!=null) centerOn(post.lat, post.lng, false);   // where they need it, above the replies
     await reload();
   };
-  window.bmCloseFind = function(){ var b=document.getElementById('bmfind-back'); if(b){ b.style.display='none'; b.innerHTML=''; } F=null; };
+  window.bmCloseFind = function(){ var b=document.getElementById('bmfind-back'); if(b){ b.style.display='none'; b.innerHTML=''; b.classList.remove('band','full','wide'); } clearPins(); clearTimeout(tG); F=null; };
   window.bmFindRefresh = function(){ if(F) reload(); };   // index v11
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && F) window.bmCloseFind(); });
 
@@ -12415,6 +12807,12 @@ function urfPost(){
       back.addEventListener('click', function(e){ if(e.target===back){ window.bmCloseFind(); return; } onClick(e); });
       back.addEventListener('input', onInput);
       back.addEventListener('change', onInput);
+      back.addEventListener('keydown', function(e){   // index v20.1: Enter in the shop box = the first thing offered (Use, ➕ Quick add or 🏪 Register)
+        if(e.key!=='Enter' || !e.target || e.target.id!=='bmf-sname') return;
+        e.preventDefault();
+        var a=back.querySelector('#bmf-newhelp .bmfr-act'); if(a){ a.click(); return; }
+        if(F && F.g && F.g.state==='wait'){ clearTimeout(tG); gSearch(); }
+      });
       document.body.appendChild(back);
     }
     return back;
@@ -12435,29 +12833,70 @@ function urfPost(){
       F.rows=(res[0] && res[0].data) || [];
       F.req=(res[1] && !res[1].error && res[1].data) || null;
       F.power=(res[2] && typeof res[2].data==='number') ? res[2].data : null;
+      await loadItems(id);   // index v20.1
     }catch(e){ if(F) F.err=dbErr(e); }
-    if(F){ F.loaded=true; render(); }
+    if(F && F.id===id){ F.loaded=true; render(); }
+  }
+  // index v20.1: the item on each named shop's list, and what you said about it (✅ It's there / ❌ Not available / 🔒 Closed)
+  async function loadItems(id){
+    var sids=[]; F.rows.forEach(function(r){ if(!r.flagged && r.source_kind==='shop' && r.source_store_id!=null && sids.indexOf(String(r.source_store_id))<0) sids.push(String(r.source_store_id)); });
+    F.items=[]; F.myItemVotes={}; F.myShopVotes={};
+    if(!sids.length) return;
+    try{
+      var a=await sb.from('store_items').select('id,store_id,name,status,vouch_points,vouch_count,report_points,report_count,added_by,created_at,removed_at').in('store_id', sids).is('removed_at', null);
+      if(!F || F.id!==id) return;
+      F.items=(a && !a.error && a.data) || [];
+      if(!me()) return;
+      var ids=F.items.map(function(i){ return i.id; });
+      var q=await Promise.all([ ids.length ? sb.from('store_item_votes').select('item_id,kind,reason').in('item_id', ids) : Promise.resolve({ data:[] }),
+                                sb.from('store_votes').select('store_id,kind,reason').in('store_id', sids) ]);
+      if(!F || F.id!==id) return;
+      ((q[0] && !q[0].error && q[0].data) || []).forEach(function(v){ F.myItemVotes[String(v.item_id)]=v; });
+      ((q[1] && !q[1].error && q[1].data) || []).forEach(function(v){ F.myShopVotes[String(v.store_id)]=v; });
+    }catch(e){ console.warn('[BringMe] shop items for Find Me replies', e); }
+  }
+  function tms(x){ var t=new Date(x).getTime(); return isNaN(t) ? null : t; }
+  // the reply's item on the shop's list: the one added with the reply, or the same thing they asked for
+  function itemFor(r){
+    if(!F || !F.items || r.source_kind!=='shop' || r.source_store_id==null) return null;
+    var at=F.items.filter(function(i){ return String(i.store_id)===String(r.source_store_id) && !i.removed_at && i.status!=='taken_down'; });
+    if(!at.length) return null;
+    var rt=tms(r.created_at), want=String((F.post && F.post.item) || '');
+    var near=at.filter(function(i){ var t=tms(i.created_at); return rt!=null && t!=null && t>=rt-60000 && t<=rt+600000; })
+               .sort(function(a,b){ return Math.abs(tms(a.created_at)-rt)-Math.abs(tms(b.created_at)-rt); });
+    if(near.length) return near[0];
+    return at.filter(function(i){ return nn(i.name)===nn(want) || (gSimilar(want, i.name) && gSimilar(i.name, want)) || (core(i.name).length>=6 && core(want).indexOf(core(i.name))>=0); })[0] || null;   // the same thing, not just a word in common
   }
 
+  function questionHTML(p){   // index v20.1: the question, big and bold, like a Threads post
+    var fdx=(typeof window.bmFindSumHTML==='function') ? window.bmFindSumHTML(p) : { top:'', mid:'' };   // index v18: photos + details
+    var who=String(p.user||'Member'), ini=(who.replace(/^@/,'').match(/[a-z0-9]/i) || ['👤'])[0], n=F.rows.length;
+    var h='<article class="bmq" aria-label="The question">';
+    h+='<div class="bmq-hd"><span class="bmq-av" aria-hidden="true">'+esc(ini)+'</span><span class="bmq-who"><b>'+esc(who)+'</b>'+(p.time?'<span>'+esc(p.time)+'</span>':'')+'</span><span class="bmq-kind">🔍 Find Me</span></div>';
+    h+='<h2 class="bmq-t">'+esc(p.item||'')+'</h2>';
+    if(p.spec) h+='<div class="bmq-spec">'+esc(p.spec)+'</div>';
+    if(p.note) h+='<p class="bmq-note">'+esc(p.note)+'</p>';
+    h+=fdx.top+fdx.mid;
+    if(reward()) h+='<div class="bmq-rw">✨'+reward()+' Credit'+(reward()===1?'':'s')+' for the reply that leads to the buy</div>';
+    h+='<div class="bmq-meta"><span>💬 '+n+' '+(n===1?'reply':'replies')+'</span><span>👤 Neighbors reply without names</span></div>';
+    return h+'</article>';
+  }
   function render(){
     if(!F) return;
-    var p=F.post, owner=isOwner(), open=isOpen(), signed=!!me(), h='';
-    var fdx=(typeof window.bmFindSumHTML==='function') ? window.bmFindSumHTML(p) : { top:'', mid:'' };   // index v18: photos + details
-    h+='<div class="bmpost-sum">'+fdx.top+'<b>'+esc(p.item)+'</b>'+(p.spec?'<span class="bmfd-spec">'+esc(p.spec)+'</span>':'')+(p.note?(p.spec?'':'<br>')+'“'+esc(p.note)+'”':'')+fdx.mid+
-       (reward()?'<br>Reward: ✨'+reward()+' Credits for the reply that leads to the buy':'')+
-       '<br><span style="color:#8a94b8">👤 '+esc(p.user||'Member')+(p.time?' · '+esc(p.time):'')+'</span></div>';
-    if(F.err){ paint(h+'<div class="bmf-status off">⚠️ '+esc(F.err)+'</div>'); return; }
+    var p=F.post, owner=isOwner(), open=isOpen(), signed=!!me(), A=questionHTML(p), B='';
+    if(F.err){ paint(A+'<div class="bmf-status off">⚠️ '+esc(F.err)+'</div>'); return; }
     var won=boughtRow();
-    if(!open && won) h+='<div class="bmf-status ok">✅ Found. '+(owner?'You bought it ':'The person who asked bought it ')+esc(placeText(won))+'.'+
+    if(!open && won) A+='<div class="bmf-status ok">✅ Found. '+(owner?'You bought it ':'The person who asked bought it ')+esc(placeText(won))+'.'+
                         (reward()?' The ✨'+reward()+' reward went to Neighbor '+won.alias+(won.is_mine?', which is you':'')+'.':'')+'</div>';
-    else if(!open) h+='<div class="bmf-status off">This request is closed.</div>';
-    else if(owner) h+='<div class="bmf-status wait">Bought it? Tap “I bought it here” on the reply that led you there.'+(reward()?' Whoever sent it gets the ✨'+reward()+' reward.':'')+' You won’t see their name.</div>';
-    else h+='<div class="bmf-help">Replies show as Neighbor 1, 2… with no names. Vouch for replies you know are true: the person who wrote it earns ✨1 per point.</div>';
-    if(!F.rows.length && owner) h+='<div class="bmf-none">No replies yet. Neighbors who know where to get it will reply here.</div>';   // index v17: no big 🔍 box
-    h+=F.rows.map(repHTML).join('');
-    if(open && !owner) h+= signed ? composeHTML() : '<button class="bmsignin" type="button" data-f="signin">Sign in to reply</button>';
-    else if(!open && !owner) h+='<div class="bmf-status off">New replies are off because the item was found. You can still vouch and report.</div>';
-    paint(h);
+    else if(!open) A+='<div class="bmf-status off">This request is closed.</div>';
+    else if(owner) A+='<div class="bmf-status wait">Bought it? Tap “I bought it here” on the reply that led you there.'+(reward()?' Whoever sent it gets the ✨'+reward()+' reward.':'')+' You won’t see their name.</div>';
+    if(F.rows.length) A+='<div class="bmq-rl">Replies · '+F.rows.length+'</div>'+F.rows.map(repHTML).join('');
+    else A+='<div class="bmf-none">'+(owner ? 'No replies yet. Neighbors who know where to get it will reply here.' : 'No replies yet. Be the first to say where they can get it.')+'</div>';
+    if(open && !owner) B+= signed ? composeHTML() : '<button class="bmsignin" type="button" data-f="signin">Sign in to reply</button>';
+    else if(!open && !owner) B+='<div class="bmf-status off">New replies are off because the item was found. You can still say whether it’s there.</div>';
+    if(!owner) B+='<div class="bmf-help bmfr-foot">Replies show as Neighbor 1, 2… with no names. Tap ✅ It’s there on replies you know are true: the person who wrote it earns ✨1 per point.</div>';   // index v20.1: at the bottom (Neil: "that's not the important part")
+    paint('<div class="bmf-cols"><div class="bmf-ca">'+A+'</div><div class="bmf-cb">'+B+'</div></div>');
+    mapSync(); ensureSearch();
   }
 
   function repHTML(r){
@@ -12472,7 +12911,7 @@ function urfPost(){
     h+=srcHTML(r);
     if(r.is_bought) h+='<span class="bmf-won">🛒 '+(owner?'You bought it here':'The person who asked bought it here')+(reward()?'. This reply got the ✨'+reward()+' reward.':'.')+'</span>';
     h+=trustHTML(r);
-    if(!r.vouch_points && r.source_kind!=='mine' && r.dupe!=='public') h+='<div class="bmf-warn">⚠ Not verified yet. Nobody has vouched for this reply.</div>';
+    if(!r.vouch_points && r.source_kind!=='mine' && r.dupe!=='public') h+='<div class="bmf-warn">⚠ Not confirmed yet. Nobody has said it’s there.</div>';
     h+=actsHTML(r);
     return h+'</div>';
   }
@@ -12491,9 +12930,16 @@ function urfPost(){
       var badge = k==='shop' ? (r.shop_official ? '<span class="bmf-badge off">✅ Official</span>' : '<span class="bmf-badge com">👥 Community listing</span>')
                              : '<span class="bmf-badge new">Not on BringMe yet</span>';
       h+='<span>🏪 <b>'+esc(r.shop_name||'Shop')+'</b></span>'+badge+(r.price?'<span class="bmf-price">about '+peso(r.price)+'</span>':'');
-      h+='<span class="bmf-info"><span>📍 '+(r.shop_address?esc(r.shop_address)+' · ':'')+(d!=null?kmTx(d):'Location saved')+'</span>'+phoneTx(r)+'</span>';
+      h+='<span class="bmf-info"><span>📍 '+(r.shop_address && !isCoords(r.shop_address) && r.shop_address!=='Nearby' ? esc(r.shop_address)+' · ' : '')+(d!=null?kmTx(d):'Location saved')+'</span>'+phoneTx(r)+'</span>';
+      var it=itemFor(r);   // index v20.1: what neighbors say about it on the shop's list
+      if(it){
+        var bits=['🧾 On the shop’s list: '+esc(it.name)];
+        if(it.status==='confirmed') bits.push('✅ confirmed by neighbors');
+        if(Number(it.report_count)>0) bits.push('❌ '+esc(it.report_count)+' said not available');
+        h+='<span class="bmf-item">'+bits.join(' · ')+'</span>';
+      }
       if(r.place_lat!=null && r.place_lng!=null){
-        h+='<span class="bmf-info"><button class="bmf-link" type="button" data-f="map" data-lat="'+esc(r.place_lat)+'" data-lng="'+esc(r.place_lng)+'" data-name="'+esc(r.shop_name||'')+'">Show on map</button>'+
+        h+='<span class="bmf-info"><button class="bmf-link" type="button" data-f="map" data-lat="'+esc(r.place_lat)+'" data-lng="'+esc(r.place_lng)+'" data-name="'+esc(r.shop_name||'')+'">📍 Show on map</button>'+
            '<a class="bmf-link" href="'+svUrl(r.place_lat,r.place_lng)+'" target="_blank" rel="noopener">Street View ↗</a></span>';
       }
       if(r.dupe==='public') h+='<span class="bmf-note">An earlier reply named this shop first.</span>';
@@ -12508,29 +12954,47 @@ function urfPost(){
     if(r.is_mine) h+='<span class="bmf-earn">✨'+esc(r.earned||0)+' of ✨10 earned from vouches</span>';
     return h+'</div>';
   }
-  function actsHTML(r){
-    var owner=isOwner(), signed=!!me(), open=isOpen();
-    if(!signed || r.is_mine) return '';
-    if(owner){   // the person who asked: mark where they bought it
-      if(!open) return '';
-      if(r.dupe==='public') return '<div class="bmf-note">An earlier reply named this shop first, so the reward would go to that reply.</div>';
-      if(F.ask && F.ask.kind==='buy' && String(F.ask.id)===String(r.id)){
-        return '<div class="bmf-confirm"><span>Did you buy it '+esc(placeText(r))+'?'+(reward()?' The ✨'+reward()+' reward goes to whoever sent this reply.':'')+'</span>'+
-          '<button class="bmf-btn buy" type="button" data-f="buy-yes" data-rid="'+esc(r.id)+'">Yes, I bought it here</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
-      }
-      return '<div class="bmf-acts"><button class="bmf-btn buy" type="button" data-f="buy" data-rid="'+esc(r.id)+'">🛒 I bought it here</button></div>';
-    }
-    if(r.my_vote==='vouch') return '<div class="bmf-acts"><button class="bmf-btn vouch" type="button" disabled>✓ You vouched</button></div>';
-    if(r.my_vote==='report') return '<div class="bmf-acts"><button class="bmf-btn report" type="button" disabled>Reported</button></div>';
-    if(F.ask && F.ask.kind==='report' && String(F.ask.id)===String(r.id)){
-      return '<div class="bmf-confirm"><span>Report this reply as wrong or fake? 10 reports take it down.</span>'+
-        '<button class="bmf-btn report" type="button" data-f="report-yes" data-rid="'+esc(r.id)+'">Yes, report</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
-    }
-    var full=(r.vouch_points||0)>=10;
-    return '<div class="bmf-acts">'+(full ? '<button class="bmf-btn vouch" type="button" disabled>Fully vouched</button>'
-                                          : '<button class="bmf-btn vouch" type="button" data-f="vouch" data-rid="'+esc(r.id)+'">✓ Vouch'+(F.power!=null?' · worth '+F.power:'')+'</button>')+
-      '<button class="bmf-btn report" type="button" data-f="report" data-rid="'+esc(r.id)+'">⚠ Report</button></div>';
+  // what you said about a reply already
+  function saidHTML(r){
+    if(!r.my_vote) return '';
+    if(r.source_kind==='mine') return '<div class="bmf-acts"><span class="bmf-said '+(r.my_vote==='vouch'?'ok">✓ You vouched':'no">⚠ You reported it')+'</span></div>';
+    if(r.my_vote==='vouch') return '<div class="bmf-acts"><span class="bmf-said ok">✅ You said it’s there</span></div>';
+    var sv=r.source_store_id!=null ? F.myShopVotes[String(r.source_store_id)] : null;
+    var closed=(sv && sv.kind==='report' && /closed/i.test(String(sv.reason||''))) || !!(F.saidClosed && F.saidClosed[String(r.id)]);
+    return '<div class="bmf-acts"><span class="bmf-said no">'+(closed ? '🔒 You said the shop is closed' : '❌ You said it’s not available')+'</span></div>';
   }
+  function actsHTML(r){
+    var owner=isOwner(), signed=!!me(), open=isOpen(), shop=r.source_kind!=='mine', sn=esc(r.shop_name||'the shop');
+    if(!signed || r.is_mine) return '';
+    var ask=(F.ask && String(F.ask.id)===String(r.id)) ? F.ask.kind : null;
+    // index v20.1 (Neil, item 6): neighbors say whether the item is really there, not available, or the shop is closed
+    if(ask==='na') return '<div class="bmf-confirm"><span>Not available at '+sn+'? Neighbors will see it on this reply'+(r.source_kind==='shop' ? ' and on the shop’s list' : '')+'.</span>'+
+      '<button class="bmf-btn report" type="button" data-f="na-yes" data-rid="'+esc(r.id)+'">Yes, not available</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
+    if(ask==='closed') return '<div class="bmf-confirm"><span>Is '+sn+' closed for good (moved or shut down)?'+(r.source_kind==='shop' ? ' Enough reports take a closed shop off the map.' : '')+'</span>'+
+      '<button class="bmf-btn report" type="button" data-f="closed-yes" data-rid="'+esc(r.id)+'">Yes, it’s closed</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
+    var said=saidHTML(r);
+    if(owner){   // the person who asked: where they bought it (or that a shop didn't have it)
+      if(!open) return said;
+      if(ask==='buy') return '<div class="bmf-confirm"><span>Did you buy it '+esc(placeText(r))+'?'+(reward()?' The ✨'+reward()+' reward goes to whoever sent this reply.':'')+'</span>'+
+          '<button class="bmf-btn buy" type="button" data-f="buy-yes" data-rid="'+esc(r.id)+'">Yes, I bought it here</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
+      var a=(r.dupe==='public') ? '' : '<button class="bmf-btn buy" type="button" data-f="buy" data-rid="'+esc(r.id)+'">🛒 I bought it here</button>';
+      if(shop && !r.my_vote) a+='<button class="bmf-btn report" type="button" data-f="na" data-rid="'+esc(r.id)+'">❌ Not available</button><button class="bmf-btn report" type="button" data-f="closed" data-rid="'+esc(r.id)+'">🔒 Closed</button>';
+      return (r.dupe==='public' ? '<div class="bmf-note">An earlier reply named this shop first, so the reward would go to that reply.</div>' : '')+(a ? '<div class="bmf-acts">'+a+'</div>' : '')+said;
+    }
+    if(said) return said;
+    if(!shop){   // a neighbor's own second-hand item: vouch or report, as before
+      if(ask==='report') return '<div class="bmf-confirm"><span>Report this reply as wrong or fake? 10 reports take it down.</span>'+
+        '<button class="bmf-btn report" type="button" data-f="report-yes" data-rid="'+esc(r.id)+'">Yes, report</button><button class="bmf-btn" type="button" data-f="ask-no">Cancel</button></div>';
+      return '<div class="bmf-acts">'+((r.vouch_points||0)>=10 ? '<button class="bmf-btn vouch" type="button" disabled>Fully vouched</button>'
+          : '<button class="bmf-btn vouch" type="button" data-f="vouch" data-rid="'+esc(r.id)+'">✓ Vouch'+(F.power!=null?' · worth '+F.power:'')+'</button>')+
+        '<button class="bmf-btn report" type="button" data-f="report" data-rid="'+esc(r.id)+'">⚠ Report</button></div>';
+    }
+    return '<div class="bmf-acts bmf-acts3">'+((r.vouch_points||0)>=10 ? '<button class="bmf-btn vouch" type="button" disabled>✅ Fully confirmed</button>'
+        : '<button class="bmf-btn vouch" type="button" data-f="there" data-rid="'+esc(r.id)+'">✅ It’s there'+(F.power!=null?' · worth '+F.power:'')+'</button>')+
+      '<button class="bmf-btn report" type="button" data-f="na" data-rid="'+esc(r.id)+'">❌ Not available</button>'+
+      '<button class="bmf-btn report" type="button" data-f="closed" data-rid="'+esc(r.id)+'">🔒 Closed</button></div>';
+  }
+
 
   /* ═══ index v17: find the shop the helper means (BringMe first, then Google Maps) and put the item on its list ═══ */
   var SAME_SHOP_KM=0.15;   // "very close": 150 m
@@ -12610,32 +13074,97 @@ function urfPost(){
       F.g={ q:q, state:'ok', list:list }; paintHelp();
     }catch(e){ if(F && F.g && F.g.q===q){ F.g={ q:q, state:'err' }; paintHelp(); } console.warn('[BringMe] Google Maps search (Find Me reply)', e); }
   }
-  // under "Shop name": already on BringMe? on Google Maps?
+  // ── index v20.1: the shop is typed. As you type: BringMe shops, then Google Maps places with a similar name (➕ Quick add),
+  // and when it's on neither, 🏪 Register it. Every shop reply names a BringMe shop, so the map fills up. ──
+  function gSimilar(a, b){
+    if(sameName(a, b)) return true;
+    var A=nn(a), B=nn(b); if(!A || !B) return false;
+    var aw=A.split(' ').filter(function(w){ return w && !GEN[w]; }), bw=B.split(' ');
+    if(!aw.length) return B.indexOf(A)>=0;   // only shop words ("sari sari store"): the whole phrase
+    if(aw.every(function(w){ return bw.some(function(v){ return v.indexOf(w)===0 || (v.length>=4 && w.indexOf(v)===0) || (w.length>=4 && v.length>=4 && dice(w, v)>=0.75); }); })) return true;
+    var ca=core(a), cb=core(b);
+    return ca.length>=4 && cb.length>=4 && dice(ca, cb)>=0.7;
+  }
+  function shopSugs(name){
+    if(!nn(name)) return [];
+    return allShops().filter(function(s){ return gSimilar(name, s.name); })
+      .map(function(s){ return { x:{ s:s, d:km(s.lat, s.lng) }, same:sameName(name, s.name) }; })
+      .sort(function(a,b){ return (b.same-a.same) || ((a.x.d==null?1e9:a.x.d)-(b.x.d==null?1e9:b.x.d)); }).slice(0,4);
+  }
+  function gHits(name, g, bm){   // Google Maps places with a similar name, minus the BringMe shops already listed
+    if(!g || g.state!=='ok' || !g.list) return [];
+    var shown={}; (bm||[]).forEach(function(o){ shown[String(o.x.s._db.id)]=1; });
+    return g.list.map(function(p, i){ return { p:p, i:i, s:linkedShop(p.id) }; })
+      .filter(function(o){ return gSimilar(name, o.p.name) && !(o.s && shown[String(o.s._db.id)]); }).slice(0,4);
+  }
+  function shopRow(o){
+    var s=o.x.s, d=o.x.d, addr=(s.address && !isCoords(s.address) && s.address!=='Nearby') ? s.address : '';
+    var sub=[d!=null ? kmTx(d) : '', addr].filter(Boolean).join(' · ');
+    return '<div class="bmf-ssug" data-f="useshop" data-sid="'+esc(s._db.id)+'" role="button" tabindex="0"><span class="ic">'+esc(s.catEmoji||'🏪')+'</span>'+
+      '<span class="tx"><b>'+esc(s.name)+'</b>'+(sub ? '<small>'+esc(sub)+'</small>' : '')+'</span>'+
+      '<button type="button" class="go bmfr-act" data-f="useshop" data-sid="'+esc(s._db.id)+'">Use</button></div>';
+  }
+  function gRow(o){
+    var p=o.p, s=o.s;
+    return '<div class="bmf-ssug g" data-f="locate" data-lat="'+esc(p.lat)+'" data-lng="'+esc(p.lng)+'"><span class="ic">📍</span>'+
+      '<span class="tx"><b>'+esc(p.name)+'</b><small>'+(p.addr ? esc(p.addr)+' · ' : '')+esc(mTx(p.d))+' from you</small></span>'+
+      (s ? '<button type="button" class="go bmfr-act" data-f="useshop" data-sid="'+esc(s._db.id)+'">✓ On BringMe · Use</button>'
+         : '<button type="button" class="go add bmfr-act" data-f="gadd" data-i="'+o.i+'">➕ Quick add</button>')+'</div>';
+  }
   function helpHTML(){
-    var d=F.draft, name=String(d.name||'').replace(/\s+/g,' ').trim(), h='';
-    if(name.length<3) return '<div class="bmf-fine">Type the name on the shop’s sign. We check whether it’s already on BringMe or on Google Maps.</div>';
-    var m=sameShopNear(name, null);
-    if(m) h+='<div class="bmf-dupe"><span>🏪 Already on BringMe: <b>'+esc(m.s.name)+'</b>, '+esc(mTx(m.d))+' from you.</span>'+
-             '<button class="bmf-use" type="button" data-f="useshop" data-sid="'+esc(m.s._db.id)+'">Use this shop</button></div>';
-    var g=(F.g && F.g.q===nn(name)) ? F.g : null;
-    if(!g) h+='<button class="bmf-gbtn" type="button" data-f="gsearch">🔎 Find “'+esc(name)+'” on Google Maps</button>'+
-              (m ? '' : '<div class="bmf-fine">Not on BringMe yet? If Google Maps has it, add it to BringMe so the next person finds it too.</div>');
-    else if(g.state==='loading') h+='<div class="bmf-fine">Searching Google Maps…</div>';
-    else if(g.state==='ok'){
-      if(!g.list.length) h+='<div class="bmf-fine">Google Maps didn’t find “'+esc(name)+'” near you. You can still reply with the name.</div>';
-      else h+='<div class="bmf-glist">'+g.list.map(function(p, i){
-        var s=linkedShop(p.id);
-        return '<div class="bmf-g"><div class="t"><b>'+esc(p.name)+'</b><span>'+(p.addr?esc(p.addr)+' · ':'')+esc(mTx(p.d))+' from you</span></div>'+
-          (s ? '<button class="bmf-use" type="button" data-f="useshop" data-sid="'+esc(s._db.id)+'">✓ On BringMe · Use it</button>'
-             : '<button class="bmf-gadd" type="button" data-f="gadd" data-i="'+i+'">🏪 Add to BringMe</button>')+'</div>'; }).join('')+
-        '<div class="bmf-gattr">Results from Google Maps</div></div>';
+    var d=F.draft, name=String(d.name||'').replace(/\s+/g,' ').trim(), q=nn(name), h='';
+    if(F.dupeAsk) h+='<div class="bmf-confirm bmf-dupeask"><span>There’s already a BringMe shop called <b>“'+esc(F.dupeAsk.name)+'”</b>, '+esc(mTx(F.dupeAsk.d))+' from you. Is it the same shop?</span>'+
+       '<button class="bmf-btn buy" type="button" data-f="dupe-yes">Yes, use it</button><button class="bmf-btn" type="button" data-f="dupe-no">No, a different shop</button></div>';
+    if(!q) return h+'<div class="bmf-fine">Type the name on the shop’s sign. We look for it on BringMe and Google Maps.</div>';
+    var bm=shopSugs(name), g=(F.g && F.g.q===q) ? F.g : null, gl=gHits(name, g, bm);
+    if(bm.length) h+='<div class="bmf-sl">On BringMe</div><div class="bmf-ssugs">'+bm.map(shopRow).join('')+'</div>';
+    if(name.length<3) return h+'<div class="bmf-fine">Keep typing: from 3 letters we also check Google Maps.</div>';
+    var busy=!g || g.state==='wait' || g.state==='loading';
+    if(g && g.state==='skip') h+='<button class="bmf-gbtn" type="button" data-f="gsearch">🔎 Not this one? Check Google Maps too</button>';
+    else if(busy) h+='<div class="bmf-fine bmf-gwait">🔎 Checking Google Maps for “'+esc(name)+'”…</div>';
+    else if(g.state==='ok'){ if(gl.length) h+='<div class="bmf-sl">On Google Maps</div><div class="bmf-ssugs bmf-gl">'+gl.map(gRow).join('')+'</div>'+
+        '<div class="bmf-gattr">'+(g.sample ? 'Sample shops (pretend): Google Maps didn’t load on this page' : 'Results from Google Maps')+'</div>'; }
+    else h+='<div class="bmf-fine">'+({ noloc:'Turn on location to check Google Maps near you.', nomap:'Google Maps isn’t available right now.',
+              cap:'You’ve used today’s Google Maps searches on this phone. Try again tomorrow.', err:'Google Maps didn’t answer. Try again in a moment.' }[g.state]||'')+'</div>';
+    if(!busy){
+      if(!bm.length && !gl.length) h+='<div class="bmf-reg"><b>“'+esc(name)+'” isn’t on BringMe'+(g.state==='ok' ? ' or Google Maps' : '')+' yet.</b>'+
+          '<span>Register it so the next person finds it too. It takes a few seconds.</span><button class="bmf-regbtn bmfr-act" type="button" data-f="register">🏪 Register “'+esc(name)+'”</button></div>';
+      else h+='<button class="bmf-reglink" type="button" data-f="register">Not on the list? 🏪 Register “'+esc(name)+'” as a new shop</button>';
     }
-    else h+='<div class="bmf-fine">'+({ noloc:'Turn on location to search Google Maps near you.', nomap:'Google Maps search isn’t available right now.',
-              cap:'You’ve used today’s Google Maps searches on this phone. Try again tomorrow.', err:'Google Maps search didn’t work. Try again in a moment.' }[g.state]||'')+'</div>';
     return h;
   }
   var tHelp=null;
-  function paintHelp(){ var el=document.querySelector('#bmfind-back #bmf-newhelp'); if(el && F) el.innerHTML=helpHTML(); }
+  function paintHelp(){ var el=document.querySelector('#bmfind-back #bmf-newhelp'); if(el && F) el.innerHTML=helpHTML(); mapSync(); }
+  // check Google Maps by itself once you stop typing (it costs per search, so not when the same name is on BringMe nearby)
+  function ensureSearch(){
+    if(!F || F.draft.kind==='mine' || F.draft.shop) return;
+    var name=String(F.draft.name||'').replace(/\s+/g,' ').trim(), q=nn(name);
+    if(name.length<3 || (F.g && F.g.q===q)) return;
+    if(allShops().some(function(s){ var d=km(s.lat, s.lng); return sameName(name, s.name) && d!=null && d<=2; })){ F.g={ q:q, state:'skip' }; return; }
+    F.g={ q:q, state:'wait' };
+    clearTimeout(tG); tG=setTimeout(function(){ if(F && F.g && F.g.q===q && F.g.state==='wait') gSearch(); }, 700);
+  }
+  // the shops for what's typed (or the one picked) as pins; the map moves to the best one
+  function mapCands(){
+    if(!F || F.draft.kind==='mine') return [];
+    var d=F.draft, sel=d.shop ? shopById(d.shop) : null;
+    if(sel) return [{ lat:Number(sel.lat), lng:Number(sel.lng), name:sel.name, kind:'pick', key:'pick:'+sel._db.id }];
+    var name=String(d.name||'').replace(/\s+/g,' ').trim(); if(!nn(name)) return [];
+    var bm=shopSugs(name), g=(F.g && F.g.q===nn(name)) ? F.g : null, out=[];
+    bm.forEach(function(o){ out.push({ lat:Number(o.x.s.lat), lng:Number(o.x.s.lng), name:o.x.s.name, kind:'bm', key:'bm:'+o.x.s._db.id }); });
+    gHits(name, g, bm).forEach(function(o){ out.push({ lat:Number(o.p.lat), lng:Number(o.p.lng), name:o.p.name, kind:o.s ? 'bm' : 'g', key:'g:'+o.p.id }); });
+    return out.filter(function(c){ return !isNaN(c.lat) && !isNaN(c.lng); });
+  }
+  function mapSync(){
+    if(!F) return;
+    var c=mapCands(), key=c.map(function(x){ return x.key; }).join('|');
+    if(key===F.mk) return;
+    var prev=F.mk; F.mk=key;
+    if(!c.length){ if(prev) clearPins(); return; }
+    showPins(c);
+    if(c[0].key!==(prev ? prev.split('|')[0] : null)) centerOn(c[0].lat, c[0].lng, true);
+  }
+
 
   /* a shop from Google Maps → Post a Shop; then back to the reply with that shop picked */
   var PENDING=null;
@@ -12646,9 +13175,7 @@ function urfPost(){
     PENDING={ post:F.post, draft:JSON.parse(JSON.stringify(F.draft)), submitted:false, done:false };
     var typed=String(F.draft.name||'').replace(/\s+/g,' ').trim().slice(0,80);
     window.bmCloseFind();
-    window.bmAddFromGoogle({ placeId:p.id, lat:p.lat, lng:p.lng, grp:null });
-    try{ if(typeof S!=='undefined' && S.modal==='store-register' && S.storeForm && !S.storeForm.name && typed){ S.storeForm.name=typed; if(typeof renderModal==='function') renderModal(); } }catch(e){}
-    setTimeout(function(){ toast('🏪 Check the name, pick its type and tap 📌 Drop a pin. Then you’ll be back at your reply.'); }, 150);
+    window.bmAddFromGoogle({ placeId:p.id, lat:p.lat, lng:p.lng, grp:null, name:p.name, addr:p.addr, from:'reply', typed:typed });   // index v20: ➕ Quick add
   }
   async function backToReply(P, shop){
     if(!P || typeof window.bmOpenFind!=='function') return;
@@ -12693,32 +13220,28 @@ function urfPost(){
     return arr.slice(0,40);
   }
   function composeHTML(){
-    var d=F.draft, list=shopsNear(), isShop=d.kind!=='mine', sel=null;
-    if(isShop && d.shop && d.shop!=='__new' && !list.some(function(x){ return String(x.s._db.id)===String(d.shop); })){   // a shop picked from a suggestion stays in the list
-      var ex=shopById(d.shop); if(ex) list.push({ s:ex, d:km(ex.lat, ex.lng) });
-    }
-    if(isShop && !d.shop) d.shop = list.length ? String(list[0].s._db.id) : '__new';
-    if(isShop && d.shop!=='__new'){ list.forEach(function(x){ if(String(x.s._db.id)===String(d.shop)) sel=x; }); if(!sel) d.shop='__new'; }
-    var isNew=isShop && d.shop==='__new';
+    var d=F.draft, isShop=d.kind!=='mine', sel=null;
+    if(isShop && d.shop){ var ex=shopById(d.shop); if(ex) sel={ s:ex, d:km(ex.lat, ex.lng) }; else d.shop=''; }   // nothing is picked until you pick it
     var named={}; F.rows.forEach(function(r){ if(!r.flagged && r.source_kind==='shop' && r.source_store_id!=null) named[String(r.source_store_id)]=1; });
     var h='<div class="bmf-compose" id="bmf-compose"><div class="bmf-ch" id="bmf-ch">Your reply: where can they get it?</div>';
     if(F.note) h+='<div class="bmf-status ok">'+esc(F.note)+'</div>';
     h+='<div class="bmf-pick" role="group" aria-labelledby="bmf-ch"><button type="button" data-f="kind" data-k="shop" aria-pressed="'+isShop+'">🏪 At a shop</button><button type="button" data-f="kind" data-k="mine" aria-pressed="'+(!isShop)+'">🛍️ I’m selling mine</button></div>';
     if(isShop){
-      h+='<div class="bmf-field"><label for="bmf-shop">Shop</label><select id="bmf-shop" data-d="shop">'+
-         list.map(function(x){ return '<option value="'+esc(x.s._db.id)+'"'+(String(x.s._db.id)===String(d.shop)?' selected':'')+'>'+esc(x.s.name)+(x.d!=null?' — '+esc(kmTx(x.d).replace(' away','')):'')+(named[String(x.s._db.id)]?' · already named':'')+'</option>'; }).join('')+
-         '<option value="__new"'+(isNew?' selected':'')+'>➕ A shop not on BringMe yet</option></select></div>';
-      if(isNew){
-        h+='<div class="bmf-field"><label for="bmf-sname">Shop name</label><input id="bmf-sname" data-d="name" maxlength="60" autocomplete="off" placeholder="e.g. Aling Nena Sari-sari Store" value="'+esc(d.name)+'"></div>';
-        h+='<div class="bmf-newhelp" id="bmf-newhelp">'+helpHTML()+'</div>';
-        h+='<div class="bmf-loc">📍 We save where you are now as the shop’s spot, so reply while you’re at the shop or close to it.</div>';
-        if(typeof window.bmFindFar==='function' && typeof USER!=='undefined' && USER){ var far2=window.bmFindFar(F.post, USER.lat, USER.lng); if(far2) h+='<div class="bmf-warn">'+esc(far2)+'</div>'; }   // index v18
-      } else {
-        h+='<div class="bmf-loc">📍 '+(sel.s.address ? (isCoords(sel.s.address) ? 'Pinned on the map · ' : esc(sel.s.address)+' · ') : '')+esc(kmTx(sel.d))+(sel.s.contact?' · 📞 '+esc(sel.s.contact):'')+'</div>';
+      if(sel){   // the picked shop, with Change (no dropdown)
+        h+='<div class="bmf-field"><label>Shop</label><div class="bmf-shoppick" data-sid="'+esc(sel.s._db.id)+'"><span class="ic">'+esc(sel.s.catEmoji||'🏪')+'</span>'+
+           '<span class="tx"><b>'+esc(sel.s.name)+'</b><small>On BringMe'+(sel.d!=null?' · '+esc(kmTx(sel.d)):'')+'</small></span>'+
+           (mapOK() && bandOn() ? '<button type="button" class="bmf-chg bmf-mapbtn" data-f="locate" data-lat="'+esc(sel.s.lat)+'" data-lng="'+esc(sel.s.lng)+'" aria-label="Show it on the map">📍</button>' : '')+
+           '<button type="button" class="bmf-chg" data-f="shopchange">Change</button></div></div>';
+        var lb=[]; if(sel.s.address && !isCoords(sel.s.address) && sel.s.address!=='Nearby') lb.push('📍 '+esc(sel.s.address)); if(sel.s.contact) lb.push('📞 '+esc(sel.s.contact));
+        if(lb.length) h+='<div class="bmf-loc">'+lb.join(' · ')+'</div>';
         if(typeof window.bmFindFar==='function'){ var far=window.bmFindFar(F.post, sel.s.lat, sel.s.lng); if(far) h+='<div class="bmf-warn">'+esc(far)+'</div>'; }   // index v18
         if(named[String(sel.s._db.id)]) h+='<div class="bmf-warn">⚠ Someone already named this shop here. You can still post, but the reward goes to the first reply.</div>';
+      } else {
+        h+='<div class="bmf-field"><label for="bmf-sname">Shop</label><input id="bmf-sname" data-d="name" maxlength="60" autocomplete="off" enterkeyhint="done" placeholder="Type the shop’s name" value="'+esc(d.name)+'"></div>';
+        h+='<div class="bmf-newhelp" id="bmf-newhelp">'+helpHTML()+'</div>';
+        if(typeof window.bmFindFar==='function' && typeof USER!=='undefined' && USER){ var far2=window.bmFindFar(F.post, USER.lat, USER.lng); if(far2) h+='<div class="bmf-warn">'+esc(far2)+'</div>'; }   // index v18
       }
-      if(isNew || !(sel && sel.s.contact)){
+      if(!(sel && sel.s.contact)){
         h+='<div class="bmf-field"><label for="bmf-phone">Shop contact number (optional)</label><input id="bmf-phone" data-d="phone" type="tel" inputmode="tel" autocomplete="off" placeholder="09XX XXX XXXX" value="'+esc(d.phone)+'"></div>';
       }
     } else {
@@ -12727,10 +13250,8 @@ function urfPost(){
       h+='<div class="bmf-field"><label for="bmf-phone">Your contact number</label><input id="bmf-phone" data-d="phone" type="tel" inputmode="tel" autocomplete="off" placeholder="09XX XXX XXXX" value="'+esc(d.phone)+'"></div>';
     }
     h+='<div class="bmf-field"><label for="bmf-price">Price in pesos (optional)</label><input id="bmf-price" data-d="price" inputmode="numeric" autocomplete="off" placeholder="e.g. 1150" value="'+esc(d.price)+'"></div>';
-    if(isShop && !isNew && sel) h+=itemBoxHTML(sel.s);
+    if(sel) h+=itemBoxHTML(sel.s);
     h+='<div class="bmf-field"><label for="bmf-note">Note (optional)</label><textarea id="bmf-note" data-d="note" rows="2" maxlength="500" placeholder="e.g. They had two on the shelf yesterday.">'+esc(d.note)+'</textarea></div>';
-    if(F.dupeAsk) h+='<div class="bmf-confirm bmf-dupeask"><span>There’s already a BringMe shop called <b>“'+esc(F.dupeAsk.name)+'”</b>, '+esc(mTx(F.dupeAsk.d))+' from you. Is it the same shop?</span>'+
-       '<button class="bmf-btn buy" type="button" data-f="dupe-yes">Yes, use it</button><button class="bmf-btn" type="button" data-f="dupe-no">No, a different shop</button></div>';
     h+='<div class="bmf-anon">👤 You will show as Neighbor '+nextAlias()+'. Your name is not shown.</div>';
     h+='<button class="bmf-post" type="button" data-f="post">Post reply</button></div>';
     return h;
@@ -12738,44 +13259,52 @@ function urfPost(){
 
   function paint(body){
     var back=document.getElementById('bmfind-back'); if(!back || !F) return;
-    var b0=back.querySelector('.bmthread-body'), top=b0 ? b0.scrollTop : 0;
-    var sub=isOpen() ? 'Public · no names shown' : 'Found · replies closed';
-    back.innerHTML='<div class="bmthread" role="dialog" aria-modal="true" aria-label="Find Me replies"><div class="bmthread-hd"><span class="ic">🔍</span><div class="t"><b>'+esc(F.post.item||'Find Me')+'</b><span>'+esc(sub)+'</span></div><button class="bmthread-x" type="button" data-f="close" aria-label="Close">✕</button></div><div class="bmthread-body">'+body+'</div></div>';
-    var b=back.querySelector('.bmthread-body'); if(b) b.scrollTop=top;
+    var keep={}; ['.bmthread-body','.bmf-ca','.bmf-cb'].forEach(function(s){ var e=back.querySelector(s); if(e) keep[s]=e.scrollTop; });
+    var sub=isOpen() ? 'Public · no names shown' : 'Found · replies closed', band=back.classList.contains('band');
+    back.innerHTML='<div class="bmthread bmfind" role="dialog" aria-modal="'+(band?'false':'true')+'" aria-label="Find Me replies"><div class="bmthread-hd"><span class="ic">🔍</span><div class="t"><b>Find Me</b><span>'+esc(sub)+'</span></div>'+
+      (band ? '<button class="bmthread-sz" type="button" data-f="grip" aria-expanded="'+FULL+'">'+(FULL ? '🗺️ Show the map' : '⬆ Bigger')+'</button>' : '')+
+      '<button class="bmthread-x" type="button" data-f="close" aria-label="Close">✕</button></div><div class="bmthread-body">'+body+'</div></div>';
+    Object.keys(keep).forEach(function(s){ var e=back.querySelector(s); if(e) e.scrollTop=keep[s]; });
   }
 
   function onInput(e){
     var t=e.target; if(!F || !t || !t.getAttribute) return;
     var k=t.getAttribute('data-d'); if(!k) return;
     F.draft[k]=(t.type==='checkbox') ? t.checked : t.value;
-    if(k==='shop' && e.type==='change'){ F.draft.phone=''; F.draft.itemName=null; F.draft.addItem=true; F.dupeAsk=null; render(); focusSel('#bmf-shop'); }
-    else if(k==='addItem' && e.type==='change'){ render(); focusSel('[data-d="addItem"]'); }
-    else if(k==='name'){ F.dupeAsk=null; F.draft.notDupe=null; clearTimeout(tHelp); tHelp=setTimeout(paintHelp, 250); }   // index v17: on BringMe already? on Google Maps?
+    if(k==='addItem' && e.type==='change'){ render(); focusSel('[data-d="addItem"]'); }
+    else if(k==='name'){ F.dupeAsk=null; F.draft.notDupe=null; clearTimeout(tHelp); tHelp=setTimeout(function(){ ensureSearch(); paintHelp(); }, 120); }
   }
   function onClick(e){
     var b=e.target && e.target.closest ? e.target.closest('[data-f]') : null; if(!b || !F) return;
     var f=b.getAttribute('data-f'), rid=b.getAttribute('data-rid');
     if(f==='close'){ window.bmCloseFind(); return; }
+    if(f==='grip'){ FULL=!FULL; bandFit(); render(); return; }
     if(f==='signin'){ window.bmCloseFind(); if(typeof openAuthGate==='function'){ openAuthGate(); if(typeof awShowTab==='function') awShowTab('login'); } return; }
     if(f==='kind'){ var k=b.getAttribute('data-k'); if(F.draft.kind!==k){ F.draft.kind=k; F.draft.phone=''; } render(); focusSel('[data-f="kind"][data-k="'+k+'"]'); return; }
     if(f==='map'){ showOnMap(Number(b.getAttribute('data-lat')), Number(b.getAttribute('data-lng')), b.getAttribute('data-name')); return; }
+    if(f==='locate'){ if(FULL){ FULL=false; bandFit(); render(); } centerOn(b.getAttribute('data-lat'), b.getAttribute('data-lng'), true); return; }
     if(f==='ask-no'){ var prev=F.ask; F.ask=null; render(); if(prev) focusSel('[data-f="'+prev.kind+'"][data-rid="'+prev.id+'"]'); return; }
-    if(f==='buy' || f==='report'){ F.ask={ kind:f, id:rid }; render(); focusSel('[data-f="'+f+'-yes"]'); return; }
+    if(f==='buy' || f==='report' || f==='na' || f==='closed'){ F.ask={ kind:f, id:rid }; render(); focusSel('[data-f="'+f+'-yes"]'); return; }
     if(f==='vouch'){ act(b, 'vouch_reply', { p_reply_id:idv(rid) }, function(d){ var x=Array.isArray(d)?d[0]:d;
         if(x && x.my_power===0) return 'Your account is under 7 days old, so your vouch doesn’t count yet.';
         return x ? 'Vouched (worth '+x.my_power+'). The neighbor who wrote it earns ✨'+x.added_points+'.' : 'Vouched.'; }); return; }
     if(f==='report-yes'){ act(b, 'report_reply', { p_reply_id:idv(rid) }, function(d){ var x=Array.isArray(d)?d[0]:d;
         return (x && x.now_flagged) ? 'Reported. That was report 10, so the reply is now hidden.' : 'Reported'+(x?' ('+x.new_reports+' of 10).':'.'); }); return; }
+    if(f==='there'){ say(b, rid, 'there'); return; }
+    if(f==='na-yes'){ say(b, rid, 'na'); return; }
+    if(f==='closed-yes'){ say(b, rid, 'closed'); return; }
     if(f==='buy-yes'){ act(b, 'mark_bought', { p_request_id:F.id, p_reply_id:idv(rid) }, function(d){ var n=Number(d)||0;
         return n ? 'Marked as bought. The ✨'+n+' reward went to the neighbor who helped.' : 'Marked as bought. The request is now closed.'; }); return; }
     if(f==='photo'){ if(typeof window.bmFindPhotoOpen==='function') window.bmFindPhotoOpen(F.post, Number(b.getAttribute('data-i'))); return; }   // index v18
     if(f==='area'){ if(typeof window.bmShowFindArea==='function') window.bmShowFindArea(F.post); return; }
-    if(f==='useshop'){ F.draft.kind='shop'; F.draft.shop=String(b.getAttribute('data-sid')); F.draft.phone=''; F.draft.itemName=null; F.draft.addItem=true; F.dupeAsk=null; render(); focusSel('#bmf-shop'); return; }   // index v17
-    if(f==='gsearch'){ gSearch(); return; }
+    if(f==='useshop'){ F.draft.kind='shop'; F.draft.shop=String(b.getAttribute('data-sid')); F.draft.phone=''; F.draft.itemName=null; F.draft.addItem=true; F.dupeAsk=null; render(); focusSel('#bmf-price'); return; }
+    if(f==='shopchange'){ F.draft.shop=''; F.draft.name=''; F.draft.phone=''; F.draft.itemName=null; F.draft.addItem=true; F.dupeAsk=null; F.g=null; render(); focusSel('#bmf-sname'); return; }
+    if(f==='gsearch'){ clearTimeout(tG); gSearch(); return; }
     if(f==='gadd'){ var gp=F.g && F.g.list && F.g.list[Number(b.getAttribute('data-i'))]; if(gp) addFromGoogle(gp); return; }
+    if(f==='register'){ openRegister(false); return; }
     if(f==='dupe-yes'){ var da=F.dupeAsk; F.dupeAsk=null; if(da){ F.draft.kind='shop'; F.draft.shop=String(da.id); F.draft.phone=''; F.draft.itemName=null; F.draft.addItem=true; }
-      render(); toast('Your reply now names '+(da?da.name:'that shop')+'. Tap Post reply.'); focusSel('.bmf-post'); return; }
-    if(f==='dupe-no'){ var dn=F.dupeAsk; F.dupeAsk=null; if(dn) F.draft.notDupe=String(dn.id); render(); var pb=document.querySelector('#bmfind-back .bmf-post'); if(pb) post(pb); return; }
+      render(); toast('Your reply now names '+(da?da.name:'that shop')+'.'); focusSel('#bmf-price'); return; }
+    if(f==='dupe-no'){ var dn=F.dupeAsk; F.dupeAsk=null; if(dn) F.draft.notDupe=String(dn.id); openRegister(true); return; }
     if(f==='post'){ post(b); return; }
   }
   async function act(btn, fn, args, okMsg){
@@ -12790,34 +13319,80 @@ function urfPost(){
       try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(e){}
     }catch(e){ toast(dbErr(e),'error'); btn.disabled=false; }
   }
+  // ✅ It's there → vouches the reply and the item on the shop's list; ❌ Not available → reports both;
+  // 🔒 Closed → reports the reply and the shop. Your own item or shop is left out (the database refuses those).
+  async function say(btn, rid, what){
+    if(!connected() || !me()){ toast('Please sign in first'); return; }
+    var r=null; F.rows.forEach(function(x){ if(String(x.id)===String(rid)) r=x; }); if(!r) return;
+    var it=itemFor(r), sid=r.source_kind==='shop' ? r.source_store_id : null, sn=r.shop_name||'the shop', reqId=F.id;
+    var mine=function(o){ return !!o && String(o.added_by||'')===String(me()); };
+    btn.disabled=true;
+    try{
+      var x=await sb.rpc(what==='there' ? 'vouch_reply' : 'report_reply', { p_reply_id:idv(rid) });
+      if(x.error){ toast(dbErr(x.error),'error'); btn.disabled=false; return; }
+      var d=Array.isArray(x.data) ? x.data[0] : x.data, msg;
+      try{
+        var y=null;
+        if(what==='there' && it && !mine(it)) y=await sb.rpc('store_item_vote', { p_item_id:it.id, p_kind:'vouch' });
+        else if(what==='na' && it && !mine(it)) y=await sb.rpc('store_item_vote', { p_item_id:it.id, p_kind:'report', p_reason:'Not available' });
+        else if(what==='closed' && sid!=null) y=await sb.rpc('store_vote', { p_store_id:sid, p_kind:'report', p_reason:'Closed' });
+        if(y && y.error) console.warn('[BringMe] shop list vote:', y.error.message || y.error);
+      }catch(e2){ console.warn('[BringMe] shop list vote', e2); }
+      if(!F || F.id!==reqId) return;
+      if(what==='closed'){ F.saidClosed=F.saidClosed||{}; F.saidClosed[String(rid)]=1; }
+      if(what==='there') msg=(d && d.my_power===0) ? 'Thanks! Your account is under 7 days old, so it doesn’t count yet.'
+                                                    : 'Thanks! You said it’s there'+(d ? ' (worth '+d.my_power+'). The neighbor who wrote it earns ✨'+d.added_points+'.' : '.');
+      else msg=(what==='na' ? 'Thanks. Marked not available at '+sn+'.' : 'Thanks. You reported '+sn+' as closed.')+((d && d.now_flagged) ? ' That was report 10, so the reply is now hidden.' : '');
+      F.ask=null; toast(msg,'success');
+      await reload();
+      try{ if(typeof window.bmLoadPosts==='function') window.bmLoadPosts(); }catch(e){}
+    }catch(e){ toast(dbErr(e),'error'); btn.disabled=false; }
+  }
+  // 🏪 Register: a shop that's on neither BringMe nor Google Maps → a quick sheet, then back to the reply with it picked
+  function openRegister(skipDupe){
+    var d=F.draft, name=String(d.name||'').replace(/\s+/g,' ').trim();
+    if(name.length<2){ toast('Type the shop’s name first.','error'); focusSel('#bmf-sname'); return; }
+    if(!skipDupe){   // the same name very close to you is probably the same shop
+      var here=(typeof USER!=='undefined' && USER && USER.lat!=null) ? { lat:Number(USER.lat), lng:Number(USER.lng) } : null;
+      var m=sameShopNear(name, here);
+      if(m && String(m.s._db.id)!==String(d.notDupe||'')){ F.dupeAsk={ id:String(m.s._db.id), name:m.s.name, d:m.d }; paintHelp(); focusSel('[data-f="dupe-yes"]'); return; }
+    }
+    if(typeof window.bmRegisterQuick!=='function'){ toast('Adding shops isn’t available right now.','error'); return; }
+    PENDING={ post:F.post, draft:JSON.parse(JSON.stringify(F.draft)), submitted:false, done:false };
+    window.bmCloseFind();
+    window.bmRegisterQuick({ name:name.slice(0,80), from:'reply' });
+  }
   async function post(btn){
     if(!connected() || !me()){ toast('Please sign in first'); return; }
-    var d=F.draft, kind = d.kind==='mine' ? 'mine' : (d.shop==='__new' ? 'shop_text' : 'shop');
+    var d=F.draft, kind=d.kind==='mine' ? 'mine' : 'shop';
+    if(kind==='shop' && !(d.shop && shopById(d.shop))){   // index v20.1: a shop reply always names a BringMe shop
+      var name=String(d.name||'').replace(/\s+/g,' ').trim();
+      if(name.length<2){ toast('Type the shop’s name, then pick it.','error'); focusSel('#bmf-sname'); return; }
+      var g=(F.g && F.g.q===nn(name)) ? F.g : null, bm=shopSugs(name), gl=gHits(name, g, bm);
+      if(g && (g.state==='wait' || g.state==='loading') && !bm.length){ toast('Checking Google Maps… one moment.'); return; }
+      if(bm.length || gl.length){
+        toast('Pick the shop first: tap '+(bm.length ? 'Use' : '➕ Quick add')+'. Not on the list? Tap 🏪 Register.','error');
+        var hb=document.querySelector('#bmfind-back #bmf-newhelp'); if(hb) try{ hb.scrollIntoView({ block:'center' }); }catch(e){}
+        return;
+      }
+      openRegister(false); return;
+    }
     var phone=String(d.phone||'').replace(/[^0-9+() -]/g,'').trim();
     var price=parseFloat(String(d.price||'').replace(/[^0-9.]/g,''));
-    if(kind==='shop_text' && String(d.name||'').trim().length<3){ toast('Type the shop’s name.','error'); focusSel('#bmf-sname'); return; }
     if(kind==='mine' && phone.replace(/[^0-9]/g,'').length<7){ toast('Add your contact number so the buyer can reach you.','error'); focusSel('#bmf-phone'); return; }
     // index v17: put the item on the shop's list too (decided now, before the form resets)
     var shopObj=kind==='shop' ? shopById(d.shop) : null, iname=itemOf();
     var addIt=!!(shopObj && d.addItem!==false && canAddItem(shopObj) && iname.length>=2 && !listed(shopObj, iname));
     var here=null, reqId=F.id;
     btn.disabled=true;
-    if(kind!=='shop'){   // a new shop or a second-hand offer needs where you are right now
+    if(kind==='mine'){   // a second-hand offer needs where you are right now
       btn.textContent='Getting your location…';
       try{ here=await getHere(); }
       catch(e){ toast('We couldn’t get your location. Allow location for this site, then try again.','error'); btn.disabled=false; btn.textContent='Post reply'; return; }
       if(!F || F.id!==reqId) return;
-      if(kind==='shop_text'){   // index v17: is it a BringMe shop already? (about the same name, within 150 m)
-        var m=sameShopNear(d.name, here);
-        if(m && String(m.s._db.id)!==String(d.notDupe||'')){
-          F.dupeAsk={ id:String(m.s._db.id), name:m.s.name, d:m.d }; btn.disabled=false; btn.textContent='Post reply';
-          render(); focusSel('[data-f="dupe-yes"]'); return;
-        }
-      }
     }
     var args={ p_request_id:reqId, p_body:String(d.note||'').trim(), p_kind:kind,
-               p_store_id: kind==='shop' ? idv(d.shop) : null,
-               p_name: kind==='shop_text' ? String(d.name).trim() : null,
+               p_store_id: kind==='shop' ? idv(d.shop) : null, p_name:null,
                p_lat: here ? here.lat : null, p_lng: here ? here.lng : null,
                p_price: (isNaN(price) || price<=0) ? null : price, p_phone: phone || null };
     btn.textContent='Posting…';
@@ -12841,6 +13416,13 @@ function urfPost(){
     }catch(e){ toast(dbErr(e),'error'); btn.disabled=false; btn.textContent='Post reply'; }
   }
   function showOnMap(lat,lng,name){
+    if(F && bandOn() && mapOK()){   // index v20.1: the replies stay open; the shop goes in the middle of the map above them
+      if(FULL){ FULL=false; bandFit(); render(); }
+      showPins([{ lat:lat, lng:lng, name:name||'Shop', kind:'pick' }]); F.mk='show';
+      centerOn(lat, lng, true);
+      toast('📍 '+(name||'The shop')+' is in the middle of the map.');
+      return;
+    }
     window.bmCloseFind();
     try{
       if(typeof map!=='undefined' && map && map.panTo){
@@ -13228,7 +13810,7 @@ function urfPost(){
     var p = gAt(i); if (!p) return;
     if (F.g.sample) { try { showToast('That’s a sample shop, not a real one.'); } catch(e){} return; }
     try { if (typeof infoWindow !== 'undefined' && infoWindow) infoWindow.close(); } catch(e){}
-    if (typeof window.bmAddFromGoogle === 'function') window.bmAddFromGoogle({ placeId:p.id, lat:p.lat, lng:p.lng, grp:F.grp ? F.grp.k : null });
+    if (typeof window.bmAddFromGoogle === 'function') window.bmAddFromGoogle({ placeId:p.id, lat:p.lat, lng:p.lng, grp:F.grp ? F.grp.k : null, name:p.name, addr:p.addr, q:F.q, from:'search' });   // index v20: ➕ Quick add
   }
   function showG(i){
     var p = gAt(i); if (!p) return;
@@ -13250,7 +13832,7 @@ function urfPost(){
       (p.kind ? '<div class="bmf-iw-kind">' + E(p.kind) + (p.status === 'CLOSED_TEMPORARILY' ? ' · <b>Temporarily closed</b>' : '') + '</div>' : '') +
       '<div class="bmf-iw-addr">📍 ' + E(p.addr || 'No address') + ' · ' + km(p.d) + '</div>' +
       '<div class="bmf-iw-note">Not on BringMe yet. Add it so neighbors can vouch for it, list what it sells and fix its details.</div>' +
-      '<div class="bmf-iw-acts"><button type="button" class="bmf-iw-add" onclick="bmFinder.add(' + i + ')">🏪 Add to BringMe</button>' +
+      '<div class="bmf-iw-acts"><button type="button" class="bmf-iw-add" onclick="bmFinder.add(' + i + ')">➕ Quick add to BringMe</button>' +
       '<button type="button" onclick="bmFinder.dir(' + i + ')">🧭 Directions</button>' +
       (p.url ? '<a href="' + E(p.url) + '" target="_blank" rel="noopener">Google Maps ↗</a>' : '') + '</div>' +
       '<div class="bmf-attr">' + (F.g.sample ? 'Sample — not from Google' : 'Google Maps') + '</div></div>';
@@ -13424,6 +14006,7 @@ function urfPost(){
             '<span class="bmf-meta">' + (linked(p) ? '<span class="bmf-tag bmf-t-ok">✓ On BringMe</span>' : '') + (p.kind ? '<span class="bmf-tag bmf-t-g">' + E(p.kind) + '</span>' : '') +
             (p.status === 'CLOSED_TEMPORARILY' ? '<span class="bmf-tag bmf-t-urg">Temporarily closed</span>' : '') + E(p.addr) + '</span></span>' +
             '<span class="bmf-side"><span class="bmf-dist">' + km(p.d) + '</span></span></button>' +
+            (linked(p) ? '' : '<button type="button" class="bmf-act bmf-qadd" data-qadd="' + i + '" aria-label="Quick add ' + E(p.name) + ' to BringMe">➕<small>Add</small></button>') +   // index v20
             '<button type="button" class="bmf-act" data-dir="' + i + '" aria-label="Directions to ' + E(p.name) + '">🧭</button></div>';
         }).join('') + '</div>';
         if (list.length > 1) inner += '<button type="button" class="bmf-more" data-act="all">📍 Show them all on the map</button>';
@@ -13477,6 +14060,7 @@ function urfPost(){
     if (b.hasAttribute('data-open')) { F.open = !F.open; gRun(true); render(); return; }
     if (b.hasAttribute('data-more')) { F.more[b.getAttribute('data-more')] = true; render(); return; }
     if (b.hasAttribute('data-dir')) { dir(Number(b.getAttribute('data-dir'))); return; }
+    if (b.hasAttribute('data-qadd')) { gAdd(Number(b.getAttribute('data-qadd'))); return; }   // index v20: ➕ Quick add
     var act = b.getAttribute('data-act');
     if (act) {
       if (act === 'close') return collapse();
@@ -14736,11 +15320,16 @@ function urfPost(){
     if (have) return open(have.id);
     if (needSignIn()) return;
     var cat = null, nm = KIND2CAT[g.grp] || null, c = nm ? places().find(function(p){ return p.name === nm; }) : null;
-    if (c) cat = { em:c.em, top:c.name, sub:'' };
+    if (c) cat = { em:c.em, top:c.name, sub:'', ai:true };
     try {
       S.storeForm = { name:'', address:'', contact:'', hours:'', cat:cat, catUI:null, products:'', poster:'community', docs:[], items:[], draft:'', openCatFor:null,
         catSearch:'', drillTop:null, importOpen:false, importText:'', importRows:[], importDupes:0, photos:[], lat:null, lng:null, located:false,
-        placeId:String(g.placeId), pinStart:{ lat:Number(g.lat), lng:Number(g.lng) }, svLink:'' };
+        placeId:String(g.placeId), pinStart:{ lat:Number(g.lat), lng:Number(g.lng) }, svLink:'',
+        // index v20: ➕ Quick add
+        quick:true, quickFrom:g.from === 'reply' ? 'reply' : 'search', qaBase:cat, qaItem:'', qaPrice:'', qaHint:String(g.q || '').replace(/\s+/g, ' ').trim().slice(0, 40) };
+      // Google's name and address: shown in the sheet only (kept outside the form, never saved)
+      window.bmQaGoogle = { placeId:String(g.placeId), name:String(g.name || ''), addr:String(g.addr || '') };
+      if (g.typed) { S.storeForm.name = String(g.typed).slice(0, 80); if (typeof qaAutoType === 'function') qaAutoType(); }
       openModal('store-register');
     } catch(e) { console.warn('[BringMe] add from Google', e); }
   };
@@ -15795,11 +16384,11 @@ body.bm-profile .mk-nudge,body.bsp-open .mk-nudge{display:none}   /* not over th
       (ph.length<4 ? '<label class="mefd-add">📷<span>Add</span><input type="file" accept="image/*" multiple hidden onchange="BP.mineEditPhotoAdd(this)"></label>' : '')+'</div></div>';
     h+='<div class="me-row"><div class="bmf-field"><label for="me-budget">Budget, up to ₱ (optional)</label><input id="me-budget" inputmode="decimal" autocomplete="off" maxlength="11" value="'+esc(r.budget!=null?Number(r.budget):'')+'"></div>'+
        '<div class="bmf-field"><label for="me-need">Needed by (optional)</label><input id="me-need" type="date" min="'+today()+'" value="'+esc(r.needed_by||'')+'"></div></div>';
-    h+='<div class="bmf-field"><label for="me-cond">New or second-hand?</label><select id="me-cond">'+CONDS.map(function(c){ return '<option value="'+c[0]+'"'+((r.item_condition||'any')===c[0]?' selected':'')+'>'+esc(c[1])+'</option>'; }).join('')+'</select></div>';
+    h+='<div class="bmf-field"><label>New or second-hand?</label>'+bmChipsHTML('me-cond', CONDS, r.item_condition||'any')+'</div>';   // index v20.1: chips
     h+='<div class="bmf-field"><label>Where you are</label><div class="mefd-loc"><button type="button" onclick="BP.mineEditLoc(\'gps\')">📍 Use my location</button><button type="button" onclick="BP.mineEditLoc(\'pin\')">📌 Drop a pin</button></div>'+
        '<div class="mefd-locst">'+(E.loc ? '📍 New spot set (not saved yet)' : (r.area_m!=null ? '📍 Neighbors see a '+esc(areaTx(areaNow))+' circle around your pin' : '📍 Your pin is where you posted it'))+'</div></div>';
-    h+='<div class="me-row"><div class="bmf-field"><label for="me-area">Neighbors see a circle of</label><select id="me-area">'+AREAS.map(function(a){ return '<option value="'+a[0]+'"'+(areaNow===a[0]?' selected':'')+'>'+a[1]+'</option>'; }).join('')+'</select></div>'+
-       '<div class="bmf-field"><label for="me-travel">You’ll travel up to</label><select id="me-travel">'+TRAVEL.map(function(t){ return '<option value="'+t[0]+'"'+(trav===t[0]?' selected':'')+'>'+t[1]+'</option>'; }).join('')+'</select></div></div>';
+    h+='<div class="bmf-field"><label>Neighbors see a circle of</label>'+bmChipsHTML('me-area', AREAS, areaNow)+'</div>'+
+       '<div class="bmf-field"><label>You’ll travel up to</label>'+bmChipsHTML('me-travel', TRAVEL, trav)+'</div>';
     return h;
   };
   window.bmFindEditPatch=function(r, E, v){
